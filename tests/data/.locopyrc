@@ -1,0 +1,6 @@
+host: my.redshift.cluster.com
+port: 5439
+dbname: db
+user: username
+password: password
+profile: MY_AWS_PROFILE
