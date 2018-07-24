@@ -1,0 +1,15 @@
+language: python
+dist: trusty
+sudo: false
+cache:
+  pip: true
+
+python:
+  - "3.5"
+  - "3.6"
+install:
+  - cp tests/data/.locopyrc ~/.locopyrc
+  - pip install -r requirements-dev.txt
+  - python setup.py install
+script:
+  - make not_integration
