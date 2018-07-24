@@ -1,0 +1,6 @@
+# required to connect to redshift
+host: my.redshift.cluster.com
+port: 5439
+dbname: db
+user: userid
+password: password
