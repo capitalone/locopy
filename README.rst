@@ -36,9 +36,9 @@ A virtual environment is highly recommended
 Python Database API Specification 2.0
 -------------------------------------
 
-Rather than using a specific Python DB Driver / Adapter for Postgres,
-Python Data Transporter prefers to be agnostic. As an end user you can use any
-Python Database API Specification 2.0 package.
+Rather than using a specific Python DB Driver / Adapter for Postgres (which should support Amazon
+Redshift), ``locopy`` prefers to be agnostic. As an end user you can use any Python Database
+API Specification 2.0 package.
 
 The following packages have been tested:
 
@@ -53,8 +53,8 @@ into the constructor input ``dbapi``.
 Usage
 -----
 
-You need to store your Redshift connection parameters in a YAML file
-(or pass them in directly).  The YAML would consist of the following items:
+You need to store your Redshift connection parameters in a YAML file (or pass them in directly).
+The YAML would consist of the following items:
 
 .. code-block:: yaml
 
@@ -119,11 +119,11 @@ If you want to download data from Redshift to a CSV, or read it into Python
 Note on tokens
 ^^^^^^^^^^^^^^
 
-To load data to S3, you will need to be able to generate AWS tokens.
-There are a few options for doing this, depending on where you're running your
-script and how you want to handle tokens. Once you have your tokens, they need
-to be accessible to the AWS command line interface. See
-http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#config-settings-and-precedence)
+To load data to S3, you will need to be able to generate AWS tokens, or assume the IAM role on a EC2
+instance. There are a few options for doing this, depending on where you're running your script and
+how you want to handle tokens. Once you have your tokens, they need to be accessible to the AWS
+command line interface. See
+http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#config-settings-and-precedence
 for more information, but you can:
 
 - Populate environment variables ``AWS_ACCESS_KEY_ID``, ``AWS_SECRET_ACCESS_KEY``,
@@ -131,6 +131,7 @@ for more information, but you can:
 - Leverage the AWS credentials file.  If you have multiple profiles configured
   you can either call ``locopy.S3(profile='my-profile')``, or set up an
   environment variable ``AWS_DEFAULT_PROFILE``.
+- If you are on a EC2 instance you can assume the credentials associated with the IAM role attached.
 
 
 Advanced Usage
