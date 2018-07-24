@@ -7,7 +7,6 @@ cache:
 python:
   - "3.5"
   - "3.6"
-  - "3.7"
 install:
   - cp tests/data/.locopyrc ~/.locopyrc
   - pip install -r requirements-dev.txt
