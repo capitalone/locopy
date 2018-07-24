@@ -24,7 +24,7 @@ import shutil
 import yaml
 from itertools import cycle
 from .logger import (get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL)
-from .errors import (CompressionError, PydtSplitError,
+from .errors import (CompressionError, LocopySplitError,
                      RedshiftCredentialsError)
 
 logger = get_logger(__name__, INFO)
@@ -105,12 +105,12 @@ def split_file(input_file, output_file, splits=2):
 
     Raises
     ------
-    PydtSplitError
+    LocopySplitError
         If ``splits`` is less than 2 or some processing error when splitting
     """
     if type(splits) is not int or splits < 2:
         logger.error('Number of splits is invalid')
-        raise PydtSplitError(
+        raise LocopySplitError(
             'Number of splits must be greater than one and an integer.')
 
     try:
@@ -134,7 +134,7 @@ def split_file(input_file, output_file, splits=2):
             for x in pool:
                 files[x].close()
                 os.remove(files[x].name)
-        raise PydtSplitError('Error splitting the file.')
+        raise LocopySplitError('Error splitting the file.')
 
 
 

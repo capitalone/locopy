@@ -132,7 +132,7 @@ print(res)
 ## <a name="extraparams"></a>Extra parameters on the COPY job
 As per the AWS documentation [here](http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-conversion.html),
 there may be times when you want to tweak the options used by the COPY job if
-you have some oddities in your data.  Pydt by assigns a few options by default
+you have some oddities in your data.  Locopy by assigns a few options by default
 (`DATEFORMAT 'auto'`, `COMPUPDATE ON`, and `TRUNCATECOLUMNS`).  If you want to
 specify other options, or override these three, you can pass in a list of
 strings which will tweak your load:

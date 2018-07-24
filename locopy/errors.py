@@ -12,19 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class PydtError(Exception):
+class LocopyError(Exception):
     """
-    Baseclass for all Pydt errors.
+    Baseclass for all Locopy errors.
     """
 
 
-class CompressionError(PydtError):
+class CompressionError(LocopyError):
     """
     Raised when there is an error compressing a file.
     """
 
 
-class PydtSplitError(PydtError):
+class LocopySplitError(LocopyError):
     """
     Raised when there is an error splitting a file.
     """

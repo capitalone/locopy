@@ -29,7 +29,7 @@ logger = get_logger(__name__, INFO)
 
 class Cmd(object):
     """
-    Pydt class which manages connections to Redshift.  Subclassed as S3
+    Locopy class which manages connections to Redshift.  Subclassed as S3
     elsewhere to provide the COPY functionality.
 
     If any of host, port, dbname, user and password are not provided, a

@@ -29,7 +29,7 @@ from io import StringIO
 from itertools import cycle
 from botocore.credentials import Credentials
 from locopy.utility import compress_file, split_file
-from locopy.errors import (CompressionError, PydtSplitError,
+from locopy.errors import (CompressionError, LocopySplitError,
                            RedshiftCredentialsError)
 import locopy.utility as util
 
@@ -129,17 +129,17 @@ def test_split_file_exception():
     else:
         builtin_module_name = '__builtin__'
 
-    with pytest.raises(PydtSplitError):
+    with pytest.raises(LocopySplitError):
         split_file(input_file, output_file, -1)
-    with pytest.raises(PydtSplitError):
+    with pytest.raises(LocopySplitError):
         split_file(input_file, output_file, 0)
-    with pytest.raises(PydtSplitError):
+    with pytest.raises(LocopySplitError):
         split_file(input_file, output_file, 1)
-    with pytest.raises(PydtSplitError):
+    with pytest.raises(LocopySplitError):
         split_file(input_file, output_file, 5.65)
-    with pytest.raises(PydtSplitError):
+    with pytest.raises(LocopySplitError):
         split_file(input_file, output_file, "123")
-    with pytest.raises(PydtSplitError):
+    with pytest.raises(LocopySplitError):
         split_file(input_file, output_file, "Test")
 
 
@@ -147,12 +147,12 @@ def test_split_file_exception():
         with mock.patch('os.remove') as mock_remove:
             mock_next.side_effect = Exception('SomeException')
 
-            with pytest.raises(PydtSplitError):
+            with pytest.raises(LocopySplitError):
                 split_file(input_file, output_file)
             assert mock_remove.call_count == 2
             mock_remove.reset_mock()
 
-            with pytest.raises(PydtSplitError):
+            with pytest.raises(LocopySplitError):
                 split_file(input_file, output_file, 3)
             assert mock_remove.call_count == 3
 
