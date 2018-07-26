@@ -1,0 +1,383 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Common Recipes &mdash; locopy 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Developer Instructions" href="developer.html" />
+    <link rel="prev" title="Data Load and Copy using Python (locopy)" href="index.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> locopy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Common Recipes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#i-have-a-file-i-want-to-load-to-redshift">I have a file I want to load to Redshift</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#i-d-like-to-split-my-file-into-n-files">I’d like to split my file into <em>n</em> files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#i-don-t-want-to-compress-my-files">I don’t want to compress my files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#i-want-to-export-some-data-from-redshift-to-a-local-csv">I want to export some data from Redshift to a local CSV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#i-want-to-backup-my-table-to-s3">I want to backup my table to S3</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">locopy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Common Recipes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/recipes.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="common-recipes">
+<h1>Common Recipes<a class="headerlink" href="#common-recipes" title="Permalink to this headline">¶</a></h1>
+<p>Lets go over some common use cases people will have when interacting with
+<code class="docutils literal notranslate"><span class="pre">locopy</span></code>.</p>
+<div class="section" id="i-have-a-file-i-want-to-load-to-redshift">
+<h2>I have a file I want to load to Redshift<a class="headerlink" href="#i-have-a-file-i-want-to-load-to-redshift" title="Permalink to this headline">¶</a></h2>
+<p>This is probably the most common use case. What you need to start:</p>
+<ul class="simple">
+<li>Read/Write S3 access</li>
+<li>Read/Write Redshift Access</li>
+</ul>
+<p>There are a couple of ways you can authenticate with Redshift. If you are running
+this process on a regular basis it might make sense to use a <code class="docutils literal notranslate"><span class="pre">YAML</span></code> file to
+store (in a secure place) most of the details. You will also need valid AWS
+tokens in order to access the appropriate AWS resources (S3 bucket).</p>
+<p>Assuming you have your <code class="docutils literal notranslate"><span class="pre">YAML</span></code> file setup, the following will occur:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
+<span class="kn">import</span> <span class="nn">locopy</span>
+
+<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s1">&#39;example.yaml&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
+    <span class="n">s3</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span>
+        <span class="n">local_file</span><span class="o">=</span><span class="s1">&#39;some_data_to_load.txt&#39;</span><span class="p">,</span>
+        <span class="n">s3_bucket</span><span class="o">=</span><span class="s1">&#39;s3_bucket_to_use&#39;</span><span class="p">,</span>
+        <span class="n">s3_folder</span><span class="o">=</span><span class="s1">&#39;s3_folder_to_use/s3_subfolder_to_use&#39;</span><span class="p">,</span>
+        <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;redshift_table_to_load&#39;</span><span class="p">,</span>
+        <span class="n">delim</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">some_data_to_load.txt</span></code> will be compressed (gzip) and the original file deleted</li>
+<li><code class="docutils literal notranslate"><span class="pre">some_data_to_load.txt</span></code> will be uploaded to the S3 bucket:
+<code class="docutils literal notranslate"><span class="pre">s3_bucket_to_use</span></code> at the location of <code class="docutils literal notranslate"><span class="pre">s3_folder_to_use/s3_subfolder_to_use</span></code></li>
+<li>A <code class="docutils literal notranslate"><span class="pre">COPY</span></code> command will be executed to load the contents of
+<code class="docutils literal notranslate"><span class="pre">some_data_to_load.txt</span></code> to <code class="docutils literal notranslate"><span class="pre">redshift_table_to_load</span></code> using the delimiter <code class="docutils literal notranslate"><span class="pre">,</span></code></li>
+</ul>
+</div>
+<div class="section" id="i-d-like-to-split-my-file-into-n-files">
+<h2>I’d like to split my file into <em>n</em> files<a class="headerlink" href="#i-d-like-to-split-my-file-into-n-files" title="Permalink to this headline">¶</a></h2>
+<p>You can tweak the above code to include the <code class="docutils literal notranslate"><span class="pre">splits</span></code> option which takes an
+integer</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
+<span class="kn">import</span> <span class="nn">locopy</span>
+
+<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s1">&#39;example.yaml&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
+    <span class="n">s3</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span>
+        <span class="n">local_file</span><span class="o">=</span><span class="s1">&#39;some_data_to_load.txt&#39;</span><span class="p">,</span>
+        <span class="n">s3_bucket</span><span class="o">=</span><span class="s1">&#39;s3_bucket_to_use&#39;</span><span class="p">,</span>
+        <span class="n">s3_folder</span><span class="o">=</span><span class="s1">&#39;s3_folder_to_use/s3_subfolder_to_use&#39;</span><span class="p">,</span>
+        <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;redshift_table_to_load&#39;</span><span class="p">,</span>
+        <span class="n">delim</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span>
+        <span class="n">splits</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">splits</span></code> is really useful when you have a <strong>very large</strong> file you want to load.
+Ideally this number will equal the number of slices available to you on the
+Redshift cluster.</p>
+</div>
+<div class="section" id="i-don-t-want-to-compress-my-files">
+<h2>I don’t want to compress my files<a class="headerlink" href="#i-don-t-want-to-compress-my-files" title="Permalink to this headline">¶</a></h2>
+<p>By default compression is always on. If you’d like to turn if off you can set
+<code class="docutils literal notranslate"><span class="pre">compress=False</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
+<span class="kn">import</span> <span class="nn">locopy</span>
+
+<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s1">&#39;example.yaml&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
+    <span class="n">s3</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span>
+        <span class="n">local_file</span><span class="o">=</span><span class="s1">&#39;some_data_to_load.txt&#39;</span><span class="p">,</span>
+        <span class="n">s3_bucket</span><span class="o">=</span><span class="s1">&#39;s3_bucket_to_use&#39;</span><span class="p">,</span>
+        <span class="n">s3_folder</span><span class="o">=</span><span class="s1">&#39;s3_folder_to_use/s3_subfolder_to_use&#39;</span><span class="p">,</span>
+        <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;redshift_table_to_load&#39;</span><span class="p">,</span>
+        <span class="n">delim</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">,</span>
+        <span class="n">compress</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Depending on your own requirements it might make sense to turn off compression
+or leave it on. Combining this with <code class="docutils literal notranslate"><span class="pre">splits</span></code> can drastically alter the
+performance of the <code class="docutils literal notranslate"><span class="pre">COPY</span></code> command</p>
+</div>
+<div class="section" id="i-want-to-export-some-data-from-redshift-to-a-local-csv">
+<h2>I want to export some data from Redshift to a local CSV<a class="headerlink" href="#i-want-to-export-some-data-from-redshift-to-a-local-csv" title="Permalink to this headline">¶</a></h2>
+<p>Data can be exported from Redshift to a CSV by supplying an <code class="docutils literal notranslate"><span class="pre">export_path</span></code>
+to locopy.S3.run_unload():</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
+<span class="kn">import</span> <span class="nn">locopy</span>
+
+<span class="n">my_profile</span> <span class="o">=</span> <span class="s1">&#39;some_profile_with_valid_tokens&#39;</span>
+<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s1">&#39;config.yml&#39;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
+    <span class="n">s3</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
+        <span class="n">query</span><span class="o">=</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">,</span>
+        <span class="n">s3_bucket</span><span class="o">=</span><span class="s1">&#39;s3_bucket_to_use&#39;</span><span class="p">,</span>
+        <span class="n">export_path</span><span class="o">=</span><span class="s1">&#39;output.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Or a pipe delimited….</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">config_yaml</span><span class="o">=</span><span class="s1">&#39;config.yml&#39;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
+    <span class="n">s3</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
+        <span class="n">query</span><span class="o">=</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">,</span>
+        <span class="n">s3_bucket</span><span class="o">=</span><span class="s1">&#39;s3_bucket_to_use&#39;</span><span class="p">,</span>
+        <span class="n">export_path</span><span class="o">=</span><span class="s1">&#39;output.tsv&#39;</span><span class="p">,</span>
+        <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If your bucket has previously unloaded files, you may get an
+error when unloading. If you don’t want to delete the older files, you can
+unload your data to a new folder or with a different prefix by specifying the
+<code class="docutils literal notranslate"><span class="pre">s3_folder</span></code> parameter. You can specify a folder to write to, i.e.
+<code class="docutils literal notranslate"><span class="pre">s3_folder=s3_folder_to_use/</span></code>, or create a unique filename prefix name by
+omitting the last <code class="docutils literal notranslate"><span class="pre">/</span></code>, i.e. <code class="docutils literal notranslate"><span class="pre">s3_folder=unique_file_prefix</span></code>.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s1">&#39;config.yml&#39;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
+    <span class="n">s3</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
+        <span class="n">query</span><span class="o">=</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">,</span>
+        <span class="n">s3_bucket</span><span class="o">=</span><span class="s1">&#39;s3_bucket_to_use&#39;</span><span class="p">,</span>
+        <span class="n">s3_folder</span><span class="o">=</span><span class="s1">&#39;s3_folder_to_use/&#39;</span><span class="p">,</span>
+        <span class="n">export_path</span><span class="o">=</span><span class="s1">&#39;output.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="i-want-to-backup-my-table-to-s3">
+<h2>I want to backup my table to S3<a class="headerlink" href="#i-want-to-backup-my-table-to-s3" title="Permalink to this headline">¶</a></h2>
+<p>To simply export data to S3 and do nothing else, omit the <code class="docutils literal notranslate"><span class="pre">export_path</span></code> option
+so that the file is not downloaded, and set <code class="docutils literal notranslate"><span class="pre">delete_s3_after=False</span></code> to prevent
+the S3 files from being automatically deleted after the run.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
+<span class="kn">import</span> <span class="nn">locopy</span>
+
+<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s1">&#39;config.yml&#39;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
+    <span class="n">s3</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
+        <span class="n">query</span><span class="o">=</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">,</span>
+        <span class="n">s3_bucket</span><span class="o">=</span><span class="s1">&#39;s3_bucket_to_use&#39;</span><span class="p">,</span>
+        <span class="n">s3_folder</span><span class="o">=</span><span class="s1">&#39;s3_folder_to_use/s3_subfolder_to_use/&#39;</span><span class="p">,</span>
+        <span class="n">delete_s3_after</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="c1"># defaults to True</span>
+</pre></div>
+</div>
+<p>By default, the Redshift unloads data to multiple files in S3 for performance
+reasons. The maximum size for a data file is 6.2 GB. If the data size is
+greater than the maximum, UNLOAD creates additional files, up to 6.2 GB each.
+If you want to back it up as a single file, you can run:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s1">&#39;config.yml&#39;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
+    <span class="n">s3</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
+        <span class="n">query</span><span class="o">=</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">,</span>
+        <span class="n">s3_bucket</span><span class="o">=</span><span class="s1">&#39;s3_bucket_to_use&#39;</span><span class="p">,</span>
+        <span class="n">s3_folder</span><span class="o">=</span><span class="s1">&#39;s3_folder_to_use/s3_subfolder_to_use/&#39;</span><span class="p">,</span>
+        <span class="n">delete_s3_after</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="n">parallel_off</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="developer.html" class="btn btn-neutral float-right" title="Developer Instructions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Data Load and Copy using Python (locopy)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Capital One Services, LLC.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

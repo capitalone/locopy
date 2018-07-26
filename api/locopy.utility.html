@@ -1,0 +1,381 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>locopy.utility module &mdash; locopy 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="locopy.s3 module" href="locopy.s3.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> locopy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../recipes.html">Common Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer.html">Developer Instructions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="locopy.html">locopy package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="locopy.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="locopy.errors.html">locopy.errors module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="locopy.locopy.html">locopy.locopy module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="locopy.logger.html">locopy.logger module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="locopy.s3.html">locopy.s3 module</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">locopy.utility module</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.html#module-locopy">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">locopy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">locopy</a> &raquo;</li>
+        
+          <li><a href="locopy.html">locopy package</a> &raquo;</li>
+        
+      <li>locopy.utility module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/locopy.utility.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-locopy.utility">
+<span id="locopy-utility-module"></span><h1>locopy.utility module<a class="headerlink" href="#module-locopy.utility" title="Permalink to this headline">¶</a></h1>
+<p>Utility Module
+Module which utility functions for use within the application</p>
+<dl class="class">
+<dt id="locopy.utility.ProgressPercentage">
+<em class="property">class </em><code class="descclassname">locopy.utility.</code><code class="descname">ProgressPercentage</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#ProgressPercentage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.utility.ProgressPercentage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>ProgressPercentage class is used by the S3Transfer upload_file callback
+Please see the following url for more information:
+<a class="reference external" href="http://boto3.readthedocs.org/en/latest/reference/customizations/s3.html#ref-s3transfer-usage">http://boto3.readthedocs.org/en/latest/reference/customizations/s3.html#ref-s3transfer-usage</a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="locopy.utility.compress_file">
+<code class="descclassname">locopy.utility.</code><code class="descname">compress_file</code><span class="sig-paren">(</span><em>input_file</em>, <em>output_file</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#compress_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.utility.compress_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compresses a file (gzip)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>input_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Path to input file to compress</li>
+<li><strong>output_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Path to write the compressed file</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="locopy.utility.get_redshift_yaml">
+<code class="descclassname">locopy.utility.</code><code class="descname">get_redshift_yaml</code><span class="sig-paren">(</span><em>config_yaml</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#get_redshift_yaml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.utility.get_redshift_yaml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads a Redshift configuration YAML file to populate the Redshift
+connection attributes, and validate required ones. Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">host</span><span class="p">:</span> <span class="n">my</span><span class="o">.</span><span class="n">redshift</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">com</span>
+<span class="n">port</span><span class="p">:</span> <span class="mi">5439</span>
+<span class="n">dbname</span><span class="p">:</span> <span class="n">db</span>
+<span class="n">user</span><span class="p">:</span> <span class="n">userid</span>
+<span class="n">password</span><span class="p">:</span> <span class="n">password</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>config_yaml</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> or </em><em>file pointer</em>) – String representing the file location of the configuration file, or a
+pointer to an open file object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A dictionary of parameters for setting up a connection to Redshift.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RedshiftCredentialsError</span></code> – If any elements are missing from YAML file</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="locopy.utility.split_file">
+<code class="descclassname">locopy.utility.</code><code class="descname">split_file</code><span class="sig-paren">(</span><em>input_file</em>, <em>output_file</em>, <em>splits=2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#split_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.utility.split_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split a file into equal files by lines.</p>
+<p>For example: <code class="docutils literal notranslate"><span class="pre">myinputfile.txt</span></code> will be split into <code class="docutils literal notranslate"><span class="pre">myoutputfile.txt.01</span></code>
+, <code class="docutils literal notranslate"><span class="pre">`myoutputfile.txt.02</span></code> etc..</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Path to input file to split</li>
+<li><strong>output_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Name of the output file</li>
+<li><strong>splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Number of splits to perform. Must be greater than one. Defaults to 2</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of strings with the file paths of the split files</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">LocopySplitError</span></code> – If <code class="docutils literal notranslate"><span class="pre">splits</span></code> is less than 2 or some processing error when splitting</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="locopy.utility.validate_redshift_attributes">
+<code class="descclassname">locopy.utility.</code><code class="descname">validate_redshift_attributes</code><span class="sig-paren">(</span><em>host=None</em>, <em>port=None</em>, <em>dbname=None</em>, <em>user=None</em>, <em>password=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#validate_redshift_attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.utility.validate_redshift_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate Redshift connection attributes to make sure none are missing.</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>All the Redshift connect details need to be set:</dt>
+<dd><ul class="first last">
+<li>Host</li>
+<li>Port</li>
+<li>Database name</li>
+<li>Database username</li>
+<li>Database password</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RedshiftCredentialsError</span></code> – If key fields are None.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="locopy.utility.write_file">
+<code class="descclassname">locopy.utility.</code><code class="descname">write_file</code><span class="sig-paren">(</span><em>data</em>, <em>delimiter</em>, <em>filepath</em>, <em>mode='w'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#write_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.utility.write_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write data to a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of lists</li>
+<li><strong>delimiter</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Delimiter by which columns will be separated</li>
+<li><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Location of the output file</li>
+<li><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – File writing mode. Examples include ‘w’ for write or ‘a’ for append.
+Defaults to write mode.
+See <a class="reference external" href="https://www.tutorialspoint.com/python/python_files_io.htm">https://www.tutorialspoint.com/python/python_files_io.htm</a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="locopy.s3.html" class="btn btn-neutral" title="locopy.s3 module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Capital One Services, LLC.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

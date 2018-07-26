@@ -1,0 +1,7 @@
+locopy
+======
+
+.. toctree::
+   :maxdepth: 4
+
+   locopy

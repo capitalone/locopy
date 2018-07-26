@@ -1,0 +1,7 @@
+locopy.s3 module
+================
+
+.. automodule:: locopy.s3
+    :members:
+    :undoc-members:
+    :show-inheritance:

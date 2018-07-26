@@ -1,0 +1,21 @@
+locopy package
+==============
+
+Submodules
+----------
+
+.. toctree::
+
+   locopy.errors
+   locopy.locopy
+   locopy.logger
+   locopy.s3
+   locopy.utility
+
+Module contents
+---------------
+
+.. automodule:: locopy
+    :members:
+    :undoc-members:
+    :show-inheritance:

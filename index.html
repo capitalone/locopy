@@ -1,0 +1,385 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Data Load and Copy using Python (locopy) &mdash; locopy 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Common Recipes" href="recipes.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> locopy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Common Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">locopy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>Data Load and Copy using Python (locopy)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="data-load-and-copy-using-python-locopy">
+<h1>Data Load and Copy using Python (locopy)<a class="headerlink" href="#data-load-and-copy-using-python-locopy" title="Permalink to this headline">¶</a></h1>
+<p>A Python library to load flat files to S3 and then to Amazon Redshift, and assist with ETL
+processing.</p>
+<ul class="simple">
+<li>The library supports Python 3.5+</li>
+<li>DB Driver (Adapter) agnostic. Use your favourite driver that complies with
+<a class="reference external" href="https://www.python.org/dev/peps/pep-0249/">DB-API 2.0</a></li>
+<li>It provides basic functionality to move data to S3 buckets</li>
+<li>Execute <code class="docutils literal notranslate"><span class="pre">COPY</span></code> commands to load data to S3, and into Redshift</li>
+<li>Execute <code class="docutils literal notranslate"><span class="pre">UNLOAD</span></code> commands to unload data from Redshift into S3</li>
+</ul>
+</div>
+<div class="section" id="quick-installation">
+<h1>Quick Installation<a class="headerlink" href="#quick-installation" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install locopy
+</pre></div>
+</div>
+<div class="section" id="installation-instructions">
+<h2>Installation instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this headline">¶</a></h2>
+<p>A virtual environment is highly recommended</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ virtualenv locopy
+$ <span class="nb">source</span> locopy/bin/activate
+$ pip install --upgrade setuptools pip
+$ pip install locopy
+</pre></div>
+</div>
+</div>
+<div class="section" id="python-database-api-specification-2-0">
+<h2>Python Database API Specification 2.0<a class="headerlink" href="#python-database-api-specification-2-0" title="Permalink to this headline">¶</a></h2>
+<p>Rather than using a specific Python DB Driver / Adapter for Postgres (which should support Amazon
+Redshift), <code class="docutils literal notranslate"><span class="pre">locopy</span></code> prefers to be agnostic. As an end user you can use any Python Database
+API Specification 2.0 package.</p>
+<p>The following packages have been tested:</p>
+<ul class="simple">
+<li><code class="docutils literal notranslate"><span class="pre">psycopg2</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">pg8000</span></code></li>
+</ul>
+<p>You can use which ever one you prefer by importing the package and passing it
+into the constructor input <code class="docutils literal notranslate"><span class="pre">dbapi</span></code>.</p>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>You need to store your Redshift connection parameters in a YAML file (or pass them in directly).
+The YAML would consist of the following items:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># required to connect to redshift</span>
+<span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">my.redshift.cluster.com</span>
+<span class="l l-Scalar l-Scalar-Plain">port</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">5439</span>
+<span class="l l-Scalar l-Scalar-Plain">dbname</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">db</span>
+<span class="l l-Scalar l-Scalar-Plain">user</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">userid</span>
+<span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
+</pre></div>
+</div>
+<p>If you aren’t loading data, you don’t need to have AWS tokens set up.
+The Redshift connection (<code class="docutils literal notranslate"><span class="pre">Cmd</span></code>) can be used like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
+<span class="kn">import</span> <span class="nn">locopy</span>
+
+<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Cmd</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s1">&#39;config.yml&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cmd</span><span class="p">:</span>
+    <span class="n">cmd</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM schema.table&#39;</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">cmd</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you want to load data to Redshift via S3, the <code class="docutils literal notranslate"><span class="pre">Cmd</span></code> class is sub-classed as
+<code class="docutils literal notranslate"><span class="pre">S3</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
+<span class="kn">import</span> <span class="nn">locopy</span>
+
+<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s1">&#39;config.yml&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
+    <span class="n">s3</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SET query_group TO quick&#39;</span><span class="p">)</span>
+    <span class="n">s3</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;CREATE TABLE schema.table (variable VARCHAR(20)) DISTKEY(variable)&#39;</span><span class="p">)</span>
+    <span class="n">s3</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span>
+        <span class="n">local_file</span><span class="o">=</span><span class="s1">&#39;example/example_data.csv&#39;</span><span class="p">,</span>
+        <span class="n">s3_bucket</span><span class="o">=</span><span class="s1">&#39;my_s3_bucket&#39;</span><span class="p">,</span>
+        <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;schema.table&#39;</span><span class="p">,</span>
+        <span class="n">delim</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+    <span class="n">s3</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM schema.table&#39;</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">s3</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you want to download data from Redshift to a CSV, or read it into Python</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_profile</span> <span class="o">=</span> <span class="s1">&#39;some_profile_with_valid_tokens&#39;</span>
+<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s1">&#39;config.yml&#39;</span><span class="p">,</span><span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
+    <span class="c1">##Optionally provide export if you ALSO want the exported data copied to a flat file</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">s3</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
+        <span class="n">query</span><span class="o">=</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">,</span>
+        <span class="n">s3_bucket</span><span class="o">=</span><span class="s1">&#39;my_s3_bucket&#39;</span><span class="p">,</span>
+        <span class="n">export_path</span><span class="o">=</span><span class="s1">&#39;my_output_destination.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="note-on-tokens">
+<h3>Note on tokens<a class="headerlink" href="#note-on-tokens" title="Permalink to this headline">¶</a></h3>
+<p>To load data to S3, you will need to be able to generate AWS tokens, or assume the IAM role on a EC2
+instance. There are a few options for doing this, depending on where you’re running your script and
+how you want to handle tokens. Once you have your tokens, they need to be accessible to the AWS
+command line interface. See
+<a class="reference external" href="http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#config-settings-and-precedence">http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#config-settings-and-precedence</a>
+for more information, but you can:</p>
+<ul class="simple">
+<li>Populate environment variables <code class="docutils literal notranslate"><span class="pre">AWS_ACCESS_KEY_ID</span></code>, <code class="docutils literal notranslate"><span class="pre">AWS_SECRET_ACCESS_KEY</span></code>,
+etc.</li>
+<li>Leverage the AWS credentials file.  If you have multiple profiles configured
+you can either call <code class="docutils literal notranslate"><span class="pre">locopy.S3(profile='my-profile')</span></code>, or set up an
+environment variable <code class="docutils literal notranslate"><span class="pre">AWS_DEFAULT_PROFILE</span></code>.</li>
+<li>If you are on a EC2 instance you can assume the credentials associated with the IAM role attached.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="advanced-usage">
+<h2>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permalink to this headline">¶</a></h2>
+<p>See the docs for more detailed usage instructions and examples.</p>
+</div>
+<div class="section" id="contributors">
+<h2>Contributors<a class="headerlink" href="#contributors" title="Permalink to this headline">¶</a></h2>
+<p>We welcome your interest in Capital One’s Open Source Projects (the “Project”).
+Any Contributor to the project must accept and sign a CLA indicating agreement to
+the license terms. Except for the license granted in this CLA to Capital One and
+to recipients of software distributed by Capital One, you reserve all right, title,
+and interest in and to your contributions; this CLA does not impact your rights to
+use your own contributions for any other purpose.</p>
+<ul class="simple">
+<li><a class="reference external" href="https://docs.google.com/forms/d/19LpBBjykHPox18vrZvBbZUcK6gQTj7qv1O5hCduAZFU/viewform">Link to Individual CLA</a></li>
+<li><a class="reference external" href="https://docs.google.com/forms/d/e/1FAIpQLSeAbobIPLCVZD_ccgtMWBDAcN68oqbAJBQyDTSAQ1AkYuCp_g/viewform">Link to Corporate CLA</a></li>
+</ul>
+<p>This project adheres to the <a class="reference external" href="https://developer.capitalone.com/single/code-of-conduct/">Open Source Code of Conduct</a>.
+By participating, you are expected to honor this code.</p>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="recipes.html">Common Recipes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#i-have-a-file-i-want-to-load-to-redshift">I have a file I want to load to Redshift</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#i-d-like-to-split-my-file-into-n-files">I’d like to split my file into <em>n</em> files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#i-don-t-want-to-compress-my-files">I don’t want to compress my files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#i-want-to-export-some-data-from-redshift-to-a-local-csv">I want to export some data from Redshift to a local CSV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recipes.html#i-want-to-backup-my-table-to-s3">I want to backup my table to S3</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developer.html#generating-documentation">Generating Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer.html#run-unit-tests">Run unit tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer.html#integration-tests">Integration Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer.html#management-of-requirements">Management of Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/locopy.html">locopy package</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="recipes.html" class="btn btn-neutral float-right" title="Common Recipes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Capital One Services, LLC.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
