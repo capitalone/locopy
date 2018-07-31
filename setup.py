@@ -20,7 +20,7 @@ from setuptools import setup
 
 CURR_DIR = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(CURR_DIR, 'README.rst')) as file_open:
+with open(os.path.join(CURR_DIR, 'README.rst'), encoding='utf-8') as file_open:
     LONG_DESCRIPTION = file_open.read()
 
 exec(open('locopy/_version.py').read())
