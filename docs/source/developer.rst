@@ -68,3 +68,35 @@ Management of Requirements
 
 Requirements of the project should be added to ``requirements.txt``.  Optional
 requirements used only for testing are added to ``requirements-dev.txt``.
+
+
+
+Generating distribution archives (PyPI)
+---------------------------------------
+
+After each release the package will need to be uploaded to PyPi. The instructions below are taken
+from `packaging.python.org <https://packaging.python.org/tutorials/packaging-projects/#generating-distribution-archives>`_
+
+Update / Install ``setuptools``, ``wheel``, and ``twine``::
+
+    pip install --upgrade setuptools wheel twine
+
+Generate distributions::
+
+    python setup.py sdist bdist_wheel
+
+Under the ``dist`` folder you should have something as follows::
+
+    dist/
+    locopy-0.1.0-py3-none-any.whl
+    locopy-0.1.0.tar.gz
+
+
+
+Finally upload to PyPi::
+
+    # test pypi
+    twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+
+    # real pypi
+    twine upload dist/*
