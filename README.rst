@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.org/capitalone/Data-Load-and-Copy-using-Python.svg?branch=master
+    :target: https://travis-ci.org/capitalone/Data-Load-and-Copy-using-Python
+
 Data Load and Copy using Python (locopy)
 ========================================
 
