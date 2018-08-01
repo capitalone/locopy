@@ -1,7 +1,7 @@
 .. image:: https://travis-ci.org/capitalone/Data-Load-and-Copy-using-Python.svg?branch=master
     :target: https://travis-ci.org/capitalone/Data-Load-and-Copy-using-Python
 
-Data Load and Copy using Python (locopy)
+locopy: Data Load and Copy using Python
 ========================================
 
 A Python library to load flat files to S3 and then to Amazon Redshift, and assist with ETL
