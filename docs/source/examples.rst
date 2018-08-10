@@ -79,6 +79,6 @@ three, you can pass in a list of strings which will tweak your load:
 
     s3.run_copy(local_file="example_data.csv",
                 s3_bucket="my_s3_bucket",
-                "schema.table",
+                table_name="schema.table",
                 delim=",",
                 copy_options=["NULL AS 'NULL'", "ESCAPE"])
