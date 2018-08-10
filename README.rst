@@ -140,7 +140,8 @@ for more information, but you can:
 Advanced Usage
 --------------
 
-See the docs for more detailed usage instructions and examples.
+See the `docs <https://capitalone.github.io/Data-Load-and-Copy-using-Python/>`_ for
+more detailed usage instructions and examples.
 
 
 Contributors
