@@ -225,7 +225,7 @@ oddities in your data.  Locopy assigns a few options by default (<code class="do
 three, you can pass in a list of strings which will tweak your load:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">s3</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span><span class="n">local_file</span><span class="o">=</span><span class="s2">&quot;example_data.csv&quot;</span><span class="p">,</span>
             <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;my_s3_bucket&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;schema.table&quot;</span><span class="p">,</span>
+            <span class="n">table_name</span><span class="o">=</span><span class="s2">&quot;schema.table&quot;</span><span class="p">,</span>
             <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
             <span class="n">copy_options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;NULL AS &#39;NULL&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;ESCAPE&quot;</span><span class="p">])</span>
 </pre></div>
