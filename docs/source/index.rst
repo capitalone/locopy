@@ -9,6 +9,7 @@
    :maxdepth: 2
    :caption: Contents:
 
+   Basic Examples <examples>
    Common Recipes <recipes>
    Developer Instructions <developer>
    API Reference <api/modules>
