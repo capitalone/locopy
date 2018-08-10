@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Data Load and Copy using Python (locopy) &mdash; locopy 0.1.1 documentation</title>
+  <title>locopy: Data Load and Copy using Python &mdash; locopy 0.1.1 documentation</title>
   
 
   
@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Common Recipes" href="recipes.html" /> 
+    <link rel="next" title="Basic Examples" href="examples.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -84,6 +84,7 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Basic Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="recipes.html">Common Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a></li>
@@ -132,7 +133,7 @@
     
       <li><a href="#">Docs</a> &raquo;</li>
         
-      <li>Data Load and Copy using Python (locopy)</li>
+      <li>locopy: Data Load and Copy using Python</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -151,8 +152,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="data-load-and-copy-using-python-locopy">
-<h1>Data Load and Copy using Python (locopy)<a class="headerlink" href="#data-load-and-copy-using-python-locopy" title="Permalink to this headline">¶</a></h1>
+  <a class="reference external image-reference" href="https://travis-ci.org/capitalone/Data-Load-and-Copy-using-Python"><img alt="https://travis-ci.org/capitalone/Data-Load-and-Copy-using-Python.svg?branch=master" src="https://travis-ci.org/capitalone/Data-Load-and-Copy-using-Python.svg?branch=master" /></a>
+<div class="section" id="locopy-data-load-and-copy-using-python">
+<h1>locopy: Data Load and Copy using Python<a class="headerlink" href="#locopy-data-load-and-copy-using-python" title="Permalink to this headline">¶</a></h1>
 <p>A Python library to load flat files to S3 and then to Amazon Redshift, and assist with ETL
 processing.</p>
 <ul class="simple">
@@ -209,8 +211,8 @@ The Redshift connection (<code class="docutils literal notranslate"><span class=
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
 <span class="kn">import</span> <span class="nn">locopy</span>
 
-<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Cmd</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s1">&#39;config.yml&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cmd</span><span class="p">:</span>
-    <span class="n">cmd</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM schema.table&#39;</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Cmd</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cmd</span><span class="p">:</span>
+    <span class="n">cmd</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">cmd</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span>
 <span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
@@ -220,28 +222,28 @@ The Redshift connection (<code class="docutils literal notranslate"><span class=
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
 <span class="kn">import</span> <span class="nn">locopy</span>
 
-<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s1">&#39;config.yml&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
-    <span class="n">s3</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SET query_group TO quick&#39;</span><span class="p">)</span>
-    <span class="n">s3</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;CREATE TABLE schema.table (variable VARCHAR(20)) DISTKEY(variable)&#39;</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
+    <span class="n">s3</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SET query_group TO quick&quot;</span><span class="p">)</span>
+    <span class="n">s3</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;CREATE TABLE schema.table (variable VARCHAR(20)) DISTKEY(variable)&quot;</span><span class="p">)</span>
     <span class="n">s3</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span>
-        <span class="n">local_file</span><span class="o">=</span><span class="s1">&#39;example/example_data.csv&#39;</span><span class="p">,</span>
-        <span class="n">s3_bucket</span><span class="o">=</span><span class="s1">&#39;my_s3_bucket&#39;</span><span class="p">,</span>
-        <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;schema.table&#39;</span><span class="p">,</span>
-        <span class="n">delim</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
-    <span class="n">s3</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM schema.table&#39;</span><span class="p">)</span>
+        <span class="n">local_file</span><span class="o">=</span><span class="s2">&quot;example/example_data.csv&quot;</span><span class="p">,</span>
+        <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;my_s3_bucket&quot;</span><span class="p">,</span>
+        <span class="n">table_name</span><span class="o">=</span><span class="s2">&quot;schema.table&quot;</span><span class="p">,</span>
+        <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+    <span class="n">s3</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">)</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">s3</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
 
 <span class="k">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If you want to download data from Redshift to a CSV, or read it into Python</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_profile</span> <span class="o">=</span> <span class="s1">&#39;some_profile_with_valid_tokens&#39;</span>
-<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s1">&#39;config.yml&#39;</span><span class="p">,</span><span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_profile</span> <span class="o">=</span> <span class="s2">&quot;some_profile_with_valid_tokens&quot;</span>
+<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">,</span><span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
     <span class="c1">##Optionally provide export if you ALSO want the exported data copied to a flat file</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">s3</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
         <span class="n">query</span><span class="o">=</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">,</span>
-        <span class="n">s3_bucket</span><span class="o">=</span><span class="s1">&#39;my_s3_bucket&#39;</span><span class="p">,</span>
-        <span class="n">export_path</span><span class="o">=</span><span class="s1">&#39;my_output_destination.csv&#39;</span><span class="p">)</span>
+        <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;my_s3_bucket&quot;</span><span class="p">,</span>
+        <span class="n">export_path</span><span class="o">=</span><span class="s2">&quot;my_output_destination.csv&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="section" id="note-on-tokens">
@@ -256,7 +258,7 @@ for more information, but you can:</p>
 <li>Populate environment variables <code class="docutils literal notranslate"><span class="pre">AWS_ACCESS_KEY_ID</span></code>, <code class="docutils literal notranslate"><span class="pre">AWS_SECRET_ACCESS_KEY</span></code>,
 etc.</li>
 <li>Leverage the AWS credentials file.  If you have multiple profiles configured
-you can either call <code class="docutils literal notranslate"><span class="pre">locopy.S3(profile='my-profile')</span></code>, or set up an
+you can either call <code class="docutils literal notranslate"><span class="pre">locopy.S3(profile=&quot;my-profile&quot;)</span></code>, or set up an
 environment variable <code class="docutils literal notranslate"><span class="pre">AWS_DEFAULT_PROFILE</span></code>.</li>
 <li>If you are on a EC2 instance you can assume the credentials associated with the IAM role attached.</li>
 </ul>
@@ -264,7 +266,8 @@ environment variable <code class="docutils literal notranslate"><span class="pre
 </div>
 <div class="section" id="advanced-usage">
 <h2>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permalink to this headline">¶</a></h2>
-<p>See the docs for more detailed usage instructions and examples.</p>
+<p>See the <a class="reference external" href="https://capitalone.github.io/Data-Load-and-Copy-using-Python/">docs</a> for
+more detailed usage instructions and examples.</p>
 </div>
 <div class="section" id="contributors">
 <h2>Contributors<a class="headerlink" href="#contributors" title="Permalink to this headline">¶</a></h2>
@@ -283,6 +286,13 @@ By participating, you are expected to honor this code.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="examples.html">Basic Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#upload-to-s3-and-run-copy-command-with-yaml">Upload to S3 and run COPY command with YAML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#upload-to-s3-and-run-copy-command-without-yaml">Upload to S3 and run COPY command without YAML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#aws-tokens-as-environment-variables">AWS tokens as environment variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples.html#extra-parameters-on-the-copy-job">Extra parameters on the COPY job</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="recipes.html">Common Recipes</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="recipes.html#i-have-a-file-i-want-to-load-to-redshift">I have a file I want to load to Redshift</a></li>
 <li class="toctree-l2"><a class="reference internal" href="recipes.html#i-d-like-to-split-my-file-into-n-files">I’d like to split my file into <em>n</em> files</a></li>
@@ -324,7 +334,7 @@ By participating, you are expected to honor this code.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="recipes.html" class="btn btn-neutral float-right" title="Common Recipes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="examples.html" class="btn btn-neutral float-right" title="Basic Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>
