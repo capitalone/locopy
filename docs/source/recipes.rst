@@ -24,13 +24,13 @@ Assuming you have your ``YAML`` file setup, the following will occur:
     import pg8000
     import locopy
 
-    with locopy.S3(dbapi=pg8000, config_yaml='example.yaml') as s3:
+    with locopy.S3(dbapi=pg8000, config_yaml="example.yaml") as s3:
         s3.run_copy(
-            local_file='some_data_to_load.txt',
-            s3_bucket='s3_bucket_to_use',
-            s3_folder='s3_folder_to_use/s3_subfolder_to_use',
-            table_name='redshift_table_to_load',
-            delim=',')
+            local_file="some_data_to_load.txt",
+            s3_bucket="s3_bucket_to_use",
+            s3_folder="s3_folder_to_use/s3_subfolder_to_use",
+            table_name="redshift_table_to_load",
+            delim=",")
 
 - ``some_data_to_load.txt`` will be compressed (gzip) and the original file deleted
 - ``some_data_to_load.txt`` will be uploaded to the S3 bucket:
@@ -49,13 +49,13 @@ integer
     import pg8000
     import locopy
 
-    with locopy.S3(dbapi=pg8000, config_yaml='example.yaml') as s3:
+    with locopy.S3(dbapi=pg8000, config_yaml="example.yaml") as s3:
         s3.run_copy(
-            local_file='some_data_to_load.txt',
-            s3_bucket='s3_bucket_to_use',
-            s3_folder='s3_folder_to_use/s3_subfolder_to_use',
-            table_name='redshift_table_to_load',
-            delim=',',
+            local_file="some_data_to_load.txt",
+            s3_bucket="s3_bucket_to_use",
+            s3_folder="s3_folder_to_use/s3_subfolder_to_use",
+            table_name="redshift_table_to_load",
+            delim=",",
             splits=10)
 
 ``splits`` is really useful when you have a **very large** file you want to load.
@@ -73,13 +73,13 @@ By default compression is always on. If you'd like to turn if off you can set
     import pg8000
     import locopy
 
-    with locopy.S3(dbapi=pg8000, config_yaml='example.yaml') as s3:
+    with locopy.S3(dbapi=pg8000, config_yaml="example.yaml") as s3:
         s3.run_copy(
-            local_file='some_data_to_load.txt',
-            s3_bucket='s3_bucket_to_use',
-            s3_folder='s3_folder_to_use/s3_subfolder_to_use',
-            table_name='redshift_table_to_load',
-            delim=',',
+            local_file="some_data_to_load.txt",
+            s3_bucket="s3_bucket_to_use",
+            s3_folder="s3_folder_to_use/s3_subfolder_to_use",
+            table_name="redshift_table_to_load",
+            delim=",",
             compress=False)
 
 Depending on your own requirements it might make sense to turn off compression
@@ -97,23 +97,23 @@ to locopy.S3.run_unload():
     import pg8000
     import locopy
 
-    my_profile = 'some_profile_with_valid_tokens'
-    with locopy.S3(dbapi=pg8000, config_yaml='config.yml', profile=my_profile) as s3:
+    my_profile = "some_profile_with_valid_tokens"
+    with locopy.S3(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as s3:
         s3.run_unload(
             query="SELECT * FROM schema.table",
-            s3_bucket='s3_bucket_to_use',
-            export_path='output.csv')
+            s3_bucket="s3_bucket_to_use",
+            export_path="output.csv")
 
 Or a pipe delimited....
 
 .. code-block:: python
 
-    with locopy.S3(config_yaml='config.yml', profile=my_profile) as s3:
+    with locopy.S3(config_yaml="config.yml", profile=my_profile) as s3:
         s3.run_unload(
             query="SELECT * FROM schema.table",
-            s3_bucket='s3_bucket_to_use',
-            export_path='output.tsv',
-            delimiter='|')
+            s3_bucket="s3_bucket_to_use",
+            export_path="output.tsv",
+            delimiter="|")
 
 .. note::
   If your bucket has previously unloaded files, you may get an
@@ -125,12 +125,12 @@ Or a pipe delimited....
 
 .. code-block:: python
 
-    with locopy.S3(dbapi=pg8000, config_yaml='config.yml', profile=my_profile) as s3:
+    with locopy.S3(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as s3:
         s3.run_unload(
             query="SELECT * FROM schema.table",
-            s3_bucket='s3_bucket_to_use',
-            s3_folder='s3_folder_to_use/',
-            export_path='output.csv')
+            s3_bucket="s3_bucket_to_use",
+            s3_folder="s3_folder_to_use/",
+            export_path="output.csv")
 
 
 I want to backup my table to S3
@@ -144,11 +144,11 @@ the S3 files from being automatically deleted after the run.
     import pg8000
     import locopy
 
-    with locopy.S3(dbapi=pg8000, config_yaml='config.yml', profile=my_profile) as s3:
+    with locopy.S3(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as s3:
         s3.run_unload(
             query="SELECT * FROM schema.table",
-            s3_bucket='s3_bucket_to_use',
-            s3_folder='s3_folder_to_use/s3_subfolder_to_use/',
+            s3_bucket="s3_bucket_to_use",
+            s3_folder="s3_folder_to_use/s3_subfolder_to_use/",
             delete_s3_after=False) # defaults to True
 
 By default, the Redshift unloads data to multiple files in S3 for performance
@@ -158,10 +158,10 @@ If you want to back it up as a single file, you can run:
 
 .. code-block:: python
 
-    with locopy.S3(dbapi=pg8000, config_yaml='config.yml', profile=my_profile) as s3:
+    with locopy.S3(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as s3:
         s3.run_unload(
             query="SELECT * FROM schema.table",
-            s3_bucket='s3_bucket_to_use',
-            s3_folder='s3_folder_to_use/s3_subfolder_to_use/',
+            s3_bucket="s3_bucket_to_use",
+            s3_folder="s3_folder_to_use/s3_subfolder_to_use/",
             delete_s3_after=False,
             parallel_off=True)
