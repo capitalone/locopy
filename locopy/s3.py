@@ -121,7 +121,7 @@ class S3(Cmd):
         String representing the file location of the credentials.
 
     s3_only : bool, optional
-        If True then do not initialize the underlying redshift connection. It will
+        If ``True`` then do not initialize the underlying redshift connection. It will
         allow users whom want to soley interact with S3 to use that functionality.
 
 
