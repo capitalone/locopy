@@ -253,7 +253,10 @@ class Cmd(object):
         bool
             True if conn and cursor are not ``None``, False otherwise.
         """
-        return self.conn is not None and self.cursor is not None
+        try:
+            return self.conn is not None and self.cursor is not None
+        except:
+            return False
 
     def __enter__(self):
         return self
