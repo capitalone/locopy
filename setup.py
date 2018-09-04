@@ -37,6 +37,7 @@ setup(name='locopy',
       install_requires=[
           'boto3==1.7.21',
           'PyYAML==3.12',
+          'pandas>=0.19.0',
       ],
       extras_require={
           'psycopg2': ['psycopg2-binary==2.7.4'],
