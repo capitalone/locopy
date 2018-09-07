@@ -304,6 +304,21 @@ def test_super_init_yaml(mock_session, dbapi):
 
 
 
+@pytest.mark.parametrize('dbapi', DBAPIS)
+@mock.patch('locopy.utility.open', mock.mock_open(read_data=GOOD_CONFIG_YAML))
+@mock.patch('locopy.s3.Session')
+def test_super_init_s3_only(mock_session, dbapi):
+    s = locopy.S3(dbapi=dbapi, config_yaml='MY_YAML_FILE.yml', s3_only=True)
+    assert hasattr(s, 'host') == False
+    assert hasattr(s, 'port') == False
+    assert hasattr(s, 'dbname') == False
+    assert hasattr(s, 'user') == False
+    assert hasattr(s, 'password') == False
+    assert s._is_connected() == False
+
+
+
+
 @mock.patch('locopy.s3.Session.get_credentials')
 def test_get_profile_tokens(mock_cred, aws_creds):
     r = MockS3()

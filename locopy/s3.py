@@ -98,27 +98,31 @@ class S3(Cmd):
         If kms_key Defaults to ``None`` then the AES256 ServerSideEncryption
         will be used.
 
-    dbapi : DBAPI 2 module
+    dbapi : DBAPI 2 module, optional
         A PostgreSQL database adapter which is Python DB API 2.0 compliant
         (``psycopg2``, ``pg8000``, etc.)
 
-    host : str
+    host : str, optional
         Host name of the Redshift cluster to connect to.
 
-    port : int
+    port : int, optional
         Port which connection will be made to Redshift.
 
-    dbname : str
+    dbname : str, optional
         Redshift database name.
 
-    user : str
+    user : str, optional
         Redshift users username.
 
-    password : str
+    password : str, optional
         Redshift users password.
 
-    config_yaml : str
+    config_yaml : str, optional
         String representing the file location of the credentials.
+
+    s3_only : bool, optional
+        If ``True`` then do not initialize the underlying redshift connection. It will
+        allow users who want to soley interact with S3 to use that functionality.
 
 
     Attributes
@@ -137,14 +141,17 @@ class S3(Cmd):
     """
     def __init__(
         self, profile=None, kms_key=None, dbapi=None, host=None, port=None,
-        dbname=None, user=None, password=None, config_yaml=None, **kwargs):
+        dbname=None, user=None, password=None, config_yaml=None, s3_only=False, **kwargs):
 
         self.profile = profile
         self.kms_key = kms_key
         self.session = None
         self.s3 = None
-        super(S3, self).__init__(
-            dbapi, host, port, dbname, user, password, config_yaml)
+
+        if not s3_only:
+            super(S3, self).__init__(
+                dbapi, host, port, dbname, user, password, config_yaml)
+
         self._set_session()
         self._set_client()
 

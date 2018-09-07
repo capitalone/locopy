@@ -95,3 +95,16 @@ def test_s3_upload_download_file(s3_bucket, dbapi):
 
     assert filecmp.cmp(LOCAL_FILE, LOCAL_FILE_DL)
     os.remove(LOCAL_FILE_DL)
+
+
+@pytest.mark.integration
+def test_s3_only_upload_download_file(s3_bucket):
+
+    with locopy.S3(profile=CREDS_DICT['profile'], s3_only=True) as s3:
+        s3.upload_to_s3(LOCAL_FILE, S3_BUCKET, "myfile.txt")
+
+    with locopy.S3(profile=CREDS_DICT['profile'], s3_only=True) as s3:
+        s3.download_from_s3(S3_BUCKET, "myfile.txt", LOCAL_FILE_DL)
+
+    assert filecmp.cmp(LOCAL_FILE, LOCAL_FILE_DL)
+    os.remove(LOCAL_FILE_DL)

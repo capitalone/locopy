@@ -143,6 +143,11 @@ def test_is_connected(rs_creds, dbapi):
         test_redshift = locopy.Cmd(dbapi=dbapi, **rs_creds)
     assert test_redshift._is_connected() is True
 
+    # throws exception in _is_connected
+    test_redshift = CmdNoConnect(**rs_creds)
+    del test_redshift.conn
+    assert test_redshift._is_connected() is False
+
 
 
 @pytest.mark.parametrize('dbapi', DBAPIS)
