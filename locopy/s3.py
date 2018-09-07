@@ -122,7 +122,7 @@ class S3(Cmd):
 
     s3_only : bool, optional
         If ``True`` then do not initialize the underlying redshift connection. It will
-        allow users whom want to soley interact with S3 to use that functionality.
+        allow users who want to soley interact with S3 to use that functionality.
 
 
     Attributes
