@@ -23,8 +23,12 @@ import time
 
 from .utility import validate_redshift_attributes, get_redshift_yaml
 from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
-from .errors import (RedshiftCredentialsError, RedshiftConnectionError,
-                     RedshiftDisconnectionError, RedshiftError)
+from .errors import (
+    RedshiftCredentialsError,
+    RedshiftConnectionError,
+    RedshiftDisconnectionError,
+    RedshiftError,
+)
 
 logger = get_logger(__name__, INFO)
 
@@ -66,9 +70,18 @@ class Cmd(object):
     RedshiftCredentialsError
         Redshift credentials are not provided
     """
+
     def __init__(
-        self, dbapi=None, host=None, port=None, dbname=None, user=None,
-        password=None, config_yaml=None, **kwargs):
+        self,
+        dbapi=None,
+        host=None,
+        port=None,
+        dbname=None,
+        user=None,
+        password=None,
+        config_yaml=None,
+        **kwargs
+    ):
 
         self.dbapi = dbapi
         self.host = host
@@ -84,18 +97,15 @@ class Cmd(object):
         except:
             try:
                 atts = get_redshift_yaml(config_yaml)
-                self.host = atts['host']
-                self.port = atts['port']
-                self.dbname = atts['dbname']
-                self.user = atts['user']
-                self.password = atts['password']
+                self.host = atts["host"]
+                self.port = atts["port"]
+                self.dbname = atts["dbname"]
+                self.user = atts["user"]
+                self.password = atts["password"]
             except Exception as e:
-                logger.error(
-                    'Must provide Redshift attributes or YAML. err: %s', e)
-                raise RedshiftCredentialsError(
-                    'Must provide Redshift attributes or YAML.')
+                logger.error("Must provide Redshift attributes or YAML. err: %s", e)
+                raise RedshiftCredentialsError("Must provide Redshift attributes or YAML.")
         self._connect()
-
 
     def _connect(self):
         """Creates a connection to the Redshift cluster by
@@ -106,11 +116,11 @@ class Cmd(object):
         RedshiftConnectionError
             If there is a problem establishing a connection to Redshift.
         """
-        extra= {}
-        if self.dbapi.__name__ == 'psycopg2':
-            extra = {'sslmode': 'require'}
-        elif self.dbapi.__name__ == 'pg8000':
-            extra = {'ssl': True}
+        extra = {}
+        if self.dbapi.__name__ == "psycopg2":
+            extra = {"sslmode": "require"}
+        elif self.dbapi.__name__ == "pg8000":
+            extra = {"ssl": True}
 
         try:
             self.conn = self.dbapi.connect(
@@ -119,14 +129,13 @@ class Cmd(object):
                 port=self.port,
                 password=self.password,
                 database=self.dbname,
-                **extra)
+                **extra
+            )
 
             self.cursor = self.conn.cursor()
         except Exception as e:
-            logger.error('Error connecting to Redshift. err: %s', e)
-            raise RedshiftConnectionError(
-                'There is a problem connecting to Redshift.')
-
+            logger.error("Error connecting to Redshift. err: %s", e)
+            raise RedshiftConnectionError("There is a problem connecting to Redshift.")
 
     def _disconnect(self):
         """Terminates the connection to the Redshift cluster by
@@ -143,12 +152,10 @@ class Cmd(object):
                 self.cursor.close()
                 self.conn.close()
             except Exception as e:
-                logger.error('Error disconnecting from Redshift. err: %s', e)
-                raise RedshiftDisconnectionError(
-                    'There is a problem disconnecting from Redshift.')
+                logger.error("Error disconnecting from Redshift. err: %s", e)
+                raise RedshiftDisconnectionError("There is a problem disconnecting from Redshift.")
         else:
-            logger.info('No connection to close')
-
+            logger.info("No connection to close")
 
     def execute(self, sql, commit=True, params=None):
         """Execute some sql against the Redshift connection.
@@ -176,25 +183,23 @@ class Cmd(object):
         """
         if self._is_connected():
             start_time = time.time()
-            logger.info('Running SQL: %s', sql)
+            logger.info("Running SQL: %s", sql)
             try:
                 self.cursor.execute(sql, params)
             except Exception as e:
-                logger.error('Error running SQL query. err: %s', e)
-                raise RedshiftError('Error running SQL query.')
+                logger.error("Error running SQL query. err: %s", e)
+                raise RedshiftError("Error running SQL query.")
             if commit:
                 self.conn.commit()
             elapsed = time.time() - start_time
             if elapsed >= 60:
-                time_str = str(int(elapsed / 60)) + ' minutes, '
+                time_str = str(int(elapsed / 60)) + " minutes, "
             else:
-                time_str = ''
-            time_str += str(int(elapsed) % 60) + ' seconds'
-            logger.info('Time elapsed: %s', time_str)
+                time_str = ""
+            time_str += str(int(elapsed) % 60) + " seconds"
+            logger.info("Time elapsed: %s", time_str)
         else:
-            raise RedshiftConnectionError(
-                'Cannot execute SQL on a closed connection.')
-
+            raise RedshiftConnectionError("Cannot execute SQL on a closed connection.")
 
     def column_names(self):
         """Pull column names out of the cursor description. Depending on the
@@ -209,8 +214,6 @@ class Cmd(object):
             return [column[0].decode().lower() for column in self.cursor.description]
         except:
             return [column[0].lower() for column in self.cursor.description]
-
-
 
     def to_dataframe(self, size=None):
         """Return a dataframe of the last query results.  This imports Pandas
@@ -229,6 +232,7 @@ class Cmd(object):
             result.
         """
         import pandas
+
         columns = self.column_names()
 
         if size is None:
@@ -243,7 +247,6 @@ class Cmd(object):
         if len(fetched) == 0:
             return None
         return pandas.DataFrame(fetched, columns=columns)
-
 
     def _is_connected(self):
         """Checks the connection and cursor class arrtribues are initalized.
@@ -262,6 +265,6 @@ class Cmd(object):
         return self
 
     def __exit__(self, exc_type, exc, exc_tb):
-        logger.info('Closing Redshift connection...')
+        logger.info("Closing Redshift connection...")
         self._disconnect()
-        logger.info('Connection closed.')
+        logger.info("Connection closed.")

@@ -25,14 +25,13 @@ import gzip
 import shutil
 import yaml
 from itertools import cycle
-from .logger import (get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL)
-from .errors import (CompressionError, LocopySplitError,
-                     RedshiftCredentialsError)
+from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
+from .errors import CompressionError, LocopySplitError, RedshiftCredentialsError
 
 logger = get_logger(__name__, INFO)
 
 
-def write_file(data, delimiter, filepath, mode='w'):
+def write_file(data, delimiter, filepath, mode="w"):
     """Write data to a file.
 
     Parameters
@@ -51,11 +50,11 @@ def write_file(data, delimiter, filepath, mode='w'):
         Defaults to write mode.
         See https://www.tutorialspoint.com/python/python_files_io.htm
     """
-    logger.debug('Attempting to write data to file %s' % filepath)
+    logger.debug("Attempting to write data to file %s" % filepath)
     try:
         with open(filepath, mode) as f:
             for row in data:
-                f.write(delimiter.join([str(r) for r in row]) + '\n')
+                f.write(delimiter.join([str(r) for r in row]) + "\n")
     except Exception as e:
         logger.error("Unable to write file to %s due to err %s" % (filepath, e))
     return
@@ -72,15 +71,13 @@ def compress_file(input_file, output_file):
         Path to write the compressed file
     """
     try:
-        with open(input_file, 'rb') as f_in:
-            with gzip.open(output_file, 'wb') as f_out:
-                logger.info('compressing (gzip): %s to %s',
-                            input_file, output_file)
+        with open(input_file, "rb") as f_in:
+            with gzip.open(output_file, "wb") as f_out:
+                logger.info("compressing (gzip): %s to %s", input_file, output_file)
                 shutil.copyfileobj(f_in, f_out)
     except Exception as e:
-        logger.error('Error compressing the file. err: %s', e)
-        raise CompressionError('Error compressing the file.')
-
+        logger.error("Error compressing the file. err: %s", e)
+        raise CompressionError("Error compressing the file.")
 
 
 def split_file(input_file, output_file, splits=2):
@@ -111,18 +108,17 @@ def split_file(input_file, output_file, splits=2):
         If ``splits`` is less than 2 or some processing error when splitting
     """
     if type(splits) is not int or splits < 2:
-        logger.error('Number of splits is invalid')
-        raise LocopySplitError(
-            'Number of splits must be greater than one and an integer.')
+        logger.error("Number of splits is invalid")
+        raise LocopySplitError("Number of splits must be greater than one and an integer.")
 
     try:
         pool = [x for x in range(splits)]
         cpool = cycle(pool)
-        logger.info('splitting file: %s into %s files', input_file, splits)
+        logger.info("splitting file: %s into %s files", input_file, splits)
         # open output file handlers
         files = [open("{0}.{1}".format(output_file, x), "wb") for x in pool]
         # open input file and send line to different handler
-        with open(input_file, 'rb') as f_in:
+        with open(input_file, "rb") as f_in:
             for line in f_in:
                 files[next(cpool)].write(line)
         # close file connection
@@ -130,14 +126,13 @@ def split_file(input_file, output_file, splits=2):
             files[x].close()
         return [f.name for f in files]
     except Exception as e:
-        logger.error('Error splitting the file. err: %s', e)
+        logger.error("Error splitting the file. err: %s", e)
         if len(files) > 0:
-            logger.error('Cleaning up intermediary files: %s', files)
+            logger.error("Cleaning up intermediary files: %s", files)
             for x in pool:
                 files[x].close()
                 os.remove(files[x].name)
-        raise LocopySplitError('Error splitting the file.')
-
+        raise LocopySplitError("Error splitting the file.")
 
 
 def get_redshift_yaml(config_yaml):
@@ -174,15 +169,15 @@ def get_redshift_yaml(config_yaml):
         else:
             locopy_yaml = yaml.load(config_yaml)
     except Exception as e:
-        logger.error('Error reading Redshift yaml. err: %s', e)
-        raise RedshiftCredentialsError('Error reading Redshift yaml.')
+        logger.error("Error reading Redshift yaml. err: %s", e)
+        raise RedshiftCredentialsError("Error reading Redshift yaml.")
     validate_redshift_attributes(**locopy_yaml)
     return locopy_yaml
 
 
-
 def validate_redshift_attributes(
-    host=None, port=None, dbname=None, user=None, password=None, **kwargs):
+    host=None, port=None, dbname=None, user=None, password=None, **kwargs
+):
     """Validate Redshift connection attributes to make sure none are missing.
 
     * All the Redshift connect details need to be set:
@@ -198,16 +193,15 @@ def validate_redshift_attributes(
         If key fields are None.
     """
     if host is None:
-        raise RedshiftCredentialsError('Redshift host missing')
+        raise RedshiftCredentialsError("Redshift host missing")
     if port is None:
-        raise RedshiftCredentialsError('Redshift port missing')
+        raise RedshiftCredentialsError("Redshift port missing")
     if dbname is None:
-        raise RedshiftCredentialsError('Redshift dbname missing')
+        raise RedshiftCredentialsError("Redshift dbname missing")
     if user is None:
-        raise RedshiftCredentialsError('Redshift username missing')
+        raise RedshiftCredentialsError("Redshift username missing")
     if password is None:
-        raise RedshiftCredentialsError('Redshift password missing')
-
+        raise RedshiftCredentialsError("Redshift password missing")
 
 
 class ProgressPercentage(object):
@@ -236,6 +230,7 @@ class ProgressPercentage(object):
         with self._lock:
             self._seen_so_far += bytes_amount
             percentage = (self._seen_so_far / self._size) * 100
-            sys.stdout.write('\rTransfering [{0}] {1:.2f}%'.format(
-                '#'*int(percentage/10), percentage))
+            sys.stdout.write(
+                "\rTransfering [{0}] {1:.2f}%".format("#" * int(percentage / 10), percentage)
+            )
             sys.stdout.flush()
