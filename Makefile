@@ -18,4 +18,4 @@ ghpages:
 	cp -r docs/build/html/* . && \
 	git add -u && \
 	git add -A && \
-	git commit -m "Updated generated Sphinx documentation"
+	PRE_COMMIT_ALLOW_NO_CONFIG=1 git commit -m "Updated generated Sphinx documentation"
