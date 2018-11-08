@@ -28,9 +28,16 @@ from botocore.client import Config
 from .locopy import Cmd
 from .utility import ProgressPercentage, compress_file, split_file, write_file
 from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
-from .errors import (S3Error, S3CredentialsError, S3InitializationError,
-                     S3UploadError, S3DownloadError, S3DeletionError,
-                     RedshiftConnectionError, RedshiftError)
+from .errors import (
+    S3Error,
+    S3CredentialsError,
+    S3InitializationError,
+    S3UploadError,
+    S3DownloadError,
+    S3DeletionError,
+    RedshiftConnectionError,
+    RedshiftError,
+)
 
 logger = get_logger(__name__, DEBUG)
 
@@ -52,9 +59,7 @@ def add_default_copy_options(copy_options=None):
     """
     if copy_options is None:
         copy_options = []
-    default_options = ("DATEFORMAT 'auto'",
-                       "COMPUPDATE ON",
-                       "TRUNCATECOLUMNS")
+    default_options = ("DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS")
     first_words = [opt.upper().split()[0] for opt in copy_options]
 
     for option in default_options:
@@ -78,7 +83,7 @@ def combine_copy_options(copy_options):
     str:
         ``copy_options`` attribute with spaces in between
     """
-    return ' '.join(copy_options)
+    return " ".join(copy_options)
 
 
 class S3(Cmd):
@@ -139,9 +144,21 @@ class S3(Cmd):
     s3 : botocore.client.S3
         Hold the S3 client object which is used to upload/delete files to S3
     """
+
     def __init__(
-        self, profile=None, kms_key=None, dbapi=None, host=None, port=None,
-        dbname=None, user=None, password=None, config_yaml=None, s3_only=False, **kwargs):
+        self,
+        profile=None,
+        kms_key=None,
+        dbapi=None,
+        host=None,
+        port=None,
+        dbname=None,
+        user=None,
+        password=None,
+        config_yaml=None,
+        s3_only=False,
+        **kwargs
+    ):
 
         self.profile = profile
         self.kms_key = kms_key
@@ -149,34 +166,29 @@ class S3(Cmd):
         self.s3 = None
 
         if not s3_only:
-            super(S3, self).__init__(
-                dbapi, host, port, dbname, user, password, config_yaml)
+            super(S3, self).__init__(dbapi, host, port, dbname, user, password, config_yaml)
 
         self._set_session()
         self._set_client()
 
-
     def _set_session(self):
         try:
             self.session = Session(profile_name=self.profile)
-            logger.info('Successfully initialized AWS session.')
+            logger.info("Successfully initialized AWS session.")
         except Exception as e:
-            logger.error('Error initializing AWS Session, err: %s', e)
-            raise S3Error('Error initializing AWS Session.')
+            logger.error("Error initializing AWS Session, err: %s", e)
+            raise S3Error("Error initializing AWS Session.")
         credentials = self.session.get_credentials()
         if credentials is None:
-            raise S3CredentialsError('Credentials could not be set.')
-
+            raise S3CredentialsError("Credentials could not be set.")
 
     def _set_client(self):
         try:
-            self.s3 = self.session.client(
-                's3', config=Config(signature_version='s3v4'))
-            logger.info('Successfully initialized S3 client.')
+            self.s3 = self.session.client("s3", config=Config(signature_version="s3v4"))
+            logger.info("Successfully initialized S3 client.")
         except Exception as e:
-            logger.error('Error initializing S3 Client, err: %s', e)
-            raise S3InitializationError('Error initializing S3 Client.')
-
+            logger.error("Error initializing S3 Client, err: %s", e)
+            raise S3InitializationError("Error initializing S3 Client.")
 
     def _credentials_string(self):
         """Returns a credentials string for the Redshift COPY or UNLOAD command,
@@ -189,13 +201,11 @@ class S3(Cmd):
         """
         creds = self.session.get_credentials()
         if creds.token is not None:
-            temp = 'aws_access_key_id={};aws_secret_access_key={};token={}'
-            return temp.format(
-                creds.access_key, creds.secret_key, creds.token)
+            temp = "aws_access_key_id={};aws_secret_access_key={};token={}"
+            return temp.format(creds.access_key, creds.secret_key, creds.token)
         else:
-            temp = 'aws_access_key_id={};aws_secret_access_key={}'
+            temp = "aws_access_key_id={};aws_secret_access_key={}"
             return temp.format(creds.access_key, creds.secret_key)
-
 
     def _generate_s3_path(cls, bucket, key):
         """Will return the S3 file URL in the format S3://bucket/key
@@ -214,7 +224,6 @@ class S3(Cmd):
             string of the S3 file URL in the format S3://bucket/key
         """
         return "s3://{0}/{1}".format(bucket, key)
-
 
     def _generate_unload_path(cls, bucket, folder):
         """Will return the S3 file URL in the format s3://bucket/folder if a
@@ -241,7 +250,6 @@ class S3(Cmd):
             s3_path = "s3://{0}".format(bucket)
         return s3_path
 
-
     def upload_to_s3(self, local, bucket, key):
         """
         Upload a file to a S3 bucket.
@@ -266,23 +274,21 @@ class S3(Cmd):
         try:
             # force ServerSideEncryption
             if self.kms_key is None:
-                extra_args['ServerSideEncryption'] = 'AES256'
-                logger.info('Using AES256 for encryption')
+                extra_args["ServerSideEncryption"] = "AES256"
+                logger.info("Using AES256 for encryption")
             else:
-                extra_args['ServerSideEncryption'] = 'aws:kms'
-                extra_args['SSEKMSKeyId'] = self.kms_key
-                logger.info('Using KMS Keys for encryption')
+                extra_args["ServerSideEncryption"] = "aws:kms"
+                extra_args["SSEKMSKeyId"] = self.kms_key
+                logger.info("Using KMS Keys for encryption")
 
-            logger.info('Uploading file to S3 bucket %s',
-                        self._generate_s3_path(bucket, key))
-            self.s3.upload_file(local, bucket, key,
-                                ExtraArgs=extra_args,
-                                Callback=ProgressPercentage(local))
+            logger.info("Uploading file to S3 bucket %s", self._generate_s3_path(bucket, key))
+            self.s3.upload_file(
+                local, bucket, key, ExtraArgs=extra_args, Callback=ProgressPercentage(local)
+            )
 
         except Exception as e:
-            logger.error('Error uploading to S3. err: %s', e)
-            raise S3UploadError('Error uploading to S3.')
-
+            logger.error("Error uploading to S3. err: %s", e)
+            raise S3UploadError("Error uploading to S3.")
 
     def download_from_s3(self, bucket, key, local):
         """
@@ -305,14 +311,12 @@ class S3(Cmd):
             If there is a issue downloading to the S3 bucket
         """
         try:
-            logger.info('Downloading file from S3 bucket %s',
-                        self._generate_s3_path(bucket, key))
+            logger.info("Downloading file from S3 bucket %s", self._generate_s3_path(bucket, key))
             config = TransferConfig(max_concurrency=5)
             self.s3.download_file(bucket, key, local, Config=config)
         except Exception as e:
-            logger.error('Error downloading from S3. err: %s', e)
-            raise S3DownloadError('Error downloading from S3.')
-
+            logger.error("Error downloading from S3. err: %s", e)
+            raise S3DownloadError("Error downloading from S3.")
 
     def delete_from_s3(self, bucket, key):
         """
@@ -333,16 +337,13 @@ class S3(Cmd):
         """
 
         try:
-            logger.info('Deleting file from S3 bucket %s',
-                        self._generate_s3_path(bucket, key))
+            logger.info("Deleting file from S3 bucket %s", self._generate_s3_path(bucket, key))
             self.s3.delete_object(Bucket=bucket, Key=key)
         except Exception as e:
-            logger.error('Error deleting from S3. err: %s', e)
-            raise S3DeletionError('Error deleting from S3.')
+            logger.error("Error deleting from S3. err: %s", e)
+            raise S3DeletionError("Error deleting from S3.")
 
-
-    def _copy_to_redshift(self, tablename, s3path, delim='|',
-                         copy_options=None):
+    def _copy_to_redshift(self, tablename, s3path, delim="|", copy_options=None):
         """Executes the COPY command to load CSV files from S3 into
         a Redshift table.
 
@@ -368,28 +369,33 @@ class S3(Cmd):
             has not been initalized, or credentials are wrong.
         """
         if not self._is_connected():
-            raise RedshiftConnectionError(
-                'No Redshift connection object is present.')
+            raise RedshiftConnectionError("No Redshift connection object is present.")
 
         copy_options = add_default_copy_options(copy_options)
         copy_options_text = combine_copy_options(copy_options)
-        base_copy_string = ("COPY {0} FROM '{1}' "
-                            "CREDENTIALS '{2}' "
-                            "DELIMITER '{3}' {4};")
+        base_copy_string = "COPY {0} FROM '{1}' " "CREDENTIALS '{2}' " "DELIMITER '{3}' {4};"
         try:
             sql = base_copy_string.format(
-                tablename, s3path, self._credentials_string(), delim,
-                copy_options_text)
+                tablename, s3path, self._credentials_string(), delim, copy_options_text
+            )
             self.execute(sql, commit=True)
 
         except Exception as e:
-            logger.error('Error running COPY on Redshift. err: %s', e)
-            raise RedshiftError('Error running COPY on Redshift.')
+            logger.error("Error running COPY on Redshift. err: %s", e)
+            raise RedshiftError("Error running COPY on Redshift.")
 
-
-    def run_copy(self, local_file, s3_bucket, table_name, delim="|",
-                 copy_options=None, delete_s3_after=False, splits=1,
-                 compress=True, s3_folder=None):
+    def run_copy(
+        self,
+        local_file,
+        s3_bucket,
+        table_name,
+        delim="|",
+        copy_options=None,
+        delete_s3_after=False,
+        splits=1,
+        compress=True,
+        s3_folder=None,
+    ):
         """Loads a file to S3, then copies into Redshift.  Has options to
         split a single file into multiple files, compress using gzip, and
         upload to an S3 bucket with folders within the bucket.
@@ -451,7 +457,7 @@ class S3(Cmd):
         if compress:
             copy_options.append("GZIP")
             for i, f in enumerate(upload_list):
-                gz = '{0}.gz'.format(f)
+                gz = "{0}.gz".format(f)
                 compress_file(f, gz)
                 upload_list[i] = gz
                 os.remove(f)  # cleanup old files
@@ -461,17 +467,17 @@ class S3(Cmd):
             if s3_folder is None:
                 s3_key = os.path.basename(file)
             else:
-                s3_key = '/'.join([s3_folder, os.path.basename(file)])
+                s3_key = "/".join([s3_folder, os.path.basename(file)])
 
             self.upload_to_s3(file, s3_bucket, s3_key)
 
         # execute Redshift COPY
         self._copy_to_redshift(
-            table_name, self._generate_s3_path(
-                s3_bucket,
-                s3_key.split(os.extsep)[0]),
+            table_name,
+            self._generate_s3_path(s3_bucket, s3_key.split(os.extsep)[0]),
             delim,
-            copy_options=copy_options)
+            copy_options=copy_options,
+        )
 
         # delete file from S3 (if set to do so)
         if delete_s3_after:
@@ -479,13 +485,20 @@ class S3(Cmd):
                 if s3_folder is None:
                     s3_key = os.path.basename(file)
                 else:
-                    s3_key = '/'.join([s3_folder, os.path.basename(file)])
+                    s3_key = "/".join([s3_folder, os.path.basename(file)])
                 self.delete_from_s3(s3_bucket, s3_key)
 
-
-    def run_unload(self, query, s3_bucket, s3_folder=None, export_path=False,
-                   delimiter=',', delete_s3_after=True,
-                   parallel_off=False, unload_options=None):
+    def run_unload(
+        self,
+        query,
+        s3_bucket,
+        s3_folder=None,
+        export_path=False,
+        delimiter=",",
+        delete_s3_after=True,
+        parallel_off=False,
+        unload_options=None,
+    ):
         """``UNLOAD`` data from Redshift, with options to write to a flat file,
         and store on S3.
 
@@ -536,23 +549,21 @@ class S3(Cmd):
 
         unload_options.append("DELIMITER '{0}'".format(delimiter))
         if parallel_off:
-            unload_options.append('PARALLEL OFF')
+            unload_options.append("PARALLEL OFF")
 
         ## run unload
-        self._unload_to_s3(query=query, s3path=s3path,
-                           unload_options=unload_options)
+        self._unload_to_s3(query=query, s3path=s3path, unload_options=unload_options)
 
         ## parse unloaded files
         files = self._unload_generated_files()
         if files is None:
-            logger.error('No files generated from unload')
-            raise Exception('No files generated from unload')
+            logger.error("No files generated from unload")
+            raise Exception("No files generated from unload")
 
         columns = self._get_column_names(query)
         if columns is None:
-            logger.error('Unable to retrieve column names from exported data')
-            raise Exception(
-                    'Unable to retrieve column names from exported data.')
+            logger.error("Unable to retrieve column names from exported data")
+            raise Exception("Unable to retrieve column names from exported data.")
 
         # download files locally with same name
         # write columns to local file
@@ -564,8 +575,8 @@ class S3(Cmd):
                 key = urlparse(f).path[1:]
                 local = os.path.basename(key)
                 self.download_from_s3(s3_bucket, key, local)
-                with open(local, 'rb') as temp_f:
-                    with open(export_path, 'ab') as main_f:
+                with open(local, "rb") as temp_f:
+                    with open(export_path, "ab") as main_f:
                         for line in temp_f:
                             main_f.write(line)
                 os.remove(local)
@@ -575,7 +586,6 @@ class S3(Cmd):
             for f in files:
                 key = urlparse(f).path[1:]
                 self.delete_from_s3(s3_bucket, key)
-
 
     def _unload_to_s3(self, query, s3path, unload_options=None):
         """Executes the UNLOAD command to export a query from
@@ -601,22 +611,17 @@ class S3(Cmd):
             raise Exception("No Redshift connection object is present")
 
         unload_options = unload_options or []
-        unload_options_text = ' '.join(unload_options)
-        base_unload_string = (
-            "UNLOAD ('{0}')\n"
-            "TO '{1}'\n"
-            "CREDENTIALS '{2}'\n"
-            "{3};")
+        unload_options_text = " ".join(unload_options)
+        base_unload_string = "UNLOAD ('{0}')\n" "TO '{1}'\n" "CREDENTIALS '{2}'\n" "{3};"
 
         try:
             sql = base_unload_string.format(
-                query.replace("'", r"\'"), s3path, self._credentials_string(),
-                unload_options_text)
+                query.replace("'", r"\'"), s3path, self._credentials_string(), unload_options_text
+            )
             self.execute(sql, commit=True)
         except Exception as e:
-            logger.error('Error running UNLOAD on redshift. err: %s', e)
+            logger.error("Error running UNLOAD on redshift. err: %s", e)
             raise
-
 
     def _get_column_names(self, query):
         """Gets a list of column names from the supplied query.
@@ -633,7 +638,7 @@ class S3(Cmd):
         """
 
         try:
-            logger.info('Retrieving column names')
+            logger.info("Retrieving column names")
             sql = "SELECT * FROM ({}) WHERE 1 = 0".format(query)
             self.execute(sql)
             results = [desc for desc in self.cursor.description]
@@ -642,9 +647,8 @@ class S3(Cmd):
             else:
                 return None
         except Exception as e:
-            logger.error('Error retrieving column names')
+            logger.error("Error retrieving column names")
             raise
-
 
     def _unload_generated_files(self):
         """Gets a list of files generated by the unload process
@@ -654,11 +658,9 @@ class S3(Cmd):
         list
             List of S3 file names
         """
-        sql = (
-            'SELECT path FROM stl_unload_log '
-            'WHERE query = pg_last_query_id() ORDER BY path')
+        sql = "SELECT path FROM stl_unload_log " "WHERE query = pg_last_query_id() ORDER BY path"
         try:
-            logger.info('Getting list of unloaded files')
+            logger.info("Getting list of unloaded files")
             self.execute(sql)
             results = self.cursor.fetchall()
             if len(results) > 0:
@@ -666,5 +668,5 @@ class S3(Cmd):
             else:
                 return None
         except Exception as e:
-            logger.error('Error retrieving unloads generated files')
+            logger.error("Error retrieving unloads generated files")
             raise

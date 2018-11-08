@@ -1,5 +1,7 @@
 .. image:: https://travis-ci.org/capitalone/Data-Load-and-Copy-using-Python.svg?branch=master
     :target: https://travis-ci.org/capitalone/Data-Load-and-Copy-using-Python
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/ambv/black
 
 locopy: Data Load and Copy using Python
 ========================================

@@ -20,26 +20,22 @@ from setuptools import setup
 
 CURR_DIR = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(CURR_DIR, 'README.rst'), encoding='utf-8') as file_open:
+with open(os.path.join(CURR_DIR, "README.rst"), encoding="utf-8") as file_open:
     LONG_DESCRIPTION = file_open.read()
 
-exec(open('locopy/_version.py').read())
+exec(open("locopy/_version.py").read())
 
-setup(name='locopy',
-      version=__version__,
-      description='Loading/Unloading to Amazon Redshift using Python',
-      long_description=LONG_DESCRIPTION,
-      url='https://github.com/capitalone/Data-Load-and-Copy-using-Python',
-      author='Faisal Dosani',
-      author_email='faisal.dosani@capitalone.com',
-      license='Apache Software License',
-      packages=['locopy'],
-      install_requires=[
-          'boto3==1.7.21',
-          'PyYAML==3.12',
-          'pandas>=0.19.0',
-      ],
-      extras_require={
-          'psycopg2': ['psycopg2-binary==2.7.4'],
-          'pg8000': ['pg8000==1.12.1']},
-      zip_safe=False)
+setup(
+    name="locopy",
+    version=__version__,
+    description="Loading/Unloading to Amazon Redshift using Python",
+    long_description=LONG_DESCRIPTION,
+    url="https://github.com/capitalone/Data-Load-and-Copy-using-Python",
+    author="Faisal Dosani",
+    author_email="faisal.dosani@capitalone.com",
+    license="Apache Software License",
+    packages=["locopy"],
+    install_requires=["boto3==1.7.21", "PyYAML==3.12", "pandas>=0.19.0"],
+    extras_require={"psycopg2": ["psycopg2-binary==2.7.4"], "pg8000": ["pg8000==1.12.1"]},
+    zip_safe=False,
+)
