@@ -178,7 +178,7 @@ Module to wrap the boto3 api usage and provide functionality to manage
 multipart upload to S3 buckets</p>
 <dl class="class">
 <dt id="locopy.s3.S3">
-<em class="property">class </em><code class="descclassname">locopy.s3.</code><code class="descname">S3</code><span class="sig-paren">(</span><em>profile=None</em>, <em>kms_key=None</em>, <em>dbapi=None</em>, <em>host=None</em>, <em>port=None</em>, <em>dbname=None</em>, <em>user=None</em>, <em>password=None</em>, <em>config_yaml=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">locopy.s3.</code><code class="descname">S3</code><span class="sig-paren">(</span><em>profile=None</em>, <em>kms_key=None</em>, <em>dbapi=None</em>, <em>host=None</em>, <em>port=None</em>, <em>dbname=None</em>, <em>user=None</em>, <em>password=None</em>, <em>config_yaml=None</em>, <em>s3_only=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="locopy.locopy.html#locopy.locopy.Cmd" title="locopy.locopy.Cmd"><code class="xref py py-class docutils literal notranslate"><span class="pre">locopy.locopy.Cmd</span></code></a></p>
 <p>S3 wrapper class which utilizes the boto3 library to push files to an S3
 bucket.  Subclasses the Cmd class to inherit the Redshift connection.</p>
@@ -193,14 +193,16 @@ bucket.  Subclasses the Cmd class to inherit the Redshift connection.</p>
 <li><strong>kms_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – The KMS key to use for encryption
 If kms_key Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the AES256 ServerSideEncryption
 will be used.</li>
-<li><strong>dbapi</strong> (<em>DBAPI 2 module</em>) – A PostgreSQL database adapter which is Python DB API 2.0 compliant
+<li><strong>dbapi</strong> (<em>DBAPI 2 module</em><em>, </em><em>optional</em>) – A PostgreSQL database adapter which is Python DB API 2.0 compliant
 (<code class="docutils literal notranslate"><span class="pre">psycopg2</span></code>, <code class="docutils literal notranslate"><span class="pre">pg8000</span></code>, etc.)</li>
-<li><strong>host</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Host name of the Redshift cluster to connect to.</li>
-<li><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a>) – Port which connection will be made to Redshift.</li>
-<li><strong>dbname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Redshift database name.</li>
-<li><strong>user</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Redshift users username.</li>
-<li><strong>password</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Redshift users password.</li>
-<li><strong>config_yaml</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – String representing the file location of the credentials.</li>
+<li><strong>host</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Host name of the Redshift cluster to connect to.</li>
+<li><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Port which connection will be made to Redshift.</li>
+<li><strong>dbname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Redshift database name.</li>
+<li><strong>user</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Redshift users username.</li>
+<li><strong>password</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Redshift users password.</li>
+<li><strong>config_yaml</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – String representing the file location of the credentials.</li>
+<li><strong>s3_only</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> then do not initialize the underlying redshift connection. It will
+allow users who want to soley interact with S3 to use that functionality.</li>
 </ul>
 </td>
 </tr>

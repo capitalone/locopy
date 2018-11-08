@@ -88,6 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Basic Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="recipes.html">Common Recipes</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Developer Instructions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pre-commit-hooks">Pre-Commit Hooks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#generating-documentation">Generating Documentation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#run-unit-tests">Run unit tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#integration-tests">Integration Tests</a></li>
@@ -163,6 +164,18 @@
   <div class="section" id="developer-instructions">
 <h1>Developer Instructions<a class="headerlink" href="#developer-instructions" title="Permalink to this headline">¶</a></h1>
 <p>Guidance for developers.</p>
+<div class="section" id="pre-commit-hooks">
+<h2>Pre-Commit Hooks<a class="headerlink" href="#pre-commit-hooks" title="Permalink to this headline">¶</a></h2>
+<p>We use the excellent <a class="reference external" href="https://pre-commit.com/">pre-commit</a> to run the excellent
+<a class="reference external" href="https://github.com/ambv/black">black</a> on all changes before commits.  <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code> is included
+in the black requirements below, and you’ll have to run <code class="docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">install</span></code> once per environment
+before committing changes, or else manually install <code class="docutils literal notranslate"><span class="pre">black</span></code> and run it.  If you have <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code>
+installed, trying to commit a change will first run black against any changed Python files, and force
+you to add/commit any changes.</p>
+<p>The reason behind running black as a pre-commit hook is to let a machine make style decisions, based
+on the collective wisdom of the Python community.  The only change made from the default black setup
+is to allow lines up to 100 characters long.</p>
+</div>
 <div class="section" id="generating-documentation">
 <h2>Generating Documentation<a class="headerlink" href="#generating-documentation" title="Permalink to this headline">¶</a></h2>
 <p>You will need to <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code> the test requirements:</p>
@@ -215,7 +228,9 @@ knowing what they’re doing.  Caveat emptor!</p>
 <div class="section" id="management-of-requirements">
 <h2>Management of Requirements<a class="headerlink" href="#management-of-requirements" title="Permalink to this headline">¶</a></h2>
 <p>Requirements of the project should be added to <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>.  Optional
-requirements used only for testing are added to <code class="docutils literal notranslate"><span class="pre">requirements-dev.txt</span></code>.</p>
+requirements used only for testing are added to <code class="docutils literal notranslate"><span class="pre">requirements-dev.txt</span></code>. There is a third
+requirements file <code class="docutils literal notranslate"><span class="pre">requirements-black.txt</span></code> which is used only for code formatting and pre-commit
+hooks. Black only works with Python 3.6.0+ and conflicts with the Travis CI build (Python 3.5)</p>
 </div>
 <div class="section" id="generating-distribution-archives-pypi">
 <h2>Generating distribution archives (PyPI)<a class="headerlink" href="#generating-distribution-archives-pypi" title="Permalink to this headline">¶</a></h2>

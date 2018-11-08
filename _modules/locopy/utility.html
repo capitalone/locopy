@@ -177,14 +177,13 @@
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">cycle</span>
-<span class="kn">from</span> <span class="nn">.logger</span> <span class="k">import</span> <span class="p">(</span><span class="n">get_logger</span><span class="p">,</span> <span class="n">DEBUG</span><span class="p">,</span> <span class="n">INFO</span><span class="p">,</span> <span class="n">WARN</span><span class="p">,</span> <span class="n">ERROR</span><span class="p">,</span> <span class="n">CRITICAL</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.errors</span> <span class="k">import</span> <span class="p">(</span><span class="n">CompressionError</span><span class="p">,</span> <span class="n">LocopySplitError</span><span class="p">,</span>
-                     <span class="n">RedshiftCredentialsError</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.logger</span> <span class="k">import</span> <span class="n">get_logger</span><span class="p">,</span> <span class="n">DEBUG</span><span class="p">,</span> <span class="n">INFO</span><span class="p">,</span> <span class="n">WARN</span><span class="p">,</span> <span class="n">ERROR</span><span class="p">,</span> <span class="n">CRITICAL</span>
+<span class="kn">from</span> <span class="nn">.errors</span> <span class="k">import</span> <span class="n">CompressionError</span><span class="p">,</span> <span class="n">LocopySplitError</span><span class="p">,</span> <span class="n">RedshiftCredentialsError</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">INFO</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="write_file"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.write_file">[docs]</a><span class="k">def</span> <span class="nf">write_file</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="write_file"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.write_file">[docs]</a><span class="k">def</span> <span class="nf">write_file</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Write data to a file.</span>
 
 <span class="sd">    Parameters</span>
@@ -203,11 +202,11 @@
 <span class="sd">        Defaults to write mode.</span>
 <span class="sd">        See https://www.tutorialspoint.com/python/python_files_io.htm</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Attempting to write data to file </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">filepath</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Attempting to write data to file </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">filepath</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">delimiter</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">row</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">delimiter</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">row</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unable to write file to </span><span class="si">%s</span><span class="s2"> due to err </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
     <span class="k">return</span></div>
@@ -224,15 +223,13 @@
 <span class="sd">        Path to write the compressed file</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_in</span><span class="p">:</span>
-            <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_out</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;compressing (gzip): </span><span class="si">%s</span><span class="s1"> to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span>
-                            <span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_in</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_out</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;compressing (gzip): </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
                 <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">f_in</span><span class="p">,</span> <span class="n">f_out</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error compressing the file. err: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">CompressionError</span><span class="p">(</span><span class="s1">&#39;Error compressing the file.&#39;</span><span class="p">)</span></div>
-
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error compressing the file. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">CompressionError</span><span class="p">(</span><span class="s2">&quot;Error compressing the file.&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="split_file"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.split_file">[docs]</a><span class="k">def</span> <span class="nf">split_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
@@ -263,18 +260,17 @@
 <span class="sd">        If ``splits`` is less than 2 or some processing error when splitting</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">splits</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span> <span class="ow">or</span> <span class="n">splits</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Number of splits is invalid&#39;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">LocopySplitError</span><span class="p">(</span>
-            <span class="s1">&#39;Number of splits must be greater than one and an integer.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Number of splits is invalid&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">LocopySplitError</span><span class="p">(</span><span class="s2">&quot;Number of splits must be greater than one and an integer.&quot;</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">pool</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">splits</span><span class="p">)]</span>
         <span class="n">cpool</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;splitting file: </span><span class="si">%s</span><span class="s1"> into </span><span class="si">%s</span><span class="s1"> files&#39;</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;splitting file: </span><span class="si">%s</span><span class="s2"> into </span><span class="si">%s</span><span class="s2"> files&quot;</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
         <span class="c1"># open output file handlers</span>
         <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">.</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pool</span><span class="p">]</span>
         <span class="c1"># open input file and send line to different handler</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_in</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_in</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f_in</span><span class="p">:</span>
                 <span class="n">files</span><span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="n">cpool</span><span class="p">)]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         <span class="c1"># close file connection</span>
@@ -282,14 +278,13 @@
             <span class="n">files</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error splitting the file. err: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error splitting the file. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Cleaning up intermediary files: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">files</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Cleaning up intermediary files: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">files</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pool</span><span class="p">:</span>
                 <span class="n">files</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">LocopySplitError</span><span class="p">(</span><span class="s1">&#39;Error splitting the file.&#39;</span><span class="p">)</span></div>
-
+        <span class="k">raise</span> <span class="n">LocopySplitError</span><span class="p">(</span><span class="s2">&quot;Error splitting the file.&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_redshift_yaml"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.get_redshift_yaml">[docs]</a><span class="k">def</span> <span class="nf">get_redshift_yaml</span><span class="p">(</span><span class="n">config_yaml</span><span class="p">):</span>
@@ -326,15 +321,15 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">locopy_yaml</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config_yaml</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Error reading Redshift yaml. err: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s1">&#39;Error reading Redshift yaml.&#39;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error reading Redshift yaml. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s2">&quot;Error reading Redshift yaml.&quot;</span><span class="p">)</span>
     <span class="n">validate_redshift_attributes</span><span class="p">(</span><span class="o">**</span><span class="n">locopy_yaml</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">locopy_yaml</span></div>
 
 
-
 <div class="viewcode-block" id="validate_redshift_attributes"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.validate_redshift_attributes">[docs]</a><span class="k">def</span> <span class="nf">validate_redshift_attributes</span><span class="p">(</span>
-    <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dbname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dbname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Validate Redshift connection attributes to make sure none are missing.</span>
 
 <span class="sd">    * All the Redshift connect details need to be set:</span>
@@ -350,16 +345,15 @@
 <span class="sd">        If key fields are None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">host</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s1">&#39;Redshift host missing&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s2">&quot;Redshift host missing&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">port</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s1">&#39;Redshift port missing&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s2">&quot;Redshift port missing&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">dbname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s1">&#39;Redshift dbname missing&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s2">&quot;Redshift dbname missing&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s1">&#39;Redshift username missing&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s2">&quot;Redshift username missing&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">password</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s1">&#39;Redshift password missing&#39;</span><span class="p">)</span></div>
-
+        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s2">&quot;Redshift password missing&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ProgressPercentage"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.ProgressPercentage">[docs]</a><span class="k">class</span> <span class="nc">ProgressPercentage</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -388,8 +382,9 @@
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_seen_so_far</span> <span class="o">+=</span> <span class="n">bytes_amount</span>
             <span class="n">percentage</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_seen_so_far</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\r</span><span class="s1">Transfering [</span><span class="si">{0}</span><span class="s1">] </span><span class="si">{1:.2f}</span><span class="s1">%&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="s1">&#39;#&#39;</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="n">percentage</span><span class="o">/</span><span class="mi">10</span><span class="p">),</span> <span class="n">percentage</span><span class="p">))</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="se">\r</span><span class="s2">Transfering [</span><span class="si">{0}</span><span class="s2">] </span><span class="si">{1:.2f}</span><span class="s2">%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;#&quot;</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">percentage</span> <span class="o">/</span> <span class="mi">10</span><span class="p">),</span> <span class="n">percentage</span><span class="p">)</span>
+            <span class="p">)</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
 </pre></div>
 
