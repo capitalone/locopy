@@ -26,7 +26,7 @@ import shutil
 import yaml
 from itertools import cycle
 from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
-from .errors import CompressionError, LocopySplitError, RedshiftCredentialsError
+from .errors import CompressionError, LocopySplitError, CredentialsError
 
 logger = get_logger(__name__, INFO)
 
@@ -159,7 +159,7 @@ def get_redshift_yaml(config_yaml):
 
     Raises
     ------
-    RedshiftCredentialsError
+    CredentialsError
         If any elements are missing from YAML file
     """
     try:
@@ -170,7 +170,7 @@ def get_redshift_yaml(config_yaml):
             locopy_yaml = yaml.load(config_yaml)
     except Exception as e:
         logger.error("Error reading Redshift yaml. err: %s", e)
-        raise RedshiftCredentialsError("Error reading Redshift yaml.")
+        raise CredentialsError("Error reading Redshift yaml.")
     validate_redshift_attributes(**locopy_yaml)
     return locopy_yaml
 
@@ -189,19 +189,19 @@ def validate_redshift_attributes(
 
     Raises
     ------
-    RedshiftCredentialsError
+    CredentialsError
         If key fields are None.
     """
     if host is None:
-        raise RedshiftCredentialsError("Redshift host missing")
+        raise CredentialsError("Redshift host missing")
     if port is None:
-        raise RedshiftCredentialsError("Redshift port missing")
+        raise CredentialsError("Redshift port missing")
     if dbname is None:
-        raise RedshiftCredentialsError("Redshift dbname missing")
+        raise CredentialsError("Redshift dbname missing")
     if user is None:
-        raise RedshiftCredentialsError("Redshift username missing")
+        raise CredentialsError("Redshift username missing")
     if password is None:
-        raise RedshiftCredentialsError("Redshift password missing")
+        raise CredentialsError("Redshift password missing")
 
 
 class ProgressPercentage(object):
