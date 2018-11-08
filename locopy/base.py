@@ -14,137 +14,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Redshift Module
-Module to wrap a database adapter into a Cmd class which can be used to connect
-to Redshift, and run arbitrary code.
+"""Base Module
 """
-
 import time
 
-from .utility import validate_redshift_attributes, get_redshift_yaml
+from abc import ABC, abstractmethod
 from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
-from .errors import (
-    RedshiftCredentialsError,
-    RedshiftConnectionError,
-    RedshiftDisconnectionError,
-    RedshiftError,
-)
+from .errors import CredentialsError, ConnectionError, DisconnectionError, DBError
 
 logger = get_logger(__name__, INFO)
 
 
-class Cmd(object):
-    """
-    Locopy class which manages connections to Redshift.  Subclassed as S3
-    elsewhere to provide the COPY functionality.
-
-    If any of host, port, dbname, user and password are not provided, a
-    config_yaml file must be provided with those parameters in.
-
-    Parameters
-    ----------
-    dbapi : DBAPI 2 module
-        A PostgreSQL database adapter which is Python DB API 2.0 compliant
-        (``psycopg2``, ``pg8000``, etc.)
-
-    host : str
-        Host name of the Redshift cluster to connect to.
-
-    port : int
-        Port which connection will be made to Redshift.
-
-    dbname : str
-        Redshift database name.
-
-    user : str
-        Redshift users username.
-
-    password : str
-        Redshift users password.
-
-    config_yaml : str
-        String representing the file location of the credentials.
-
-    Raises
-    ------
-    RedshiftCredentialsError
-        Redshift credentials are not provided
+class Base(ABC):
+    """This is the base class for all DBAPI 2 database connectors which will inherit this
+    functionality. The ``Base`` class will manage connections and handle executing queries.
+    Most of the functionality should work out of the box for classes which inherit minus the
+    abstract method for ``_connect`` which will vary across databases.
     """
 
-    def __init__(
-        self,
-        dbapi=None,
-        host=None,
-        port=None,
-        dbname=None,
-        user=None,
-        password=None,
-        config_yaml=None,
-        **kwargs
-    ):
-
-        self.dbapi = dbapi
-        self.host = host
-        self.port = port
-        self.dbname = dbname
-        self.user = user
-        self.password = password
-        self.conn = None
-        self.cursor = None
-
-        try:
-            validate_redshift_attributes(host, port, dbname, user, password)
-        except:
-            try:
-                atts = get_redshift_yaml(config_yaml)
-                self.host = atts["host"]
-                self.port = atts["port"]
-                self.dbname = atts["dbname"]
-                self.user = atts["user"]
-                self.password = atts["password"]
-            except Exception as e:
-                logger.error("Must provide Redshift attributes or YAML. err: %s", e)
-                raise RedshiftCredentialsError("Must provide Redshift attributes or YAML.")
-        self._connect()
-
+    @abstractmethod
     def _connect(self):
-        """Creates a connection to the Redshift cluster by
-        setting the values of the ``conn`` and ``cursor`` attributes.
-
-        Raises
-        ------
-        RedshiftConnectionError
-            If there is a problem establishing a connection to Redshift.
-        """
-        extra = {}
-        if self.dbapi.__name__ == "psycopg2":
-            extra = {"sslmode": "require"}
-        elif self.dbapi.__name__ == "pg8000":
-            extra = {"ssl": True}
-
-        try:
-            self.conn = self.dbapi.connect(
-                host=self.host,
-                user=self.user,
-                port=self.port,
-                password=self.password,
-                database=self.dbname,
-                **extra
-            )
-
-            self.cursor = self.conn.cursor()
-        except Exception as e:
-            logger.error("Error connecting to Redshift. err: %s", e)
-            raise RedshiftConnectionError("There is a problem connecting to Redshift.")
+        pass
 
     def _disconnect(self):
-        """Terminates the connection to the Redshift cluster by
-        closing the values of the ``conn`` and ``cursor`` attributes.
+        """Terminates the connection by closing the values of the ``conn`` and ``cursor``
+        attributes.
 
         Raises
         ------
-        RedshiftDisconnectionError
-            If there is a problem disconnecting from Redshift.
+        DisconnectionError
+            If there is a problem disconnecting from the database.
         """
         if self._is_connected():
             try:
@@ -152,13 +51,13 @@ class Cmd(object):
                 self.cursor.close()
                 self.conn.close()
             except Exception as e:
-                logger.error("Error disconnecting from Redshift. err: %s", e)
-                raise RedshiftDisconnectionError("There is a problem disconnecting from Redshift.")
+                logger.error("Error disconnecting from the database. err: %s", e)
+                raise DisconnectionError("There is a problem disconnecting from the database.")
         else:
             logger.info("No connection to close")
 
     def execute(self, sql, commit=True, params=None):
-        """Execute some sql against the Redshift connection.
+        """Execute some sql against the connection.
 
         Parameters
         ----------
@@ -175,11 +74,11 @@ class Cmd(object):
 
         Raises
         ------
-        RedshiftError
+        DBError
             if a problem occurs executing the ``sql`` statement
 
-        RedshiftConnectionError
-            If a connection to Redshift cannot be made
+        ConnectionError
+            If a connection to the database cannot be made
         """
         if self._is_connected():
             start_time = time.time()
@@ -188,7 +87,7 @@ class Cmd(object):
                 self.cursor.execute(sql, params)
             except Exception as e:
                 logger.error("Error running SQL query. err: %s", e)
-                raise RedshiftError("Error running SQL query.")
+                raise DBError("Error running SQL query.")
             if commit:
                 self.conn.commit()
             elapsed = time.time() - start_time
@@ -199,7 +98,7 @@ class Cmd(object):
             time_str += str(int(elapsed) % 60) + " seconds"
             logger.info("Time elapsed: %s", time_str)
         else:
-            raise RedshiftConnectionError("Cannot execute SQL on a closed connection.")
+            raise ConnectionError("Cannot execute SQL on a closed connection.")
 
     def column_names(self):
         """Pull column names out of the cursor description. Depending on the
@@ -265,6 +164,6 @@ class Cmd(object):
         return self
 
     def __exit__(self, exc_type, exc, exc_tb):
-        logger.info("Closing Redshift connection...")
+        logger.info("Closing connection...")
         self._disconnect()
         logger.info("Connection closed.")
