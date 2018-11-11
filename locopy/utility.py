@@ -169,9 +169,9 @@ def get_redshift_yaml(config_yaml):
         else:
             locopy_yaml = yaml.load(config_yaml)
     except Exception as e:
-        logger.error("Error reading Redshift yaml. err: %s", e)
-        raise CredentialsError("Error reading Redshift yaml.")
-    validate_redshift_attributes(**locopy_yaml)
+        logger.error("Error reading yaml. err: %s", e)
+        raise CredentialsError("Error reading yaml.")
+    # validate_redshift_attributes(**locopy_yaml)
     return locopy_yaml
 
 
@@ -193,15 +193,15 @@ def validate_redshift_attributes(
         If key fields are None.
     """
     if host is None:
-        raise CredentialsError("Redshift host missing")
+        raise CredentialsError("Host missing")
     if port is None:
-        raise CredentialsError("Redshift port missing")
-    if dbname is None:
-        raise CredentialsError("Redshift dbname missing")
+        raise CredentialsError("Port missing")
+    if database is None:
+        raise CredentialsError("dbname missing")
     if user is None:
-        raise CredentialsError("Redshift username missing")
+        raise CredentialsError("Username missing")
     if password is None:
-        raise CredentialsError("Redshift password missing")
+        raise CredentialsError("Password missing")
 
 
 class ProgressPercentage(object):

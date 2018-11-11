@@ -18,23 +18,67 @@
 """
 import time
 
-from abc import ABC, abstractmethod
 from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
 from .errors import CredentialsError, ConnectionError, DisconnectionError, DBError
+from .utility import get_redshift_yaml
 
 logger = get_logger(__name__, INFO)
 
 
-class Base(ABC):
+class Base(object):
     """This is the base class for all DBAPI 2 database connectors which will inherit this
     functionality. The ``Base`` class will manage connections and handle executing queries.
     Most of the functionality should work out of the box for classes which inherit minus the
-    abstract method for ``_connect`` which will vary across databases.
+    abstract method for ``_connect`` which may vary across databases.
     """
 
-    @abstractmethod
+    def __init__(
+        self,
+        dbapi=None,
+        host=None,
+        port=None,
+        database=None,
+        user=None,
+        password=None,
+        config_yaml=None,
+        **kwargs
+    ):
+        self.dbapi = dbapi
+        self.host = host
+        self.port = port
+        self.database = database
+        self.user = user
+        self.password = password
+        self.extra_conn = kwargs
+        self.conn = None
+        self.cursor = None
+
+        if config_yaml:
+            self.__dict__.update(get_redshift_yaml(config_yaml))
+
     def _connect(self):
-        pass
+        """Creates a connection to a database by setting the values of the ``conn`` and ``cursor``
+        attributes.
+
+        Raises
+        ------
+        ConnectionError
+            If there is a problem establishing a connection.
+        """
+        try:
+            self.conn = self.dbapi.connect(
+                host=self.host,
+                user=self.user,
+                port=self.port,
+                password=self.password,
+                database=self.database,
+                **self.extra_conn
+            )
+
+            self.cursor = self.conn.cursor()
+        except Exception as e:
+            logger.error("Error connecting to the database. err: %s", e)
+            raise ConnectionError("Error connecting to the database.")
 
     def _disconnect(self):
         """Terminates the connection by closing the values of the ``conn`` and ``cursor``
@@ -161,6 +205,9 @@ class Base(ABC):
             return False
 
     def __enter__(self):
+        logger.info("Connecting...")
+        self._connect()
+        logger.info("Connection established.")
         return self
 
     def __exit__(self, exc_type, exc, exc_tb):
