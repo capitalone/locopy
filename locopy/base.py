@@ -49,7 +49,7 @@ class Base(object):
         self.database = database
         self.user = user
         self.password = password
-        self.extra_conn = kwargs
+        self.extra_conn = kwargs or {}
         self.conn = None
         self.cursor = None
 
