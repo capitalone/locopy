@@ -248,9 +248,3 @@ class S3(object):
         except Exception as e:
             logger.error("Error deleting from S3. err: %s", e)
             raise S3DeletionError("Error deleting from S3.")
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc, exc_tb):
-        return self
