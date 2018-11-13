@@ -171,12 +171,12 @@ def get_redshift_yaml(config_yaml):
     except Exception as e:
         logger.error("Error reading yaml. err: %s", e)
         raise CredentialsError("Error reading yaml.")
-    # validate_redshift_attributes(**locopy_yaml)
+    validate_redshift_attributes(**locopy_yaml)
     return locopy_yaml
 
 
 def validate_redshift_attributes(
-    host=None, port=None, dbname=None, user=None, password=None, **kwargs
+    host=None, port=None, database=None, user=None, password=None, **kwargs
 ):
     """Validate Redshift connection attributes to make sure none are missing.
 
@@ -197,7 +197,7 @@ def validate_redshift_attributes(
     if port is None:
         raise CredentialsError("Port missing")
     if database is None:
-        raise CredentialsError("dbname missing")
+        raise CredentialsError("Database missing")
     if user is None:
         raise CredentialsError("Username missing")
     if password is None:

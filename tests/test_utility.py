@@ -35,12 +35,12 @@ import locopy.utility as util
 
 GOOD_CONFIG_YAML = u"""host: my.redshift.cluster.com
 port: 1234
-dbname: db
+database: db
 user: userid
 password: pass"""
 
 BAD_CONFIG_YAML = """port: 1234
-dbname: db
+database: db
 user: userid
 password: pass"""
 
@@ -160,20 +160,20 @@ def test_split_file_exception():
 @mock.patch("locopy.utility.open", mock.mock_open(read_data=GOOD_CONFIG_YAML))
 def test_get_redshift_yaml_good():
     actual = util.get_redshift_yaml("filename.yml")
-    assert set(actual.keys()) == set(["host", "port", "dbname", "user", "password"])
+    assert set(actual.keys()) == set(["host", "port", "database", "user", "password"])
     assert actual["host"] == "my.redshift.cluster.com"
     assert actual["port"] == 1234
-    assert actual["dbname"] == "db"
+    assert actual["database"] == "db"
     assert actual["user"] == "userid"
     assert actual["password"] == "pass"
 
 
 def test_get_redshift_yaml_io():
     actual = util.get_redshift_yaml(StringIO(GOOD_CONFIG_YAML))
-    assert set(actual.keys()) == set(["host", "port", "dbname", "user", "password"])
+    assert set(actual.keys()) == set(["host", "port", "database", "user", "password"])
     assert actual["host"] == "my.redshift.cluster.com"
     assert actual["port"] == 1234
-    assert actual["dbname"] == "db"
+    assert actual["database"] == "db"
     assert actual["user"] == "userid"
     assert actual["password"] == "pass"
 
@@ -192,7 +192,7 @@ def test_get_redshift_yaml_no_file():
 def test_validate_redshift_attributes_good():
     assert (
         util.validate_redshift_attributes(
-            host="host", port=1, dbname="db", user="hi", password="nope"
+            host="host", port=1, database="db", user="hi", password="nope"
         )
         is None
     )
@@ -202,10 +202,12 @@ def test_validate_redshift_attributes_nones():
     with pytest.raises(CredentialsError):
         util.validate_redshift_attributes()
     with pytest.raises(CredentialsError):
-        util.validate_redshift_attributes({"host": "host", "port": 1, "dbname": "db", "user": "hi"})
+        util.validate_redshift_attributes(
+            {"host": "host", "port": 1, "database": "db", "user": "hi"}
+        )
     with pytest.raises(CredentialsError):
         util.validate_redshift_attributes(
-            {"host": "host", "port": 1, "dbname": "db", "password": "nope"}
+            {"host": "host", "port": 1, "database": "db", "password": "nope"}
         )
     with pytest.raises(CredentialsError):
         util.validate_redshift_attributes(
@@ -213,9 +215,9 @@ def test_validate_redshift_attributes_nones():
         )
     with pytest.raises(CredentialsError):
         util.validate_redshift_attributes(
-            {"host": "host", "dbname": "db", "user": "hi", "password": "nope"}
+            {"host": "host", "database": "db", "user": "hi", "password": "nope"}
         )
     with pytest.raises(CredentialsError):
         util.validate_redshift_attributes(
-            {"port": 1, "dbname": "db", "user": "hi", "password": "nope"}
+            {"port": 1, "database": "db", "user": "hi", "password": "nope"}
         )
