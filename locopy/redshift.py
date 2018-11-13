@@ -18,16 +18,70 @@
 Module to wrap a database adapter into a Redshift class which can be used to connect
 to Redshift, and run arbitrary code.
 """
+import os
 
+from urllib.parse import urlparse
 from .base import Base
-from .utility import validate_redshift_attributes, get_redshift_yaml
+from .s3 import S3
+from .utility import (
+    ProgressPercentage,
+    validate_redshift_attributes,
+    get_redshift_yaml,
+    compress_file,
+    split_file,
+    write_file,
+)
 from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
 from .errors import CredentialsError, ConnectionError, DisconnectionError, DBError
 
 logger = get_logger(__name__, INFO)
 
 
-class Redshift(Base):
+def add_default_copy_options(copy_options=None):
+    """Adds in default options for the ``COPY`` job, unless those specific
+    options have been provided in the request.
+
+    Parameters
+    ----------
+    copy_options : list, optional
+        List of copy options to be provided to the Redshift copy command
+
+    Returns
+    -------
+    list
+        list of strings with the default options appended. If ``copy_options``
+        if not provided it will just return the default options.
+    """
+    if copy_options is None:
+        copy_options = []
+    default_options = ("DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS")
+    first_words = [opt.upper().split()[0] for opt in copy_options]
+
+    for option in default_options:
+        if option.split()[0] not in first_words:
+            copy_options.append(option)
+    return copy_options
+
+
+def combine_copy_options(copy_options):
+    """ Returns the ``copy_options`` attribute with spaces in between and as
+    a string.
+
+    Parameters
+    ----------
+    copy_options : list
+        copy options which is to be converted into a single string with spaces
+        inbetween.
+
+    Returns
+    -------
+    str:
+        ``copy_options`` attribute with spaces in between
+    """
+    return " ".join(copy_options)
+
+
+class Redshift(S3, Base):
     """Locopy class which manages connections to Redshift.  Inherits ``Base`` and implements the
     specific ``COPY`` and ``UNLOAD`` functionality.
 
@@ -36,26 +90,36 @@ class Redshift(Base):
 
     Parameters
     ----------
-    dbapi : DBAPI 2 module
+    profile : str, optional
+        The name of the AWS profile to use which is typical stored in the
+        ``credentials`` file.  You can also set environment variable
+        ``AWS_DEFAULT_PROFILE`` which would be used instead.
+
+    kms_key : str, optional
+        The KMS key to use for encryption
+        If kms_key Defaults to ``None`` then the AES256 ServerSideEncryption
+        will be used.
+
+    dbapi : DBAPI 2 module, optional
         A PostgreSQL database adapter which is Python DB API 2.0 compliant
         (``psycopg2``, ``pg8000``, etc.)
 
-    host : str
+    host : str, optional
         Host name of the Redshift cluster to connect to.
 
-    port : int
+    port : int, optional
         Port which connection will be made to Redshift.
 
-    dbname : str
+    dbname : str, optional
         Redshift database name.
 
-    user : str
+    user : str, optional
         Redshift users username.
 
-    password : str
+    password : str, optional
         Redshift users password.
 
-    config_yaml : str
+    config_yaml : str, optional
         String representing the file location of the credentials.
 
     Raises
@@ -66,39 +130,19 @@ class Redshift(Base):
 
     def __init__(
         self,
+        profile=None,
+        kms_key=None,
         dbapi=None,
         host=None,
         port=None,
-        dbname=None,
+        database=None,
         user=None,
         password=None,
         config_yaml=None,
         **kwargs
     ):
-
-        self.dbapi = dbapi
-        self.host = host
-        self.port = port
-        self.dbname = dbname
-        self.user = user
-        self.password = password
-        self.conn = None
-        self.cursor = None
-
-        try:
-            validate_redshift_attributes(host, port, dbname, user, password)
-        except:
-            try:
-                atts = get_redshift_yaml(config_yaml)
-                self.host = atts["host"]
-                self.port = atts["port"]
-                self.dbname = atts["dbname"]
-                self.user = atts["user"]
-                self.password = atts["password"]
-            except Exception as e:
-                logger.error("Must provide credential attributes or YAML. err: %s", e)
-                raise CredentialsError("Must provide credential attributes or YAML.")
-        self._connect()
+        S3.__init__(self, profile, kms_key)
+        Base.__init__(self, dbapi, host, port, database, user, password, config_yaml, **kwargs)
 
     def _connect(self):
         """Creates a connection to the Redshift cluster by
@@ -109,26 +153,11 @@ class Redshift(Base):
         ConnectionError
             If there is a problem establishing a connection to Redshift.
         """
-        extra = {}
         if self.dbapi.__name__ == "psycopg2":
-            extra = {"sslmode": "require"}
+            self.extra_conn["sslmode"] = "require"
         elif self.dbapi.__name__ == "pg8000":
-            extra = {"ssl": True}
-
-        try:
-            self.conn = self.dbapi.connect(
-                host=self.host,
-                user=self.user,
-                port=self.port,
-                password=self.password,
-                database=self.dbname,
-                **extra
-            )
-
-            self.cursor = self.conn.cursor()
-        except Exception as e:
-            logger.error("Error connecting to the database. err: %s", e)
-            raise ConnectionError("Error connecting to the database.")
+            self.extra_conn["ssl"] = True
+        super(Redshift, self)._connect()
 
     def _copy_to_redshift(self, tablename, s3path, delim="|", copy_options=None):
         """Executes the COPY command to load CSV files from S3 into
@@ -156,7 +185,7 @@ class Redshift(Base):
             has not been initalized, or credentials are wrong.
         """
         if not self._is_connected():
-            raise RedshiftConnectionError("No Redshift connection object is present.")
+            raise ConnectionError("No Redshift connection object is present.")
 
         copy_options = add_default_copy_options(copy_options)
         copy_options_text = combine_copy_options(copy_options)
@@ -169,7 +198,7 @@ class Redshift(Base):
 
         except Exception as e:
             logger.error("Error running COPY on Redshift. err: %s", e)
-            raise RedshiftError("Error running COPY on Redshift.")
+            raise DBError("Error running COPY on Redshift.")
 
     def run_copy(
         self,

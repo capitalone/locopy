@@ -84,24 +84,69 @@ def test_redshift_execute_multiple_rows(dbapi):
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_s3_upload_download_file(s3_bucket, dbapi):
 
-    with locopy.S3(**CREDS_DICT) as s3:
-        s3.upload_to_s3(LOCAL_FILE, S3_BUCKET, "myfile.txt")
+    s3 = locopy.S3(**CREDS_DICT)
+    s3.upload_to_s3(LOCAL_FILE, S3_BUCKET, "myfile.txt")
 
-    with locopy.S3(**CREDS_DICT) as s3:
-        s3.download_from_s3(S3_BUCKET, "myfile.txt", LOCAL_FILE_DL)
+    s3 = locopy.S3(**CREDS_DICT)
+    s3.download_from_s3(S3_BUCKET, "myfile.txt", LOCAL_FILE_DL)
 
     assert filecmp.cmp(LOCAL_FILE, LOCAL_FILE_DL)
     os.remove(LOCAL_FILE_DL)
 
 
 @pytest.mark.integration
-def test_s3_only_upload_download_file(s3_bucket):
+@pytest.mark.parametrize("dbapi", DBAPIS)
+def test_copy(s3_bucket, dbapi):
 
-    with locopy.S3(profile=CREDS_DICT["profile"]) as s3:
-        s3.upload_to_s3(LOCAL_FILE, S3_BUCKET, "myfile.txt")
+    with locopy.Redshift(dbapi=dbapi, **CREDS_DICT) as redshift:
+        redshift.execute(
+            "CREATE TEMPORARY TABLE locopy_integration_testing (id INTEGER, variable VARCHAR(20)) DISTKEY(variable)"
+        )
+        redshift.run_copy(
+            LOCAL_FILE,
+            S3_BUCKET,
+            "locopy_integration_testing",
+            delim="|",
+            delete_s3_after=True,
+            compress=False,
+        )
+        redshift.execute("SELECT * FROM locopy_integration_testing ORDER BY id")
+        results = redshift.cursor.fetchall()
 
-    with locopy.S3(profile=CREDS_DICT["profile"]) as s3:
-        s3.download_from_s3(S3_BUCKET, "myfile.txt", LOCAL_FILE_DL)
+        expected = [
+            (1, "This iš line 1"),
+            (2, "This is liné 2"),
+            (3, "This is line 3"),
+            (4, "This is lïne 4"),
+        ]
 
-    assert filecmp.cmp(LOCAL_FILE, LOCAL_FILE_DL)
-    os.remove(LOCAL_FILE_DL)
+        for i, result in enumerate(results):
+            assert result[0] == expected[i][0]
+            assert result[1] == expected[i][1]
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("dbapi", DBAPIS)
+def test_unload(s3_bucket, dbapi):
+
+    with locopy.Redshift(dbapi=dbapi, **CREDS_DICT) as redshift:
+        redshift.execute(
+            "CREATE TEMPORARY TABLE locopy_integration_testing AS SELECT ('2017-12-31'::date + row_number() over (order by 1))::date from SVV_TABLES LIMIT 5"
+        )
+        sql = "SELECT * FROM locopy_integration_testing"
+        redshift.run_unload(sql, S3_BUCKET, delimiter="|", export_path=LOCAL_FILE_DL)
+        redshift.execute("SELECT * FROM locopy_integration_testing ORDER BY date")
+        results = redshift.cursor.fetchall()
+
+        expected = [
+            ("2018-01-01",),
+            ("2018-01-02",),
+            ("2018-01-03",),
+            ("2018-01-04",),
+            ("2018-01-05",),
+        ]
+
+        for i, result in enumerate(results):
+            assert result[0].strftime("%Y-%m-%d") == expected[i][0]
+
+        os.remove(LOCAL_FILE_DL)
