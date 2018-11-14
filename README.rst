@@ -79,9 +79,9 @@ The Redshift connection (``Redshift``) can be used like this:
     import pg8000
     import locopy
 
-    with locopy.Redshift(dbapi=pg8000, config_yaml="config.yml") as cmd:
-        cmd.execute("SELECT * FROM schema.table")
-        df = cmd.to_dataframe()
+    with locopy.Redshift(dbapi=pg8000, config_yaml="config.yml") as redshift:
+        redshift.execute("SELECT * FROM schema.table")
+        df = redshift.to_dataframe()
     print(df)
 
 

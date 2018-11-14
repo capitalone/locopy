@@ -30,6 +30,67 @@ class Base(object):
     functionality. The ``Base`` class will manage connections and handle executing queries.
     Most of the functionality should work out of the box for classes which inherit minus the
     abstract method for ``_connect`` which may vary across databases.
+
+    Parameters
+    ----------
+    dbapi : DBAPI 2 module, optional
+        A database adapter which is Python DB API 2.0 compliant
+        (``psycopg2``, ``pg8000``, etc.)
+
+    host : str, optional
+        Host name of the Redshift cluster to connect to.
+
+    port : int, optional
+        Port which connection will be made to Redshift.
+
+    database : str, optional
+        Database name.
+
+    user : str, optional
+        Database username.
+
+    password : str, optional
+        Database password.
+
+    config_yaml : str, optional
+        String representing the file location of the credentials.
+
+    **kwargs
+        Optional keyword arguments.
+
+    Attributes
+    ----------
+    dbapi : DBAPI 2 module
+        database adapter which is Python DBAPI 2.0 compliant
+
+    host : str
+        Database host name
+
+    port : int
+        Database port number
+
+    database : str
+        Database name.
+
+    user : str
+        Database username.
+
+    password : str
+        Database password.
+
+    extra_conn : dict
+        Dictionary of additonal connection items
+
+    conn : dbapi.connection
+        DBAPI connection instance
+
+    cursor : dbapi.cursor
+        DBAPI cursor instance
+
+    Raises
+    ------
+    CredentialsError
+        Database credentials are not provided or valid
     """
 
     def __init__(

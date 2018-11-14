@@ -53,10 +53,13 @@ class S3(object):
         If kms_key Defaults to ``None`` then the AES256 ServerSideEncryption
         will be used.
 
+    **kwargs
+        Optional keyword arguments.
+
     Attributes
     ----------
-    session : boto3.Session
-        Holds the session & credentials information for the S3 connection.
+    profile : str
+        String representing the AWS profile for authentication
 
     kms_key : str
         String representing the s3 kms key
@@ -66,6 +69,17 @@ class S3(object):
 
     s3 : botocore.client.S3
         Hold the S3 client object which is used to upload/delete files to S3
+
+    Raises
+    ------
+    S3Error
+        Error initializing AWS Session (ex: invalid profile)
+
+    S3CredentialsError
+        Issue with AWS credentials
+
+    S3InitializationError
+        Issue initializing S3 session
     """
 
     def __init__(self, profile=None, kms_key=None, **kwargs):

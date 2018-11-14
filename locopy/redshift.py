@@ -122,10 +122,63 @@ class Redshift(S3, Base):
     config_yaml : str, optional
         String representing the file location of the credentials.
 
+    **kwargs
+        Optional keyword arguments.
+
+    Attributes
+    ----------
+    profile : str
+        String representing the AWS profile for authentication
+
+    kms_key : str
+        String representing the s3 kms key
+
+    session : boto3.Session
+        Hold the AWS session credentials / info
+
+    s3 : botocore.client.S3
+        Hold the S3 client object which is used to upload/delete files to S3
+
+    dbapi : DBAPI 2 module
+        database adapter which is Python DBAPI 2.0 compliant
+
+    host : str
+        Database host name
+
+    port : int
+        Database port number
+
+    database : str
+        Database name.
+
+    user : str
+        Database username.
+
+    password : str
+        Database password.
+
+    extra_conn : dict
+        Dictionary of additonal connection items
+
+    conn : dbapi.connection
+        DBAPI connection instance
+
+    cursor : dbapi.cursor
+        DBAPI cursor instance
+
     Raises
     ------
     CredentialsError
-        Credentials are not provided or valid
+        Database credentials are not provided or valid
+
+    S3Error
+        Error initializing AWS Session (ex: invalid profile)
+
+    S3CredentialsError
+        Issue with AWS credentials
+
+    S3InitializationError
+        Issue initializing S3 session
     """
 
     def __init__(
