@@ -66,9 +66,14 @@ The YAML would consist of the following items:
     # required to connect to redshift
     host: my.redshift.cluster.com
     port: 5439
-    dbname: db
+    database: db
     user: userid
     password: password
+    ## optional extras for the dbapi connector
+    extra_conn:
+        sslmode: require
+        another_option: 123
+
 
 
 If you aren't loading data, you don't need to have AWS tokens set up.

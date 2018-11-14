@@ -85,8 +85,8 @@ class Redshift(S3, Base):
     """Locopy class which manages connections to Redshift.  Inherits ``Base`` and implements the
     specific ``COPY`` and ``UNLOAD`` functionality.
 
-    If any of host, port, dbname, user and password are not provided, a
-    config_yaml file must be provided with those parameters in it.
+    If any of host, port, dbname, user and password are not provided, a config_yaml file must be
+    provided with those parameters in it. Please note ssl is always enforced when connecting.
 
     Parameters
     ----------
