@@ -70,9 +70,8 @@ The YAML would consist of the following items:
     user: userid
     password: password
     ## optional extras for the dbapi connector
-    extra_conn:
-        sslmode: require
-        another_option: 123
+    sslmode: require
+    another_option: 123
 
 
 

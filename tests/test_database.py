@@ -26,7 +26,7 @@ import pg8000, psycopg2
 
 from locopy import Database
 from locopy.utility import read_config_yaml
-from locopy.errors import ConnectionError, DisconnectionError, DBError
+from locopy.errors import DBError
 
 
 GOOD_CONFIG_YAML = """
@@ -123,7 +123,7 @@ def test_connect(credentials, dbapi):
 
     # side effect exception
     mock_connect.side_effect = Exception("Connect Exception")
-    with pytest.raises(ConnectionError):
+    with pytest.raises(DBError):
         b._connect()
 
 
@@ -140,7 +140,7 @@ def test_disconnect(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         b._connect()
         b.conn.close.side_effect = Exception("Disconnect Exception")
-        with pytest.raises(DisconnectionError):
+        with pytest.raises(DBError):
             b._disconnect()
 
 
@@ -166,7 +166,7 @@ def test_execute_no_connection_exception(credentials, dbapi):
         test = Database(dbapi=dbapi, **credentials)
         test.conn = None
         test.cursor = None
-        with pytest.raises(ConnectionError):
+        with pytest.raises(DBError):
             test.execute("SELECT * FROM some_table")
 
 

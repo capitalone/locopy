@@ -26,7 +26,7 @@ import locopy
 
 from locopy import Redshift
 from unittest import mock
-from locopy.errors import CredentialsError, ConnectionError, DisconnectionError, DBError
+from locopy.errors import CredentialsError, DBError
 
 
 PROFILE = "test"
@@ -118,7 +118,7 @@ def test_redshift_connect(mock_session, credentials, dbapi):
 
         # side effect exception
         mock_connect.side_effect = Exception("Connect Exception")
-        with pytest.raises(ConnectionError):
+        with pytest.raises(DBError):
             r._connect()
 
 
@@ -391,7 +391,7 @@ def test_redshift_copy_to_redshift_exception(mock_connected, mock_session, crede
         r = locopy.Redshift(dbapi=dbapi, **credentials)
         mock_connected.return_value = False
 
-        with pytest.raises(ConnectionError):
+        with pytest.raises(DBError):
             r._copy_to_redshift("table", "s3bucket")
 
         mock_connected.return_value = True

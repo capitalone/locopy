@@ -25,7 +25,7 @@ from .database import Database
 from .s3 import S3
 from .utility import ProgressPercentage, compress_file, split_file, write_file
 from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
-from .errors import CredentialsError, ConnectionError, DisconnectionError, DBError
+from .errors import CredentialsError, DBError
 
 logger = get_logger(__name__, INFO)
 
@@ -75,7 +75,7 @@ def combine_copy_options(copy_options):
 
 
 class Redshift(S3, Database):
-    """Locopy class which manages connections to Redshift.  Inherits ``Base`` and implements the
+    """Locopy class which manages connections to Redshift.  Inherits ``Database`` and implements the
     specific ``COPY`` and ``UNLOAD`` functionality.
 
     If any of host, port, dbname, user and password are not provided, a config_yaml file must be
@@ -156,7 +156,7 @@ class Redshift(S3, Database):
 
         Raises
         ------
-        ConnectionError
+        DBError
             If there is a problem establishing a connection to Redshift.
         """
         if self.dbapi.__name__ == "psycopg2":
@@ -191,7 +191,7 @@ class Redshift(S3, Database):
             has not been initalized, or credentials are wrong.
         """
         if not self._is_connected():
-            raise ConnectionError("No Redshift connection object is present.")
+            raise DBError("No Redshift connection object is present.")
 
         copy_options = add_default_copy_options(copy_options)
         copy_options_text = combine_copy_options(copy_options)

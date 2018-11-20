@@ -174,35 +174,6 @@ def read_config_yaml(config_yaml):
     return locopy_yaml
 
 
-# def validate_redshift_attributes(
-#     host=None, port=None, database=None, user=None, password=None, **kwargs
-# ):
-#     """Validate Redshift connection attributes to make sure none are missing.
-#
-#     * All the Redshift connect details need to be set:
-#         * Host
-#         * Port
-#         * Database name
-#         * Database username
-#         * Database password
-#
-#     Raises
-#     ------
-#     CredentialsError
-#         If key fields are None.
-#     """
-#     if host is None:
-#         raise CredentialsError("Host missing")
-#     if port is None:
-#         raise CredentialsError("Port missing")
-#     if database is None:
-#         raise CredentialsError("Database missing")
-#     if user is None:
-#         raise CredentialsError("Username missing")
-#     if password is None:
-#         raise CredentialsError("Password missing")
-
-
 class ProgressPercentage(object):
     """
     ProgressPercentage class is used by the S3Transfer upload_file callback

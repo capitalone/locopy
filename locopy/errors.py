@@ -45,18 +45,6 @@ class CredentialsError(DBError):
     """
 
 
-class ConnectionError(DBError):
-    """
-    Raised when there is a problem establishing a connection to Redshift.
-    """
-
-
-class DisconnectionError(DBError):
-    """
-    Raised when there is a problem establishing a connection to Redshift.
-    """
-
-
 class S3Error(Exception):
     """
     Base class for all S3 errors.

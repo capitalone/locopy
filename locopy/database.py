@@ -19,7 +19,7 @@
 import time
 
 from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
-from .errors import CredentialsError, ConnectionError, DisconnectionError, DBError
+from .errors import CredentialsError, DBError
 from .utility import read_config_yaml
 
 logger = get_logger(__name__, INFO)
@@ -80,7 +80,7 @@ class Database(object):
 
         Raises
         ------
-        ConnectionError
+        DBError
             If there is a problem establishing a connection.
         """
         try:
@@ -88,7 +88,7 @@ class Database(object):
             self.cursor = self.conn.cursor()
         except Exception as e:
             logger.error("Error connecting to the database. err: %s", e)
-            raise ConnectionError("Error connecting to the database.")
+            raise DBError("Error connecting to the database.")
 
     def _disconnect(self):
         """Terminates the connection by closing the values of the ``conn`` and ``cursor``
@@ -96,7 +96,7 @@ class Database(object):
 
         Raises
         ------
-        DisconnectionError
+        DBError
             If there is a problem disconnecting from the database.
         """
         if self._is_connected():
@@ -106,7 +106,7 @@ class Database(object):
                 self.conn.close()
             except Exception as e:
                 logger.error("Error disconnecting from the database. err: %s", e)
-                raise DisconnectionError("There is a problem disconnecting from the database.")
+                raise DBError("There is a problem disconnecting from the database.")
         else:
             logger.info("No connection to close")
 
@@ -131,7 +131,7 @@ class Database(object):
         DBError
             if a problem occurs executing the ``sql`` statement
 
-        ConnectionError
+        DBError
             If a connection to the database cannot be made
         """
         if self._is_connected():
@@ -152,7 +152,7 @@ class Database(object):
             time_str += str(int(elapsed) % 60) + " seconds"
             logger.info("Time elapsed: %s", time_str)
         else:
-            raise ConnectionError("Cannot execute SQL on a closed connection.")
+            raise DBError("Cannot execute SQL on a closed connection.")
 
     def column_names(self):
         """Pull column names out of the cursor description. Depending on the
