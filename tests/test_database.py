@@ -26,7 +26,7 @@ import pg8000, psycopg2
 
 from locopy import Database
 from locopy.utility import read_config_yaml
-from locopy.errors import DBError
+from locopy.errors import DBError, CredentialsError
 
 
 GOOD_CONFIG_YAML = """
@@ -50,6 +50,33 @@ def test_database_constructor(credentials, dbapi):
     assert d.connection["database"] == "database"
     assert d.connection["user"] == "user"
     assert d.connection["password"] == "password"
+
+
+@pytest.mark.parametrize("dbapi", DBAPIS)
+def test_database_constructor_kwargs(dbapi):
+    d = Database(
+        dbapi=dbapi, host="host", port="port", database="database", user="user", password="password"
+    )
+    assert d.connection["host"] == "host"
+    assert d.connection["port"] == "port"
+    assert d.connection["database"] == "database"
+    assert d.connection["user"] == "user"
+    assert d.connection["password"] == "password"
+
+
+@pytest.mark.parametrize("dbapi", DBAPIS)
+@mock.patch("locopy.utility.open", mock.mock_open(read_data=GOOD_CONFIG_YAML))
+def test_database_constructor_kwargs_and_yaml(dbapi):
+    with pytest.raises(CredentialsError):
+        Database(
+            dbapi=dbapi,
+            config_yaml="some_config.yml",
+            host="host",
+            port="port",
+            database="database",
+            user="user",
+            password="password",
+        )
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)

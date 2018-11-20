@@ -62,7 +62,7 @@ class Database(object):
     Raises
     ------
     CredentialsError
-        Database credentials are not provided or valid
+        Database credentials are not provided, valid, or both kwargs and a YAML config was provided.
     """
 
     def __init__(self, dbapi, config_yaml=None, **kwargs):
@@ -71,6 +71,8 @@ class Database(object):
         self.conn = None
         self.cursor = None
 
+        if config_yaml and self.connection:
+            raise CredentialsError("Please provide kwargs or a YAML configuraton, not both.")
         if config_yaml:
             self.connection = read_config_yaml(config_yaml)
 
