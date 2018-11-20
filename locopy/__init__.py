@@ -14,5 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .locopy import Cmd
+from .database import Database
+from .redshift import Redshift
 from .s3 import S3

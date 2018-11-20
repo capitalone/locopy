@@ -66,43 +66,46 @@ The YAML would consist of the following items:
     # required to connect to redshift
     host: my.redshift.cluster.com
     port: 5439
-    dbname: db
+    database: db
     user: userid
     password: password
+    ## optional extras for the dbapi connector
+    sslmode: require
+    another_option: 123
+
 
 
 If you aren't loading data, you don't need to have AWS tokens set up.
-The Redshift connection (``Cmd``) can be used like this:
+The Redshift connection (``Redshift``) can be used like this:
 
 .. code-block:: python
 
     import pg8000
     import locopy
 
-    with locopy.Cmd(dbapi=pg8000, config_yaml="config.yml") as cmd:
-        cmd.execute("SELECT * FROM schema.table")
-        df = cmd.to_dataframe()
+    with locopy.Redshift(dbapi=pg8000, config_yaml="config.yml") as redshift:
+        redshift.execute("SELECT * FROM schema.table")
+        df = redshift.to_dataframe()
     print(df)
 
 
-If you want to load data to Redshift via S3, the ``Cmd`` class is sub-classed as
-``S3``:
+If you want to load data to Redshift via S3, the ``Redshift`` class inherits from ``S3``:
 
 .. code-block:: python
 
     import pg8000
     import locopy
 
-    with locopy.S3(dbapi=pg8000, config_yaml="config.yml") as s3:
-        s3.execute("SET query_group TO quick")
-        s3.execute("CREATE TABLE schema.table (variable VARCHAR(20)) DISTKEY(variable)")
-        s3.run_copy(
+    with locopy.Redshift(dbapi=pg8000, config_yaml="config.yml") as redshift:
+        redshift.execute("SET query_group TO quick")
+        redshift.execute("CREATE TABLE schema.table (variable VARCHAR(20)) DISTKEY(variable)")
+        redshift.run_copy(
             local_file="example/example_data.csv",
             s3_bucket="my_s3_bucket",
             table_name="schema.table",
             delim=",")
-        s3.execute("SELECT * FROM schema.table")
-        res = s3.cursor.fetchall()
+        redshift.execute("SELECT * FROM schema.table")
+        res = redshift.cursor.fetchall()
 
     print(res)
 
@@ -112,9 +115,9 @@ If you want to download data from Redshift to a CSV, or read it into Python
 .. code-block:: python
 
     my_profile = "some_profile_with_valid_tokens"
-    with locopy.S3(dbapi=pg8000, config_yaml="config.yml",profile=my_profile) as s3:
+    with locopy.Redshift(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as redshift:
         ##Optionally provide export if you ALSO want the exported data copied to a flat file
-        data = s3.run_unload(
+        redshift.run_unload(
             query="SELECT * FROM schema.table",
             s3_bucket="my_s3_bucket",
             export_path="my_output_destination.csv")
@@ -134,7 +137,7 @@ for more information, but you can:
 - Populate environment variables ``AWS_ACCESS_KEY_ID``, ``AWS_SECRET_ACCESS_KEY``,
   etc.
 - Leverage the AWS credentials file.  If you have multiple profiles configured
-  you can either call ``locopy.S3(profile="my-profile")``, or set up an
+  you can either call ``locopy.Redshift(profile="my-profile")``, or set up an
   environment variable ``AWS_DEFAULT_PROFILE``.
 - If you are on a EC2 instance you can assume the credentials associated with the IAM role attached.
 

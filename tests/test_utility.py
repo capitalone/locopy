@@ -29,20 +29,18 @@ from io import StringIO
 from itertools import cycle
 from botocore.credentials import Credentials
 from locopy.utility import compress_file, split_file
-from locopy.errors import (CompressionError, LocopySplitError,
-                           RedshiftCredentialsError)
+from locopy.errors import CompressionError, LocopySplitError, CredentialsError
 import locopy.utility as util
-
 
 
 GOOD_CONFIG_YAML = u"""host: my.redshift.cluster.com
 port: 1234
-dbname: db
+database: db
 user: userid
 password: pass"""
 
 BAD_CONFIG_YAML = """port: 1234
-dbname: db
+database: db
 user: userid
 password: pass"""
 
@@ -54,7 +52,7 @@ def cleanup(splits):
 
 def compare_file_contents(base_file, check_files):
     check_files = cycle([open(x, "rb") for x in check_files])
-    with open(base_file, 'rb') as base:
+    with open(base_file, "rb") as base:
         for line in base:
             cfile = next(check_files)
             compare_line = cfile.readline()
@@ -63,71 +61,66 @@ def compare_file_contents(base_file, check_files):
     return True
 
 
-@mock.patch('locopy.utility.open')
-@mock.patch('locopy.utility.gzip.open')
-@mock.patch('locopy.utility.shutil.copyfileobj')
+@mock.patch("locopy.utility.open")
+@mock.patch("locopy.utility.gzip.open")
+@mock.patch("locopy.utility.shutil.copyfileobj")
 def test_compress_file(mock_shutil, mock_gzip_open, mock_open):
-    compress_file('input', 'output')
-    mock_open.assert_called_with('input', 'rb')
-    mock_gzip_open.assert_called_with('output', 'wb')
-    mock_shutil.assert_called_with(mock_open().__enter__(),
-                                   mock_gzip_open().__enter__())
+    compress_file("input", "output")
+    mock_open.assert_called_with("input", "rb")
+    mock_gzip_open.assert_called_with("output", "wb")
+    mock_shutil.assert_called_with(mock_open().__enter__(), mock_gzip_open().__enter__())
 
 
-
-@mock.patch('locopy.utility.open')
-@mock.patch('locopy.utility.gzip.open')
-@mock.patch('locopy.utility.shutil.copyfileobj')
-def test_compress_file_exception(
-    mock_shutil, mock_gzip_open, mock_open):
+@mock.patch("locopy.utility.open")
+@mock.patch("locopy.utility.gzip.open")
+@mock.patch("locopy.utility.shutil.copyfileobj")
+def test_compress_file_exception(mock_shutil, mock_gzip_open, mock_open):
     mock_shutil.side_effect = Exception("SomeException")
     with pytest.raises(CompressionError):
-        compress_file('input', 'output')
-
-
+        compress_file("input", "output")
 
 
 def test_split_file():
-    input_file = 'tests/data/mock_file.txt'
-    output_file = 'tests/data/mock_output_file.txt'
+    input_file = "tests/data/mock_file.txt"
+    output_file = "tests/data/mock_output_file.txt"
 
-    expected = ['tests/data/mock_output_file.txt.0',
-                'tests/data/mock_output_file.txt.1']
+    expected = ["tests/data/mock_output_file.txt.0", "tests/data/mock_output_file.txt.1"]
     splits = split_file(input_file, output_file)
     assert splits == expected
     assert compare_file_contents(input_file, expected)
     cleanup(splits)
 
-
-    expected = ['tests/data/mock_output_file.txt.0',
-                'tests/data/mock_output_file.txt.1',
-                'tests/data/mock_output_file.txt.2']
+    expected = [
+        "tests/data/mock_output_file.txt.0",
+        "tests/data/mock_output_file.txt.1",
+        "tests/data/mock_output_file.txt.2",
+    ]
     splits = split_file(input_file, output_file, 3)
     assert splits == expected
     assert compare_file_contents(input_file, expected)
     cleanup(splits)
 
-
-    expected = ['tests/data/mock_output_file.txt.0',
-                'tests/data/mock_output_file.txt.1',
-                'tests/data/mock_output_file.txt.2',
-                'tests/data/mock_output_file.txt.3',
-                'tests/data/mock_output_file.txt.4']
+    expected = [
+        "tests/data/mock_output_file.txt.0",
+        "tests/data/mock_output_file.txt.1",
+        "tests/data/mock_output_file.txt.2",
+        "tests/data/mock_output_file.txt.3",
+        "tests/data/mock_output_file.txt.4",
+    ]
     splits = split_file(input_file, output_file, 5)
     assert splits == expected
     assert compare_file_contents(input_file, expected)
     cleanup(splits)
 
 
-
 def test_split_file_exception():
-    input_file = 'tests/data/mock_file.txt'
-    output_file = 'tests/data/mock_output_file.txt'
+    input_file = "tests/data/mock_file.txt"
+    output_file = "tests/data/mock_output_file.txt"
 
     if sys.version_info.major == 3:
-        builtin_module_name = 'builtins'
+        builtin_module_name = "builtins"
     else:
-        builtin_module_name = '__builtin__'
+        builtin_module_name = "__builtin__"
 
     with pytest.raises(LocopySplitError):
         split_file(input_file, output_file, -1)
@@ -142,10 +135,9 @@ def test_split_file_exception():
     with pytest.raises(LocopySplitError):
         split_file(input_file, output_file, "Test")
 
-
-    with mock.patch('{0}.next'.format(builtin_module_name)) as mock_next:
-        with mock.patch('os.remove') as mock_remove:
-            mock_next.side_effect = Exception('SomeException')
+    with mock.patch("{0}.next".format(builtin_module_name)) as mock_next:
+        with mock.patch("os.remove") as mock_remove:
+            mock_next.side_effect = Exception("SomeException")
 
             with pytest.raises(LocopySplitError):
                 split_file(input_file, output_file)
@@ -156,67 +148,36 @@ def test_split_file_exception():
                 split_file(input_file, output_file, 3)
             assert mock_remove.call_count == 3
 
-    cleanup(['tests/data/mock_output_file.txt.0',
-             'tests/data/mock_output_file.txt.1',
-             'tests/data/mock_output_file.txt.2'])
+    cleanup(
+        [
+            "tests/data/mock_output_file.txt.0",
+            "tests/data/mock_output_file.txt.1",
+            "tests/data/mock_output_file.txt.2",
+        ]
+    )
 
 
-
-@mock.patch('locopy.utility.open', mock.mock_open(read_data=GOOD_CONFIG_YAML))
-def test_get_redshift_yaml_good():
-    actual = util.get_redshift_yaml('filename.yml')
-    assert set(actual.keys()) == set(['host','port','dbname','user','password'])
-    assert actual['host'] == 'my.redshift.cluster.com'
-    assert actual['port'] == 1234
-    assert actual['dbname'] == 'db'
-    assert actual['user'] == 'userid'
-    assert actual['password'] == 'pass'
-
+@mock.patch("locopy.utility.open", mock.mock_open(read_data=GOOD_CONFIG_YAML))
+def test_read_config_yaml_good():
+    actual = util.read_config_yaml("filename.yml")
+    assert set(actual.keys()) == set(["host", "port", "database", "user", "password"])
+    assert actual["host"] == "my.redshift.cluster.com"
+    assert actual["port"] == 1234
+    assert actual["database"] == "db"
+    assert actual["user"] == "userid"
+    assert actual["password"] == "pass"
 
 
-def test_get_redshift_yaml_io():
-    actual = util.get_redshift_yaml(StringIO(GOOD_CONFIG_YAML))
-    assert set(actual.keys()) == set(['host','port','dbname','user','password'])
-    assert actual['host'] == 'my.redshift.cluster.com'
-    assert actual['port'] == 1234
-    assert actual['dbname'] == 'db'
-    assert actual['user'] == 'userid'
-    assert actual['password'] == 'pass'
+def test_read_config_yaml_io():
+    actual = util.read_config_yaml(StringIO(GOOD_CONFIG_YAML))
+    assert set(actual.keys()) == set(["host", "port", "database", "user", "password"])
+    assert actual["host"] == "my.redshift.cluster.com"
+    assert actual["port"] == 1234
+    assert actual["database"] == "db"
+    assert actual["user"] == "userid"
+    assert actual["password"] == "pass"
 
 
-
-
-@mock.patch('locopy.utility.open', mock.mock_open(read_data=BAD_CONFIG_YAML))
-def test_get_redshift_yaml_bad():
-    with pytest.raises(RedshiftCredentialsError):
-        util.get_redshift_yaml('filename.yml')
-
-
-def test_get_redshift_yaml_no_file():
-    with pytest.raises(RedshiftCredentialsError):
-        util.get_redshift_yaml('file_that_does_not_exist.yml')
-
-
-def test_validate_redshift_attributes_good():
-    assert util.validate_redshift_attributes(
-        host='host', port=1, dbname='db', user='hi', password='nope') is None
-
-
-def test_validate_redshift_attributes_nones():
-    with pytest.raises(RedshiftCredentialsError):
-        util.validate_redshift_attributes()
-    with pytest.raises(RedshiftCredentialsError):
-        util.validate_redshift_attributes(
-            {'host':'host', 'port':1, 'dbname':'db', 'user':'hi'})
-    with pytest.raises(RedshiftCredentialsError):
-        util.validate_redshift_attributes(
-            {'host':'host', 'port':1, 'dbname':'db', 'password':'nope'})
-    with pytest.raises(RedshiftCredentialsError):
-        util.validate_redshift_attributes(
-            {'host':'host', 'port':1, 'user':'hi', 'password':'nope'})
-    with pytest.raises(RedshiftCredentialsError):
-        util.validate_redshift_attributes(
-            {'host':'host', 'dbname':'db', 'user':'hi', 'password':'nope'})
-    with pytest.raises(RedshiftCredentialsError):
-        util.validate_redshift_attributes(
-            {'port':1, 'dbname':'db', 'user':'hi', 'password':'nope'})
+def test_read_config_yaml_no_file():
+    with pytest.raises(CredentialsError):
+        util.read_config_yaml("file_that_does_not_exist.yml")

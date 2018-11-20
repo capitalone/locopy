@@ -24,9 +24,19 @@ import locopy
 
 
 class MockS3(locopy.S3):
-    def __init__(self, dbapi=None, profile=None, kms_key=None, host=None,
-                 port=None, dbname=None, user=None, password=None,
-                 config_yaml=None, ssl=True):
+    def __init__(
+        self,
+        dbapi=None,
+        profile=None,
+        kms_key=None,
+        host=None,
+        port=None,
+        dbname=None,
+        user=None,
+        password=None,
+        config_yaml=None,
+        ssl=True,
+    ):
         self.profile = profile
         self.kms_key = kms_key
         self.session = None
@@ -37,6 +47,6 @@ class MockS3(locopy.S3):
         self._set_client()
 
 
-class CmdNoConnect(locopy.Cmd):
+class RedshiftNoConnect(locopy.Redshift):
     def _connect(self):
         pass

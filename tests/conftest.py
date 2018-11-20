@@ -26,39 +26,16 @@ from botocore.credentials import Credentials
 
 
 @pytest.fixture()
-def rs_creds():
-    return {'host': 'host', 'port': 'port', 'dbname': 'dbname', 'user': 'user',
-            'password': 'password'}
+def credentials():
+    return {
+        "host": "host",
+        "port": "port",
+        "database": "database",
+        "user": "user",
+        "password": "password",
+    }
 
-
-@pytest.fixture()
-def rs_bad_1():
-    return {'host': 'host', 'port': 'port', 'dbname': 'dbname', 'user': 'user'}
-
-
-@pytest.fixture()
-def rs_bad_2():
-    return {'host': 'host', 'port': 'port', 'dbname': 'dbname',
-            'password': 'password'}
-
-
-@pytest.fixture()
-def rs_bad_3():
-    return {'host': 'host', 'port': 'port', 'user': 'user',
-            'password': 'password'}
-
-
-@pytest.fixture()
-def rs_bad_4():
-    return {'host': 'host', 'dbname': 'dbname', 'user': 'user',
-            'password': 'password'}
-
-
-@pytest.fixture()
-def rs_bad_5():
-    return {'port': 'port', 'dbname': 'dbname', 'user': 'user',
-            'password': 'password'}
 
 @pytest.fixture()
 def aws_creds():
-    return Credentials('access', 'secret', 'token')
+    return Credentials("access", "secret", "token")

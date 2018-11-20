@@ -32,79 +32,121 @@ import locopy
 from pathlib import Path
 
 
-
 DBAPIS = [pg8000, psycopg2]
 INTEGRATION_CREDS = str(Path.home()) + "/.locopyrc"
 S3_BUCKET = "locopy-integration-testing"
 CURR_DIR = os.path.dirname(os.path.abspath(__file__))
-LOCAL_FILE = os.path.join(CURR_DIR, 'data', 'mock_file.txt')
-LOCAL_FILE_DL = os.path.join(CURR_DIR, 'data', 'mock_file_dl.txt')
+LOCAL_FILE = os.path.join(CURR_DIR, "data", "mock_file.txt")
+LOCAL_FILE_DL = os.path.join(CURR_DIR, "data", "mock_file_dl.txt")
 
-CREDS_DICT = locopy.utility.get_redshift_yaml(INTEGRATION_CREDS)
+CREDS_DICT = locopy.utility.read_config_yaml(INTEGRATION_CREDS)
 
 
 @pytest.fixture()
 def s3_bucket():
-    session = boto3.Session(profile_name=CREDS_DICT['profile'])
-    c = session.client('s3')
+    session = boto3.Session(profile_name=CREDS_DICT["profile"])
+    c = session.client("s3")
     c.create_bucket(Bucket=S3_BUCKET)
     yield c
-    r = session.resource('s3').Bucket(S3_BUCKET)
+    r = session.resource("s3").Bucket(S3_BUCKET)
     r.objects.all().delete()
     r.delete()
 
 
 @pytest.mark.integration
-@pytest.mark.parametrize('dbapi', DBAPIS)
-def test_cmd_execute_single_rows(dbapi):
+@pytest.mark.parametrize("dbapi", DBAPIS)
+def test_redshift_execute_single_rows(dbapi):
 
-    expected = pd.DataFrame({'field_1': [1], 'field_2': [2]})
-    with locopy.Cmd(dbapi=dbapi, **CREDS_DICT) as cmd:
-        cmd.execute("SELECT 1 AS field_1, 2 AS field_2 ")
-        df = cmd.to_dataframe()
+    expected = pd.DataFrame({"field_1": [1], "field_2": [2]})
+    with locopy.Redshift(dbapi=dbapi, **CREDS_DICT) as test:
+        test.execute("SELECT 1 AS field_1, 2 AS field_2 ")
+        df = test.to_dataframe()
 
-    assert np.allclose(df['field_1'], expected['field_1'])
-
-
-
-@pytest.mark.integration
-@pytest.mark.parametrize('dbapi', DBAPIS)
-def test_cmd_execute_multiple_rows(dbapi):
-
-    expected = pd.DataFrame({'field_1': [1, 2], 'field_2': [1, 2]})
-    with locopy.Cmd(dbapi=dbapi, **CREDS_DICT) as cmd:
-        cmd.execute("SELECT 1 AS field_1, 1 AS field_2 "
-                    "UNION "
-                    "SELECT 2 AS field_1, 2 AS field_2")
-        df = cmd.to_dataframe()
-
-    assert np.allclose(df['field_1'], expected['field_1'])
-    assert np.allclose(df['field_2'], expected['field_2'])
-
+    assert np.allclose(df["field_1"], expected["field_1"])
 
 
 @pytest.mark.integration
-@pytest.mark.parametrize('dbapi', DBAPIS)
+@pytest.mark.parametrize("dbapi", DBAPIS)
+def test_redshift_execute_multiple_rows(dbapi):
+
+    expected = pd.DataFrame({"field_1": [1, 2], "field_2": [1, 2]})
+    with locopy.Redshift(dbapi=dbapi, **CREDS_DICT) as test:
+        test.execute(
+            "SELECT 1 AS field_1, 1 AS field_2 " "UNION " "SELECT 2 AS field_1, 2 AS field_2"
+        )
+        df = test.to_dataframe()
+
+    assert np.allclose(df["field_1"], expected["field_1"])
+    assert np.allclose(df["field_2"], expected["field_2"])
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("dbapi", DBAPIS)
 def test_s3_upload_download_file(s3_bucket, dbapi):
 
-    with locopy.S3(dbapi=dbapi, **CREDS_DICT) as s3:
-        s3.upload_to_s3(LOCAL_FILE, S3_BUCKET, "myfile.txt")
+    s3 = locopy.S3(**CREDS_DICT)
+    s3.upload_to_s3(LOCAL_FILE, S3_BUCKET, "myfile.txt")
 
-    with locopy.S3(dbapi=dbapi, **CREDS_DICT) as s3:
-        s3.download_from_s3(S3_BUCKET, "myfile.txt", LOCAL_FILE_DL)
+    s3 = locopy.S3(**CREDS_DICT)
+    s3.download_from_s3(S3_BUCKET, "myfile.txt", LOCAL_FILE_DL)
 
     assert filecmp.cmp(LOCAL_FILE, LOCAL_FILE_DL)
     os.remove(LOCAL_FILE_DL)
 
 
 @pytest.mark.integration
-def test_s3_only_upload_download_file(s3_bucket):
+@pytest.mark.parametrize("dbapi", DBAPIS)
+def test_copy(s3_bucket, dbapi):
 
-    with locopy.S3(profile=CREDS_DICT['profile'], s3_only=True) as s3:
-        s3.upload_to_s3(LOCAL_FILE, S3_BUCKET, "myfile.txt")
+    with locopy.Redshift(dbapi=dbapi, **CREDS_DICT) as redshift:
+        redshift.execute(
+            "CREATE TEMPORARY TABLE locopy_integration_testing (id INTEGER, variable VARCHAR(20)) DISTKEY(variable)"
+        )
+        redshift.run_copy(
+            LOCAL_FILE,
+            S3_BUCKET,
+            "locopy_integration_testing",
+            delim="|",
+            delete_s3_after=True,
+            compress=False,
+        )
+        redshift.execute("SELECT * FROM locopy_integration_testing ORDER BY id")
+        results = redshift.cursor.fetchall()
 
-    with locopy.S3(profile=CREDS_DICT['profile'], s3_only=True) as s3:
-        s3.download_from_s3(S3_BUCKET, "myfile.txt", LOCAL_FILE_DL)
+        expected = [
+            (1, "This iš line 1"),
+            (2, "This is liné 2"),
+            (3, "This is line 3"),
+            (4, "This is lïne 4"),
+        ]
 
-    assert filecmp.cmp(LOCAL_FILE, LOCAL_FILE_DL)
-    os.remove(LOCAL_FILE_DL)
+        for i, result in enumerate(results):
+            assert result[0] == expected[i][0]
+            assert result[1] == expected[i][1]
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("dbapi", DBAPIS)
+def test_unload(s3_bucket, dbapi):
+
+    with locopy.Redshift(dbapi=dbapi, **CREDS_DICT) as redshift:
+        redshift.execute(
+            "CREATE TEMPORARY TABLE locopy_integration_testing AS SELECT ('2017-12-31'::date + row_number() over (order by 1))::date from SVV_TABLES LIMIT 5"
+        )
+        sql = "SELECT * FROM locopy_integration_testing"
+        redshift.run_unload(sql, S3_BUCKET, delimiter="|", export_path=LOCAL_FILE_DL)
+        redshift.execute("SELECT * FROM locopy_integration_testing ORDER BY date")
+        results = redshift.cursor.fetchall()
+
+        expected = [
+            ("2018-01-01",),
+            ("2018-01-02",),
+            ("2018-01-03",),
+            ("2018-01-04",),
+            ("2018-01-05",),
+        ]
+
+        for i, result in enumerate(results):
+            assert result[0].strftime("%Y-%m-%d") == expected[i][0]
+
+        os.remove(LOCAL_FILE_DL)

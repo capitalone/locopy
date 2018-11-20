@@ -26,7 +26,7 @@ import shutil
 import yaml
 from itertools import cycle
 from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
-from .errors import CompressionError, LocopySplitError, RedshiftCredentialsError
+from .errors import CompressionError, LocopySplitError, CredentialsError
 
 logger = get_logger(__name__, INFO)
 
@@ -135,9 +135,9 @@ def split_file(input_file, output_file, splits=2):
         raise LocopySplitError("Error splitting the file.")
 
 
-def get_redshift_yaml(config_yaml):
+def read_config_yaml(config_yaml):
     """
-    Reads a Redshift configuration YAML file to populate the Redshift
+    Reads a configuration YAML file to populate the database
     connection attributes, and validate required ones. Example::
 
         host: my.redshift.cluster.com
@@ -155,12 +155,12 @@ def get_redshift_yaml(config_yaml):
     Returns
     -------
     dict
-        A dictionary of parameters for setting up a connection to Redshift.
+        A dictionary of parameters for setting up a connection to the database.
 
     Raises
     ------
-    RedshiftCredentialsError
-        If any elements are missing from YAML file
+    CredentialsError
+        If any connection items are missing from the YAML file
     """
     try:
         if isinstance(config_yaml, str):
@@ -169,39 +169,9 @@ def get_redshift_yaml(config_yaml):
         else:
             locopy_yaml = yaml.load(config_yaml)
     except Exception as e:
-        logger.error("Error reading Redshift yaml. err: %s", e)
-        raise RedshiftCredentialsError("Error reading Redshift yaml.")
-    validate_redshift_attributes(**locopy_yaml)
+        logger.error("Error reading yaml. err: %s", e)
+        raise CredentialsError("Error reading yaml.")
     return locopy_yaml
-
-
-def validate_redshift_attributes(
-    host=None, port=None, dbname=None, user=None, password=None, **kwargs
-):
-    """Validate Redshift connection attributes to make sure none are missing.
-
-    * All the Redshift connect details need to be set:
-        * Host
-        * Port
-        * Database name
-        * Database username
-        * Database password
-
-    Raises
-    ------
-    RedshiftCredentialsError
-        If key fields are None.
-    """
-    if host is None:
-        raise RedshiftCredentialsError("Redshift host missing")
-    if port is None:
-        raise RedshiftCredentialsError("Redshift port missing")
-    if dbname is None:
-        raise RedshiftCredentialsError("Redshift dbname missing")
-    if user is None:
-        raise RedshiftCredentialsError("Redshift username missing")
-    if password is None:
-        raise RedshiftCredentialsError("Redshift password missing")
 
 
 class ProgressPercentage(object):

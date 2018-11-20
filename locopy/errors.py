@@ -33,27 +33,15 @@ class LocopySplitError(LocopyError):
     """
 
 
-class RedshiftError(Exception):
+class DBError(Exception):
     """
-    Base class for all Redshift errors.
-    """
-
-
-class RedshiftCredentialsError(RedshiftError):
-    """
-    Raised when the user Redshift credentials are not provided.
+    Base class for all Database errors.
     """
 
 
-class RedshiftConnectionError(RedshiftError):
+class CredentialsError(DBError):
     """
-    Raised when there is a problem establishing a connection to Redshift.
-    """
-
-
-class RedshiftDisconnectionError(RedshiftError):
-    """
-    Raised when there is a problem establishing a connection to Redshift.
+    Raised when the users credentials are not provided.
     """
 
 

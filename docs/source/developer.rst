@@ -65,7 +65,7 @@ integration tests to work, you will need:
 
     host: my.redshift.cluster.com
     port: 5439
-    dbname: db
+    database: db
     user: username
     password: password
     profile: MY_AWS_PROFILE
