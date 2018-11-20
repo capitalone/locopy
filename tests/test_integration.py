@@ -39,7 +39,7 @@ CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 LOCAL_FILE = os.path.join(CURR_DIR, "data", "mock_file.txt")
 LOCAL_FILE_DL = os.path.join(CURR_DIR, "data", "mock_file_dl.txt")
 
-CREDS_DICT = locopy.utility.get_redshift_yaml(INTEGRATION_CREDS)
+CREDS_DICT = locopy.utility.read_config_yaml(INTEGRATION_CREDS)
 
 
 @pytest.fixture()

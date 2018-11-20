@@ -14,20 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Base Module
+"""Database Module
 """
 import time
 
 from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
 from .errors import CredentialsError, ConnectionError, DisconnectionError, DBError
-from .utility import get_redshift_yaml
+from .utility import read_config_yaml
 
 logger = get_logger(__name__, INFO)
 
 
-class Base(object):
+class Database(object):
     """This is the base class for all DBAPI 2 database connectors which will inherit this
-    functionality. The ``Base`` class will manage connections and handle executing queries.
+    functionality. The ``Database`` class will manage connections and handle executing queries.
     Most of the functionality should work out of the box for classes which inherit minus the
     abstract method for ``_connect`` which may vary across databases.
 
@@ -37,49 +37,21 @@ class Base(object):
         A database adapter which is Python DB API 2.0 compliant
         (``psycopg2``, ``pg8000``, etc.)
 
-    host : str, optional
-        Host name of the Redshift cluster to connect to.
-
-    port : int, optional
-        Port which connection will be made to Redshift.
-
-    database : str, optional
-        Database name.
-
-    user : str, optional
-        Database username.
-
-    password : str, optional
-        Database password.
-
     config_yaml : str, optional
-        String representing the file location of the credentials.
+        String representing the YAML file location of the database connection keyword arguments. It
+        is worth noting that this should only contain valid arguments for the database connector you
+        plan on using. It will throw an exception if something is passed through which isn't valid.
 
     **kwargs
-        Optional keyword arguments.
+        Database connection keyword arguments.
 
     Attributes
     ----------
     dbapi : DBAPI 2 module
         database adapter which is Python DBAPI 2.0 compliant
 
-    host : str
-        Database host name
-
-    port : int
-        Database port number
-
-    database : str
-        Database name.
-
-    user : str
-        Database username.
-
-    password : str
-        Database password.
-
-    extra_conn : dict
-        Dictionary of additonal connection items
+    connection : dict
+        Dictionary of database connection items
 
     conn : dbapi.connection
         DBAPI connection instance
@@ -93,29 +65,14 @@ class Base(object):
         Database credentials are not provided or valid
     """
 
-    def __init__(
-        self,
-        dbapi=None,
-        host=None,
-        port=None,
-        database=None,
-        user=None,
-        password=None,
-        config_yaml=None,
-        **kwargs
-    ):
+    def __init__(self, dbapi, config_yaml=None, **kwargs):
         self.dbapi = dbapi
-        self.host = host
-        self.port = port
-        self.database = database
-        self.user = user
-        self.password = password
-        self.extra_conn = kwargs or {}
+        self.connection = kwargs or {}
         self.conn = None
         self.cursor = None
 
         if config_yaml:
-            self.__dict__.update(get_redshift_yaml(config_yaml))
+            self.connection = read_config_yaml(config_yaml)
 
     def _connect(self):
         """Creates a connection to a database by setting the values of the ``conn`` and ``cursor``
@@ -127,15 +84,7 @@ class Base(object):
             If there is a problem establishing a connection.
         """
         try:
-            self.conn = self.dbapi.connect(
-                host=self.host,
-                user=self.user,
-                port=self.port,
-                password=self.password,
-                database=self.database,
-                **self.extra_conn
-            )
-
+            self.conn = self.dbapi.connect(**self.connection)
             self.cursor = self.conn.cursor()
         except Exception as e:
             logger.error("Error connecting to the database. err: %s", e)

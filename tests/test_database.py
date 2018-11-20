@@ -24,8 +24,8 @@ import pytest
 import mock
 import pg8000, psycopg2
 
-from locopy import Base
-from locopy.utility import get_redshift_yaml
+from locopy import Database
+from locopy.utility import read_config_yaml
 from locopy.errors import ConnectionError, DisconnectionError, DBError
 
 
@@ -36,62 +36,63 @@ database: database
 user: id
 password: pass
 other: stuff
-extra_conn:
-    extra: 123
-    another: 321"""
+extra: 123
+another: 321"""
 
 DBAPIS = [pg8000, psycopg2]
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
-def test_base_constructor(credentials, dbapi):
-    b = Base(dbapi=dbapi, **credentials)
-    assert b.host == "host"
-    assert b.port == "port"
-    assert b.database == "database"
-    assert b.user == "user"
-    assert b.password == "password"
+def test_database_constructor(credentials, dbapi):
+    d = Database(dbapi=dbapi, **credentials)
+    assert d.connection["host"] == "host"
+    assert d.connection["port"] == "port"
+    assert d.connection["database"] == "database"
+    assert d.connection["user"] == "user"
+    assert d.connection["password"] == "password"
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
-def test_base_constructor_with_extras(credentials, dbapi):
+def test_database_constructor_with_extras(credentials, dbapi):
     credentials["extra"] = 123
     credentials["another"] = 321
-    b = Base(dbapi=dbapi, **credentials)
-    assert b.host == "host"
-    assert b.port == "port"
-    assert b.database == "database"
-    assert b.user == "user"
-    assert b.password == "password"
-    assert b.extra_conn == {"extra": 123, "another": 321}
+    d = Database(dbapi=dbapi, **credentials)
+    assert d.connection["host"] == "host"
+    assert d.connection["port"] == "port"
+    assert d.connection["database"] == "database"
+    assert d.connection["user"] == "user"
+    assert d.connection["password"] == "password"
+    assert d.connection["extra"] == 123
+    assert d.connection["another"] == 321
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("locopy.utility.open", mock.mock_open(read_data=GOOD_CONFIG_YAML))
-def test_base_constructor_yaml(dbapi):
-    b = Base(dbapi=dbapi, config_yaml="some_config.yml")
-    assert b.host == "host"
-    assert b.port == 1234
-    assert b.database == "database"
-    assert b.user == "id"
-    assert b.password == "pass"
-    assert b.other == "stuff"
-    assert b.extra_conn == {"extra": 123, "another": 321}
+def test_database_constructor_yaml(dbapi):
+    d = Database(dbapi=dbapi, config_yaml="some_config.yml")
+    assert d.connection["host"] == "host"
+    assert d.connection["port"] == 1234
+    assert d.connection["database"] == "database"
+    assert d.connection["user"] == "id"
+    assert d.connection["password"] == "pass"
+    assert d.connection["other"] == "stuff"
+    assert d.connection["extra"] == 123
+    assert d.connection["another"] == 321
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_is_connected(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
-        b = Base(dbapi=dbapi, **credentials)
+        b = Database(dbapi=dbapi, **credentials)
         assert b._is_connected() is False
 
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
-        b = Base(dbapi=dbapi, **credentials)
+        b = Database(dbapi=dbapi, **credentials)
         b._connect()
         assert b._is_connected() is True
 
     # throws exception in _is_connected
-    b = Base(dbapi=dbapi, **credentials)
+    b = Database(dbapi=dbapi, **credentials)
     del b.conn
     assert b._is_connected() is False
 
@@ -99,7 +100,7 @@ def test_is_connected(credentials, dbapi):
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_connect(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
-        b = Base(dbapi=dbapi, **credentials)
+        b = Database(dbapi=dbapi, **credentials)
         b._connect()
         mock_connect.assert_called_with(
             host="host", user="user", port="port", password="password", database="database"
@@ -108,7 +109,7 @@ def test_connect(credentials, dbapi):
     credentials["extra"] = 123
     credentials["another"] = 321
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
-        b = Base(dbapi=dbapi, **credentials)
+        b = Database(dbapi=dbapi, **credentials)
         b._connect()
         mock_connect.assert_called_with(
             host="host",
@@ -129,7 +130,7 @@ def test_connect(credentials, dbapi):
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_disconnect(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
-        b = Base(dbapi=dbapi, **credentials)
+        b = Database(dbapi=dbapi, **credentials)
         b._connect()
         b._disconnect()
         b.conn.close.assert_called_with()
@@ -146,14 +147,14 @@ def test_disconnect(credentials, dbapi):
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_disconnect_no_conn(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
-        b = Base(dbapi=dbapi, **credentials)
+        b = Database(dbapi=dbapi, **credentials)
         b._disconnect()
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_execute(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
-        with Base(dbapi=dbapi, **credentials) as test:
+        with Database(dbapi=dbapi, **credentials) as test:
             print(test)
             test.execute("SELECT * FROM some_table")
             assert test.cursor.execute.called is True
@@ -162,7 +163,7 @@ def test_execute(credentials, dbapi):
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_execute_no_connection_exception(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
-        test = Base(dbapi=dbapi, **credentials)
+        test = Database(dbapi=dbapi, **credentials)
         test.conn = None
         test.cursor = None
         with pytest.raises(ConnectionError):
@@ -172,7 +173,7 @@ def test_execute_no_connection_exception(credentials, dbapi):
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_execute_sql_exception(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
-        with Base(dbapi=dbapi, **credentials) as test:
+        with Database(dbapi=dbapi, **credentials) as test:
             test.cursor.execute.side_effect = Exception("SQL Exception")
             with pytest.raises(DBError):
                 test.execute("SELECT * FROM some_table")
@@ -183,7 +184,7 @@ def test_execute_sql_exception(credentials, dbapi):
 def test_to_dataframe_all(mock_pandas, credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         mock_connect.return_value.cursor.return_value.fetchall.return_value = [(1, 2), (2, 3), (3,)]
-        with Base(dbapi=dbapi, **credentials) as test:
+        with Database(dbapi=dbapi, **credentials) as test:
             test.execute("SELECT 'hello world' AS fld")
             df = test.to_dataframe()
 
@@ -200,7 +201,7 @@ def test_to_dataframe_custom_size(mock_pandas, credentials, dbapi):
             (2, 3),
             (3,),
         ]
-        with Base(dbapi=dbapi, **credentials) as test:
+        with Database(dbapi=dbapi, **credentials) as test:
             test.execute("SELECT 'hello world' AS fld")
             df = test.to_dataframe(size=5)
 
@@ -213,7 +214,7 @@ def test_to_dataframe_custom_size(mock_pandas, credentials, dbapi):
 def test_to_dataframe_none(mock_pandas, credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         mock_connect.return_value.cursor.return_value.fetchmany.return_value = []
-        with Base(dbapi=dbapi, **credentials) as test:
+        with Database(dbapi=dbapi, **credentials) as test:
             test.execute("SELECT 'hello world' WHERE 1=0")
             assert test.to_dataframe(size=5) is None
             mock_pandas.assert_not_called()
@@ -223,13 +224,13 @@ def test_to_dataframe_none(mock_pandas, credentials, dbapi):
 def test_get_column_names(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         mock_connect.return_value.cursor.return_value.description = [["COL1"], ["COL2"]]
-        with Base(dbapi=dbapi, **credentials) as test:
+        with Database(dbapi=dbapi, **credentials) as test:
             assert test.column_names() == ["col1", "col2"]
 
         mock_connect.return_value.cursor.return_value.description = [("COL1",), ("COL2",)]
-        with Base(dbapi=dbapi, **credentials) as test:
+        with Database(dbapi=dbapi, **credentials) as test:
             assert test.column_names() == ["col1", "col2"]
 
         mock_connect.return_value.cursor.return_value.description = (("COL1",), ("COL2",))
-        with Base(dbapi=dbapi, **credentials) as test:
+        with Database(dbapi=dbapi, **credentials) as test:
             assert test.column_names() == ["col1", "col2"]

@@ -21,16 +21,9 @@ to Redshift, and run arbitrary code.
 import os
 
 from urllib.parse import urlparse
-from .base import Base
+from .database import Database
 from .s3 import S3
-from .utility import (
-    ProgressPercentage,
-    validate_redshift_attributes,
-    get_redshift_yaml,
-    compress_file,
-    split_file,
-    write_file,
-)
+from .utility import ProgressPercentage, compress_file, split_file, write_file
 from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
 from .errors import CredentialsError, ConnectionError, DisconnectionError, DBError
 
@@ -81,7 +74,7 @@ def combine_copy_options(copy_options):
     return " ".join(copy_options)
 
 
-class Redshift(S3, Base):
+class Redshift(S3, Database):
     """Locopy class which manages connections to Redshift.  Inherits ``Base`` and implements the
     specific ``COPY`` and ``UNLOAD`` functionality.
 
@@ -101,29 +94,16 @@ class Redshift(S3, Base):
         will be used.
 
     dbapi : DBAPI 2 module, optional
-        A PostgreSQL database adapter which is Python DB API 2.0 compliant
+        A database adapter which is Python DB API 2.0 compliant
         (``psycopg2``, ``pg8000``, etc.)
 
-    host : str, optional
-        Host name of the Redshift cluster to connect to.
-
-    port : int, optional
-        Port which connection will be made to Redshift.
-
-    dbname : str, optional
-        Redshift database name.
-
-    user : str, optional
-        Redshift users username.
-
-    password : str, optional
-        Redshift users password.
-
     config_yaml : str, optional
-        String representing the file location of the credentials.
+        String representing the YAML file location of the database connection keyword arguments. It
+        is worth noting that this should only contain valid arguments for the database connector you
+        plan on using. It will throw an exception if something is passed through which isn't valid.
 
     **kwargs
-        Optional keyword arguments.
+        Database connection keyword arguments.
 
     Attributes
     ----------
@@ -142,23 +122,8 @@ class Redshift(S3, Base):
     dbapi : DBAPI 2 module
         database adapter which is Python DBAPI 2.0 compliant
 
-    host : str
-        Database host name
-
-    port : int
-        Database port number
-
-    database : str
-        Database name.
-
-    user : str
-        Database username.
-
-    password : str
-        Database password.
-
-    extra_conn : dict
-        Dictionary of additonal connection items
+    connection : dict
+        Dictionary of database connection items
 
     conn : dbapi.connection
         DBAPI connection instance
@@ -181,21 +146,9 @@ class Redshift(S3, Base):
         Issue initializing S3 session
     """
 
-    def __init__(
-        self,
-        profile=None,
-        kms_key=None,
-        dbapi=None,
-        host=None,
-        port=None,
-        database=None,
-        user=None,
-        password=None,
-        config_yaml=None,
-        **kwargs
-    ):
+    def __init__(self, profile=None, kms_key=None, dbapi=None, config_yaml=None, **kwargs):
         S3.__init__(self, profile, kms_key)
-        Base.__init__(self, dbapi, host, port, database, user, password, config_yaml, **kwargs)
+        Database.__init__(self, dbapi, config_yaml, **kwargs)
 
     def _connect(self):
         """Creates a connection to the Redshift cluster by
@@ -207,9 +160,9 @@ class Redshift(S3, Base):
             If there is a problem establishing a connection to Redshift.
         """
         if self.dbapi.__name__ == "psycopg2":
-            self.extra_conn["sslmode"] = "require"
+            self.connection["sslmode"] = "require"
         elif self.dbapi.__name__ == "pg8000":
-            self.extra_conn["ssl"] = True
+            self.connection["ssl"] = True
         super(Redshift, self)._connect()
 
     def _copy_to_redshift(self, tablename, s3path, delim="|", copy_options=None):

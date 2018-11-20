@@ -26,7 +26,6 @@ import locopy
 
 from locopy import Redshift
 from unittest import mock
-from tests import RedshiftNoConnect
 from locopy.errors import CredentialsError, ConnectionError, DisconnectionError, DBError
 
 
@@ -68,11 +67,11 @@ def test_constructor(mock_session, credentials, dbapi):
     mock_session.assert_called_with(profile_name=PROFILE)
     assert r.profile == PROFILE
     assert r.kms_key == None
-    assert r.host == "host"
-    assert r.port == "port"
-    assert r.database == "database"
-    assert r.user == "user"
-    assert r.password == "password"
+    assert r.connection["host"] == "host"
+    assert r.connection["port"] == "port"
+    assert r.connection["database"] == "database"
+    assert r.connection["user"] == "user"
+    assert r.connection["password"] == "password"
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
@@ -81,11 +80,13 @@ def test_constructor(mock_session, credentials, dbapi):
 def test_constructor_yaml(mock_session, dbapi):
     r = Redshift(profile=PROFILE, dbapi=dbapi, config_yaml="some_config.yml")
     mock_session.assert_called_with(profile_name=PROFILE)
-    assert r.host == "host"
-    assert r.port == "port"
-    assert r.database == "database"
-    assert r.user == "user"
-    assert r.password == "password"
+    assert r.profile == PROFILE
+    assert r.kms_key == None
+    assert r.connection["host"] == "host"
+    assert r.connection["port"] == "port"
+    assert r.connection["database"] == "database"
+    assert r.connection["user"] == "user"
+    assert r.connection["password"] == "password"
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
@@ -383,7 +384,7 @@ def test_redshift_copy_to_redshift(mock_session, credentials, dbapi):
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("locopy.s3.Session")
-@mock.patch("locopy.base.Base._is_connected")
+@mock.patch("locopy.database.Database._is_connected")
 def test_redshift_copy_to_redshift_exception(mock_connected, mock_session, credentials, dbapi):
 
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:

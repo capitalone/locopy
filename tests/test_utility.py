@@ -158,8 +158,8 @@ def test_split_file_exception():
 
 
 @mock.patch("locopy.utility.open", mock.mock_open(read_data=GOOD_CONFIG_YAML))
-def test_get_redshift_yaml_good():
-    actual = util.get_redshift_yaml("filename.yml")
+def test_read_config_yaml_good():
+    actual = util.read_config_yaml("filename.yml")
     assert set(actual.keys()) == set(["host", "port", "database", "user", "password"])
     assert actual["host"] == "my.redshift.cluster.com"
     assert actual["port"] == 1234
@@ -168,8 +168,8 @@ def test_get_redshift_yaml_good():
     assert actual["password"] == "pass"
 
 
-def test_get_redshift_yaml_io():
-    actual = util.get_redshift_yaml(StringIO(GOOD_CONFIG_YAML))
+def test_read_config_yaml_io():
+    actual = util.read_config_yaml(StringIO(GOOD_CONFIG_YAML))
     assert set(actual.keys()) == set(["host", "port", "database", "user", "password"])
     assert actual["host"] == "my.redshift.cluster.com"
     assert actual["port"] == 1234
@@ -178,46 +178,6 @@ def test_get_redshift_yaml_io():
     assert actual["password"] == "pass"
 
 
-@mock.patch("locopy.utility.open", mock.mock_open(read_data=BAD_CONFIG_YAML))
-def test_get_redshift_yaml_bad():
+def test_read_config_yaml_no_file():
     with pytest.raises(CredentialsError):
-        util.get_redshift_yaml("filename.yml")
-
-
-def test_get_redshift_yaml_no_file():
-    with pytest.raises(CredentialsError):
-        util.get_redshift_yaml("file_that_does_not_exist.yml")
-
-
-def test_validate_redshift_attributes_good():
-    assert (
-        util.validate_redshift_attributes(
-            host="host", port=1, database="db", user="hi", password="nope"
-        )
-        is None
-    )
-
-
-def test_validate_redshift_attributes_nones():
-    with pytest.raises(CredentialsError):
-        util.validate_redshift_attributes()
-    with pytest.raises(CredentialsError):
-        util.validate_redshift_attributes(
-            {"host": "host", "port": 1, "database": "db", "user": "hi"}
-        )
-    with pytest.raises(CredentialsError):
-        util.validate_redshift_attributes(
-            {"host": "host", "port": 1, "database": "db", "password": "nope"}
-        )
-    with pytest.raises(CredentialsError):
-        util.validate_redshift_attributes(
-            {"host": "host", "port": 1, "user": "hi", "password": "nope"}
-        )
-    with pytest.raises(CredentialsError):
-        util.validate_redshift_attributes(
-            {"host": "host", "database": "db", "user": "hi", "password": "nope"}
-        )
-    with pytest.raises(CredentialsError):
-        util.validate_redshift_attributes(
-            {"port": 1, "database": "db", "user": "hi", "password": "nope"}
-        )
+        util.read_config_yaml("file_that_does_not_exist.yml")

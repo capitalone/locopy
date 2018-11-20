@@ -135,9 +135,9 @@ def split_file(input_file, output_file, splits=2):
         raise LocopySplitError("Error splitting the file.")
 
 
-def get_redshift_yaml(config_yaml):
+def read_config_yaml(config_yaml):
     """
-    Reads a Redshift configuration YAML file to populate the Redshift
+    Reads a configuration YAML file to populate the database
     connection attributes, and validate required ones. Example::
 
         host: my.redshift.cluster.com
@@ -155,12 +155,12 @@ def get_redshift_yaml(config_yaml):
     Returns
     -------
     dict
-        A dictionary of parameters for setting up a connection to Redshift.
+        A dictionary of parameters for setting up a connection to the database.
 
     Raises
     ------
     CredentialsError
-        If any elements are missing from YAML file
+        If any connection items are missing from the YAML file
     """
     try:
         if isinstance(config_yaml, str):
@@ -171,37 +171,36 @@ def get_redshift_yaml(config_yaml):
     except Exception as e:
         logger.error("Error reading yaml. err: %s", e)
         raise CredentialsError("Error reading yaml.")
-    validate_redshift_attributes(**locopy_yaml)
     return locopy_yaml
 
 
-def validate_redshift_attributes(
-    host=None, port=None, database=None, user=None, password=None, **kwargs
-):
-    """Validate Redshift connection attributes to make sure none are missing.
-
-    * All the Redshift connect details need to be set:
-        * Host
-        * Port
-        * Database name
-        * Database username
-        * Database password
-
-    Raises
-    ------
-    CredentialsError
-        If key fields are None.
-    """
-    if host is None:
-        raise CredentialsError("Host missing")
-    if port is None:
-        raise CredentialsError("Port missing")
-    if database is None:
-        raise CredentialsError("Database missing")
-    if user is None:
-        raise CredentialsError("Username missing")
-    if password is None:
-        raise CredentialsError("Password missing")
+# def validate_redshift_attributes(
+#     host=None, port=None, database=None, user=None, password=None, **kwargs
+# ):
+#     """Validate Redshift connection attributes to make sure none are missing.
+#
+#     * All the Redshift connect details need to be set:
+#         * Host
+#         * Port
+#         * Database name
+#         * Database username
+#         * Database password
+#
+#     Raises
+#     ------
+#     CredentialsError
+#         If key fields are None.
+#     """
+#     if host is None:
+#         raise CredentialsError("Host missing")
+#     if port is None:
+#         raise CredentialsError("Port missing")
+#     if database is None:
+#         raise CredentialsError("Database missing")
+#     if user is None:
+#         raise CredentialsError("Username missing")
+#     if password is None:
+#         raise CredentialsError("Password missing")
 
 
 class ProgressPercentage(object):
