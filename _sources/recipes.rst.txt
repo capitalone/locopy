@@ -24,8 +24,8 @@ Assuming you have your ``YAML`` file setup, the following will occur:
     import pg8000
     import locopy
 
-    with locopy.S3(dbapi=pg8000, config_yaml="example.yaml") as s3:
-        s3.run_copy(
+    with locopy.Redshift(dbapi=pg8000, config_yaml="example.yaml") as redshift:
+        redshift.run_copy(
             local_file="some_data_to_load.txt",
             s3_bucket="s3_bucket_to_use",
             s3_folder="s3_folder_to_use/s3_subfolder_to_use",
@@ -49,8 +49,8 @@ integer
     import pg8000
     import locopy
 
-    with locopy.S3(dbapi=pg8000, config_yaml="example.yaml") as s3:
-        s3.run_copy(
+    with locopy.Redshift(dbapi=pg8000, config_yaml="example.yaml") as redshift:
+        redshift.run_copy(
             local_file="some_data_to_load.txt",
             s3_bucket="s3_bucket_to_use",
             s3_folder="s3_folder_to_use/s3_subfolder_to_use",
@@ -73,8 +73,8 @@ By default compression is always on. If you'd like to turn if off you can set
     import pg8000
     import locopy
 
-    with locopy.S3(dbapi=pg8000, config_yaml="example.yaml") as s3:
-        s3.run_copy(
+    with locopy.Redshift(dbapi=pg8000, config_yaml="example.yaml") as redshift:
+        redshift.run_copy(
             local_file="some_data_to_load.txt",
             s3_bucket="s3_bucket_to_use",
             s3_folder="s3_folder_to_use/s3_subfolder_to_use",
@@ -90,7 +90,7 @@ performance of the ``COPY`` command
 I want to export some data from Redshift to a local CSV
 -------------------------------------------------------
 Data can be exported from Redshift to a CSV by supplying an ``export_path``
-to locopy.S3.run_unload():
+to ``locopy.Redshift.run_unload()``:
 
 .. code-block:: python
 
@@ -98,8 +98,8 @@ to locopy.S3.run_unload():
     import locopy
 
     my_profile = "some_profile_with_valid_tokens"
-    with locopy.S3(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as s3:
-        s3.run_unload(
+    with locopy.Redshift(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as redshift:
+        redshift.run_unload(
             query="SELECT * FROM schema.table",
             s3_bucket="s3_bucket_to_use",
             export_path="output.csv")
@@ -108,8 +108,8 @@ Or a pipe delimited....
 
 .. code-block:: python
 
-    with locopy.S3(config_yaml="config.yml", profile=my_profile) as s3:
-        s3.run_unload(
+    with locopy.Redshift(config_yaml="config.yml", profile=my_profile) as redshift:
+        redshift.run_unload(
             query="SELECT * FROM schema.table",
             s3_bucket="s3_bucket_to_use",
             export_path="output.tsv",
@@ -125,8 +125,8 @@ Or a pipe delimited....
 
 .. code-block:: python
 
-    with locopy.S3(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as s3:
-        s3.run_unload(
+    with locopy.Redshift(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as redshift:
+        redshift.run_unload(
             query="SELECT * FROM schema.table",
             s3_bucket="s3_bucket_to_use",
             s3_folder="s3_folder_to_use/",
@@ -144,8 +144,8 @@ the S3 files from being automatically deleted after the run.
     import pg8000
     import locopy
 
-    with locopy.S3(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as s3:
-        s3.run_unload(
+    with locopy.Redshift(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as redshift:
+        redshift.run_unload(
             query="SELECT * FROM schema.table",
             s3_bucket="s3_bucket_to_use",
             s3_folder="s3_folder_to_use/s3_subfolder_to_use/",
@@ -158,8 +158,8 @@ If you want to back it up as a single file, you can run:
 
 .. code-block:: python
 
-    with locopy.S3(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as s3:
-        s3.run_unload(
+    with locopy.Redshift(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as redshift:
+        redshift.run_unload(
             query="SELECT * FROM schema.table",
             s3_bucket="s3_bucket_to_use",
             s3_folder="s3_folder_to_use/s3_subfolder_to_use/",

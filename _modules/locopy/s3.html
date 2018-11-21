@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.s3 &mdash; locopy 0.1.1 documentation</title>
+  <title>locopy.s3 &mdash; locopy 0.2.0 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.1.1
+                0.2.0
               </div>
             
           
@@ -170,15 +170,11 @@
 <span class="sd">Module to wrap the boto3 api usage and provide functionality to manage</span>
 <span class="sd">multipart upload to S3 buckets</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">os</span>
-
-<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">urlparse</span>
 <span class="kn">from</span> <span class="nn">boto3</span> <span class="k">import</span> <span class="n">Session</span>
 <span class="kn">from</span> <span class="nn">boto3.s3.transfer</span> <span class="k">import</span> <span class="n">TransferConfig</span>
 <span class="kn">from</span> <span class="nn">botocore.client</span> <span class="k">import</span> <span class="n">Config</span>
 
-<span class="kn">from</span> <span class="nn">.locopy</span> <span class="k">import</span> <span class="n">Cmd</span>
-<span class="kn">from</span> <span class="nn">.utility</span> <span class="k">import</span> <span class="n">ProgressPercentage</span><span class="p">,</span> <span class="n">compress_file</span><span class="p">,</span> <span class="n">split_file</span><span class="p">,</span> <span class="n">write_file</span>
+<span class="kn">from</span> <span class="nn">.utility</span> <span class="k">import</span> <span class="n">ProgressPercentage</span>
 <span class="kn">from</span> <span class="nn">.logger</span> <span class="k">import</span> <span class="n">get_logger</span><span class="p">,</span> <span class="n">DEBUG</span><span class="p">,</span> <span class="n">INFO</span><span class="p">,</span> <span class="n">WARN</span><span class="p">,</span> <span class="n">ERROR</span><span class="p">,</span> <span class="n">CRITICAL</span>
 <span class="kn">from</span> <span class="nn">.errors</span> <span class="k">import</span> <span class="p">(</span>
     <span class="n">S3Error</span><span class="p">,</span>
@@ -187,61 +183,15 @@
     <span class="n">S3UploadError</span><span class="p">,</span>
     <span class="n">S3DownloadError</span><span class="p">,</span>
     <span class="n">S3DeletionError</span><span class="p">,</span>
-    <span class="n">RedshiftConnectionError</span><span class="p">,</span>
-    <span class="n">RedshiftError</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">DEBUG</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="add_default_copy_options"><a class="viewcode-back" href="../../api/locopy.s3.html#locopy.s3.add_default_copy_options">[docs]</a><span class="k">def</span> <span class="nf">add_default_copy_options</span><span class="p">(</span><span class="n">copy_options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Adds in default options for the ``COPY`` job, unless those specific</span>
-<span class="sd">    options have been provided in the request.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    copy_options : list, optional</span>
-<span class="sd">        List of copy options to be provided to the Redshift copy command</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    list</span>
-<span class="sd">        list of strings with the default options appended. If ``copy_options``</span>
-<span class="sd">        if not provided it will just return the default options.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">copy_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">copy_options</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">default_options</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;DATEFORMAT &#39;auto&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;COMPUPDATE ON&quot;</span><span class="p">,</span> <span class="s2">&quot;TRUNCATECOLUMNS&quot;</span><span class="p">)</span>
-    <span class="n">first_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">opt</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">copy_options</span><span class="p">]</span>
-
-    <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="n">default_options</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">option</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">first_words</span><span class="p">:</span>
-            <span class="n">copy_options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">option</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">copy_options</span></div>
-
-
-<div class="viewcode-block" id="combine_copy_options"><a class="viewcode-back" href="../../api/locopy.s3.html#locopy.s3.combine_copy_options">[docs]</a><span class="k">def</span> <span class="nf">combine_copy_options</span><span class="p">(</span><span class="n">copy_options</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Returns the ``copy_options`` attribute with spaces in between and as</span>
-<span class="sd">    a string.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    copy_options : list</span>
-<span class="sd">        copy options which is to be converted into a single string with spaces</span>
-<span class="sd">        inbetween.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    str:</span>
-<span class="sd">        ``copy_options`` attribute with spaces in between</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">copy_options</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="S3"><a class="viewcode-back" href="../../api/locopy.s3.html#locopy.s3.S3">[docs]</a><span class="k">class</span> <span class="nc">S3</span><span class="p">(</span><span class="n">Cmd</span><span class="p">):</span>
+<div class="viewcode-block" id="S3"><a class="viewcode-back" href="../../api/locopy.s3.html#locopy.redshift.S3">[docs]</a><span class="k">class</span> <span class="nc">S3</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    S3 wrapper class which utilizes the boto3 library to push files to an S3</span>
-<span class="sd">    bucket.  Subclasses the Cmd class to inherit the Redshift connection.</span>
+<span class="sd">    bucket.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -255,37 +205,13 @@
 <span class="sd">        If kms_key Defaults to ``None`` then the AES256 ServerSideEncryption</span>
 <span class="sd">        will be used.</span>
 
-<span class="sd">    dbapi : DBAPI 2 module, optional</span>
-<span class="sd">        A PostgreSQL database adapter which is Python DB API 2.0 compliant</span>
-<span class="sd">        (``psycopg2``, ``pg8000``, etc.)</span>
-
-<span class="sd">    host : str, optional</span>
-<span class="sd">        Host name of the Redshift cluster to connect to.</span>
-
-<span class="sd">    port : int, optional</span>
-<span class="sd">        Port which connection will be made to Redshift.</span>
-
-<span class="sd">    dbname : str, optional</span>
-<span class="sd">        Redshift database name.</span>
-
-<span class="sd">    user : str, optional</span>
-<span class="sd">        Redshift users username.</span>
-
-<span class="sd">    password : str, optional</span>
-<span class="sd">        Redshift users password.</span>
-
-<span class="sd">    config_yaml : str, optional</span>
-<span class="sd">        String representing the file location of the credentials.</span>
-
-<span class="sd">    s3_only : bool, optional</span>
-<span class="sd">        If ``True`` then do not initialize the underlying redshift connection. It will</span>
-<span class="sd">        allow users who want to soley interact with S3 to use that functionality.</span>
-
+<span class="sd">    **kwargs</span>
+<span class="sd">        Optional keyword arguments.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    session : boto3.Session</span>
-<span class="sd">        Holds the session &amp; credentials information for the S3 connection.</span>
+<span class="sd">    profile : str</span>
+<span class="sd">        String representing the AWS profile for authentication</span>
 
 <span class="sd">    kms_key : str</span>
 <span class="sd">        String representing the s3 kms key</span>
@@ -295,30 +221,25 @@
 
 <span class="sd">    s3 : botocore.client.S3</span>
 <span class="sd">        Hold the S3 client object which is used to upload/delete files to S3</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    S3Error</span>
+<span class="sd">        Error initializing AWS Session (ex: invalid profile)</span>
+
+<span class="sd">    S3CredentialsError</span>
+<span class="sd">        Issue with AWS credentials</span>
+
+<span class="sd">    S3InitializationError</span>
+<span class="sd">        Issue initializing S3 session</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">kms_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">dbapi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">dbname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">config_yaml</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">s3_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span>
-    <span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kms_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">profile</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kms_key</span> <span class="o">=</span> <span class="n">kms_key</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">s3</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">s3_only</span><span class="p">:</span>
-            <span class="nb">super</span><span class="p">(</span><span class="n">S3</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">dbapi</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">dbname</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">config_yaml</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_session</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_client</span><span class="p">()</span>
@@ -402,7 +323,7 @@
             <span class="n">s3_path</span> <span class="o">=</span> <span class="s2">&quot;s3://</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bucket</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">s3_path</span>
 
-<div class="viewcode-block" id="S3.upload_to_s3"><a class="viewcode-back" href="../../api/locopy.s3.html#locopy.s3.S3.upload_to_s3">[docs]</a>    <span class="k">def</span> <span class="nf">upload_to_s3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">bucket</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="S3.upload_to_s3"><a class="viewcode-back" href="../../api/locopy.s3.html#locopy.redshift.S3.upload_to_s3">[docs]</a>    <span class="k">def</span> <span class="nf">upload_to_s3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">bucket</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Upload a file to a S3 bucket.</span>
 
@@ -442,7 +363,7 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error uploading to S3. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">S3UploadError</span><span class="p">(</span><span class="s2">&quot;Error uploading to S3.&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="S3.download_from_s3"><a class="viewcode-back" href="../../api/locopy.s3.html#locopy.s3.S3.download_from_s3">[docs]</a>    <span class="k">def</span> <span class="nf">download_from_s3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bucket</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">local</span><span class="p">):</span>
+<div class="viewcode-block" id="S3.download_from_s3"><a class="viewcode-back" href="../../api/locopy.s3.html#locopy.redshift.S3.download_from_s3">[docs]</a>    <span class="k">def</span> <span class="nf">download_from_s3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bucket</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">local</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Download a file from a S3 bucket.</span>
 
@@ -470,7 +391,7 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error downloading from S3. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
             <span class="k">raise</span> <span class="n">S3DownloadError</span><span class="p">(</span><span class="s2">&quot;Error downloading from S3.&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="S3.delete_from_s3"><a class="viewcode-back" href="../../api/locopy.s3.html#locopy.s3.S3.delete_from_s3">[docs]</a>    <span class="k">def</span> <span class="nf">delete_from_s3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bucket</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="S3.delete_from_s3"><a class="viewcode-back" href="../../api/locopy.s3.html#locopy.redshift.S3.delete_from_s3">[docs]</a>    <span class="k">def</span> <span class="nf">delete_from_s3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bucket</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Delete a file from an S3 bucket.</span>
 
@@ -487,341 +408,12 @@
 <span class="sd">        S3DeletionError</span>
 <span class="sd">            If there is a issue deleting from the S3 bucket</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">try</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Deleting file from S3 bucket </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_s3_path</span><span class="p">(</span><span class="n">bucket</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">s3</span><span class="o">.</span><span class="n">delete_object</span><span class="p">(</span><span class="n">Bucket</span><span class="o">=</span><span class="n">bucket</span><span class="p">,</span> <span class="n">Key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error deleting from S3. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">S3DeletionError</span><span class="p">(</span><span class="s2">&quot;Error deleting from S3.&quot;</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_copy_to_redshift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tablename</span><span class="p">,</span> <span class="n">s3path</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="n">copy_options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Executes the COPY command to load CSV files from S3 into</span>
-<span class="sd">        a Redshift table.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        tablename : str</span>
-<span class="sd">            The Redshift table name which is being loaded</span>
-
-<span class="sd">        s3path : str</span>
-<span class="sd">            S3 path of the input file. eg: ``s3://path/to/file.csv``</span>
-
-<span class="sd">        delim : str</span>
-<span class="sd">            The delimiter in a delimited file.</span>
-
-<span class="sd">        copy_options : list</span>
-<span class="sd">            List of strings of copy options to provide to the ``COPY`` command.</span>
-<span class="sd">            Will have default options added in.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        Exception</span>
-<span class="sd">            If there is a problem executing the COPY command, a connection</span>
-<span class="sd">            has not been initalized, or credentials are wrong.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_connected</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">RedshiftConnectionError</span><span class="p">(</span><span class="s2">&quot;No Redshift connection object is present.&quot;</span><span class="p">)</span>
-
-        <span class="n">copy_options</span> <span class="o">=</span> <span class="n">add_default_copy_options</span><span class="p">(</span><span class="n">copy_options</span><span class="p">)</span>
-        <span class="n">copy_options_text</span> <span class="o">=</span> <span class="n">combine_copy_options</span><span class="p">(</span><span class="n">copy_options</span><span class="p">)</span>
-        <span class="n">base_copy_string</span> <span class="o">=</span> <span class="s2">&quot;COPY </span><span class="si">{0}</span><span class="s2"> FROM &#39;</span><span class="si">{1}</span><span class="s2">&#39; &quot;</span> <span class="s2">&quot;CREDENTIALS &#39;</span><span class="si">{2}</span><span class="s2">&#39; &quot;</span> <span class="s2">&quot;DELIMITER &#39;</span><span class="si">{3}</span><span class="s2">&#39; </span><span class="si">{4}</span><span class="s2">;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">sql</span> <span class="o">=</span> <span class="n">base_copy_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">tablename</span><span class="p">,</span> <span class="n">s3path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_credentials_string</span><span class="p">(),</span> <span class="n">delim</span><span class="p">,</span> <span class="n">copy_options_text</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error running COPY on Redshift. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">RedshiftError</span><span class="p">(</span><span class="s2">&quot;Error running COPY on Redshift.&quot;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="S3.run_copy"><a class="viewcode-back" href="../../api/locopy.s3.html#locopy.s3.S3.run_copy">[docs]</a>    <span class="k">def</span> <span class="nf">run_copy</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">local_file</span><span class="p">,</span>
-        <span class="n">s3_bucket</span><span class="p">,</span>
-        <span class="n">table_name</span><span class="p">,</span>
-        <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;|&quot;</span><span class="p">,</span>
-        <span class="n">copy_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">delete_s3_after</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">splits</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">compress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">s3_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Loads a file to S3, then copies into Redshift.  Has options to</span>
-<span class="sd">        split a single file into multiple files, compress using gzip, and</span>
-<span class="sd">        upload to an S3 bucket with folders within the bucket.</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        If you are using folders in your S3 bucket please be aware of having</span>
-<span class="sd">        special chars or backward slashes (``\``). These may cause the file to</span>
-<span class="sd">        upload but fail on the ``COPY`` command.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        local_file : str</span>
-<span class="sd">            The local file which you wish to copy.</span>
-
-<span class="sd">        s3_bucket : str</span>
-<span class="sd">            The AWS S3 bucket which you are copying the local file to.</span>
-
-<span class="sd">        table_name : str</span>
-<span class="sd">            The Redshift table name which is being loaded</span>
-
-<span class="sd">        delim : str, optional</span>
-<span class="sd">            Delimiter for Redshift ``COPY`` command. Defaults to ``|``</span>
-
-<span class="sd">        copy_options : list, optional</span>
-<span class="sd">            A list (str) of copy options that should be appended to the COPY</span>
-<span class="sd">            statement.  The class will insert a default for DATEFORMAT,</span>
-<span class="sd">            COMPUPDATE and TRUNCATECOLUMNS if they are not provided in this</span>
-<span class="sd">            list. See http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-conversion.html</span>
-<span class="sd">            for options which could be passed.</span>
-
-<span class="sd">        delete_s3_after : bool, optional</span>
-<span class="sd">            Lets you specify to delete the S3 file after transfer if you want.</span>
-
-<span class="sd">        splits : int, optional</span>
-<span class="sd">            Number of splits to perform for paralell loading into Redshift.</span>
-<span class="sd">            Must be greater than ``0``. Recommended that this number should be</span>
-<span class="sd">            less than ``100``. Defaults to ``1``.</span>
-
-<span class="sd">        compress : bool, optional</span>
-<span class="sd">            Whether to compress the output file with ``gzip`` or leave it raw.</span>
-<span class="sd">            Defaults to ``True``</span>
-
-<span class="sd">        s3_folder : str, optional</span>
-<span class="sd">            The AWS S3 folder of the bucket which you are copying the local</span>
-<span class="sd">            file to. Defaults to ``None``. Please note that you must follow the</span>
-<span class="sd">            ``/`` convention when using subfolders.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="n">copy_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">copy_options</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="c1"># generate the actual splitting of the files</span>
-        <span class="k">if</span> <span class="n">splits</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">upload_list</span> <span class="o">=</span> <span class="n">split_file</span><span class="p">(</span><span class="n">local_file</span><span class="p">,</span> <span class="n">local_file</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">upload_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">local_file</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">compress</span><span class="p">:</span>
-            <span class="n">copy_options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;GZIP&quot;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">upload_list</span><span class="p">):</span>
-                <span class="n">gz</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">.gz&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-                <span class="n">compress_file</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">gz</span><span class="p">)</span>
-                <span class="n">upload_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">gz</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>  <span class="c1"># cleanup old files</span>
-
-        <span class="c1"># copy file to S3</span>
-        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">upload_list</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">s3_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">s3_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">s3_key</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">s3_folder</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file</span><span class="p">)])</span>
-
-            <span class="bp">self</span><span class="o">.</span><span class="n">upload_to_s3</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">s3_bucket</span><span class="p">,</span> <span class="n">s3_key</span><span class="p">)</span>
-
-        <span class="c1"># execute Redshift COPY</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_copy_to_redshift</span><span class="p">(</span>
-            <span class="n">table_name</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_generate_s3_path</span><span class="p">(</span><span class="n">s3_bucket</span><span class="p">,</span> <span class="n">s3_key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">extsep</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span>
-            <span class="n">delim</span><span class="p">,</span>
-            <span class="n">copy_options</span><span class="o">=</span><span class="n">copy_options</span><span class="p">,</span>
-        <span class="p">)</span>
-
-        <span class="c1"># delete file from S3 (if set to do so)</span>
-        <span class="k">if</span> <span class="n">delete_s3_after</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">upload_list</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">s3_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">s3_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">s3_key</span> <span class="o">=</span> <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">s3_folder</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file</span><span class="p">)])</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">delete_from_s3</span><span class="p">(</span><span class="n">s3_bucket</span><span class="p">,</span> <span class="n">s3_key</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="S3.run_unload"><a class="viewcode-back" href="../../api/locopy.s3.html#locopy.s3.S3.run_unload">[docs]</a>    <span class="k">def</span> <span class="nf">run_unload</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">query</span><span class="p">,</span>
-        <span class="n">s3_bucket</span><span class="p">,</span>
-        <span class="n">s3_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">export_path</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
-        <span class="n">delete_s3_after</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">parallel_off</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">unload_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;``UNLOAD`` data from Redshift, with options to write to a flat file,</span>
-<span class="sd">        and store on S3.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        query : str</span>
-<span class="sd">            A query to be unloaded to S3. Typically a ``SELECT`` statement</span>
-
-<span class="sd">        s3_bucket : str</span>
-<span class="sd">            The AWS S3 bucket where the data from the query will be unloaded.</span>
-
-<span class="sd">        s3_folder : str, optional</span>
-<span class="sd">            The AWS S3 folder of the bucket where the data from the query will</span>
-<span class="sd">            be unloaded. Defaults to ``None``. Please note that you must follow</span>
-<span class="sd">            the ``/`` convention when using subfolders.</span>
-
-<span class="sd">        export_path : str, optional</span>
-<span class="sd">            If a ``export_path`` is provided, function will write the unloaded</span>
-<span class="sd">            files to that folder.</span>
-
-<span class="sd">        delimiter : str, optional</span>
-<span class="sd">            Delimiter for unloading and file writing. Defaults to a comma.</span>
-
-<span class="sd">        delete_s3_after : bool, optional</span>
-<span class="sd">            Delete the files from S3 after unloading. Defaults to True.</span>
-
-<span class="sd">        parallel_off : bool, optional</span>
-<span class="sd">            Unload data to S3 as a single file. Defaults to False.</span>
-<span class="sd">            Not recommended as it will decrease speed.</span>
-
-<span class="sd">        unload_options : list, optional</span>
-<span class="sd">            A list of unload options that should be appended to the UNLOAD</span>
-<span class="sd">            statement.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        Exception</span>
-<span class="sd">            If no files are generated from the unload.</span>
-<span class="sd">            If the column names from the query cannot be retrieved.</span>
-<span class="sd">            If there is a issue with the execution of any of the queries.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># data = []</span>
-        <span class="n">s3path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_unload_path</span><span class="p">(</span><span class="n">s3_bucket</span><span class="p">,</span> <span class="n">s3_folder</span><span class="p">)</span>
-
-        <span class="c1">## configure unload options</span>
-        <span class="k">if</span> <span class="n">unload_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">unload_options</span> <span class="o">=</span> <span class="p">[]</span>
-
-        <span class="n">unload_options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;DELIMITER &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">delimiter</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">parallel_off</span><span class="p">:</span>
-            <span class="n">unload_options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;PARALLEL OFF&quot;</span><span class="p">)</span>
-
-        <span class="c1">## run unload</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_unload_to_s3</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">s3path</span><span class="o">=</span><span class="n">s3path</span><span class="p">,</span> <span class="n">unload_options</span><span class="o">=</span><span class="n">unload_options</span><span class="p">)</span>
-
-        <span class="c1">## parse unloaded files</span>
-        <span class="n">files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unload_generated_files</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">files</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No files generated from unload&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No files generated from unload&quot;</span><span class="p">)</span>
-
-        <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_names</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">columns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unable to retrieve column names from exported data&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Unable to retrieve column names from exported data.&quot;</span><span class="p">)</span>
-
-        <span class="c1"># download files locally with same name</span>
-        <span class="c1"># write columns to local file</span>
-        <span class="c1"># write temp to local file</span>
-        <span class="c1"># remove temp files</span>
-        <span class="k">if</span> <span class="n">export_path</span><span class="p">:</span>
-            <span class="n">write_file</span><span class="p">([</span><span class="n">columns</span><span class="p">],</span> <span class="n">delimiter</span><span class="p">,</span> <span class="n">export_path</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-                <span class="n">key</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-                <span class="n">local</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">download_from_s3</span><span class="p">(</span><span class="n">s3_bucket</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">local</span><span class="p">)</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">local</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">temp_f</span><span class="p">:</span>
-                    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">export_path</span><span class="p">,</span> <span class="s2">&quot;ab&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">main_f</span><span class="p">:</span>
-                        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">temp_f</span><span class="p">:</span>
-                            <span class="n">main_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">local</span><span class="p">)</span>
-
-        <span class="c1">## delete unloaded files from s3</span>
-        <span class="k">if</span> <span class="n">delete_s3_after</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-                <span class="n">key</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">delete_from_s3</span><span class="p">(</span><span class="n">s3_bucket</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_unload_to_s3</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">s3path</span><span class="p">,</span> <span class="n">unload_options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Executes the UNLOAD command to export a query from</span>
-<span class="sd">        Redshift to S3.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        query : str</span>
-<span class="sd">            A query to be unloaded to S3.</span>
-
-<span class="sd">        s3path : str</span>
-<span class="sd">            S3 path for the output files.</span>
-
-<span class="sd">        unload_options : list</span>
-<span class="sd">            List of string unload options.</span>
-
-<span class="sd">        Raises</span>
-<span class="sd">        ------</span>
-<span class="sd">        Exception</span>
-<span class="sd">            If there is a problem executing the unload command.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_connected</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No Redshift connection object is present&quot;</span><span class="p">)</span>
-
-        <span class="n">unload_options</span> <span class="o">=</span> <span class="n">unload_options</span> <span class="ow">or</span> <span class="p">[]</span>
-        <span class="n">unload_options_text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">unload_options</span><span class="p">)</span>
-        <span class="n">base_unload_string</span> <span class="o">=</span> <span class="s2">&quot;UNLOAD (&#39;</span><span class="si">{0}</span><span class="s2">&#39;)</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="s2">&quot;TO &#39;</span><span class="si">{1}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="s2">&quot;CREDENTIALS &#39;</span><span class="si">{2}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="s2">&quot;</span><span class="si">{3}</span><span class="s2">;&quot;</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">sql</span> <span class="o">=</span> <span class="n">base_unload_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\&#39;&quot;</span><span class="p">),</span> <span class="n">s3path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_credentials_string</span><span class="p">(),</span> <span class="n">unload_options_text</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error running UNLOAD on redshift. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-            <span class="k">raise</span>
-
-    <span class="k">def</span> <span class="nf">_get_column_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets a list of column names from the supplied query.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        query : str</span>
-<span class="sd">            A query (or table name) to be unloaded to S3.</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        list</span>
-<span class="sd">            List of column names. Returns None if no columns were retrieved.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Retrieving column names&quot;</span><span class="p">)</span>
-            <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM (</span><span class="si">{}</span><span class="s2">) WHERE 1 = 0&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
-            <span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">desc</span> <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">]</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">return</span> <span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error retrieving column names&quot;</span><span class="p">)</span>
-            <span class="k">raise</span>
-
-    <span class="k">def</span> <span class="nf">_unload_generated_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets a list of files generated by the unload process</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        list</span>
-<span class="sd">            List of S3 file names</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT path FROM stl_unload_log &quot;</span> <span class="s2">&quot;WHERE query = pg_last_query_id() ORDER BY path&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Getting list of unloaded files&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
-            <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">return</span> <span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error retrieving unloads generated files&quot;</span><span class="p">)</span>
-            <span class="k">raise</span></div>
+            <span class="k">raise</span> <span class="n">S3DeletionError</span><span class="p">(</span><span class="s2">&quot;Error deleting from S3.&quot;</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -856,7 +448,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.1.1',
+            VERSION:'0.2.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.errors module &mdash; locopy 0.1.1 documentation</title>
+  <title>locopy.errors module &mdash; locopy 0.2.0 documentation</title>
   
 
   
@@ -29,8 +29,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="locopy.locopy module" href="locopy.locopy.html" />
-    <link rel="prev" title="locopy package" href="locopy.html" /> 
+    <link rel="next" title="locopy.logger module" href="locopy.logger.html" />
+    <link rel="prev" title="locopy.database module" href="locopy.database.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.1.1
+                0.2.0
               </div>
             
           
@@ -91,9 +91,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">API Reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="locopy.html">locopy package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="locopy.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="locopy.database.html">locopy.database module</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">locopy.errors module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="locopy.locopy.html">locopy.locopy module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="locopy.logger.html">locopy.logger module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="locopy.redshift.html">locopy.redshift module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="locopy.s3.html">locopy.s3 module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="locopy.utility.html">locopy.utility module</a></li>
 </ul>
@@ -193,6 +194,44 @@ set self.__traceback__ to tb and return self.</p>
 </dd></dl>
 
 <dl class="exception">
+<dt id="locopy.errors.CredentialsError">
+<em class="property">exception </em><code class="descclassname">locopy.errors.</code><code class="descname">CredentialsError</code><a class="reference internal" href="../_modules/locopy/errors.html#CredentialsError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.errors.CredentialsError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#locopy.errors.DBError" title="locopy.errors.DBError"><code class="xref py py-class docutils literal notranslate"><span class="pre">locopy.errors.DBError</span></code></a></p>
+<p>Raised when the users credentials are not provided.</p>
+<dl class="attribute">
+<dt id="locopy.errors.CredentialsError.args">
+<code class="descname">args</code><a class="headerlink" href="#locopy.errors.CredentialsError.args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="locopy.errors.CredentialsError.with_traceback">
+<code class="descname">with_traceback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#locopy.errors.CredentialsError.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="locopy.errors.DBError">
+<em class="property">exception </em><code class="descclassname">locopy.errors.</code><code class="descname">DBError</code><a class="reference internal" href="../_modules/locopy/errors.html#DBError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.errors.DBError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<p>Base class for all Database errors.</p>
+<dl class="attribute">
+<dt id="locopy.errors.DBError.args">
+<code class="descname">args</code><a class="headerlink" href="#locopy.errors.DBError.args" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="locopy.errors.DBError.with_traceback">
+<code class="descname">with_traceback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#locopy.errors.DBError.with_traceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception.with_traceback(tb) –
+set self.__traceback__ to tb and return self.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
 <dt id="locopy.errors.LocopyError">
 <em class="property">exception </em><code class="descclassname">locopy.errors.</code><code class="descname">LocopyError</code><a class="reference internal" href="../_modules/locopy/errors.html#LocopyError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.errors.LocopyError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
@@ -224,82 +263,6 @@ set self.__traceback__ to tb and return self.</p>
 <dl class="method">
 <dt id="locopy.errors.LocopySplitError.with_traceback">
 <code class="descname">with_traceback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#locopy.errors.LocopySplitError.with_traceback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exception.with_traceback(tb) –
-set self.__traceback__ to tb and return self.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="exception">
-<dt id="locopy.errors.RedshiftConnectionError">
-<em class="property">exception </em><code class="descclassname">locopy.errors.</code><code class="descname">RedshiftConnectionError</code><a class="reference internal" href="../_modules/locopy/errors.html#RedshiftConnectionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.errors.RedshiftConnectionError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#locopy.errors.RedshiftError" title="locopy.errors.RedshiftError"><code class="xref py py-class docutils literal notranslate"><span class="pre">locopy.errors.RedshiftError</span></code></a></p>
-<p>Raised when there is a problem establishing a connection to Redshift.</p>
-<dl class="attribute">
-<dt id="locopy.errors.RedshiftConnectionError.args">
-<code class="descname">args</code><a class="headerlink" href="#locopy.errors.RedshiftConnectionError.args" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="locopy.errors.RedshiftConnectionError.with_traceback">
-<code class="descname">with_traceback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#locopy.errors.RedshiftConnectionError.with_traceback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exception.with_traceback(tb) –
-set self.__traceback__ to tb and return self.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="exception">
-<dt id="locopy.errors.RedshiftCredentialsError">
-<em class="property">exception </em><code class="descclassname">locopy.errors.</code><code class="descname">RedshiftCredentialsError</code><a class="reference internal" href="../_modules/locopy/errors.html#RedshiftCredentialsError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.errors.RedshiftCredentialsError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#locopy.errors.RedshiftError" title="locopy.errors.RedshiftError"><code class="xref py py-class docutils literal notranslate"><span class="pre">locopy.errors.RedshiftError</span></code></a></p>
-<p>Raised when the user Redshift credentials are not provided.</p>
-<dl class="attribute">
-<dt id="locopy.errors.RedshiftCredentialsError.args">
-<code class="descname">args</code><a class="headerlink" href="#locopy.errors.RedshiftCredentialsError.args" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="locopy.errors.RedshiftCredentialsError.with_traceback">
-<code class="descname">with_traceback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#locopy.errors.RedshiftCredentialsError.with_traceback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exception.with_traceback(tb) –
-set self.__traceback__ to tb and return self.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="exception">
-<dt id="locopy.errors.RedshiftDisconnectionError">
-<em class="property">exception </em><code class="descclassname">locopy.errors.</code><code class="descname">RedshiftDisconnectionError</code><a class="reference internal" href="../_modules/locopy/errors.html#RedshiftDisconnectionError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.errors.RedshiftDisconnectionError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#locopy.errors.RedshiftError" title="locopy.errors.RedshiftError"><code class="xref py py-class docutils literal notranslate"><span class="pre">locopy.errors.RedshiftError</span></code></a></p>
-<p>Raised when there is a problem establishing a connection to Redshift.</p>
-<dl class="attribute">
-<dt id="locopy.errors.RedshiftDisconnectionError.args">
-<code class="descname">args</code><a class="headerlink" href="#locopy.errors.RedshiftDisconnectionError.args" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="locopy.errors.RedshiftDisconnectionError.with_traceback">
-<code class="descname">with_traceback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#locopy.errors.RedshiftDisconnectionError.with_traceback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Exception.with_traceback(tb) –
-set self.__traceback__ to tb and return self.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="exception">
-<dt id="locopy.errors.RedshiftError">
-<em class="property">exception </em><code class="descclassname">locopy.errors.</code><code class="descname">RedshiftError</code><a class="reference internal" href="../_modules/locopy/errors.html#RedshiftError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.errors.RedshiftError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
-<p>Base class for all Redshift errors.</p>
-<dl class="attribute">
-<dt id="locopy.errors.RedshiftError.args">
-<code class="descname">args</code><a class="headerlink" href="#locopy.errors.RedshiftError.args" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="locopy.errors.RedshiftError.with_traceback">
-<code class="descname">with_traceback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#locopy.errors.RedshiftError.with_traceback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exception.with_traceback(tb) –
 set self.__traceback__ to tb and return self.</p>
 </dd></dl>
@@ -430,10 +393,10 @@ set self.__traceback__ to tb and return self.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="locopy.locopy.html" class="btn btn-neutral float-right" title="locopy.locopy module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="locopy.logger.html" class="btn btn-neutral float-right" title="locopy.logger module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="locopy.html" class="btn btn-neutral" title="locopy package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="locopy.database.html" class="btn btn-neutral" title="locopy.database module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -464,7 +427,7 @@ set self.__traceback__ to tb and return self.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.1.1',
+            VERSION:'0.2.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

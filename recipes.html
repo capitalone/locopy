@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Common Recipes &mdash; locopy 0.1.1 documentation</title>
+  <title>Common Recipes &mdash; locopy 0.2.0 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.1.1
+                0.2.0
               </div>
             
           
@@ -179,8 +179,8 @@ tokens in order to access the appropriate AWS resources (S3 bucket).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
 <span class="kn">import</span> <span class="nn">locopy</span>
 
-<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;example.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
-    <span class="n">s3</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span>
+<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;example.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
+    <span class="n">redshift</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span>
         <span class="n">local_file</span><span class="o">=</span><span class="s2">&quot;some_data_to_load.txt&quot;</span><span class="p">,</span>
         <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;s3_bucket_to_use&quot;</span><span class="p">,</span>
         <span class="n">s3_folder</span><span class="o">=</span><span class="s2">&quot;s3_folder_to_use/s3_subfolder_to_use&quot;</span><span class="p">,</span>
@@ -203,8 +203,8 @@ integer</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
 <span class="kn">import</span> <span class="nn">locopy</span>
 
-<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;example.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
-    <span class="n">s3</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span>
+<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;example.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
+    <span class="n">redshift</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span>
         <span class="n">local_file</span><span class="o">=</span><span class="s2">&quot;some_data_to_load.txt&quot;</span><span class="p">,</span>
         <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;s3_bucket_to_use&quot;</span><span class="p">,</span>
         <span class="n">s3_folder</span><span class="o">=</span><span class="s2">&quot;s3_folder_to_use/s3_subfolder_to_use&quot;</span><span class="p">,</span>
@@ -224,8 +224,8 @@ Redshift cluster.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
 <span class="kn">import</span> <span class="nn">locopy</span>
 
-<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;example.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
-    <span class="n">s3</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span>
+<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;example.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
+    <span class="n">redshift</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span>
         <span class="n">local_file</span><span class="o">=</span><span class="s2">&quot;some_data_to_load.txt&quot;</span><span class="p">,</span>
         <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;s3_bucket_to_use&quot;</span><span class="p">,</span>
         <span class="n">s3_folder</span><span class="o">=</span><span class="s2">&quot;s3_folder_to_use/s3_subfolder_to_use&quot;</span><span class="p">,</span>
@@ -241,21 +241,21 @@ performance of the <code class="docutils literal notranslate"><span class="pre">
 <div class="section" id="i-want-to-export-some-data-from-redshift-to-a-local-csv">
 <h2>I want to export some data from Redshift to a local CSV<a class="headerlink" href="#i-want-to-export-some-data-from-redshift-to-a-local-csv" title="Permalink to this headline">¶</a></h2>
 <p>Data can be exported from Redshift to a CSV by supplying an <code class="docutils literal notranslate"><span class="pre">export_path</span></code>
-to locopy.S3.run_unload():</p>
+to <code class="docutils literal notranslate"><span class="pre">locopy.Redshift.run_unload()</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
 <span class="kn">import</span> <span class="nn">locopy</span>
 
 <span class="n">my_profile</span> <span class="o">=</span> <span class="s2">&quot;some_profile_with_valid_tokens&quot;</span>
-<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
-    <span class="n">s3</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
+<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
+    <span class="n">redshift</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
         <span class="n">query</span><span class="o">=</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">,</span>
         <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;s3_bucket_to_use&quot;</span><span class="p">,</span>
         <span class="n">export_path</span><span class="o">=</span><span class="s2">&quot;output.csv&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Or a pipe delimited….</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
-    <span class="n">s3</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span><span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
+    <span class="n">redshift</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
         <span class="n">query</span><span class="o">=</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">,</span>
         <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;s3_bucket_to_use&quot;</span><span class="p">,</span>
         <span class="n">export_path</span><span class="o">=</span><span class="s2">&quot;output.tsv&quot;</span><span class="p">,</span>
@@ -271,8 +271,8 @@ unload your data to a new folder or with a different prefix by specifying the
 <code class="docutils literal notranslate"><span class="pre">s3_folder=s3_folder_to_use/</span></code>, or create a unique filename prefix name by
 omitting the last <code class="docutils literal notranslate"><span class="pre">/</span></code>, i.e. <code class="docutils literal notranslate"><span class="pre">s3_folder=unique_file_prefix</span></code>.</p>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
-    <span class="n">s3</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
+    <span class="n">redshift</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
         <span class="n">query</span><span class="o">=</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">,</span>
         <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;s3_bucket_to_use&quot;</span><span class="p">,</span>
         <span class="n">s3_folder</span><span class="o">=</span><span class="s2">&quot;s3_folder_to_use/&quot;</span><span class="p">,</span>
@@ -288,8 +288,8 @@ the S3 files from being automatically deleted after the run.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
 <span class="kn">import</span> <span class="nn">locopy</span>
 
-<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
-    <span class="n">s3</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
+<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
+    <span class="n">redshift</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
         <span class="n">query</span><span class="o">=</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">,</span>
         <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;s3_bucket_to_use&quot;</span><span class="p">,</span>
         <span class="n">s3_folder</span><span class="o">=</span><span class="s2">&quot;s3_folder_to_use/s3_subfolder_to_use/&quot;</span><span class="p">,</span>
@@ -300,8 +300,8 @@ the S3 files from being automatically deleted after the run.</p>
 reasons. The maximum size for a data file is 6.2 GB. If the data size is
 greater than the maximum, UNLOAD creates additional files, up to 6.2 GB each.
 If you want to back it up as a single file, you can run:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
-    <span class="n">s3</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
+    <span class="n">redshift</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
         <span class="n">query</span><span class="o">=</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">,</span>
         <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;s3_bucket_to_use&quot;</span><span class="p">,</span>
         <span class="n">s3_folder</span><span class="o">=</span><span class="s2">&quot;s3_folder_to_use/s3_subfolder_to_use/&quot;</span><span class="p">,</span>
@@ -354,7 +354,7 @@ If you want to back it up as a single file, you can run:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.1.1',
+            VERSION:'0.2.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

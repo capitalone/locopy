@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.utility module &mdash; locopy 0.1.1 documentation</title>
+  <title>locopy.utility module &mdash; locopy 0.2.0 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.1.1
+                0.2.0
               </div>
             
           
@@ -90,9 +90,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">API Reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="locopy.html">locopy package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="locopy.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="locopy.database.html">locopy.database module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="locopy.errors.html">locopy.errors module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="locopy.locopy.html">locopy.locopy module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="locopy.logger.html">locopy.logger module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="locopy.redshift.html">locopy.redshift module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="locopy.s3.html">locopy.s3 module</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">locopy.utility module</a></li>
 </ul>
@@ -202,9 +203,9 @@ Please see the following url for more information:
 </dd></dl>
 
 <dl class="function">
-<dt id="locopy.utility.get_redshift_yaml">
-<code class="descclassname">locopy.utility.</code><code class="descname">get_redshift_yaml</code><span class="sig-paren">(</span><em>config_yaml</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#get_redshift_yaml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.utility.get_redshift_yaml" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads a Redshift configuration YAML file to populate the Redshift
+<dt id="locopy.utility.read_config_yaml">
+<code class="descclassname">locopy.utility.</code><code class="descname">read_config_yaml</code><span class="sig-paren">(</span><em>config_yaml</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#read_config_yaml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.utility.read_config_yaml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads a configuration YAML file to populate the database
 connection attributes, and validate required ones. Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">host</span><span class="p">:</span> <span class="n">my</span><span class="o">.</span><span class="n">redshift</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">com</span>
 <span class="n">port</span><span class="p">:</span> <span class="mi">5439</span>
@@ -220,11 +221,11 @@ connection attributes, and validate required ones. Example:</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>config_yaml</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em> or </em><em>file pointer</em>) – String representing the file location of the configuration file, or a
 pointer to an open file object</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A dictionary of parameters for setting up a connection to Redshift.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A dictionary of parameters for setting up a connection to the database.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RedshiftCredentialsError</span></code> – If any elements are missing from YAML file</td>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">CredentialsError</span></code> – If any connection items are missing from the YAML file</td>
 </tr>
 </tbody>
 </table>
@@ -255,34 +256,6 @@ pointer to an open file object</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">LocopySplitError</span></code> – If <code class="docutils literal notranslate"><span class="pre">splits</span></code> is less than 2 or some processing error when splitting</p>
 </td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="locopy.utility.validate_redshift_attributes">
-<code class="descclassname">locopy.utility.</code><code class="descname">validate_redshift_attributes</code><span class="sig-paren">(</span><em>host=None</em>, <em>port=None</em>, <em>dbname=None</em>, <em>user=None</em>, <em>password=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#validate_redshift_attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.utility.validate_redshift_attributes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate Redshift connection attributes to make sure none are missing.</p>
-<ul class="simple">
-<li><dl class="first docutils">
-<dt>All the Redshift connect details need to be set:</dt>
-<dd><ul class="first last">
-<li>Host</li>
-<li>Port</li>
-<li>Database name</li>
-<li>Database username</li>
-<li>Database password</li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RedshiftCredentialsError</span></code> – If key fields are None.</td>
 </tr>
 </tbody>
 </table>
@@ -352,7 +325,7 @@ See <a class="reference external" href="https://www.tutorialspoint.com/python/py
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.1.1',
+            VERSION:'0.2.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

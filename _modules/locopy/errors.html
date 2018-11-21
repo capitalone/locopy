@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.errors &mdash; locopy 0.1.1 documentation</title>
+  <title>locopy.errors &mdash; locopy 0.2.0 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.1.1
+                0.2.0
               </div>
             
           
@@ -185,27 +185,15 @@
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="RedshiftError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.RedshiftError">[docs]</a><span class="k">class</span> <span class="nc">RedshiftError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="DBError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.DBError">[docs]</a><span class="k">class</span> <span class="nc">DBError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Base class for all Redshift errors.</span>
+<span class="sd">    Base class for all Database errors.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="RedshiftCredentialsError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.RedshiftCredentialsError">[docs]</a><span class="k">class</span> <span class="nc">RedshiftCredentialsError</span><span class="p">(</span><span class="n">RedshiftError</span><span class="p">):</span>
+<div class="viewcode-block" id="CredentialsError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.CredentialsError">[docs]</a><span class="k">class</span> <span class="nc">CredentialsError</span><span class="p">(</span><span class="n">DBError</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Raised when the user Redshift credentials are not provided.</span>
-<span class="sd">    &quot;&quot;&quot;</span></div>
-
-
-<div class="viewcode-block" id="RedshiftConnectionError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.RedshiftConnectionError">[docs]</a><span class="k">class</span> <span class="nc">RedshiftConnectionError</span><span class="p">(</span><span class="n">RedshiftError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Raised when there is a problem establishing a connection to Redshift.</span>
-<span class="sd">    &quot;&quot;&quot;</span></div>
-
-
-<div class="viewcode-block" id="RedshiftDisconnectionError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.RedshiftDisconnectionError">[docs]</a><span class="k">class</span> <span class="nc">RedshiftDisconnectionError</span><span class="p">(</span><span class="n">RedshiftError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Raised when there is a problem establishing a connection to Redshift.</span>
+<span class="sd">    Raised when the users credentials are not provided.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
@@ -277,7 +265,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.1.1',
+            VERSION:'0.2.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

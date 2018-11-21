@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; locopy 0.1.1 documentation</title>
+  <title>Index &mdash; locopy 0.2.0 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.1.1
+                0.2.0
               </div>
             
           
@@ -166,29 +166,24 @@
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
- | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
  
 </div>
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/locopy.s3.html#locopy.s3.add_default_copy_options">add_default_copy_options() (in module locopy.s3)</a>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.add_default_copy_options">add_default_copy_options() (in module locopy.redshift)</a>
 </li>
       <li><a href="api/locopy.errors.html#locopy.errors.CompressionError.args">args (locopy.errors.CompressionError attribute)</a>
 
       <ul>
+        <li><a href="api/locopy.errors.html#locopy.errors.CredentialsError.args">(locopy.errors.CredentialsError attribute)</a>
+</li>
+        <li><a href="api/locopy.errors.html#locopy.errors.DBError.args">(locopy.errors.DBError attribute)</a>
+</li>
         <li><a href="api/locopy.errors.html#locopy.errors.LocopyError.args">(locopy.errors.LocopyError attribute)</a>
 </li>
         <li><a href="api/locopy.errors.html#locopy.errors.LocopySplitError.args">(locopy.errors.LocopySplitError attribute)</a>
-</li>
-        <li><a href="api/locopy.errors.html#locopy.errors.RedshiftConnectionError.args">(locopy.errors.RedshiftConnectionError attribute)</a>
-</li>
-        <li><a href="api/locopy.errors.html#locopy.errors.RedshiftCredentialsError.args">(locopy.errors.RedshiftCredentialsError attribute)</a>
-</li>
-        <li><a href="api/locopy.errors.html#locopy.errors.RedshiftDisconnectionError.args">(locopy.errors.RedshiftDisconnectionError attribute)</a>
-</li>
-        <li><a href="api/locopy.errors.html#locopy.errors.RedshiftError.args">(locopy.errors.RedshiftError attribute)</a>
 </li>
         <li><a href="api/locopy.errors.html#locopy.errors.S3CredentialsError.args">(locopy.errors.S3CredentialsError attribute)</a>
 </li>
@@ -209,44 +204,80 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/locopy.locopy.html#locopy.locopy.Cmd">Cmd (class in locopy.locopy)</a>
-</li>
-      <li><a href="api/locopy.locopy.html#locopy.locopy.Cmd.column_names">column_names() (locopy.locopy.Cmd method)</a>
+      <li><a href="api/locopy.database.html#locopy.database.Database.column_names">column_names() (locopy.database.Database method)</a>
 
       <ul>
-        <li><a href="api/locopy.s3.html#locopy.s3.S3.column_names">(locopy.s3.S3 method)</a>
+        <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.column_names">(locopy.redshift.Redshift method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/locopy.s3.html#locopy.s3.combine_copy_options">combine_copy_options() (in module locopy.s3)</a>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.combine_copy_options">combine_copy_options() (in module locopy.redshift)</a>
 </li>
       <li><a href="api/locopy.utility.html#locopy.utility.compress_file">compress_file() (in module locopy.utility)</a>
 </li>
       <li><a href="api/locopy.errors.html#locopy.errors.CompressionError">CompressionError</a>
 </li>
+      <li><a href="api/locopy.database.html#locopy.database.Database.conn">conn (locopy.database.Database attribute)</a>
+
+      <ul>
+        <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.conn">(locopy.redshift.Redshift attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/locopy.database.html#locopy.database.Database.connection">connection (locopy.database.Database attribute)</a>
+
+      <ul>
+        <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.connection">(locopy.redshift.Redshift attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api/locopy.errors.html#locopy.errors.CredentialsError">CredentialsError</a>
+</li>
+      <li><a href="api/locopy.database.html#locopy.database.Database.cursor">cursor (locopy.database.Database attribute)</a>
+
+      <ul>
+        <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.cursor">(locopy.redshift.Redshift attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/locopy.s3.html#locopy.s3.S3.delete_from_s3">delete_from_s3() (locopy.s3.S3 method)</a>
+      <li><a href="api/locopy.database.html#locopy.database.Database">Database (class in locopy.database)</a>
+</li>
+      <li><a href="api/locopy.database.html#locopy.database.Database.dbapi">dbapi (locopy.database.Database attribute)</a>
+
+      <ul>
+        <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.dbapi">(locopy.redshift.Redshift attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api/locopy.errors.html#locopy.errors.DBError">DBError</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/locopy.s3.html#locopy.s3.S3.download_from_s3">download_from_s3() (locopy.s3.S3 method)</a>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.delete_from_s3">delete_from_s3() (locopy.redshift.Redshift method)</a>
+
+      <ul>
+        <li><a href="api/locopy.s3.html#locopy.s3.S3.delete_from_s3">(locopy.s3.S3 method)</a>
 </li>
+      </ul></li>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.download_from_s3">download_from_s3() (locopy.redshift.Redshift method)</a>
+
+      <ul>
+        <li><a href="api/locopy.s3.html#locopy.s3.S3.download_from_s3">(locopy.s3.S3 method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/locopy.locopy.html#locopy.locopy.Cmd.execute">execute() (locopy.locopy.Cmd method)</a>
+      <li><a href="api/locopy.database.html#locopy.database.Database.execute">execute() (locopy.database.Database method)</a>
 
       <ul>
-        <li><a href="api/locopy.s3.html#locopy.s3.S3.execute">(locopy.s3.S3 method)</a>
+        <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.execute">(locopy.redshift.Redshift method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -258,17 +289,17 @@
       <li><a href="api/locopy.logger.html#locopy.logger.get_logger">get_logger() (in module locopy.logger)</a>
 </li>
   </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/locopy.utility.html#locopy.utility.get_redshift_yaml">get_redshift_yaml() (in module locopy.utility)</a>
-</li>
-  </ul></td>
 </tr></table>
 
 <h2 id="K">K</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/locopy.s3.html#locopy.s3.S3.kms_key">kms_key (locopy.s3.S3 attribute)</a>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.kms_key">kms_key (locopy.redshift.Redshift attribute)</a>
+
+      <ul>
+        <li><a href="api/locopy.s3.html#locopy.s3.S3.kms_key">(locopy.s3.S3 attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -277,14 +308,16 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/locopy.html#module-locopy">locopy (module)</a>
 </li>
-      <li><a href="api/locopy.errors.html#module-locopy.errors">locopy.errors (module)</a>
+      <li><a href="api/locopy.database.html#module-locopy.database">locopy.database (module)</a>
 </li>
-      <li><a href="api/locopy.locopy.html#module-locopy.locopy">locopy.locopy (module)</a>
+      <li><a href="api/locopy.errors.html#module-locopy.errors">locopy.errors (module)</a>
 </li>
       <li><a href="api/locopy.logger.html#module-locopy.logger">locopy.logger (module)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/locopy.redshift.html#module-locopy.redshift">locopy.redshift (module)</a>
+</li>
       <li><a href="api/locopy.s3.html#module-locopy.s3">locopy.s3 (module)</a>
 </li>
       <li><a href="api/locopy.utility.html#module-locopy.utility">locopy.utility (module)</a>
@@ -299,6 +332,14 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.profile">profile (locopy.redshift.Redshift attribute)</a>
+
+      <ul>
+        <li><a href="api/locopy.s3.html#locopy.s3.S3.profile">(locopy.s3.S3 attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/locopy.utility.html#locopy.utility.ProgressPercentage">ProgressPercentage (class in locopy.utility)</a>
 </li>
   </ul></td>
@@ -307,19 +348,15 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/locopy.errors.html#locopy.errors.RedshiftConnectionError">RedshiftConnectionError</a>
+      <li><a href="api/locopy.utility.html#locopy.utility.read_config_yaml">read_config_yaml() (in module locopy.utility)</a>
 </li>
-      <li><a href="api/locopy.errors.html#locopy.errors.RedshiftCredentialsError">RedshiftCredentialsError</a>
-</li>
-      <li><a href="api/locopy.errors.html#locopy.errors.RedshiftDisconnectionError">RedshiftDisconnectionError</a>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift">Redshift (class in locopy.redshift)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/locopy.errors.html#locopy.errors.RedshiftError">RedshiftError</a>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.run_copy">run_copy() (locopy.redshift.Redshift method)</a>
 </li>
-      <li><a href="api/locopy.s3.html#locopy.s3.S3.run_copy">run_copy() (locopy.s3.S3 method)</a>
-</li>
-      <li><a href="api/locopy.s3.html#locopy.s3.S3.run_unload">run_unload() (locopy.s3.S3 method)</a>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.run_unload">run_unload() (locopy.redshift.Redshift method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -329,8 +366,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/locopy.s3.html#locopy.s3.S3">S3 (class in locopy.s3)</a>
 </li>
-      <li><a href="api/locopy.s3.html#locopy.s3.S3.s3">s3 (locopy.s3.S3 attribute)</a>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.s3">s3 (locopy.redshift.Redshift attribute)</a>
+
+      <ul>
+        <li><a href="api/locopy.s3.html#locopy.s3.S3.s3">(locopy.s3.S3 attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/locopy.errors.html#locopy.errors.S3CredentialsError">S3CredentialsError</a>
 </li>
       <li><a href="api/locopy.errors.html#locopy.errors.S3DeletionError">S3DeletionError</a>
@@ -345,8 +386,12 @@
 </li>
       <li><a href="api/locopy.errors.html#locopy.errors.S3UploadError">S3UploadError</a>
 </li>
-      <li><a href="api/locopy.s3.html#locopy.s3.S3.session">session (locopy.s3.S3 attribute)</a>, <a href="api/locopy.s3.html#locopy.s3.S3.session">[1]</a>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.session">session (locopy.redshift.Redshift attribute)</a>
+
+      <ul>
+        <li><a href="api/locopy.s3.html#locopy.s3.S3.session">(locopy.s3.S3 attribute)</a>
 </li>
+      </ul></li>
       <li><a href="api/locopy.utility.html#locopy.utility.split_file">split_file() (in module locopy.utility)</a>
 </li>
   </ul></td>
@@ -355,10 +400,10 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/locopy.locopy.html#locopy.locopy.Cmd.to_dataframe">to_dataframe() (locopy.locopy.Cmd method)</a>
+      <li><a href="api/locopy.database.html#locopy.database.Database.to_dataframe">to_dataframe() (locopy.database.Database method)</a>
 
       <ul>
-        <li><a href="api/locopy.s3.html#locopy.s3.S3.to_dataframe">(locopy.s3.S3 method)</a>
+        <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.to_dataframe">(locopy.redshift.Redshift method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -367,16 +412,12 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/locopy.s3.html#locopy.s3.S3.upload_to_s3">upload_to_s3() (locopy.s3.S3 method)</a>
-</li>
-  </ul></td>
-</tr></table>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.upload_to_s3">upload_to_s3() (locopy.redshift.Redshift method)</a>
 
-<h2 id="V">V</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/locopy.utility.html#locopy.utility.validate_redshift_attributes">validate_redshift_attributes() (in module locopy.utility)</a>
+      <ul>
+        <li><a href="api/locopy.s3.html#locopy.s3.S3.upload_to_s3">(locopy.s3.S3 method)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -386,17 +427,13 @@
       <li><a href="api/locopy.errors.html#locopy.errors.CompressionError.with_traceback">with_traceback() (locopy.errors.CompressionError method)</a>
 
       <ul>
+        <li><a href="api/locopy.errors.html#locopy.errors.CredentialsError.with_traceback">(locopy.errors.CredentialsError method)</a>
+</li>
+        <li><a href="api/locopy.errors.html#locopy.errors.DBError.with_traceback">(locopy.errors.DBError method)</a>
+</li>
         <li><a href="api/locopy.errors.html#locopy.errors.LocopyError.with_traceback">(locopy.errors.LocopyError method)</a>
 </li>
         <li><a href="api/locopy.errors.html#locopy.errors.LocopySplitError.with_traceback">(locopy.errors.LocopySplitError method)</a>
-</li>
-        <li><a href="api/locopy.errors.html#locopy.errors.RedshiftConnectionError.with_traceback">(locopy.errors.RedshiftConnectionError method)</a>
-</li>
-        <li><a href="api/locopy.errors.html#locopy.errors.RedshiftCredentialsError.with_traceback">(locopy.errors.RedshiftCredentialsError method)</a>
-</li>
-        <li><a href="api/locopy.errors.html#locopy.errors.RedshiftDisconnectionError.with_traceback">(locopy.errors.RedshiftDisconnectionError method)</a>
-</li>
-        <li><a href="api/locopy.errors.html#locopy.errors.RedshiftError.with_traceback">(locopy.errors.RedshiftError method)</a>
 </li>
         <li><a href="api/locopy.errors.html#locopy.errors.S3CredentialsError.with_traceback">(locopy.errors.S3CredentialsError method)</a>
 </li>
@@ -452,7 +489,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.1.1',
+            VERSION:'0.2.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

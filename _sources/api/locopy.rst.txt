@@ -6,9 +6,10 @@ Submodules
 
 .. toctree::
 
+   locopy.database
    locopy.errors
-   locopy.locopy
    locopy.logger
+   locopy.redshift
    locopy.s3
    locopy.utility
 

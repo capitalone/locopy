@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.utility &mdash; locopy 0.1.1 documentation</title>
+  <title>locopy.utility &mdash; locopy 0.2.0 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.1.1
+                0.2.0
               </div>
             
           
@@ -178,7 +178,7 @@
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">cycle</span>
 <span class="kn">from</span> <span class="nn">.logger</span> <span class="k">import</span> <span class="n">get_logger</span><span class="p">,</span> <span class="n">DEBUG</span><span class="p">,</span> <span class="n">INFO</span><span class="p">,</span> <span class="n">WARN</span><span class="p">,</span> <span class="n">ERROR</span><span class="p">,</span> <span class="n">CRITICAL</span>
-<span class="kn">from</span> <span class="nn">.errors</span> <span class="k">import</span> <span class="n">CompressionError</span><span class="p">,</span> <span class="n">LocopySplitError</span><span class="p">,</span> <span class="n">RedshiftCredentialsError</span>
+<span class="kn">from</span> <span class="nn">.errors</span> <span class="k">import</span> <span class="n">CompressionError</span><span class="p">,</span> <span class="n">LocopySplitError</span><span class="p">,</span> <span class="n">CredentialsError</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">INFO</span><span class="p">)</span>
 
@@ -287,9 +287,9 @@
         <span class="k">raise</span> <span class="n">LocopySplitError</span><span class="p">(</span><span class="s2">&quot;Error splitting the file.&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_redshift_yaml"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.get_redshift_yaml">[docs]</a><span class="k">def</span> <span class="nf">get_redshift_yaml</span><span class="p">(</span><span class="n">config_yaml</span><span class="p">):</span>
+<div class="viewcode-block" id="read_config_yaml"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.read_config_yaml">[docs]</a><span class="k">def</span> <span class="nf">read_config_yaml</span><span class="p">(</span><span class="n">config_yaml</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Reads a Redshift configuration YAML file to populate the Redshift</span>
+<span class="sd">    Reads a configuration YAML file to populate the database</span>
 <span class="sd">    connection attributes, and validate required ones. Example::</span>
 
 <span class="sd">        host: my.redshift.cluster.com</span>
@@ -307,12 +307,12 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    dict</span>
-<span class="sd">        A dictionary of parameters for setting up a connection to Redshift.</span>
+<span class="sd">        A dictionary of parameters for setting up a connection to the database.</span>
 
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
-<span class="sd">    RedshiftCredentialsError</span>
-<span class="sd">        If any elements are missing from YAML file</span>
+<span class="sd">    CredentialsError</span>
+<span class="sd">        If any connection items are missing from the YAML file</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">config_yaml</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -321,39 +321,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">locopy_yaml</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config_yaml</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error reading Redshift yaml. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s2">&quot;Error reading Redshift yaml.&quot;</span><span class="p">)</span>
-    <span class="n">validate_redshift_attributes</span><span class="p">(</span><span class="o">**</span><span class="n">locopy_yaml</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error reading yaml. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">CredentialsError</span><span class="p">(</span><span class="s2">&quot;Error reading yaml.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">locopy_yaml</span></div>
-
-
-<div class="viewcode-block" id="validate_redshift_attributes"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.validate_redshift_attributes">[docs]</a><span class="k">def</span> <span class="nf">validate_redshift_attributes</span><span class="p">(</span>
-    <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dbname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-<span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Validate Redshift connection attributes to make sure none are missing.</span>
-
-<span class="sd">    * All the Redshift connect details need to be set:</span>
-<span class="sd">        * Host</span>
-<span class="sd">        * Port</span>
-<span class="sd">        * Database name</span>
-<span class="sd">        * Database username</span>
-<span class="sd">        * Database password</span>
-
-<span class="sd">    Raises</span>
-<span class="sd">    ------</span>
-<span class="sd">    RedshiftCredentialsError</span>
-<span class="sd">        If key fields are None.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">host</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s2">&quot;Redshift host missing&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">port</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s2">&quot;Redshift port missing&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">dbname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s2">&quot;Redshift dbname missing&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s2">&quot;Redshift username missing&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">password</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">RedshiftCredentialsError</span><span class="p">(</span><span class="s2">&quot;Redshift password missing&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="ProgressPercentage"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.ProgressPercentage">[docs]</a><span class="k">class</span> <span class="nc">ProgressPercentage</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -420,7 +390,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'0.1.1',
+            VERSION:'0.2.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',

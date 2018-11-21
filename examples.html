@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Basic Examples &mdash; locopy 0.1.1 documentation</title>
+  <title>Basic Examples &mdash; locopy 0.2.0 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.1.1
+                0.2.0
               </div>
             
           
@@ -172,36 +172,36 @@
 
 <span class="n">create_sql</span> <span class="o">=</span> <span class="s2">&quot;CREATE TABLE schema.table (variable VARCHAR(20)) DISTKEY(variable)&quot;</span>
 
-<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span>
+<span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span>
     <span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span>
     <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;example.yaml&quot;</span><span class="p">,</span>
-    <span class="n">profile</span><span class="o">=</span><span class="s2">&quot;aws_profile&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
+    <span class="n">profile</span><span class="o">=</span><span class="s2">&quot;aws_profile&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
 
-    <span class="n">s3</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">create_sql</span><span class="p">)</span>
-    <span class="n">s3</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span>
+    <span class="n">redshift</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">create_sql</span><span class="p">)</span>
+    <span class="n">redshift</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span>
         <span class="n">local_file</span><span class="o">=</span><span class="s2">&quot;example_data.csv&quot;</span><span class="p">,</span>
         <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;my_s3_bucket&quot;</span><span class="p">,</span>
         <span class="n">table_name</span><span class="o">=</span><span class="s2">&quot;schema.table&quot;</span><span class="p">,</span>
         <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
         <span class="n">compress</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-    <span class="n">s3</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">)</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">s3</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+    <span class="n">redshift</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">redshift</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
 <span class="k">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="upload-to-s3-and-run-copy-command-without-yaml">
 <h2>Upload to S3 and run COPY command without YAML<a class="headerlink" href="#upload-to-s3-and-run-copy-command-without-yaml" title="Permalink to this headline">¶</a></h2>
-<p>Identical to the above code, but we would explicitly pass the connection details in the <code class="docutils literal notranslate"><span class="pre">S3</span></code>
+<p>Identical to the above code, but we would explicitly pass the connection details in the <code class="docutils literal notranslate"><span class="pre">Redshift</span></code>
 constructor vs. the YAML</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">S3</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span>
     <span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span>
     <span class="n">host</span><span class="o">=</span><span class="s2">&quot;my.redshift.cluster.com&quot;</span><span class="p">,</span>
     <span class="n">port</span><span class="o">=</span><span class="mi">5439</span><span class="p">,</span>
-    <span class="n">dbname</span><span class="o">=</span><span class="s2">&quot;db&quot;</span><span class="p">,</span>
+    <span class="n">database</span><span class="o">=</span><span class="s2">&quot;db&quot;</span><span class="p">,</span>
     <span class="n">user</span><span class="o">=</span><span class="s2">&quot;userid&quot;</span><span class="p">,</span>
     <span class="n">password</span><span class="o">=</span><span class="s2">&quot;password&quot;</span><span class="p">,</span>
-    <span class="n">profile</span><span class="o">=</span><span class="s2">&quot;aws_profile&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">s3</span><span class="p">:</span>
+    <span class="n">profile</span><span class="o">=</span><span class="s2">&quot;aws_profile&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
     <span class="o">...</span>
 </pre></div>
 </div>
@@ -223,7 +223,7 @@ there may be times when you want to tweak the options used by the <code class="d
 oddities in your data.  Locopy assigns a few options by default (<code class="docutils literal notranslate"><span class="pre">DATEFORMAT</span> <span class="pre">'auto'</span></code>,
 <code class="docutils literal notranslate"><span class="pre">COMPUPDATE</span> <span class="pre">ON</span></code>, and <code class="docutils literal notranslate"><span class="pre">TRUNCATECOLUMNS</span></code>). If you want to specify other options, or override these
 three, you can pass in a list of strings which will tweak your load:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">s3</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span><span class="n">local_file</span><span class="o">=</span><span class="s2">&quot;example_data.csv&quot;</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">redshift</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span><span class="n">local_file</span><span class="o">=</span><span class="s2">&quot;example_data.csv&quot;</span><span class="p">,</span>
             <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;my_s3_bucket&quot;</span><span class="p">,</span>
             <span class="n">table_name</span><span class="o">=</span><span class="s2">&quot;schema.table&quot;</span><span class="p">,</span>
             <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
@@ -275,7 +275,7 @@ three, you can pass in a list of strings which will tweak your load:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.1.1',
+            VERSION:'0.2.0',
             LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
