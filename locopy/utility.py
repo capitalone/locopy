@@ -80,7 +80,7 @@ def compress_file(input_file, output_file):
         raise CompressionError("Error compressing the file.")
 
 
-def split_file(input_file, output_file, splits=2):
+def split_file(input_file, output_file, splits=1):
     """Split a file into equal files by lines.
 
     For example: ``myinputfile.txt`` will be split into ``myoutputfile.txt.01``
@@ -95,7 +95,7 @@ def split_file(input_file, output_file, splits=2):
         Name of the output file
 
     splits : int, optional
-        Number of splits to perform. Must be greater than one. Defaults to 2
+        Number of splits to perform. Must be greater than zero. Defaults to 1
 
     Returns
     -------
@@ -105,9 +105,9 @@ def split_file(input_file, output_file, splits=2):
     Raises
     ------
     LocopySplitError
-        If ``splits`` is less than 2 or some processing error when splitting
+        If ``splits`` is less than 1 or some processing error when splitting
     """
-    if type(splits) is not int or splits < 0:
+    if type(splits) is not int or splits <= 0:
         logger.error("Number of splits is invalid")
         raise LocopySplitError("Number of splits must be greater than zero and an integer.")
 

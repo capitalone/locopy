@@ -84,11 +84,11 @@ def test_split_file():
     input_file = "tests/data/mock_file.txt"
     output_file = "tests/data/mock_output_file.txt"
 
-    splits = split_file(input_file, output_file, 1)
+    splits = split_file(input_file, output_file)
     assert splits == [input_file]
 
     expected = ["tests/data/mock_output_file.txt.0", "tests/data/mock_output_file.txt.1"]
-    splits = split_file(input_file, output_file)
+    splits = split_file(input_file, output_file, 2)
     assert splits == expected
     assert compare_file_contents(input_file, expected)
     cleanup(splits)
@@ -141,7 +141,7 @@ def test_split_file_exception():
             mock_next.side_effect = Exception("SomeException")
 
             with pytest.raises(LocopySplitError):
-                split_file(input_file, output_file)
+                split_file(input_file, output_file, 2)
             assert mock_remove.call_count == 2
             mock_remove.reset_mock()
 
