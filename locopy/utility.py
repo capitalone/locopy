@@ -107,9 +107,12 @@ def split_file(input_file, output_file, splits=2):
     LocopySplitError
         If ``splits`` is less than 2 or some processing error when splitting
     """
-    if type(splits) is not int or splits < 2:
+    if type(splits) is not int or splits < 0:
         logger.error("Number of splits is invalid")
-        raise LocopySplitError("Number of splits must be greater than one and an integer.")
+        raise LocopySplitError("Number of splits must be greater than zero and an integer.")
+
+    if splits == 1:
+        return [input_file]
 
     try:
         pool = [x for x in range(splits)]

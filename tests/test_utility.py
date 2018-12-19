@@ -84,6 +84,9 @@ def test_split_file():
     input_file = "tests/data/mock_file.txt"
     output_file = "tests/data/mock_output_file.txt"
 
+    splits = split_file(input_file, output_file, 1)
+    assert splits == [input_file]
+
     expected = ["tests/data/mock_output_file.txt.0", "tests/data/mock_output_file.txt.1"]
     splits = split_file(input_file, output_file)
     assert splits == expected
@@ -126,8 +129,6 @@ def test_split_file_exception():
         split_file(input_file, output_file, -1)
     with pytest.raises(LocopySplitError):
         split_file(input_file, output_file, 0)
-    with pytest.raises(LocopySplitError):
-        split_file(input_file, output_file, 1)
     with pytest.raises(LocopySplitError):
         split_file(input_file, output_file, 5.65)
     with pytest.raises(LocopySplitError):
