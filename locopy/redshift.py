@@ -271,10 +271,7 @@ class Redshift(S3, Database):
             copy_options = []
 
         # generate the actual splitting of the files
-        if splits > 1:
-            upload_list = split_file(local_file, local_file, splits=splits)
-        else:
-            upload_list = [local_file]
+        upload_list = split_file(local_file, local_file, splits=splits)
 
         if compress:
             copy_options.append("GZIP")

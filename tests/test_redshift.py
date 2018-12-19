@@ -177,10 +177,11 @@ def test_run_copy(
             mock.call("/path/local_file.2.gz", "s3_bucket", "test/local_file.2.gz"),
         ]
 
+        mock_split_file.return_value = ["/path/local_file.txt"]
         r.run_copy("/path/local_file.txt", "s3_bucket", "table_name", delim="|")
 
         # assert
-        assert not mock_split_file.called
+        assert mock_split_file.called
         mock_compress_file.assert_called_with("/path/local_file.txt", "/path/local_file.txt.gz")
         mock_remove.assert_called_with("/path/local_file.txt")
         mock_s3_upload.assert_called_with(
@@ -220,6 +221,7 @@ def test_run_copy(
         assert mock_s3_delete.called_with("s3_bucket", "local_file.2.gz")
 
         reset_mocks()
+        mock_split_file.return_value = ["/path/local_file"]
         r.run_copy(
             "/path/local_file",
             "s3_bucket",
@@ -229,7 +231,7 @@ def test_run_copy(
             compress=False,
         )
         # assert
-        assert not mock_split_file.called
+        assert mock_split_file.called
         assert not mock_compress_file.called
         assert not mock_remove.called
         mock_s3_upload.assert_called_with("/path/local_file", "s3_bucket", "local_file")
@@ -265,11 +267,7 @@ def test_run_copy(
 
         # with a s3_folder included and no splits
         reset_mocks()
-        mock_split_file.return_value = [
-            "/path/local_file.0",
-            "/path/local_file.1",
-            "/path/local_file.2",
-        ]
+        mock_split_file.return_value = ["/path/local_file.txt"]
         r.run_copy(
             "/path/local_file.txt",
             "s3_bucket",
@@ -280,7 +278,7 @@ def test_run_copy(
             s3_folder="test",
         )
         # assert
-        assert not mock_split_file.called
+        assert mock_split_file.called
         assert not mock_compress_file.called
         assert not mock_remove.called
         mock_s3_upload.assert_called_with(
@@ -293,6 +291,12 @@ def test_run_copy(
 
         # with a s3_folder included and splits
         reset_mocks()
+        mock_split_file.return_value = [
+            "/path/local_file.0",
+            "/path/local_file.1",
+            "/path/local_file.2",
+        ]
+
         r.run_copy(
             "/path/local_file",
             "s3_bucket",
@@ -318,6 +322,11 @@ def test_run_copy(
 
         # with a s3_folder included , splits, and gzip
         reset_mocks()
+        mock_split_file.return_value = [
+            "/path/local_file.0",
+            "/path/local_file.1",
+            "/path/local_file.2",
+        ]
         r.run_copy(
             "/path/local_file",
             "s3_bucket",
