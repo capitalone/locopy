@@ -228,6 +228,14 @@ class Redshift(S3, Database):
         special chars or backward slashes (``\``). These may cause the file to
         upload but fail on the ``COPY`` command.
 
+        By default `locopy` will handle the splitting of files for you, in order to reduce
+        complexity in uploading to s3 and generating the `COPY` command.
+
+        It is critical to ensure that the S3 location you are using that it only contains the files
+        you want to load. In the case of a "folder" it should only contain the files you want to
+        load. For a bucket the file name should be unique enough as any extensions get striped out
+        in favour of the file prefix.
+
         Parameters
         ----------
         local_file : str
@@ -277,19 +285,13 @@ class Redshift(S3, Database):
             copy_options.append("GZIP")
             upload_list = compress_file_list(upload_list)
 
-        # copy file to S3
-        for file in upload_list:
-            if s3_folder is None:
-                s3_key = os.path.basename(file)
-            else:
-                s3_key = "/".join([s3_folder, os.path.basename(file)])
-
-            self.upload_to_s3(file, s3_bucket, s3_key)
+        # copy files to S3
+        tmp_load_key = self.upload_list_to_s3(upload_list, s3_bucket, s3_folder)
 
         # execute Redshift COPY
         self._copy_to_redshift(
             table_name,
-            self._generate_s3_path(s3_bucket, s3_key.split(os.extsep)[0]),
+            self._generate_s3_path(s3_bucket, tmp_load_key),
             delim,
             copy_options=copy_options,
         )
