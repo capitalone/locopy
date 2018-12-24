@@ -18,6 +18,8 @@
 Module to wrap the boto3 api usage and provide functionality to manage
 multipart upload to S3 buckets
 """
+import os
+
 from boto3 import Session
 from boto3.s3.transfer import TransferConfig
 from botocore.client import Config
@@ -206,10 +208,33 @@ class S3(object):
             self.s3.upload_file(
                 local, bucket, key, ExtraArgs=extra_args, Callback=ProgressPercentage(local)
             )
-
         except Exception as e:
             logger.error("Error uploading to S3. err: %s", e)
             raise S3UploadError("Error uploading to S3.")
+
+    def upload_list_to_s3(self, local_list, bucket, folder):
+        """
+        Upload a list of files to a S3 bucket.
+
+        Parameters
+        ----------
+        local_list : list
+            List of strings with the file paths of the files to upload
+
+        bucket : str
+            The AWS S3 bucket which you are copying the local file to.
+
+        folder : str
+            The AWS S3 folder of the bucket which you are copying the local
+            files to. Defaults to ``None``. Please note that you must follow the
+            ``/`` convention when using subfolders.
+        """
+        for file in local_list:
+            if folder is None:
+                s3_key = os.path.basename(file)
+            else:
+                s3_key = "/".join([folder, os.path.basename(file)])
+            self.upload_to_s3(file, bucket, s3_key)
 
     def download_from_s3(self, bucket, key, local):
         """

@@ -198,6 +198,36 @@ def test_upload_to_s3_exception(mock_session, mock_progress):
         s.upload_to_s3(LOCAL_TEST_FILE, S3_DEFAULT_BUCKET, CUSTOM_KEY)
 
 
+@mock.patch("locopy.s3.S3.upload_to_s3")
+@mock.patch("locopy.s3.Session")
+def test_upload_list_to_s3_single(mock_session, mock_upload):
+    calls = [mock.call("test1", "test_bucket", "test_folder/test1")]
+    s = locopy.S3()
+    s.upload_list_to_s3(["test1"], "test_bucket", "test_folder")
+    mock_upload.assert_has_calls(calls)
+
+
+@mock.patch("locopy.s3.S3.upload_to_s3")
+@mock.patch("locopy.s3.Session")
+def test_upload_list_to_s3_multiple(mock_session, mock_upload):
+    calls = [
+        mock.call("test1", "test_bucket", "test_folder/test1"),
+        mock.call("test2", "test_bucket", "test_folder/test2"),
+    ]
+    s = locopy.S3()
+    s.upload_list_to_s3(["test1", "test2"], "test_bucket", "test_folder")
+    mock_upload.assert_has_calls(calls)
+
+
+@mock.patch("locopy.s3.S3.upload_to_s3")
+@mock.patch("locopy.s3.Session")
+def test_upload_list_to_s3_exception(mock_session, mock_upload):
+    s = locopy.S3()
+    mock_upload.side_effect = S3UploadError("Upload Exception")
+    with pytest.raises(S3UploadError):
+        s.upload_list_to_s3(["test1", "test2"], "test_bucket", "test_folder")
+
+
 @mock.patch("locopy.s3.TransferConfig")
 @mock.patch("locopy.s3.Session")
 def test_download_from_s3(mock_session, mock_config):
