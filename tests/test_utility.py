@@ -80,10 +80,10 @@ def test_compress_file_exception(mock_shutil, mock_gzip_open, mock_open):
         compress_file("input", "output")
 
 
+@mock.patch("locopy.utility.os.remove")
 @mock.patch("locopy.utility.open")
 @mock.patch("locopy.utility.gzip.open")
 @mock.patch("locopy.utility.shutil.copyfileobj")
-@mock.patch("locopy.utility.os.remove")
 def test_compress_file_list(mock_shutil, mock_gzip_open, mock_open, mock_remove):
     res = compress_file_list([])
     assert res == []
@@ -93,10 +93,10 @@ def test_compress_file_list(mock_shutil, mock_gzip_open, mock_open, mock_remove)
     assert res == ["input1.gz", "input2.gz"]
 
 
+@mock.patch("locopy.utility.os.remove")
 @mock.patch("locopy.utility.open")
 @mock.patch("locopy.utility.gzip.open")
 @mock.patch("locopy.utility.shutil.copyfileobj")
-@mock.patch("locopy.utility.remove")
 def test_compress_file_list_exception(mock_shutil, mock_gzip_open, mock_open, mock_remove):
     mock_shutil.side_effect = Exception("SomeException")
     with pytest.raises(CompressionError):

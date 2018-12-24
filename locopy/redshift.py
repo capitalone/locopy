@@ -23,7 +23,7 @@ import os
 from urllib.parse import urlparse
 from .database import Database
 from .s3 import S3
-from .utility import ProgressPercentage, compress_file, split_file, write_file
+from .utility import ProgressPercentage, compress_file_list, split_file, write_file
 from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
 from .errors import CredentialsError, DBError
 
@@ -275,11 +275,7 @@ class Redshift(S3, Database):
 
         if compress:
             copy_options.append("GZIP")
-            for i, f in enumerate(upload_list):
-                gz = "{0}.gz".format(f)
-                compress_file(f, gz)
-                upload_list[i] = gz
-                os.remove(f)  # cleanup old files
+            upload_list = compress_file_list(upload_list)
 
         # copy file to S3
         for file in upload_list:

@@ -123,16 +123,16 @@ def test_redshift_connect(mock_session, credentials, dbapi):
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
-@mock.patch("locopy.redshift.os.remove")
+@mock.patch("locopy.utility.os.remove")
 @mock.patch("locopy.redshift.Redshift._copy_to_redshift")
 @mock.patch("locopy.redshift.Redshift.upload_to_s3")
 @mock.patch("locopy.redshift.Redshift.delete_from_s3")
 @mock.patch("locopy.s3.Session")
-@mock.patch("locopy.redshift.compress_file")
+@mock.patch("locopy.redshift.compress_file_list")
 @mock.patch("locopy.redshift.split_file")
 def test_run_copy(
     mock_split_file,
-    mock_compress_file,
+    mock_compress_file_list,
     mock_session,
     mock_s3_delete,
     mock_s3_upload,
@@ -143,7 +143,7 @@ def test_run_copy(
 ):
     def reset_mocks():
         mock_split_file.reset_mock()
-        mock_compress_file.reset_mock()
+        mock_compress_file_list.reset_mock()
         mock_s3_upload.reset_mock()
         mock_s3_delete.reset_mock()
         mock_rs_copy.reset_mock()
@@ -178,12 +178,13 @@ def test_run_copy(
         ]
 
         mock_split_file.return_value = ["/path/local_file.txt"]
+        mock_compress_file_list.return_value = ["/path/local_file.txt.gz"]
         r.run_copy("/path/local_file.txt", "s3_bucket", "table_name", delim="|")
 
         # assert
         assert mock_split_file.called
-        mock_compress_file.assert_called_with("/path/local_file.txt", "/path/local_file.txt.gz")
-        mock_remove.assert_called_with("/path/local_file.txt")
+        mock_compress_file_list.assert_called_with(["/path/local_file.txt"])
+        # mock_remove.assert_called_with("/path/local_file.txt")
         mock_s3_upload.assert_called_with(
             "/path/local_file.txt.gz", "s3_bucket", "local_file.txt.gz"
         )
@@ -198,6 +199,11 @@ def test_run_copy(
             "/path/local_file.1",
             "/path/local_file.2",
         ]
+        mock_compress_file_list.return_value = [
+            "/path/local_file.0.gz",
+            "/path/local_file.1.gz",
+            "/path/local_file.2.gz",
+        ]
         r.run_copy(
             "/path/local_file",
             "s3_bucket",
@@ -210,8 +216,10 @@ def test_run_copy(
 
         # assert
         mock_split_file.assert_called_with("/path/local_file", "/path/local_file", splits=3)
-        mock_compress_file.assert_called_with("/path/local_file.2", "/path/local_file.2.gz")
-        mock_remove.assert_called_with("/path/local_file.2")
+        mock_compress_file_list.assert_called_with(
+            ["/path/local_file.0", "/path/local_file.1", "/path/local_file.2"]
+        )
+        # mock_remove.assert_called_with("/path/local_file.2")
         mock_s3_upload.assert_has_calls(expected_calls_no_folder_gzip)
         mock_rs_copy.assert_called_with(
             "table_name", "s3://s3_bucket/local_file", "|", copy_options=["SOME OPTION", "GZIP"]
@@ -222,6 +230,7 @@ def test_run_copy(
 
         reset_mocks()
         mock_split_file.return_value = ["/path/local_file"]
+        mock_compress_file_list.return_value = ["/path/local_file.gz"]
         r.run_copy(
             "/path/local_file",
             "s3_bucket",
@@ -232,8 +241,8 @@ def test_run_copy(
         )
         # assert
         assert mock_split_file.called
-        assert not mock_compress_file.called
-        assert not mock_remove.called
+        assert not mock_compress_file_list.called
+        # assert not mock_remove.called
         mock_s3_upload.assert_called_with("/path/local_file", "s3_bucket", "local_file")
         mock_rs_copy.assert_called_with(
             "table_name", "s3://s3_bucket/local_file", ",", copy_options=["SOME OPTION"]
@@ -257,8 +266,8 @@ def test_run_copy(
         )
         # assert
         mock_split_file.assert_called_with("/path/local_file", "/path/local_file", splits=3)
-        assert not mock_compress_file.called
-        assert not mock_remove.called
+        assert not mock_compress_file_list.called
+        # assert not mock_remove.called
         mock_s3_upload.assert_has_calls(expected_calls_no_folder)
         mock_rs_copy.assert_called_with(
             "table_name", "s3://s3_bucket/local_file", "|", copy_options=["SOME OPTION"]
@@ -279,8 +288,8 @@ def test_run_copy(
         )
         # assert
         assert mock_split_file.called
-        assert not mock_compress_file.called
-        assert not mock_remove.called
+        assert not mock_compress_file_list.called
+        # assert not mock_remove.called
         mock_s3_upload.assert_called_with(
             "/path/local_file.txt", "s3_bucket", "test/local_file.txt"
         )
@@ -310,8 +319,8 @@ def test_run_copy(
         )
         # assert
         mock_split_file.assert_called_with("/path/local_file", "/path/local_file", splits=3)
-        assert not mock_compress_file.called
-        assert not mock_remove.called
+        assert not mock_compress_file_list.called
+        # assert not mock_remove.called
         mock_s3_upload.assert_has_calls(expected_calls_folder)
         mock_rs_copy.assert_called_with(
             "table_name", "s3://s3_bucket/test/local_file", "|", copy_options=["SOME OPTION"]
@@ -327,6 +336,11 @@ def test_run_copy(
             "/path/local_file.1",
             "/path/local_file.2",
         ]
+        mock_compress_file_list.return_value = [
+            "/path/local_file.0.gz",
+            "/path/local_file.1.gz",
+            "/path/local_file.2.gz",
+        ]
         r.run_copy(
             "/path/local_file",
             "s3_bucket",
@@ -338,8 +352,8 @@ def test_run_copy(
         )
         # assert
         mock_split_file.assert_called_with("/path/local_file", "/path/local_file", splits=3)
-        assert mock_compress_file.called
-        assert mock_remove.called
+        assert mock_compress_file_list.called
+        # assert mock_remove.called
         mock_s3_upload.assert_has_calls(expected_calls_folder_gzip)
         mock_rs_copy.assert_called_with(
             "table_name",
