@@ -80,6 +80,28 @@ def compress_file(input_file, output_file):
         raise CompressionError("Error compressing the file.")
 
 
+def compress_file_list(file_list):
+    """Compresses a list of files (gzip) and clean up the old files
+
+    Parameters
+    ----------
+    file_list : list
+        List of strings with the file paths of the files to compress
+
+    Returns
+    -------
+    list
+        List of strings with the file paths of the compressed files (original file name with
+        gz appended)
+    """
+    for i, f in enumerate(file_list):
+        gz = "{0}.gz".format(f)
+        compress_file(f, gz)
+        file_list[i] = gz
+        os.remove(f)  # cleanup old files
+    return file_list
+
+
 def split_file(input_file, output_file, splits=1):
     """Split a file into equal files by lines.
 
