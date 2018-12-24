@@ -200,22 +200,47 @@ def test_upload_to_s3_exception(mock_session, mock_progress):
 
 @mock.patch("locopy.s3.S3.upload_to_s3")
 @mock.patch("locopy.s3.Session")
-def test_upload_list_to_s3_single(mock_session, mock_upload):
-    calls = [mock.call("test1", "test_bucket", "test_folder/test1")]
+def test_upload_list_to_s3_single_with_folder(mock_session, mock_upload):
+    calls = [mock.call("test.1", "test_bucket", "test_folder/test.1")]
     s = locopy.S3()
-    s.upload_list_to_s3(["test1"], "test_bucket", "test_folder")
+    res = s.upload_list_to_s3(["test.1"], "test_bucket", "test_folder")
+    assert res == "test_folder/test"
     mock_upload.assert_has_calls(calls)
 
 
 @mock.patch("locopy.s3.S3.upload_to_s3")
 @mock.patch("locopy.s3.Session")
-def test_upload_list_to_s3_multiple(mock_session, mock_upload):
+def test_upload_list_to_s3_single_without_folder(mock_session, mock_upload):
+    calls = [mock.call("test.1", "test_bucket", "test.1")]
+    s = locopy.S3()
+    res = s.upload_list_to_s3(["test.1"], "test_bucket")
+    assert res == "test"
+    mock_upload.assert_has_calls(calls)
+
+
+@mock.patch("locopy.s3.S3.upload_to_s3")
+@mock.patch("locopy.s3.Session")
+def test_upload_list_to_s3_multiple_with_folder(mock_session, mock_upload):
     calls = [
-        mock.call("test1", "test_bucket", "test_folder/test1"),
-        mock.call("test2", "test_bucket", "test_folder/test2"),
+        mock.call("test.1", "test_bucket", "test_folder/test.1"),
+        mock.call("test.2", "test_bucket", "test_folder/test.2"),
     ]
     s = locopy.S3()
-    s.upload_list_to_s3(["test1", "test2"], "test_bucket", "test_folder")
+    res = s.upload_list_to_s3(["test.1", "test.2"], "test_bucket", "test_folder")
+    assert res == "test_folder/test"
+    mock_upload.assert_has_calls(calls)
+
+
+@mock.patch("locopy.s3.S3.upload_to_s3")
+@mock.patch("locopy.s3.Session")
+def test_upload_list_to_s3_multiple_without_folder(mock_session, mock_upload):
+    calls = [
+        mock.call("test.1", "test_bucket", "test.1"),
+        mock.call("test.2", "test_bucket", "test.2"),
+    ]
+    s = locopy.S3()
+    res = s.upload_list_to_s3(["test.1", "test.2"], "test_bucket")
+    assert res == "test"
     mock_upload.assert_has_calls(calls)
 
 
