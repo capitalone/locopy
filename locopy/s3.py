@@ -319,3 +319,25 @@ class S3(object):
             s3_bucket = file.split("/")[0]
             s3_key = "/".join(file.split("/")[1:])
             self.delete_from_s3(s3_bucket, s3_key)
+
+    def parse_s3_url(self, s3_url):
+        """
+        Parse a string of the s3 url to extract the bucket and key.
+        scheme or not.
+
+        Parameters
+        ----------
+        s3_url : str
+            s3 url. The string can include the `s3://` scheme (which is disgarded)
+
+        Returns
+        -------
+        bucket: str
+            s3 bucket
+        key: str
+            s3 key
+        """
+        temp_s3 = s3_url.replace("s3://", "")
+        s3_bucket = temp_s3.split("/")[0]
+        s3_key = "/".join(temp_s3.split("/")[1:])
+        return s3_bucket, s3_key

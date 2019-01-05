@@ -337,3 +337,19 @@ def test_delete_list_from_s3_exception(mock_session, mock_delete):
     mock_delete.side_effect = S3UploadError("Upload Exception")
     with pytest.raises(S3UploadError):
         s.delete_list_from_s3(["test_bucket/test_folder/test.1", "test_bucket/test_folder/test.2"])
+
+
+@mock.patch("locopy.s3.Session")
+def test_parse_s3_url(mock_session):
+    s = locopy.S3()
+    assert s.parse_s3_url("s3://bucket/folder/file.txt") == ("bucket", "folder/file.txt")
+    assert s.parse_s3_url("s3://bucket/folder/") == ("bucket", "folder/")
+    assert s.parse_s3_url("s3://bucket") == ("bucket", "")
+    assert s.parse_s3_url("s3://bucket/!@#$%\\\/file.txt") == ("bucket", "!@#$%\\\/file.txt")
+    assert s.parse_s3_url("s3://") == ("", "")
+
+    assert s.parse_s3_url("bucket/folder/file.txt") == ("bucket", "folder/file.txt")
+    assert s.parse_s3_url("bucket/folder/") == ("bucket", "folder/")
+    assert s.parse_s3_url("bucket") == ("bucket", "")
+    assert s.parse_s3_url("bucket/!@#$%\\\/file.txt") == ("bucket", "!@#$%\\\/file.txt")
+    assert s.parse_s3_url("") == ("", "")
