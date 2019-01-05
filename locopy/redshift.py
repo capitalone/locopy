@@ -274,7 +274,6 @@ class Redshift(S3, Database):
             file to. Defaults to ``None``. Please note that you must follow the
             ``/`` convention when using subfolders.
         """
-
         if copy_options is None:
             copy_options = []
 
@@ -287,8 +286,6 @@ class Redshift(S3, Database):
 
         # copy files to S3
         s3_upload_list = self.upload_list_to_s3(upload_list, s3_bucket, s3_folder)
-
-        # get the tmp load path
         tmp_load_path = s3_upload_list[0].split(os.extsep)[0]
 
         # execute Redshift COPY
@@ -298,12 +295,7 @@ class Redshift(S3, Database):
 
         # delete file from S3 (if set to do so)
         if delete_s3_after:
-            for file in upload_list:
-                if s3_folder is None:
-                    s3_key = os.path.basename(file)
-                else:
-                    s3_key = "/".join([s3_folder, os.path.basename(file)])
-                self.delete_from_s3(s3_bucket, s3_key)
+            self.delete_list_from_s3(s3_upload_list)
 
     def run_unload(
         self,

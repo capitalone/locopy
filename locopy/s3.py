@@ -304,3 +304,18 @@ class S3(object):
         except Exception as e:
             logger.error("Error deleting from S3. err: %s", e)
             raise S3DeletionError("Error deleting from S3.")
+
+    def delete_list_from_s3(self, s3_list):
+        """
+        Delete a list of files from an S3 bucket.
+
+        Parameters
+        ----------
+        s3_list : list
+            List of strings with the s3 paths of the files to delete. The strings should not include
+            the `s3://` scheme.
+        """
+        for file in s3_list:
+            s3_bucket = file.split("/")[0]
+            s3_key = "/".join(file.split("/")[1:])
+            self.delete_from_s3(s3_bucket, s3_key)

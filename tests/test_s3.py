@@ -280,3 +280,60 @@ def test_delete_from_s3_exception(mock_session):
     s.s3.delete_object.side_effect = Exception("Delete Exception")
     with pytest.raises(S3DeletionError):
         s.delete_from_s3("TEST_BUCKET", "TEST_FILE")
+
+
+@mock.patch("locopy.s3.S3.delete_from_s3")
+@mock.patch("locopy.s3.Session")
+def test_delete_list_from_s3_single_with_folder(mock_session, mock_delete):
+    calls = [mock.call("test_bucket", "test_folder/test.1")]
+    s = locopy.S3()
+    s.delete_list_from_s3(["test_bucket/test_folder/test.1"])
+    mock_delete.assert_has_calls(calls)
+
+
+@mock.patch("locopy.s3.S3.delete_from_s3")
+@mock.patch("locopy.s3.Session")
+def test_delete_list_from_s3_single_without_folder(mock_session, mock_delete):
+    calls = [mock.call("test_bucket", "test.1")]
+    s = locopy.S3()
+    s.delete_list_from_s3(["test_bucket/test.1"])
+    mock_delete.assert_has_calls(calls)
+
+
+@mock.patch("locopy.s3.S3.delete_from_s3")
+@mock.patch("locopy.s3.Session")
+def test_delete_list_from_s3_multiple_with_folder(mock_session, mock_delete):
+    calls = [
+        mock.call("test_bucket", "test_folder/test.1"),
+        mock.call("test_bucket", "test_folder/test.2"),
+    ]
+    s = locopy.S3()
+    s.delete_list_from_s3(["test_bucket/test_folder/test.1", "test_bucket/test_folder/test.2"])
+    mock_delete.assert_has_calls(calls)
+
+
+@mock.patch("locopy.s3.S3.delete_from_s3")
+@mock.patch("locopy.s3.Session")
+def test_delete_list_from_s3_multiple_without_folder(mock_session, mock_delete):
+    calls = [mock.call("test_bucket", "test.1"), mock.call("test_bucket", "test.2")]
+    s = locopy.S3()
+    s.delete_list_from_s3(["test_bucket/test.1", "test_bucket/test.2"])
+    mock_delete.assert_has_calls(calls)
+
+
+@mock.patch("locopy.s3.S3.delete_from_s3")
+@mock.patch("locopy.s3.Session")
+def test_delete_list_from_s3_single_with_folder_and_special_chars(mock_session, mock_delete):
+    calls = [mock.call("test_bucket", "test_folder/#$#@$@#$dffksdojfsdf\\\\\/test.1")]
+    s = locopy.S3()
+    s.delete_list_from_s3(["test_bucket/test_folder/#$#@$@#$dffksdojfsdf\\\\\/test.1"])
+    mock_delete.assert_has_calls(calls)
+
+
+@mock.patch("locopy.s3.S3.delete_from_s3")
+@mock.patch("locopy.s3.Session")
+def test_delete_list_from_s3_exception(mock_session, mock_delete):
+    s = locopy.S3()
+    mock_delete.side_effect = S3UploadError("Upload Exception")
+    with pytest.raises(S3UploadError):
+        s.delete_list_from_s3(["test_bucket/test_folder/test.1", "test_bucket/test_folder/test.2"])
