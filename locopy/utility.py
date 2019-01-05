@@ -137,7 +137,7 @@ def split_file(input_file, output_file, splits=1):
         return [input_file]
 
     try:
-        pool = [x for x in range(splits)]
+        pool = list(range(splits))
         cpool = cycle(pool)
         logger.info("splitting file: %s into %s files", input_file, splits)
         # open output file handlers
