@@ -316,8 +316,7 @@ class S3(object):
             the `s3://` scheme.
         """
         for file in s3_list:
-            s3_bucket = file.split("/")[0]
-            s3_key = "/".join(file.split("/")[1:])
+            s3_bucket, s3_key = self.parse_s3_url(file)
             self.delete_from_s3(s3_bucket, s3_key)
 
     def parse_s3_url(self, s3_url):
