@@ -231,25 +231,27 @@ class S3(object):
 
         Returns
         -------
-        str
-            Returns the base s3 key for convenience. For example if the files being uploaded are
-            `["file.txt.1", "file.txt.2"]`, then `file` will be returned. If `["folder/file.txt.1",
-            "folder/file.txt.2"]` then `folder/file` is returned.
+        list
+            Returns a list of the generated S3 bucket and keys of the files which were uploaded. The
+            `S3://` part is NOT include. The output would look like the following:
+            `["my-bucket/key1", "my-bucket/key2", ...]`
 
         Notes
         -----
         There is a assumption that if you are loading multiple files (via `splits`) it follows a
-        structure such as `file_name.#.extension` (`#` splits). It allows for the `COPY` statement
-        to use the key prefix vs specificing an exact file name. The returned `str` helps with this
+        structure such as `file_name.extension.#` (`#` splits). It allows for the `COPY` statement
+        to use the key prefix vs specificing an exact file name. The returned list helps with this
         process downstream.
         """
+        output = []
         for file in local_list:
             if folder is None:
                 s3_key = os.path.basename(file)
             else:
                 s3_key = "/".join([folder, os.path.basename(file)])
             self.upload_to_s3(file, bucket, s3_key)
-        return s3_key.split(os.extsep)[0]
+            output.append("/".join([bucket, s3_key]))
+        return output
 
     def download_from_s3(self, bucket, key, local):
         """

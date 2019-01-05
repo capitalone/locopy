@@ -204,7 +204,7 @@ def test_upload_list_to_s3_single_with_folder(mock_session, mock_upload):
     calls = [mock.call("test.1", "test_bucket", "test_folder/test.1")]
     s = locopy.S3()
     res = s.upload_list_to_s3(["test.1"], "test_bucket", "test_folder")
-    assert res == "test_folder/test"
+    assert res == ["test_bucket/test_folder/test.1"]
     mock_upload.assert_has_calls(calls)
 
 
@@ -214,7 +214,7 @@ def test_upload_list_to_s3_single_without_folder(mock_session, mock_upload):
     calls = [mock.call("test.1", "test_bucket", "test.1")]
     s = locopy.S3()
     res = s.upload_list_to_s3(["test.1"], "test_bucket")
-    assert res == "test"
+    assert res == ["test_bucket/test.1"]
     mock_upload.assert_has_calls(calls)
 
 
@@ -227,7 +227,7 @@ def test_upload_list_to_s3_multiple_with_folder(mock_session, mock_upload):
     ]
     s = locopy.S3()
     res = s.upload_list_to_s3(["test.1", "test.2"], "test_bucket", "test_folder")
-    assert res == "test_folder/test"
+    assert res == ["test_bucket/test_folder/test.1", "test_bucket/test_folder/test.2"]
     mock_upload.assert_has_calls(calls)
 
 
@@ -240,7 +240,7 @@ def test_upload_list_to_s3_multiple_without_folder(mock_session, mock_upload):
     ]
     s = locopy.S3()
     res = s.upload_list_to_s3(["test.1", "test.2"], "test_bucket")
-    assert res == "test"
+    assert res == ["test_bucket/test.1", "test_bucket/test.2"]
     mock_upload.assert_has_calls(calls)
 
 

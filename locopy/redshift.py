@@ -286,14 +286,14 @@ class Redshift(S3, Database):
             upload_list = compress_file_list(upload_list)
 
         # copy files to S3
-        tmp_load_key = self.upload_list_to_s3(upload_list, s3_bucket, s3_folder)
+        s3_upload_list = self.upload_list_to_s3(upload_list, s3_bucket, s3_folder)
+
+        # get the tmp load path
+        tmp_load_path = s3_upload_list[0].split(os.extsep)[0]
 
         # execute Redshift COPY
         self._copy_to_redshift(
-            table_name,
-            self._generate_s3_path(s3_bucket, tmp_load_key),
-            delim,
-            copy_options=copy_options,
+            table_name, "s3://" + tmp_load_path, delim, copy_options=copy_options
         )
 
         # delete file from S3 (if set to do so)
