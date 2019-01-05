@@ -124,13 +124,13 @@ def test_redshift_connect(mock_session, credentials, dbapi):
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("locopy.utility.os.remove")
-@mock.patch("locopy.redshift.Redshift._copy_to_redshift")
+@mock.patch("locopy.redshift.Redshift.copy")
 @mock.patch("locopy.redshift.Redshift.upload_to_s3")
 @mock.patch("locopy.redshift.Redshift.delete_from_s3")
 @mock.patch("locopy.s3.Session")
 @mock.patch("locopy.redshift.compress_file_list")
 @mock.patch("locopy.redshift.split_file")
-def test_run_copy(
+def test_load_and_copy(
     mock_split_file,
     mock_compress_file_list,
     mock_session,
@@ -179,7 +179,7 @@ def test_run_copy(
 
         mock_split_file.return_value = ["/path/local_file.txt"]
         mock_compress_file_list.return_value = ["/path/local_file.txt.gz"]
-        r.run_copy("/path/local_file.txt", "s3_bucket", "table_name", delim="|")
+        r.load_and_copy("/path/local_file.txt", "s3_bucket", "table_name", delim="|")
 
         # assert
         assert mock_split_file.called
@@ -204,7 +204,7 @@ def test_run_copy(
             "/path/local_file.1.gz",
             "/path/local_file.2.gz",
         ]
-        r.run_copy(
+        r.load_and_copy(
             "/path/local_file",
             "s3_bucket",
             "table_name",
@@ -231,7 +231,7 @@ def test_run_copy(
         reset_mocks()
         mock_split_file.return_value = ["/path/local_file"]
         mock_compress_file_list.return_value = ["/path/local_file.gz"]
-        r.run_copy(
+        r.load_and_copy(
             "/path/local_file",
             "s3_bucket",
             "table_name",
@@ -255,7 +255,7 @@ def test_run_copy(
             "/path/local_file.1",
             "/path/local_file.2",
         ]
-        r.run_copy(
+        r.load_and_copy(
             "/path/local_file",
             "s3_bucket",
             "table_name",
@@ -277,7 +277,7 @@ def test_run_copy(
         # with a s3_folder included and no splits
         reset_mocks()
         mock_split_file.return_value = ["/path/local_file.txt"]
-        r.run_copy(
+        r.load_and_copy(
             "/path/local_file.txt",
             "s3_bucket",
             "table_name",
@@ -306,7 +306,7 @@ def test_run_copy(
             "/path/local_file.2",
         ]
 
-        r.run_copy(
+        r.load_and_copy(
             "/path/local_file",
             "s3_bucket",
             "table_name",
@@ -341,7 +341,7 @@ def test_run_copy(
             "/path/local_file.1.gz",
             "/path/local_file.2.gz",
         ]
-        r.run_copy(
+        r.load_and_copy(
             "/path/local_file",
             "s3_bucket",
             "table_name",
@@ -366,12 +366,12 @@ def test_run_copy(
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("locopy.s3.Session")
-def test_redshift_copy_to_redshift(mock_session, credentials, dbapi):
+def test_redshiftcopy(mock_session, credentials, dbapi):
 
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         r = locopy.Redshift(dbapi=dbapi, **credentials)
         r._connect()
-        r._copy_to_redshift("table", "s3bucket")
+        r.copy("table", "s3bucket")
         assert mock_connect.return_value.cursor.return_value.execute.called
         (
             mock_connect.return_value.cursor.return_value.execute.assert_called_with(
@@ -388,7 +388,7 @@ def test_redshift_copy_to_redshift(mock_session, credentials, dbapi):
         )
 
         # tab delim
-        r._copy_to_redshift("table", "s3bucket", delim="\t")
+        r.copy("table", "s3bucket", delim="\t")
         assert mock_connect.return_value.cursor.return_value.execute.called
         (
             mock_connect.return_value.cursor.return_value.execute.assert_called_with(
@@ -408,21 +408,21 @@ def test_redshift_copy_to_redshift(mock_session, credentials, dbapi):
 @pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("locopy.s3.Session")
 @mock.patch("locopy.database.Database._is_connected")
-def test_redshift_copy_to_redshift_exception(mock_connected, mock_session, credentials, dbapi):
+def test_redshiftcopy_exception(mock_connected, mock_session, credentials, dbapi):
 
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         r = locopy.Redshift(dbapi=dbapi, **credentials)
         mock_connected.return_value = False
 
         with pytest.raises(DBError):
-            r._copy_to_redshift("table", "s3bucket")
+            r.copy("table", "s3bucket")
 
         mock_connected.return_value = True
         (mock_connect.return_value.cursor.return_value.execute.side_effect) = Exception(
             "COPY Exception"
         )
         with pytest.raises(DBError):
-            r._copy_to_redshift("table", "s3bucket")
+            r.copy("table", "s3bucket")
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
@@ -431,13 +431,13 @@ def test_redshift_copy_to_redshift_exception(mock_connected, mock_session, crede
 @mock.patch("locopy.redshift.write_file")
 @mock.patch("locopy.redshift.Redshift._get_column_names")
 @mock.patch("locopy.redshift.Redshift._unload_generated_files")
-@mock.patch("locopy.redshift.Redshift._unload_to_s3")
+@mock.patch("locopy.redshift.Redshift.unload")
 @mock.patch("locopy.s3.S3._generate_unload_path")
 @mock.patch("locopy.s3.Session")
 def test_unload(
     mock_session,
     mock_generate_unload_path,
-    mock_unload_to_s3,
+    mockunload,
     mock_unload_generated_files,
     mock_get_col_names,
     mock_write,
@@ -465,7 +465,7 @@ def test_unload(
 
         ## ensure nothing is returned when read=False
         assert (
-            r.run_unload(
+            r.unload_and_copy(
                 query="query",
                 s3_bucket="s3_bucket",
                 s3_folder=None,
@@ -482,7 +482,7 @@ def test_unload(
         assert not mock_write.called, "write_file should only be called " "if export_path != False"
         mock_generate_unload_path.assert_called_with("s3_bucket", None)
         mock_get_col_names.assert_called_with("query")
-        mock_unload_to_s3.assert_called_with(
+        mockunload.assert_called_with(
             query="query", s3path="dummy_s3_path", unload_options=["DELIMITER ','"]
         )
 
@@ -492,7 +492,7 @@ def test_unload(
         mock_get_col_names.return_value = ["dummy_col_name"]
         mock_generate_unload_path.return_value = "dummy_s3_path"
         assert (
-            r.run_unload(
+            r.unload_and_copy(
                 query="query",
                 s3_bucket="s3_bucket",
                 s3_folder=None,
@@ -505,7 +505,7 @@ def test_unload(
         )
 
         ## check that unload options are modified based on supplied args
-        mock_unload_to_s3.assert_called_with(
+        mockunload.assert_called_with(
             query="query", s3path="dummy_s3_path", unload_options=["DELIMITER '|'", "PARALLEL OFF"]
         )
 
@@ -515,7 +515,7 @@ def test_unload(
         mock_generate_unload_path.return_value = "dummy_s3_path"
         mock_get_col_names.return_value = None
         with pytest.raises(Exception):
-            r.run_unload("query", "s3_bucket", None)
+            r.unload_and_copy("query", "s3_bucket", None)
 
         ## Test 4: ensure exception is raised when no files are returned
         reset_mocks()
@@ -523,7 +523,7 @@ def test_unload(
         mock_get_col_names.return_value = ["dummy_col_name"]
         mock_unload_generated_files.return_value = None
         with pytest.raises(Exception):
-            r.run_unload("query", "s3_bucket", None)
+            r.unload_and_copy("query", "s3_bucket", None)
 
         ## Test 5: ensure file writing is initiated when export_path is supplied
         reset_mocks()
@@ -531,7 +531,7 @@ def test_unload(
         mock_generate_unload_path.return_value = "dummy_s3_path"
         mock_unload_generated_files.return_value = ["/dummy_file"]
         with mock.patch("locopy.redshift.open") as mock_open:
-            r.run_unload(
+            r.unload_and_copy(
                 query="query",
                 s3_bucket="s3_bucket",
                 s3_folder=None,
@@ -594,24 +594,24 @@ def test_get_column_names(mock_session, credentials, dbapi):
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("locopy.s3.Session")
-def test_unload_to_s3(mock_session, credentials, dbapi):
+def testunload(mock_session, credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         r = locopy.Redshift(dbapi=dbapi, **credentials)
         r._connect()
-        r._unload_to_s3("query", "path")
+        r.unload("query", "path")
         assert mock_connect.return_value.cursor.return_value.execute.called
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("locopy.s3.Session")
-def test_unload_to_s3_no_connection(mock_session, credentials, dbapi):
+def testunload_no_connection(mock_session, credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         r = locopy.Redshift(dbapi=dbapi, **credentials)
         with pytest.raises(Exception):
-            r._unload_to_s3("query", "path")
+            r.unload("query", "path")
 
         mock_connect.return_value.cursor.return_value.execute.side_effect = Exception()
         r = locopy.Redshift(dbapi=dbapi, **credentials)
         r._connect()
         with pytest.raises(Exception):
-            r._unload_to_s3("query", "path")
+            r.unload("query", "path")

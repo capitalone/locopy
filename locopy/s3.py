@@ -130,7 +130,7 @@ class S3(object):
             temp = "aws_access_key_id={};aws_secret_access_key={}"
             return temp.format(creds.access_key, creds.secret_key)
 
-    def _generate_s3_path(cls, bucket, key):
+    def _generate_s3_path(self, bucket, key):
         """Will return the S3 file URL in the format S3://bucket/key
 
         Parameters
@@ -148,7 +148,7 @@ class S3(object):
         """
         return "s3://{0}/{1}".format(bucket, key)
 
-    def _generate_unload_path(cls, bucket, folder):
+    def _generate_unload_path(self, bucket, folder):
         """Will return the S3 file URL in the format s3://bucket/folder if a
         valid (not None) folder is provided. Otherwise, returns s3://bucket
 

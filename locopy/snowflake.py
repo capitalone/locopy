@@ -136,10 +136,10 @@ class Snowflake(S3, Database):
         if self.connection.get("database") is not None:
             self.execute("USE DATABASE {}".format(self.connection["database"]))
 
-    def _copy_to_snowflake(
+    def copy(
         self, tablename, stage, delim="|", header=False, format_options=None, copy_options=None
     ):
-        """Executes the COPY command to load CSV files from a stage into
+        """Executes the ``COPY INTO <table>`` command to load CSV files from a stage into
         a Snowflake table.
 
         Parameters
@@ -188,7 +188,7 @@ class Snowflake(S3, Database):
             logger.error("Error running COPY on Snowflake. err: %s", e)
             raise DBError("Error running COPY on Snowflake.")
 
-    def run_copy(
+    def load_and_copy(
         self,
         local_file,
         s3_bucket,
@@ -264,19 +264,14 @@ class Snowflake(S3, Database):
             format_options.append("COMPRESSION = GZIP")
             upload_list = compress_file_list(upload_list)
 
-        # copy file to S3
-        for file in upload_list:
-            if s3_folder is None:
-                s3_key = os.path.basename(file)
-            else:
-                s3_key = "/".join([s3_folder, os.path.basename(file)])
-
-            self.upload_to_s3(file, s3_bucket, s3_key)
+        # copy files to S3
+        s3_upload_list = self.upload_list_to_s3(upload_list, s3_bucket, s3_folder)
+        tmp_load_path = s3_upload_list[0].split(os.extsep)[0]
 
         # execute Snowflake COPY
-        self._copy_to_snowflake(
+        self.copy(
             table_name,
-            self._generate_s3_path(s3_bucket, s3_key.split(os.extsep)[0]),
+            "s3://" + tmp_load_path,
             delim,
             format_options=format_options,
             copy_options=copy_options,
@@ -291,7 +286,7 @@ class Snowflake(S3, Database):
                     s3_key = "/".join([s3_folder, os.path.basename(file)])
                 self.delete_from_s3(s3_bucket, s3_key)
 
-    def run_unload(
+    def unload_and_copy(
         self,
         query,
         s3_bucket,
@@ -355,7 +350,7 @@ class Snowflake(S3, Database):
             unload_options.append("PARALLEL OFF")
 
         ## run unload
-        self._unload_to_s3(query=query, s3path=s3path, unload_options=unload_options)
+        self.unload(query=query, s3path=s3path, unload_options=unload_options)
 
         ## parse unloaded files
         files = self._unload_generated_files()
@@ -390,7 +385,7 @@ class Snowflake(S3, Database):
                 key = urlparse(f).path[1:]
                 self.delete_from_s3(s3_bucket, key)
 
-    def _unload_to_s3(self, query, s3path, unload_options=None):
+    def unload(self, query, s3path, unload_options=None):
         """Executes the UNLOAD command to export a query from
         Snowflake to S3.
 

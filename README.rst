@@ -99,7 +99,7 @@ If you want to load data to Redshift via S3, the ``Redshift`` class inherits fro
     with locopy.Redshift(dbapi=pg8000, config_yaml="config.yml") as redshift:
         redshift.execute("SET query_group TO quick")
         redshift.execute("CREATE TABLE schema.table (variable VARCHAR(20)) DISTKEY(variable)")
-        redshift.run_copy(
+        redshift.load_and_copy(
             local_file="example/example_data.csv",
             s3_bucket="my_s3_bucket",
             table_name="schema.table",
@@ -117,7 +117,7 @@ If you want to download data from Redshift to a CSV, or read it into Python
     my_profile = "some_profile_with_valid_tokens"
     with locopy.Redshift(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as redshift:
         ##Optionally provide export if you ALSO want the exported data copied to a flat file
-        redshift.run_unload(
+        redshift.unload_and_copy(
             query="SELECT * FROM schema.table",
             s3_bucket="my_s3_bucket",
             export_path="my_output_destination.csv")

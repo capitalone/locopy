@@ -20,7 +20,6 @@ to Redshift, and run arbitrary code.
 """
 import os
 
-from urllib.parse import urlparse
 from .database import Database
 from .s3 import S3
 from .utility import ProgressPercentage, compress_file_list, split_file, write_file
@@ -165,8 +164,8 @@ class Redshift(S3, Database):
             self.connection["ssl"] = True
         super(Redshift, self)._connect()
 
-    def _copy_to_redshift(self, tablename, s3path, delim="|", copy_options=None):
-        """Executes the COPY command to load CSV files from S3 into
+    def copy(self, tablename, s3path, delim="|", copy_options=None):
+        """Executes the COPY command to load delimited files from S3 into
         a Redshift table.
 
         Parameters
@@ -206,7 +205,7 @@ class Redshift(S3, Database):
             logger.error("Error running COPY on Redshift. err: %s", e)
             raise DBError("Error running COPY on Redshift.")
 
-    def run_copy(
+    def load_and_copy(
         self,
         local_file,
         s3_bucket,
@@ -289,15 +288,13 @@ class Redshift(S3, Database):
         tmp_load_path = s3_upload_list[0].split(os.extsep)[0]
 
         # execute Redshift COPY
-        self._copy_to_redshift(
-            table_name, "s3://" + tmp_load_path, delim, copy_options=copy_options
-        )
+        self.copy(table_name, "s3://" + tmp_load_path, delim, copy_options=copy_options)
 
         # delete file from S3 (if set to do so)
         if delete_s3_after:
             self.delete_list_from_s3(s3_upload_list)
 
-    def run_unload(
+    def unload_and_copy(
         self,
         query,
         s3_bucket,
@@ -361,7 +358,7 @@ class Redshift(S3, Database):
             unload_options.append("PARALLEL OFF")
 
         ## run unload
-        self._unload_to_s3(query=query, s3path=s3path, unload_options=unload_options)
+        self.unload(query=query, s3path=s3path, unload_options=unload_options)
 
         ## parse unloaded files
         files = self._unload_generated_files()
@@ -381,7 +378,7 @@ class Redshift(S3, Database):
         if export_path:
             write_file([columns], delimiter, export_path)
             for f in files:
-                key = urlparse(f).path[1:]
+                _, key = self.parse_s3_url(f)
                 local = os.path.basename(key)
                 self.download_from_s3(s3_bucket, key, local)
                 with open(local, "rb") as temp_f:
@@ -393,10 +390,10 @@ class Redshift(S3, Database):
         ## delete unloaded files from s3
         if delete_s3_after:
             for f in files:
-                key = urlparse(f).path[1:]
+                _, key = self.parse_s3_url(f)
                 self.delete_from_s3(s3_bucket, key)
 
-    def _unload_to_s3(self, query, s3path, unload_options=None):
+    def unload(self, query, s3path, unload_options=None):
         """Executes the UNLOAD command to export a query from
         Redshift to S3.
 

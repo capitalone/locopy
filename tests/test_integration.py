@@ -102,7 +102,7 @@ def test_copy(s3_bucket, dbapi):
         redshift.execute(
             "CREATE TEMPORARY TABLE locopy_integration_testing (id INTEGER, variable VARCHAR(20)) DISTKEY(variable)"
         )
-        redshift.run_copy(
+        redshift.load_and_copy(
             LOCAL_FILE,
             S3_BUCKET,
             "locopy_integration_testing",
@@ -134,7 +134,7 @@ def test_unload(s3_bucket, dbapi):
             "CREATE TEMPORARY TABLE locopy_integration_testing AS SELECT ('2017-12-31'::date + row_number() over (order by 1))::date from SVV_TABLES LIMIT 5"
         )
         sql = "SELECT * FROM locopy_integration_testing"
-        redshift.run_unload(sql, S3_BUCKET, delimiter="|", export_path=LOCAL_FILE_DL)
+        redshift.unload_and_copy(sql, S3_BUCKET, delimiter="|", export_path=LOCAL_FILE_DL)
         redshift.execute("SELECT * FROM locopy_integration_testing ORDER BY date")
         results = redshift.cursor.fetchall()
 
