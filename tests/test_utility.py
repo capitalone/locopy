@@ -28,8 +28,8 @@ from unittest import mock
 from io import StringIO
 from itertools import cycle
 from botocore.credentials import Credentials
-from locopy.utility import compress_file, compress_file_list, split_file
-from locopy.errors import CompressionError, LocopySplitError, CredentialsError
+from locopy.utility import compress_file, compress_file_list, split_file, concatenate_files
+from locopy.errors import CompressionError, LocopySplitError, CredentialsError, LocopyConcatError
 import locopy.utility as util
 
 
@@ -205,3 +205,25 @@ def test_read_config_yaml_io():
 def test_read_config_yaml_no_file():
     with pytest.raises(CredentialsError):
         util.read_config_yaml("file_that_does_not_exist.yml")
+
+
+def test_concatenate_files():
+    inputs = ["tests/data/cat_1.txt", "tests/data/cat_2.txt", "tests/data/cat_3.txt"]
+    output = "tests/data/cat_output.txt"
+    with mock.patch("locopy.utility.os.remove") as mock_remove:
+        concatenate_files(inputs, output)
+        assert mock_remove.call_count == 3
+        assert [int(line.rstrip("\n")) for line in open(output)] == list(range(1, 16))
+    os.remove(output)
+
+
+def test_concatenate_files_exception():
+    inputs = ["tests/data/cat_1.txt", "tests/data/cat_2.txt", "tests/data/cat_3.txt"]
+    output = "tests/data/cat_output.txt"
+    with pytest.raises(LocopyConcatError):
+        concatenate_files([], output, remove=False)
+
+    with mock.patch("locopy.utility.open") as mock_open:
+        mock_open.side_effect = Exception()
+        with pytest.raises(LocopyConcatError):
+            concatenate_files(inputs, output, remove=False)

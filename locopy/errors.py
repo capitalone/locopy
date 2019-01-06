@@ -33,6 +33,12 @@ class LocopySplitError(LocopyError):
     """
 
 
+class LocopyConcatError(LocopyError):
+    """
+    Raised when there is an error concatenating files.
+    """
+
+
 class DBError(Exception):
     """
     Base class for all Database errors.
