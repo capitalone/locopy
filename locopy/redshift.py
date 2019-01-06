@@ -22,7 +22,13 @@ import os
 
 from .database import Database
 from .s3 import S3
-from .utility import ProgressPercentage, compress_file_list, split_file, write_file
+from .utility import (
+    ProgressPercentage,
+    compress_file_list,
+    split_file,
+    write_file,
+    concatenate_files,
+)
 from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
 from .errors import CredentialsError, DBError
 
@@ -311,7 +317,7 @@ class Redshift(S3, Database):
         Parameters
         ----------
         query : str
-            A query to be unloaded to S3. Typically a ``SELECT`` statement
+            A query to be unloaded to S3. A ``SELECT`` query
 
         s3_bucket : str
             The AWS S3 bucket where the data from the query will be unloaded.
@@ -323,7 +329,8 @@ class Redshift(S3, Database):
 
         export_path : str, optional
             If a ``export_path`` is provided, function will write the unloaded
-            files to that folder.
+            files to this path as a single file. If your file is very large you may not want to
+            use this option.
 
         delimiter : str, optional
             Delimiter for unloading and file writing. Defaults to a comma.
@@ -361,8 +368,8 @@ class Redshift(S3, Database):
         self.unload(query=query, s3path=s3path, unload_options=unload_options)
 
         ## parse unloaded files
-        files = self._unload_generated_files()
-        if files is None:
+        s3_download_list = self._unload_generated_files()
+        if s3_download_list is None:
             logger.error("No files generated from unload")
             raise Exception("No files generated from unload")
 
@@ -372,26 +379,14 @@ class Redshift(S3, Database):
             raise Exception("Unable to retrieve column names from exported data.")
 
         # download files locally with same name
-        # write columns to local file
-        # write temp to local file
-        # remove temp files
+        local_list = self.download_list_from_s3(s3_download_list)
         if export_path:
-            write_file([columns], delimiter, export_path)
-            for f in files:
-                _, key = self.parse_s3_url(f)
-                local = os.path.basename(key)
-                self.download_from_s3(s3_bucket, key, local)
-                with open(local, "rb") as temp_f:
-                    with open(export_path, "ab") as main_f:
-                        for line in temp_f:
-                            main_f.write(line)
-                os.remove(local)
+            write_file([columns], delimiter, export_path)  # column
+            concatenate_files(local_list, export_path)  # data
 
-        ## delete unloaded files from s3
+        # delete unloaded files from s3
         if delete_s3_after:
-            for f in files:
-                _, key = self.parse_s3_url(f)
-                self.delete_from_s3(s3_bucket, key)
+            self.delete_list_from_s3(s3_download_list)
 
     def unload(self, query, s3path, unload_options=None):
         """Executes the UNLOAD command to export a query from

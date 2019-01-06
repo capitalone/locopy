@@ -426,23 +426,25 @@ def test_redshiftcopy_exception(mock_connected, mock_session, credentials, dbapi
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
-@mock.patch("locopy.redshift.os.remove")
-@mock.patch("locopy.s3.S3.delete_from_s3")
+@mock.patch("locopy.redshift.concatenate_files")
+@mock.patch("locopy.s3.S3.delete_list_from_s3")
 @mock.patch("locopy.redshift.write_file")
+@mock.patch("locopy.s3.S3.download_list_from_s3")
 @mock.patch("locopy.redshift.Redshift._get_column_names")
 @mock.patch("locopy.redshift.Redshift._unload_generated_files")
 @mock.patch("locopy.redshift.Redshift.unload")
 @mock.patch("locopy.s3.S3._generate_unload_path")
 @mock.patch("locopy.s3.Session")
-def test_unload(
+def test_unload_and_copy(
     mock_session,
     mock_generate_unload_path,
-    mockunload,
+    mock_unload,
     mock_unload_generated_files,
     mock_get_col_names,
+    mock_download_list_from_s3,
     mock_write,
-    mock_delete_from_s3,
-    mock_remove,
+    mock_delete_list_from_s3,
+    mock_concat,
     credentials,
     dbapi,
 ):
@@ -452,63 +454,64 @@ def test_unload(
         mock_unload_generated_files.reset_mock()
         mock_get_col_names.reset_mock()
         mock_write.reset_mock()
-        mock_delete_from_s3.reset_mock()
-        mock_remove.reset_mock()
+        mock_download_list_from_s3.reset_mock()
+        mock_delete_list_from_s3.reset_mock()
+        mock_concat.reset_mock()
 
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         r = locopy.Redshift(dbapi=dbapi, **credentials)
 
+        ##
         ## Test 1: check that basic export pipeline functions are called
         mock_unload_generated_files.return_value = ["dummy_file"]
+        mock_download_list_from_s3.return_value = ["s3.file"]
         mock_get_col_names.return_value = ["dummy_col_name"]
         mock_generate_unload_path.return_value = "dummy_s3_path"
 
         ## ensure nothing is returned when read=False
-        assert (
-            r.unload_and_copy(
-                query="query",
-                s3_bucket="s3_bucket",
-                s3_folder=None,
-                export_path=False,
-                delimiter=",",
-                delete_s3_after=False,
-                parallel_off=False,
-            )
-            is None
+        r.unload_and_copy(
+            query="query",
+            s3_bucket="s3_bucket",
+            s3_folder=None,
+            export_path=False,
+            delimiter=",",
+            delete_s3_after=False,
+            parallel_off=False,
         )
 
         assert mock_unload_generated_files.called
-
         assert not mock_write.called, "write_file should only be called " "if export_path != False"
         mock_generate_unload_path.assert_called_with("s3_bucket", None)
         mock_get_col_names.assert_called_with("query")
-        mockunload.assert_called_with(
+        mock_unload.assert_called_with(
             query="query", s3path="dummy_s3_path", unload_options=["DELIMITER ','"]
         )
+        assert not mock_delete_list_from_s3.called
 
+        ##
         ## Test 2: different delimiter
         reset_mocks()
         mock_unload_generated_files.return_value = ["dummy_file"]
+        mock_download_list_from_s3.return_value = ["s3.file"]
         mock_get_col_names.return_value = ["dummy_col_name"]
         mock_generate_unload_path.return_value = "dummy_s3_path"
-        assert (
-            r.unload_and_copy(
-                query="query",
-                s3_bucket="s3_bucket",
-                s3_folder=None,
-                export_path=False,
-                delimiter="|",
-                delete_s3_after=False,
-                parallel_off=True,
-            )
-            is None
+        r.unload_and_copy(
+            query="query",
+            s3_bucket="s3_bucket",
+            s3_folder=None,
+            export_path=False,
+            delimiter="|",
+            delete_s3_after=False,
+            parallel_off=True,
         )
 
         ## check that unload options are modified based on supplied args
-        mockunload.assert_called_with(
+        mock_unload.assert_called_with(
             query="query", s3path="dummy_s3_path", unload_options=["DELIMITER '|'", "PARALLEL OFF"]
         )
+        assert not mock_delete_list_from_s3.called
 
+        ##
         ## Test 3: ensure exception is raised when no column names are retrieved
         reset_mocks()
         mock_unload_generated_files.return_value = ["dummy_file"]
@@ -517,6 +520,7 @@ def test_unload(
         with pytest.raises(Exception):
             r.unload_and_copy("query", "s3_bucket", None)
 
+        ##
         ## Test 4: ensure exception is raised when no files are returned
         reset_mocks()
         mock_generate_unload_path.return_value = "dummy_s3_path"
@@ -525,24 +529,25 @@ def test_unload(
         with pytest.raises(Exception):
             r.unload_and_copy("query", "s3_bucket", None)
 
+        ##
         ## Test 5: ensure file writing is initiated when export_path is supplied
         reset_mocks()
         mock_get_col_names.return_value = ["dummy_col_name"]
+        mock_download_list_from_s3.return_value = ["s3.file"]
         mock_generate_unload_path.return_value = "dummy_s3_path"
         mock_unload_generated_files.return_value = ["/dummy_file"]
-        with mock.patch("locopy.redshift.open") as mock_open:
-            r.unload_and_copy(
-                query="query",
-                s3_bucket="s3_bucket",
-                s3_folder=None,
-                export_path="my_output.csv",
-                delimiter=",",
-                delete_s3_after=True,
-                parallel_off=False,
-            )
-            mock_open.assert_called_with("my_output.csv", "ab")
+        r.unload_and_copy(
+            query="query",
+            s3_bucket="s3_bucket",
+            s3_folder=None,
+            export_path="my_output.csv",
+            delimiter=",",
+            delete_s3_after=True,
+            parallel_off=False,
+        )
+        mock_concat.assert_called_with(mock_download_list_from_s3.return_value, "my_output.csv")
         assert mock_write.called
-        assert mock_delete_from_s3.called_with("s3_bucket", "my_output.csv")
+        assert mock_delete_list_from_s3.called_with("s3_bucket", "my_output.csv")
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
