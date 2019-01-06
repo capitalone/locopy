@@ -233,8 +233,8 @@ class S3(object):
         -------
         list
             Returns a list of the generated S3 bucket and keys of the files which were uploaded. The
-            `S3://` part is NOT include. The output would look like the following:
-            `["my-bucket/key1", "my-bucket/key2", ...]`
+            ``S3://`` part is NOT include. The output would look like the following:
+            ``["my-bucket/key1", "my-bucket/key2", ...]``
 
         Notes
         -----
