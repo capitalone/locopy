@@ -281,6 +281,32 @@ class S3(object):
             logger.error("Error downloading from S3. err: %s", e)
             raise S3DownloadError("Error downloading from S3.")
 
+    def download_list_from_s3(self, s3_list, local_path=os.getcwd()):
+        """
+        Download a list of files from s3.
+
+        Parameters
+        ----------
+        s3_list : list
+            List of strings with the s3 paths of the files to download
+
+        local_path : str, optional
+            The local path where the files will be copied to. Defualts to the current working
+            directory (``os.getcwd()``)
+
+        Returns
+        -------
+        list
+            Returns a list of strings of the local file names
+        """
+        output = []
+        for f in s3_list:
+            s3_bucket, key = self.parse_s3_url(f)
+            local = os.path.join(local_path, os.path.basename(key))
+            self.download_from_s3(s3_bucket, key, local)
+            output.append(local)
+        return output
+
     def delete_from_s3(self, bucket, key):
         """
         Delete a file from an S3 bucket.

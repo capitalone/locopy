@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 import os
+import tempfile
 import pytest
 import pg8000
 import psycopg2
@@ -353,3 +354,62 @@ def test_parse_s3_url(mock_session):
     assert s.parse_s3_url("bucket") == ("bucket", "")
     assert s.parse_s3_url("bucket/!@#$%\\\/file.txt") == ("bucket", "!@#$%\\\/file.txt")
     assert s.parse_s3_url("") == ("", "")
+
+
+@mock.patch("locopy.s3.S3.download_from_s3")
+@mock.patch("locopy.s3.Session")
+def test_download_list_from_s3_single(mock_session, mock_download):
+    calls = [mock.call("bucket", "test.1", os.path.join(os.getcwd(), "test.1"))]
+    s = locopy.S3()
+    res = s.download_list_from_s3(["s3://bucket/test.1"])
+    assert res == [os.path.join(os.getcwd(), "test.1")]
+    mock_download.assert_has_calls(calls)
+
+
+@mock.patch("locopy.s3.S3.download_from_s3")
+@mock.patch("locopy.s3.Session")
+def test_download_list_from_s3_single_with_localpath(mock_session, mock_download):
+    tmp_path = tempfile.TemporaryDirectory()
+    calls = [mock.call("bucket", "test.1", os.path.join(tmp_path.name, "test.1"))]
+    s = locopy.S3()
+    res = s.download_list_from_s3(["s3://bucket/test.1"], tmp_path.name)
+    assert res == [os.path.join(tmp_path.name, "test.1")]
+    mock_download.assert_has_calls(calls)
+    tmp_path.cleanup()
+
+
+@mock.patch("locopy.s3.S3.download_from_s3")
+@mock.patch("locopy.s3.Session")
+def test_download_list_from_s3_multiple(mock_session, mock_download):
+    calls = [
+        mock.call("bucket", "test.1", os.path.join(os.getcwd(), "test.1")),
+        mock.call("bucket", "test.2", os.path.join(os.getcwd(), "test.2")),
+    ]
+    s = locopy.S3()
+    res = s.download_list_from_s3(["s3://bucket/test.1", "s3://bucket/test.2"])
+    assert res == [os.path.join(os.getcwd(), "test.1"), os.path.join(os.getcwd(), "test.2")]
+    mock_download.assert_has_calls(calls)
+
+
+@mock.patch("locopy.s3.S3.download_from_s3")
+@mock.patch("locopy.s3.Session")
+def test_download_list_from_s3_multiple_with_localpath(mock_session, mock_download):
+    tmp_path = tempfile.TemporaryDirectory()
+    calls = [
+        mock.call("bucket", "test.1", os.path.join(tmp_path.name, "test.1")),
+        mock.call("bucket", "test.2", os.path.join(tmp_path.name, "test.2")),
+    ]
+    s = locopy.S3()
+    res = s.download_list_from_s3(["s3://bucket/test.1", "s3://bucket/test.2"], tmp_path.name)
+    assert res == [os.path.join(tmp_path.name, "test.1"), os.path.join(tmp_path.name, "test.2")]
+    mock_download.assert_has_calls(calls)
+    tmp_path.cleanup()
+
+
+@mock.patch("locopy.s3.S3.download_from_s3")
+@mock.patch("locopy.s3.Session")
+def test_download_list_from_s3_exception(mock_session, mock_download):
+    s = locopy.S3()
+    mock_download.side_effect = S3DownloadError("Download Exception")
+    with pytest.raises(S3DownloadError):
+        s.download_list_from_s3(["s3://bucket/test.1", "s3://bucket/test.2"])
