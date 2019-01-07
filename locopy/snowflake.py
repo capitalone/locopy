@@ -143,7 +143,7 @@ class Snowflake(S3, Database):
         Parameters
         ----------
         local : str
-            The local directory path to the file to upload. Wildcard characters (*, ?) are
+            The local directory path to the file to upload. Wildcard characters (``*``, ``?``) are
             supported to enable uploading multiple files in a directory.
 
         stage : str
