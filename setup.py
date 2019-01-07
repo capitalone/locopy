@@ -35,7 +35,7 @@ setup(
     author_email="faisal.dosani@capitalone.com",
     license="Apache Software License",
     packages=["locopy"],
-    install_requires=["boto3==1.7.21", "PyYAML==3.12", "pandas>=0.19.0"],
+    install_requires=["boto3==1.7.21", "PyYAML==4.2b4", "pandas>=0.19.0"],
     extras_require={"psycopg2": ["psycopg2-binary==2.7.4"], "pg8000": ["pg8000==1.12.1"]},
     zip_safe=False,
 )
