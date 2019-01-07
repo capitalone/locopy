@@ -37,5 +37,16 @@ def credentials():
 
 
 @pytest.fixture()
+def sf_credentials():
+    return {
+        "account": "account",
+        "warehouse": "warehouse",
+        "database": "database",
+        "user": "user",
+        "password": "password",
+    }
+
+
+@pytest.fixture()
 def aws_creds():
     return Credentials("access", "secret", "token")

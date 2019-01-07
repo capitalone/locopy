@@ -227,7 +227,7 @@ class S3(object):
         folder : str, optional
             The AWS S3 folder of the bucket which you are copying the local
             files to. Defaults to ``None``. Please note that you must follow the
-            ``/`` convention when using subfolders. Defaults to `None`
+            ``/`` convention when using subfolders.
 
         Returns
         -------
