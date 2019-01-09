@@ -25,7 +25,7 @@ from .database import Database
 from .s3 import S3
 from .utility import ProgressPercentage, compress_file_list, split_file, write_file
 from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
-from .errors import CredentialsError, DBError
+from .errors import CredentialsError, DBError, S3CredentialsError
 
 logger = get_logger(__name__, INFO)
 
@@ -117,7 +117,11 @@ class Snowflake(S3, Database):
     """
 
     def __init__(self, profile=None, kms_key=None, dbapi=None, config_yaml=None, **kwargs):
-        S3.__init__(self, profile, kms_key)
+        try:
+            S3.__init__(self, profile, kms_key)
+        except S3CredentialsError as e:
+            logger.warn("S3 credentials we not found. S3 functionality is disabled")
+            logger.warn("Only internal stages are available")
         Database.__init__(self, dbapi, config_yaml, **kwargs)
 
     def _connect(self):

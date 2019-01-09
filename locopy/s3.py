@@ -97,7 +97,7 @@ class S3(object):
     def _set_session(self):
         try:
             self.session = Session(profile_name=self.profile)
-            logger.info("Successfully initialized AWS session.")
+            logger.info("Initialized AWS session.")
         except Exception as e:
             logger.error("Error initializing AWS Session, err: %s", e)
             raise S3Error("Error initializing AWS Session.")
