@@ -6,15 +6,15 @@
 locopy: Data Load and Copy using Python
 ========================================
 
-A Python library to load flat files to S3 and then to Amazon Redshift, and assist with ETL
-processing.
+A Python library assist with ETL processing for:
+- Amazon Redshift (``COPY``, ``UNLOAD``)
+- Snowflake (``COPY INTO <table>``, ``COPY INTO <location>``)
 
+In addition:
 - The library supports Python 3.5+
 - DB Driver (Adapter) agnostic. Use your favourite driver that complies with
   `DB-API 2.0 <https://www.python.org/dev/peps/pep-0249/>`_
-- It provides basic functionality to move data to S3 buckets
-- Execute ``COPY`` commands to load data to S3, and into Redshift
-- Execute ``UNLOAD`` commands to unload data from Redshift into S3
+- It provides functionality to download and upload data to S3 buckets, and internal stages (Snowflake)
 
 
 Quick Installation
@@ -49,6 +49,7 @@ The following packages have been tested:
 
 - ``psycopg2``
 - ``pg8000``
+- ``snowflake-connector-python``
 
 You can use which ever one you prefer by importing the package and passing it
 into the constructor input ``dbapi``.
@@ -146,7 +147,7 @@ Advanced Usage
 --------------
 
 See the `docs <https://capitalone.github.io/Data-Load-and-Copy-using-Python/>`_ for
-more detailed usage instructions and examples.
+more detailed usage instructions and examples including Snowflake.
 
 
 Contributors

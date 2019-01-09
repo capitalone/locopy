@@ -11,6 +11,7 @@
 
    Basic Examples <examples>
    Common Recipes <recipes>
+   Snowflake <snowflake>
    Developer Instructions <developer>
    API Reference <api/modules>
 
