@@ -168,14 +168,14 @@ class Snowflake(S3, Database):
         )
 
     def copy(
-        self, tablename, stage, delim="|", header=False, format_options=None, copy_options=None
+        self, table_name, stage, delim="|", header=False, format_options=None, copy_options=None
     ):
         """Executes the ``COPY INTO <table>`` command to load CSV files from a stage into
         a Snowflake table.
 
         Parameters
         ----------
-        tablename : str
+        table_name : str
             The Snowflake table name which is being loaded. Must be fully qualified:
             `<namespace>.<table_name>`
 
@@ -196,9 +196,9 @@ class Snowflake(S3, Database):
 
         Raises
         ------
-        Exception
-            If there is a problem executing the COPY command, a connection
-            has not been initalized, or credentials are wrong.
+        DBError
+            If there is a problem executing the COPY command, or a connection
+            has not been initalized.
         """
         if not self._is_connected():
             raise DBError("No Snowflake connection object is present.")
@@ -211,10 +211,62 @@ class Snowflake(S3, Database):
         )
         try:
             sql = base_copy_string.format(
-                tablename, stage, delim, int(header), format_options_text, copy_options_text
+                table_name, stage, delim, int(header), format_options_text, copy_options_text
             )
             self.execute(sql, commit=True)
 
         except Exception as e:
             logger.error("Error running COPY on Snowflake. err: %s", e)
             raise DBError("Error running COPY on Snowflake.")
+
+    def unload(
+        self, stage, table_name, delim="|", header=False, format_options=None, copy_options=None
+    ):
+        """Executes the ``COPY INTO <location>`` command to export a query/table from
+        Snowflake to a stage.
+
+        Parameters
+        ----------
+        stage : str
+            Stage location (internal or external) where the data files are unloaded
+
+        table_name : str
+            The Snowflake table name which is being unloaded. Must be fully qualified:
+            ``<namespace>.<table_name>``
+
+        delim : str
+            The delimiter in a delimited file.
+
+        header : bool, optional
+            Boolean flag if header is included in the file(s)
+
+        format_options : list
+            List of strings of format options to provide to the ``COPY INTO`` command.
+
+        copy_options : list
+            List of strings of copy options to provide to the ``COPY INTO`` command.
+
+        Raises
+        ------
+        DBError
+            If there is a problem executing the UNLOAD command, or a connection
+            has not been initalized.
+        """
+        if not self._is_connected():
+            raise DBError("No Snowflake connection object is present")
+
+        format_options_text = combine_options(format_options)
+        copy_options_text = combine_options(copy_options)
+        base_unload_string = (
+            "COPY INTO {0} FROM {1} "
+            "FILE_FORMAT = (TYPE='csv' FIELD_DELIMITER='{2}' {3}) HEADER={4} {5}"
+        )
+
+        try:
+            sql = base_unload_string.format(
+                stage, table_name, delim, format_options_text, header, copy_options_text
+            )
+            self.execute(sql, commit=True)
+        except Exception as e:
+            logger.error("Error running UNLOAD on Snowflake. err: %s", e)
+            raise DBError("Error running UNLOAD on Snowflake.")

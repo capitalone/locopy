@@ -180,3 +180,38 @@ def test_copy(mock_session, sf_credentials):
             sf.conn = None
             with pytest.raises(DBError):
                 sf.copy("table_name", "@~/stage")
+
+
+@mock.patch("locopy.s3.Session")
+def test_unload(mock_session, sf_credentials):
+    with mock.patch("snowflake.connector.connect") as mock_connect:
+        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
+
+            sf.unload("@~/stage", "table_name")
+            sf.conn.cursor.return_value.execute.assert_called_with(
+                "COPY INTO @~/stage FROM table_name FILE_FORMAT = (TYPE='csv' FIELD_DELIMITER='|' ) HEADER=False ",
+                None,
+            )
+
+            sf.unload("@~/stage", "table_name", delim=",", header=True)
+            sf.conn.cursor.return_value.execute.assert_called_with(
+                "COPY INTO @~/stage FROM table_name FILE_FORMAT = (TYPE='csv' FIELD_DELIMITER=',' ) HEADER=True ",
+                None,
+            )
+
+            sf.unload(
+                "@~/stage", "table_name", format_options=["a=1", "b=2"], copy_options=["c=3", "d=4"]
+            )
+            sf.conn.cursor.return_value.execute.assert_called_with(
+                "COPY INTO @~/stage FROM table_name FILE_FORMAT = (TYPE='csv' FIELD_DELIMITER='|' a=1 b=2) HEADER=False c=3 d=4",
+                None,
+            )
+
+            # exception
+            sf.conn.cursor.return_value.execute.side_effect = Exception("UNLOAD Exception")
+            with pytest.raises(DBError):
+                sf.unload("@~/stage", "table_name")
+
+            sf.conn = None
+            with pytest.raises(DBError):
+                sf.unload("@~/stage", "table_name")

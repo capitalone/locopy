@@ -170,13 +170,13 @@ class Redshift(S3, Database):
             self.connection["ssl"] = True
         super(Redshift, self)._connect()
 
-    def copy(self, tablename, s3path, delim="|", copy_options=None):
+    def copy(self, table_name, s3path, delim="|", copy_options=None):
         """Executes the COPY command to load delimited files from S3 into
         a Redshift table.
 
         Parameters
         ----------
-        tablename : str
+        table_name : str
             The Redshift table name which is being loaded
 
         s3path : str
@@ -191,7 +191,7 @@ class Redshift(S3, Database):
 
         Raises
         ------
-        Exception
+        DBError
             If there is a problem executing the COPY command, a connection
             has not been initalized, or credentials are wrong.
         """
@@ -203,7 +203,7 @@ class Redshift(S3, Database):
         base_copy_string = "COPY {0} FROM '{1}' " "CREDENTIALS '{2}' " "DELIMITER '{3}' {4};"
         try:
             sql = base_copy_string.format(
-                tablename, s3path, self._credentials_string(), delim, copy_options_text
+                table_name, s3path, self._credentials_string(), delim, copy_options_text
             )
             self.execute(sql, commit=True)
 
@@ -405,11 +405,12 @@ class Redshift(S3, Database):
 
         Raises
         ------
-        Exception
-            If there is a problem executing the unload command.
+        DBError
+            If there is a problem executing the UNLOAD command, a connection
+            has not been initalized, or credentials are wrong.
         """
         if not self._is_connected():
-            raise Exception("No Redshift connection object is present")
+            raise DBError("No Redshift connection object is present")
 
         unload_options = unload_options or []
         unload_options_text = " ".join(unload_options)
@@ -422,7 +423,7 @@ class Redshift(S3, Database):
             self.execute(sql, commit=True)
         except Exception as e:
             logger.error("Error running UNLOAD on redshift. err: %s", e)
-            raise
+            raise DBError("Error running UNLOAD on redshift.")
 
     def _get_column_names(self, query):
         """Gets a list of column names from the supplied query.
