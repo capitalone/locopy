@@ -6,11 +6,13 @@
 locopy: Data Load and Copy using Python
 ========================================
 
-A Python library assist with ETL processing for:
+A Python library to assist with ETL processing for:
+
 - Amazon Redshift (``COPY``, ``UNLOAD``)
 - Snowflake (``COPY INTO <table>``, ``COPY INTO <location>``)
 
 In addition:
+
 - The library supports Python 3.5+
 - DB Driver (Adapter) agnostic. Use your favourite driver that complies with
   `DB-API 2.0 <https://www.python.org/dev/peps/pep-0249/>`_
@@ -41,9 +43,9 @@ A virtual environment is highly recommended
 Python Database API Specification 2.0
 -------------------------------------
 
-Rather than using a specific Python DB Driver / Adapter for Postgres (which should support Amazon
-Redshift), ``locopy`` prefers to be agnostic. As an end user you can use any Python Database
-API Specification 2.0 package.
+Rather than using a specific Python DB Driver / Adapter for Postgres (which should supports Amazon
+Redshift or Snowflake), ``locopy`` prefers to be agnostic. As an end user you can use any Python
+Database API Specification 2.0 package.
 
 The following packages have been tested:
 
@@ -59,7 +61,7 @@ into the constructor input ``dbapi``.
 Usage
 -----
 
-You need to store your Redshift connection parameters in a YAML file (or pass them in directly).
+You need to store your connection parameters in a YAML file (or pass them in directly).
 The YAML would consist of the following items:
 
 .. code-block:: yaml
