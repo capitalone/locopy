@@ -148,6 +148,31 @@ def test_upload_to_internal(mock_session, sf_credentials):
 
 
 @mock.patch("locopy.s3.Session")
+def test_download_from_internal(mock_session, sf_credentials):
+    with mock.patch("snowflake.connector.connect") as mock_connect:
+        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
+            sf.download_from_internal("@~/internal", "/some/file")
+            sf.conn.cursor.return_value.execute.assert_called_with(
+                "GET @~/internal file:///some/file PARALLEL=10", None
+            )
+
+            sf.download_from_internal("@~/internal", "/some/file", parallel=99)
+            sf.conn.cursor.return_value.execute.assert_called_with(
+                "GET @~/internal file:///some/file PARALLEL=99", None
+            )
+
+            sf.download_from_internal("@~/internal", "C:\some\file")
+            sf.conn.cursor.return_value.execute.assert_called_with(
+                "GET @~/internal file://C:\some\file PARALLEL=10", None
+            )
+
+            # exception
+            sf.conn.cursor.return_value.execute.side_effect = Exception("GET Exception")
+            with pytest.raises(DBError):
+                sf.download_from_internal("@~/internal", "/some/file")
+
+
+@mock.patch("locopy.s3.Session")
 def test_copy(mock_session, sf_credentials):
     with mock.patch("snowflake.connector.connect") as mock_connect:
         with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:

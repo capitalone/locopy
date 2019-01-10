@@ -22,6 +22,7 @@
 
 import os
 import filecmp
+import shutil
 import pytest
 import snowflake.connector
 import pandas as pd
@@ -82,20 +83,27 @@ def test_snowflake_execute_multiple_rows(dbapi):
 
 @pytest.mark.integration
 @pytest.mark.parametrize("dbapi", DBAPIS)
-def test_upload_to_internal(dbapi):
+def test_upload_download_internal(dbapi):
 
     with locopy.Snowflake(dbapi=dbapi, **CREDS_DICT) as test:
         # delete if exists
-        test.execute("REMOVE @~/staged/mock_file.txt.gz")
+        test.execute("REMOVE @~/staged/mock_file_dl.txt")
 
         # test
-        test.upload_to_internal(LOCAL_FILE, "@~/staged/")
-        test.execute("LIST @~/staged/mock_file.txt")
+        shutil.copy(LOCAL_FILE, LOCAL_FILE_DL)
+        test.upload_to_internal(LOCAL_FILE_DL, "@~/staged/", auto_compress=False)
+        test.execute("LIST @~/staged/mock_file_dl.txt")
         res = test.cursor.fetchall()
-        assert res[0][0] == "staged/mock_file.txt.gz"
+        assert res[0][0] == "staged/mock_file_dl.txt"
+
+        test.download_from_internal(
+            "@~/staged/mock_file_dl.txt", os.path.dirname(LOCAL_FILE_DL) + os.sep
+        )
+        assert filecmp.cmp(LOCAL_FILE, LOCAL_FILE_DL)
 
         # clean up
-        test.execute("REMOVE @~/staged/mock_file.txt.gz")
+        test.execute("REMOVE @~/staged/mock_file_dl.txt")
+        os.remove(LOCAL_FILE_DL)
 
 
 @pytest.mark.integration

@@ -151,7 +151,7 @@ class Snowflake(S3, Database):
             supported to enable uploading multiple files in a directory.
 
         stage : str
-            Internal stage location to load the file. Can include folders so that
+            Internal stage location to load the file.
 
         parallel : int, optional
             Specifies the number of threads to use for uploading files.
@@ -166,6 +166,23 @@ class Snowflake(S3, Database):
                 local, stage, parallel, auto_compress
             )
         )
+
+    def download_from_internal(self, stage, local, parallel=10):
+        """
+        Download file(s) from a internal stage via the ``GET`` command.
+
+        Parameters
+        ----------
+        stage : str
+            Internal stage location to load the file. Can include folders so that
+
+        local : str
+            The local directory path where files will be downloaded to
+
+        parallel : int, optional
+            Specifies the number of threads to use for uploading files.
+        """
+        self.execute("GET {0} file://{1} PARALLEL={2}".format(stage, local, parallel))
 
     def copy(
         self, table_name, stage, delim="|", header=False, format_options=None, copy_options=None
