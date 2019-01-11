@@ -34,7 +34,7 @@ from pathlib import Path
 
 
 DBAPIS = [snowflake.connector]
-INTEGRATION_CREDS = str(Path.home()) + "/.locopy-sfrc"
+INTEGRATION_CREDS = str(Path.home()) + os.sep + ".locopy-sfrc"
 S3_BUCKET = "locopy-integration-testing"
 CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 LOCAL_FILE = os.path.join(CURR_DIR, "data", "mock_file.txt")

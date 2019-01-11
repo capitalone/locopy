@@ -55,7 +55,7 @@ class Snowflake(S3, Database):
     Parameters
     ----------
     profile : str, optional
-        The name of the AWS profile to use which is typical stored in the
+        The name of the AWS profile to use which is typically stored in the
         ``credentials`` file.  You can also set environment variable
         ``AWS_DEFAULT_PROFILE`` which would be used instead.
 
@@ -119,7 +119,7 @@ class Snowflake(S3, Database):
     def __init__(self, profile=None, kms_key=None, dbapi=None, config_yaml=None, **kwargs):
         try:
             S3.__init__(self, profile, kms_key)
-        except S3CredentialsError as e:
+        except S3CredentialsError:
             logger.warn("S3 credentials we not found. S3 functionality is disabled")
             logger.warn("Only internal stages are available")
         Database.__init__(self, dbapi, config_yaml, **kwargs)
@@ -167,7 +167,7 @@ class Snowflake(S3, Database):
             )
         )
 
-    def download_from_internal(self, stage, local, parallel=10):
+    def download_from_internal(self, stage, local=os.getcwd(), parallel=10):
         """
         Download file(s) from a internal stage via the ``GET`` command.
 
@@ -176,11 +176,12 @@ class Snowflake(S3, Database):
         stage : str
             Internal stage location to load the file. Can include folders so that
 
-        local : str
-            The local directory path where files will be downloaded to
+        local : str, optional
+            The local directory path where files will be downloaded to. Defualts to the current
+            working directory (``os.getcwd()``)
 
         parallel : int, optional
-            Specifies the number of threads to use for uploading files.
+            Specifies the number of threads to use for downloading files.
         """
         self.execute("GET {0} file://{1} PARALLEL={2}".format(stage, local, parallel))
 
