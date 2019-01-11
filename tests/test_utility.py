@@ -28,8 +28,8 @@ from unittest import mock
 from io import StringIO
 from itertools import cycle
 from botocore.credentials import Credentials
-from locopy.utility import compress_file, split_file
-from locopy.errors import CompressionError, LocopySplitError, CredentialsError
+from locopy.utility import compress_file, compress_file_list, split_file, concatenate_files
+from locopy.errors import CompressionError, LocopySplitError, CredentialsError, LocopyConcatError
 import locopy.utility as util
 
 
@@ -80,12 +80,38 @@ def test_compress_file_exception(mock_shutil, mock_gzip_open, mock_open):
         compress_file("input", "output")
 
 
+@mock.patch("locopy.utility.os.remove")
+@mock.patch("locopy.utility.open")
+@mock.patch("locopy.utility.gzip.open")
+@mock.patch("locopy.utility.shutil.copyfileobj")
+def test_compress_file_list(mock_shutil, mock_gzip_open, mock_open, mock_remove):
+    res = compress_file_list([])
+    assert res == []
+    res = compress_file_list(["input1"])
+    assert res == ["input1.gz"]
+    res = compress_file_list(["input1", "input2"])
+    assert res == ["input1.gz", "input2.gz"]
+
+
+@mock.patch("locopy.utility.os.remove")
+@mock.patch("locopy.utility.open")
+@mock.patch("locopy.utility.gzip.open")
+@mock.patch("locopy.utility.shutil.copyfileobj")
+def test_compress_file_list_exception(mock_shutil, mock_gzip_open, mock_open, mock_remove):
+    mock_shutil.side_effect = Exception("SomeException")
+    with pytest.raises(CompressionError):
+        compress_file_list(["input1", "input2"])
+
+
 def test_split_file():
     input_file = "tests/data/mock_file.txt"
     output_file = "tests/data/mock_output_file.txt"
 
-    expected = ["tests/data/mock_output_file.txt.0", "tests/data/mock_output_file.txt.1"]
     splits = split_file(input_file, output_file)
+    assert splits == [input_file]
+
+    expected = ["tests/data/mock_output_file.txt.0", "tests/data/mock_output_file.txt.1"]
+    splits = split_file(input_file, output_file, 2)
     assert splits == expected
     assert compare_file_contents(input_file, expected)
     cleanup(splits)
@@ -127,8 +153,6 @@ def test_split_file_exception():
     with pytest.raises(LocopySplitError):
         split_file(input_file, output_file, 0)
     with pytest.raises(LocopySplitError):
-        split_file(input_file, output_file, 1)
-    with pytest.raises(LocopySplitError):
         split_file(input_file, output_file, 5.65)
     with pytest.raises(LocopySplitError):
         split_file(input_file, output_file, "123")
@@ -140,7 +164,7 @@ def test_split_file_exception():
             mock_next.side_effect = Exception("SomeException")
 
             with pytest.raises(LocopySplitError):
-                split_file(input_file, output_file)
+                split_file(input_file, output_file, 2)
             assert mock_remove.call_count == 2
             mock_remove.reset_mock()
 
@@ -181,3 +205,25 @@ def test_read_config_yaml_io():
 def test_read_config_yaml_no_file():
     with pytest.raises(CredentialsError):
         util.read_config_yaml("file_that_does_not_exist.yml")
+
+
+def test_concatenate_files():
+    inputs = ["tests/data/cat_1.txt", "tests/data/cat_2.txt", "tests/data/cat_3.txt"]
+    output = "tests/data/cat_output.txt"
+    with mock.patch("locopy.utility.os.remove") as mock_remove:
+        concatenate_files(inputs, output)
+        assert mock_remove.call_count == 3
+        assert [int(line.rstrip("\n")) for line in open(output)] == list(range(1, 16))
+    os.remove(output)
+
+
+def test_concatenate_files_exception():
+    inputs = ["tests/data/cat_1.txt", "tests/data/cat_2.txt", "tests/data/cat_3.txt"]
+    output = "tests/data/cat_output.txt"
+    with pytest.raises(LocopyConcatError):
+        concatenate_files([], output, remove=False)
+
+    with mock.patch("locopy.utility.open") as mock_open:
+        mock_open.side_effect = Exception()
+        with pytest.raises(LocopyConcatError):
+            concatenate_files(inputs, output, remove=False)

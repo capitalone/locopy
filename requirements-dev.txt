@@ -1,6 +1,7 @@
 boto3==1.7.21
 psycopg2-binary==2.7.4
 pg8000==1.12.1
+snowflake-connector-python==1.7.0
 PyYAML==4.2b4
 Sphinx==1.7.4
 sphinx-rtd-theme==0.3.1

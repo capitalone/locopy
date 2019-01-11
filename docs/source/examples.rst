@@ -20,7 +20,7 @@ Upload to S3 and run COPY command with YAML
         profile="aws_profile") as redshift:
 
         redshift.execute(create_sql)
-        redshift.run_copy(
+        redshift.load_and_copy(
             local_file="example_data.csv",
             s3_bucket="my_s3_bucket",
             table_name="schema.table",
@@ -77,7 +77,7 @@ three, you can pass in a list of strings which will tweak your load:
 
 .. code-block:: python
 
-    redshift.run_copy(local_file="example_data.csv",
+    redshift.load_and_copy(local_file="example_data.csv",
                 s3_bucket="my_s3_bucket",
                 table_name="schema.table",
                 delim=",",

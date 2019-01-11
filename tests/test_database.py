@@ -23,6 +23,7 @@
 import pytest
 import mock
 import pg8000, psycopg2
+import snowflake.connector
 
 from locopy import Database
 from locopy.utility import read_config_yaml
@@ -39,7 +40,7 @@ other: stuff
 extra: 123
 another: 321"""
 
-DBAPIS = [pg8000, psycopg2]
+DBAPIS = [pg8000, psycopg2, snowflake.connector]
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)

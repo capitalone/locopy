@@ -1,0 +1,7 @@
+account: my.snowflake.cluster.com
+warehouse: warehouse
+database: db
+schema: schema
+user: username
+password: password
+profile: MY_AWS_PROFILE

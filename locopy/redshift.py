@@ -20,10 +20,15 @@ to Redshift, and run arbitrary code.
 """
 import os
 
-from urllib.parse import urlparse
 from .database import Database
 from .s3 import S3
-from .utility import ProgressPercentage, compress_file, split_file, write_file
+from .utility import (
+    ProgressPercentage,
+    compress_file_list,
+    split_file,
+    write_file,
+    concatenate_files,
+)
 from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
 from .errors import CredentialsError, DBError
 
@@ -165,13 +170,13 @@ class Redshift(S3, Database):
             self.connection["ssl"] = True
         super(Redshift, self)._connect()
 
-    def _copy_to_redshift(self, tablename, s3path, delim="|", copy_options=None):
-        """Executes the COPY command to load CSV files from S3 into
+    def copy(self, table_name, s3path, delim="|", copy_options=None):
+        """Executes the COPY command to load delimited files from S3 into
         a Redshift table.
 
         Parameters
         ----------
-        tablename : str
+        table_name : str
             The Redshift table name which is being loaded
 
         s3path : str
@@ -186,7 +191,7 @@ class Redshift(S3, Database):
 
         Raises
         ------
-        Exception
+        DBError
             If there is a problem executing the COPY command, a connection
             has not been initalized, or credentials are wrong.
         """
@@ -198,7 +203,7 @@ class Redshift(S3, Database):
         base_copy_string = "COPY {0} FROM '{1}' " "CREDENTIALS '{2}' " "DELIMITER '{3}' {4};"
         try:
             sql = base_copy_string.format(
-                tablename, s3path, self._credentials_string(), delim, copy_options_text
+                table_name, s3path, self._credentials_string(), delim, copy_options_text
             )
             self.execute(sql, commit=True)
 
@@ -206,7 +211,7 @@ class Redshift(S3, Database):
             logger.error("Error running COPY on Redshift. err: %s", e)
             raise DBError("Error running COPY on Redshift.")
 
-    def run_copy(
+    def load_and_copy(
         self,
         local_file,
         s3_bucket,
@@ -227,6 +232,14 @@ class Redshift(S3, Database):
         If you are using folders in your S3 bucket please be aware of having
         special chars or backward slashes (``\``). These may cause the file to
         upload but fail on the ``COPY`` command.
+
+        By default `locopy` will handle the splitting of files for you, in order to reduce
+        complexity in uploading to s3 and generating the `COPY` command.
+
+        It is critical to ensure that the S3 location you are using that it only contains the files
+        you want to load. In the case of a "folder" it should only contain the files you want to
+        load. For a bucket the file name should be unique enough as any extensions get striped out
+        in favour of the file prefix.
 
         Parameters
         ----------
@@ -266,51 +279,28 @@ class Redshift(S3, Database):
             file to. Defaults to ``None``. Please note that you must follow the
             ``/`` convention when using subfolders.
         """
-
         if copy_options is None:
             copy_options = []
 
         # generate the actual splitting of the files
-        if splits > 1:
-            upload_list = split_file(local_file, local_file, splits=splits)
-        else:
-            upload_list = [local_file]
+        upload_list = split_file(local_file, local_file, splits=splits)
 
         if compress:
             copy_options.append("GZIP")
-            for i, f in enumerate(upload_list):
-                gz = "{0}.gz".format(f)
-                compress_file(f, gz)
-                upload_list[i] = gz
-                os.remove(f)  # cleanup old files
+            upload_list = compress_file_list(upload_list)
 
-        # copy file to S3
-        for file in upload_list:
-            if s3_folder is None:
-                s3_key = os.path.basename(file)
-            else:
-                s3_key = "/".join([s3_folder, os.path.basename(file)])
-
-            self.upload_to_s3(file, s3_bucket, s3_key)
+        # copy files to S3
+        s3_upload_list = self.upload_list_to_s3(upload_list, s3_bucket, s3_folder)
+        tmp_load_path = s3_upload_list[0].split(os.extsep)[0]
 
         # execute Redshift COPY
-        self._copy_to_redshift(
-            table_name,
-            self._generate_s3_path(s3_bucket, s3_key.split(os.extsep)[0]),
-            delim,
-            copy_options=copy_options,
-        )
+        self.copy(table_name, "s3://" + tmp_load_path, delim, copy_options=copy_options)
 
         # delete file from S3 (if set to do so)
         if delete_s3_after:
-            for file in upload_list:
-                if s3_folder is None:
-                    s3_key = os.path.basename(file)
-                else:
-                    s3_key = "/".join([s3_folder, os.path.basename(file)])
-                self.delete_from_s3(s3_bucket, s3_key)
+            self.delete_list_from_s3(s3_upload_list)
 
-    def run_unload(
+    def unload_and_copy(
         self,
         query,
         s3_bucket,
@@ -327,7 +317,7 @@ class Redshift(S3, Database):
         Parameters
         ----------
         query : str
-            A query to be unloaded to S3. Typically a ``SELECT`` statement
+            A query to be unloaded to S3. A ``SELECT`` query
 
         s3_bucket : str
             The AWS S3 bucket where the data from the query will be unloaded.
@@ -339,7 +329,8 @@ class Redshift(S3, Database):
 
         export_path : str, optional
             If a ``export_path`` is provided, function will write the unloaded
-            files to that folder.
+            files to this path as a single file. If your file is very large you may not want to
+            use this option.
 
         delimiter : str, optional
             Delimiter for unloading and file writing. Defaults to a comma.
@@ -374,11 +365,11 @@ class Redshift(S3, Database):
             unload_options.append("PARALLEL OFF")
 
         ## run unload
-        self._unload_to_s3(query=query, s3path=s3path, unload_options=unload_options)
+        self.unload(query=query, s3path=s3path, unload_options=unload_options)
 
         ## parse unloaded files
-        files = self._unload_generated_files()
-        if files is None:
+        s3_download_list = self._unload_generated_files()
+        if s3_download_list is None:
             logger.error("No files generated from unload")
             raise Exception("No files generated from unload")
 
@@ -388,28 +379,16 @@ class Redshift(S3, Database):
             raise Exception("Unable to retrieve column names from exported data.")
 
         # download files locally with same name
-        # write columns to local file
-        # write temp to local file
-        # remove temp files
+        local_list = self.download_list_from_s3(s3_download_list)
         if export_path:
-            write_file([columns], delimiter, export_path)
-            for f in files:
-                key = urlparse(f).path[1:]
-                local = os.path.basename(key)
-                self.download_from_s3(s3_bucket, key, local)
-                with open(local, "rb") as temp_f:
-                    with open(export_path, "ab") as main_f:
-                        for line in temp_f:
-                            main_f.write(line)
-                os.remove(local)
+            write_file([columns], delimiter, export_path)  # column
+            concatenate_files(local_list, export_path)  # data
 
-        ## delete unloaded files from s3
+        # delete unloaded files from s3
         if delete_s3_after:
-            for f in files:
-                key = urlparse(f).path[1:]
-                self.delete_from_s3(s3_bucket, key)
+            self.delete_list_from_s3(s3_download_list)
 
-    def _unload_to_s3(self, query, s3path, unload_options=None):
+    def unload(self, query, s3path, unload_options=None):
         """Executes the UNLOAD command to export a query from
         Redshift to S3.
 
@@ -426,11 +405,12 @@ class Redshift(S3, Database):
 
         Raises
         ------
-        Exception
-            If there is a problem executing the unload command.
+        DBError
+            If there is a problem executing the UNLOAD command, a connection
+            has not been initalized, or credentials are wrong.
         """
         if not self._is_connected():
-            raise Exception("No Redshift connection object is present")
+            raise DBError("No Redshift connection object is present")
 
         unload_options = unload_options or []
         unload_options_text = " ".join(unload_options)
@@ -443,7 +423,7 @@ class Redshift(S3, Database):
             self.execute(sql, commit=True)
         except Exception as e:
             logger.error("Error running UNLOAD on redshift. err: %s", e)
-            raise
+            raise DBError("Error running UNLOAD on redshift.")
 
     def _get_column_names(self, query):
         """Gets a list of column names from the supplied query.

@@ -26,7 +26,7 @@ import shutil
 import yaml
 from itertools import cycle
 from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
-from .errors import CompressionError, LocopySplitError, CredentialsError
+from .errors import CompressionError, LocopySplitError, CredentialsError, LocopyConcatError
 
 logger = get_logger(__name__, INFO)
 
@@ -57,7 +57,6 @@ def write_file(data, delimiter, filepath, mode="w"):
                 f.write(delimiter.join([str(r) for r in row]) + "\n")
     except Exception as e:
         logger.error("Unable to write file to %s due to err %s" % (filepath, e))
-    return
 
 
 def compress_file(input_file, output_file):
@@ -80,7 +79,29 @@ def compress_file(input_file, output_file):
         raise CompressionError("Error compressing the file.")
 
 
-def split_file(input_file, output_file, splits=2):
+def compress_file_list(file_list):
+    """Compresses a list of files (gzip) and clean up the old files
+
+    Parameters
+    ----------
+    file_list : list
+        List of strings with the file paths of the files to compress
+
+    Returns
+    -------
+    list
+        List of strings with the file paths of the compressed files (original file name with
+        gz appended)
+    """
+    for i, f in enumerate(file_list):
+        gz = "{0}.gz".format(f)
+        compress_file(f, gz)
+        file_list[i] = gz
+        os.remove(f)  # cleanup old files
+    return file_list
+
+
+def split_file(input_file, output_file, splits=1):
     """Split a file into equal files by lines.
 
     For example: ``myinputfile.txt`` will be split into ``myoutputfile.txt.01``
@@ -95,7 +116,7 @@ def split_file(input_file, output_file, splits=2):
         Name of the output file
 
     splits : int, optional
-        Number of splits to perform. Must be greater than one. Defaults to 2
+        Number of splits to perform. Must be greater than zero. Defaults to 1
 
     Returns
     -------
@@ -105,14 +126,17 @@ def split_file(input_file, output_file, splits=2):
     Raises
     ------
     LocopySplitError
-        If ``splits`` is less than 2 or some processing error when splitting
+        If ``splits`` is less than 1 or some processing error when splitting
     """
-    if type(splits) is not int or splits < 2:
+    if type(splits) is not int or splits <= 0:
         logger.error("Number of splits is invalid")
-        raise LocopySplitError("Number of splits must be greater than one and an integer.")
+        raise LocopySplitError("Number of splits must be greater than zero and an integer.")
+
+    if splits == 1:
+        return [input_file]
 
     try:
-        pool = [x for x in range(splits)]
+        pool = list(range(splits))
         cpool = cycle(pool)
         logger.info("splitting file: %s into %s files", input_file, splits)
         # open output file handlers
@@ -133,6 +157,40 @@ def split_file(input_file, output_file, splits=2):
                 files[x].close()
                 os.remove(files[x].name)
         raise LocopySplitError("Error splitting the file.")
+
+
+def concatenate_files(input_list, output_file, remove=True):
+    """Concatenate a list of files into one file.
+
+    Parameters
+    ----------
+    input_list : list
+        List of strings with the paths to input files to concateneate
+
+    output_file : str
+        Path of the output file
+
+    remove: bool, optional
+        Removes the files from the input list if ``True``. Defaults to ``True``
+
+    Raises
+    ------
+    LocopyConcatError
+        If ``input_list`` or there is a issue while concatenating the files into one
+    """
+    if len(input_list) == 0:
+        raise LocopyConcatError("Input list is empty.")
+    try:
+        with open(output_file, "ab") as main_f:
+            for f in input_list:
+                with open(f, "rb") as temp_f:
+                    for line in temp_f:
+                        main_f.write(line)
+                if remove:  # as we go for space consideration
+                    os.remove(f)
+    except Exception as e:
+        logger.error("Error concateneating files. err: %s", e)
+        raise LocopyConcatError("Error concateneating files.")
 
 
 def read_config_yaml(config_yaml):

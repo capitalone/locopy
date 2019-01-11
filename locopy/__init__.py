@@ -16,4 +16,5 @@
 
 from .database import Database
 from .redshift import Redshift
+from .snowflake import Snowflake
 from .s3 import S3

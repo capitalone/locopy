@@ -18,6 +18,8 @@
 Module to wrap the boto3 api usage and provide functionality to manage
 multipart upload to S3 buckets
 """
+import os
+
 from boto3 import Session
 from boto3.s3.transfer import TransferConfig
 from botocore.client import Config
@@ -95,7 +97,7 @@ class S3(object):
     def _set_session(self):
         try:
             self.session = Session(profile_name=self.profile)
-            logger.info("Successfully initialized AWS session.")
+            logger.info("Initialized AWS session.")
         except Exception as e:
             logger.error("Error initializing AWS Session, err: %s", e)
             raise S3Error("Error initializing AWS Session.")
@@ -128,7 +130,7 @@ class S3(object):
             temp = "aws_access_key_id={};aws_secret_access_key={}"
             return temp.format(creds.access_key, creds.secret_key)
 
-    def _generate_s3_path(cls, bucket, key):
+    def _generate_s3_path(self, bucket, key):
         """Will return the S3 file URL in the format S3://bucket/key
 
         Parameters
@@ -146,7 +148,7 @@ class S3(object):
         """
         return "s3://{0}/{1}".format(bucket, key)
 
-    def _generate_unload_path(cls, bucket, folder):
+    def _generate_unload_path(self, bucket, folder):
         """Will return the S3 file URL in the format s3://bucket/folder if a
         valid (not None) folder is provided. Otherwise, returns s3://bucket
 
@@ -206,10 +208,50 @@ class S3(object):
             self.s3.upload_file(
                 local, bucket, key, ExtraArgs=extra_args, Callback=ProgressPercentage(local)
             )
-
         except Exception as e:
             logger.error("Error uploading to S3. err: %s", e)
             raise S3UploadError("Error uploading to S3.")
+
+    def upload_list_to_s3(self, local_list, bucket, folder=None):
+        """
+        Upload a list of files to a S3 bucket.
+
+        Parameters
+        ----------
+        local_list : list
+            List of strings with the file paths of the files to upload
+
+        bucket : str
+            The AWS S3 bucket which you are copying the local file to.
+
+        folder : str, optional
+            The AWS S3 folder of the bucket which you are copying the local
+            files to. Defaults to ``None``. Please note that you must follow the
+            ``/`` convention when using subfolders.
+
+        Returns
+        -------
+        list
+            Returns a list of the generated S3 bucket and keys of the files which were uploaded. The
+            ``S3://`` part is NOT include. The output would look like the following:
+            ``["my-bucket/key1", "my-bucket/key2", ...]``
+
+        Notes
+        -----
+        There is a assumption that if you are loading multiple files (via `splits`) it follows a
+        structure such as `file_name.extension.#` (`#` splits). It allows for the `COPY` statement
+        to use the key prefix vs specificing an exact file name. The returned list helps with this
+        process downstream.
+        """
+        output = []
+        for file in local_list:
+            if folder is None:
+                s3_key = os.path.basename(file)
+            else:
+                s3_key = "/".join([folder, os.path.basename(file)])
+            self.upload_to_s3(file, bucket, s3_key)
+            output.append("/".join([bucket, s3_key]))
+        return output
 
     def download_from_s3(self, bucket, key, local):
         """
@@ -239,6 +281,32 @@ class S3(object):
             logger.error("Error downloading from S3. err: %s", e)
             raise S3DownloadError("Error downloading from S3.")
 
+    def download_list_from_s3(self, s3_list, local_path=os.getcwd()):
+        """
+        Download a list of files from s3.
+
+        Parameters
+        ----------
+        s3_list : list
+            List of strings with the s3 paths of the files to download
+
+        local_path : str, optional
+            The local path where the files will be copied to. Defualts to the current working
+            directory (``os.getcwd()``)
+
+        Returns
+        -------
+        list
+            Returns a list of strings of the local file names
+        """
+        output = []
+        for f in s3_list:
+            s3_bucket, key = self.parse_s3_url(f)
+            local = os.path.join(local_path, os.path.basename(key))
+            self.download_from_s3(s3_bucket, key, local)
+            output.append(local)
+        return output
+
     def delete_from_s3(self, bucket, key):
         """
         Delete a file from an S3 bucket.
@@ -262,3 +330,39 @@ class S3(object):
         except Exception as e:
             logger.error("Error deleting from S3. err: %s", e)
             raise S3DeletionError("Error deleting from S3.")
+
+    def delete_list_from_s3(self, s3_list):
+        """
+        Delete a list of files from an S3 bucket.
+
+        Parameters
+        ----------
+        s3_list : list
+            List of strings with the s3 paths of the files to delete. The strings should not include
+            the `s3://` scheme.
+        """
+        for file in s3_list:
+            s3_bucket, s3_key = self.parse_s3_url(file)
+            self.delete_from_s3(s3_bucket, s3_key)
+
+    def parse_s3_url(self, s3_url):
+        """
+        Parse a string of the s3 url to extract the bucket and key.
+        scheme or not.
+
+        Parameters
+        ----------
+        s3_url : str
+            s3 url. The string can include the `s3://` scheme (which is disgarded)
+
+        Returns
+        -------
+        bucket: str
+            s3 bucket
+        key: str
+            s3 key
+        """
+        temp_s3 = s3_url.replace("s3://", "")
+        s3_bucket = temp_s3.split("/")[0]
+        s3_key = "/".join(temp_s3.split("/")[1:])
+        return s3_bucket, s3_key

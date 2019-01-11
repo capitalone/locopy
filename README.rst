@@ -6,15 +6,17 @@
 locopy: Data Load and Copy using Python
 ========================================
 
-A Python library to load flat files to S3 and then to Amazon Redshift, and assist with ETL
-processing.
+A Python library to assist with ETL processing for:
+
+- Amazon Redshift (``COPY``, ``UNLOAD``)
+- Snowflake (``COPY INTO <table>``, ``COPY INTO <location>``)
+
+In addition:
 
 - The library supports Python 3.5+
 - DB Driver (Adapter) agnostic. Use your favourite driver that complies with
   `DB-API 2.0 <https://www.python.org/dev/peps/pep-0249/>`_
-- It provides basic functionality to move data to S3 buckets
-- Execute ``COPY`` commands to load data to S3, and into Redshift
-- Execute ``UNLOAD`` commands to unload data from Redshift into S3
+- It provides functionality to download and upload data to S3 buckets, and internal stages (Snowflake)
 
 
 Quick Installation
@@ -41,14 +43,15 @@ A virtual environment is highly recommended
 Python Database API Specification 2.0
 -------------------------------------
 
-Rather than using a specific Python DB Driver / Adapter for Postgres (which should support Amazon
-Redshift), ``locopy`` prefers to be agnostic. As an end user you can use any Python Database
-API Specification 2.0 package.
+Rather than using a specific Python DB Driver / Adapter for Postgres (which should supports Amazon
+Redshift or Snowflake), ``locopy`` prefers to be agnostic. As an end user you can use any Python
+Database API Specification 2.0 package.
 
 The following packages have been tested:
 
 - ``psycopg2``
 - ``pg8000``
+- ``snowflake-connector-python``
 
 You can use which ever one you prefer by importing the package and passing it
 into the constructor input ``dbapi``.
@@ -58,7 +61,7 @@ into the constructor input ``dbapi``.
 Usage
 -----
 
-You need to store your Redshift connection parameters in a YAML file (or pass them in directly).
+You need to store your connection parameters in a YAML file (or pass them in directly).
 The YAML would consist of the following items:
 
 .. code-block:: yaml
@@ -99,7 +102,7 @@ If you want to load data to Redshift via S3, the ``Redshift`` class inherits fro
     with locopy.Redshift(dbapi=pg8000, config_yaml="config.yml") as redshift:
         redshift.execute("SET query_group TO quick")
         redshift.execute("CREATE TABLE schema.table (variable VARCHAR(20)) DISTKEY(variable)")
-        redshift.run_copy(
+        redshift.load_and_copy(
             local_file="example/example_data.csv",
             s3_bucket="my_s3_bucket",
             table_name="schema.table",
@@ -117,7 +120,7 @@ If you want to download data from Redshift to a CSV, or read it into Python
     my_profile = "some_profile_with_valid_tokens"
     with locopy.Redshift(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as redshift:
         ##Optionally provide export if you ALSO want the exported data copied to a flat file
-        redshift.run_unload(
+        redshift.unload_and_copy(
             query="SELECT * FROM schema.table",
             s3_bucket="my_s3_bucket",
             export_path="my_output_destination.csv")
@@ -146,7 +149,7 @@ Advanced Usage
 --------------
 
 See the `docs <https://capitalone.github.io/Data-Load-and-Copy-using-Python/>`_ for
-more detailed usage instructions and examples.
+more detailed usage instructions and examples including Snowflake.
 
 
 Contributors
