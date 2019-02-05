@@ -13,6 +13,7 @@
    Common Recipes <recipes>
    Snowflake <snowflake>
    Developer Instructions <developer>
+   SQL Injection <sql_injection>
    API Reference <api/modules>
 
 
