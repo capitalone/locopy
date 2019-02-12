@@ -320,7 +320,7 @@
             <span class="p">)</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Snowflake.download_from_internal"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.download_from_internal">[docs]</a>    <span class="k">def</span> <span class="nf">download_from_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">parallel</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="Snowflake.download_from_internal"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.download_from_internal">[docs]</a>    <span class="k">def</span> <span class="nf">download_from_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Download file(s) from a internal stage via the ``GET`` command.</span>
 
@@ -336,6 +336,9 @@
 <span class="sd">        parallel : int, optional</span>
 <span class="sd">            Specifies the number of threads to use for downloading files.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">local</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">local</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;GET </span><span class="si">{0}</span><span class="s2"> file://</span><span class="si">{1}</span><span class="s2"> PARALLEL=</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stage</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">parallel</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Snowflake.copy"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span>
