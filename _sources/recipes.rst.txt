@@ -25,7 +25,7 @@ Assuming you have your ``YAML`` file setup, the following will occur:
     import locopy
 
     with locopy.Redshift(dbapi=pg8000, config_yaml="example.yaml") as redshift:
-        redshift.run_copy(
+        redshift.load_and_copy(
             local_file="some_data_to_load.txt",
             s3_bucket="s3_bucket_to_use",
             s3_folder="s3_folder_to_use/s3_subfolder_to_use",
@@ -50,7 +50,7 @@ integer
     import locopy
 
     with locopy.Redshift(dbapi=pg8000, config_yaml="example.yaml") as redshift:
-        redshift.run_copy(
+        redshift.load_and_copy(
             local_file="some_data_to_load.txt",
             s3_bucket="s3_bucket_to_use",
             s3_folder="s3_folder_to_use/s3_subfolder_to_use",
@@ -74,7 +74,7 @@ By default compression is always on. If you'd like to turn if off you can set
     import locopy
 
     with locopy.Redshift(dbapi=pg8000, config_yaml="example.yaml") as redshift:
-        redshift.run_copy(
+        redshift.load_and_copy(
             local_file="some_data_to_load.txt",
             s3_bucket="s3_bucket_to_use",
             s3_folder="s3_folder_to_use/s3_subfolder_to_use",
@@ -90,7 +90,7 @@ performance of the ``COPY`` command
 I want to export some data from Redshift to a local CSV
 -------------------------------------------------------
 Data can be exported from Redshift to a CSV by supplying an ``export_path``
-to ``locopy.Redshift.run_unload()``:
+to ``locopy.Redshift.unload_and_copy()``:
 
 .. code-block:: python
 
@@ -99,7 +99,7 @@ to ``locopy.Redshift.run_unload()``:
 
     my_profile = "some_profile_with_valid_tokens"
     with locopy.Redshift(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as redshift:
-        redshift.run_unload(
+        redshift.unload_and_copy(
             query="SELECT * FROM schema.table",
             s3_bucket="s3_bucket_to_use",
             export_path="output.csv")
@@ -109,7 +109,7 @@ Or a pipe delimited....
 .. code-block:: python
 
     with locopy.Redshift(config_yaml="config.yml", profile=my_profile) as redshift:
-        redshift.run_unload(
+        redshift.unload_and_copy(
             query="SELECT * FROM schema.table",
             s3_bucket="s3_bucket_to_use",
             export_path="output.tsv",
@@ -126,7 +126,7 @@ Or a pipe delimited....
 .. code-block:: python
 
     with locopy.Redshift(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as redshift:
-        redshift.run_unload(
+        redshift.unload_and_copy(
             query="SELECT * FROM schema.table",
             s3_bucket="s3_bucket_to_use",
             s3_folder="s3_folder_to_use/",
@@ -145,7 +145,7 @@ the S3 files from being automatically deleted after the run.
     import locopy
 
     with locopy.Redshift(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as redshift:
-        redshift.run_unload(
+        redshift.unload_and_copy(
             query="SELECT * FROM schema.table",
             s3_bucket="s3_bucket_to_use",
             s3_folder="s3_folder_to_use/s3_subfolder_to_use/",
@@ -159,7 +159,7 @@ If you want to back it up as a single file, you can run:
 .. code-block:: python
 
     with locopy.Redshift(dbapi=pg8000, config_yaml="config.yml", profile=my_profile) as redshift:
-        redshift.run_unload(
+        redshift.unload_and_copy(
             query="SELECT * FROM schema.table",
             s3_bucket="s3_bucket_to_use",
             s3_folder="s3_folder_to_use/s3_subfolder_to_use/",

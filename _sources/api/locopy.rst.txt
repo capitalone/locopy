@@ -11,6 +11,7 @@ Submodules
    locopy.logger
    locopy.redshift
    locopy.s3
+   locopy.snowflake
    locopy.utility
 
 Module contents

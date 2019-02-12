@@ -1,0 +1,495 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>locopy.snowflake &mdash; locopy 0.3.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> locopy
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../examples.html">Basic Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../recipes.html">Common Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../snowflake.html">Snowflake</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sql_injection.html">SQL Injection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">locopy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>locopy.snowflake</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for locopy.snowflake</h1><div class="highlight"><pre>
+<span></span><span class="c1"># SPDX-Copyright: Copyright (c) Capital One Services, LLC</span>
+<span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
+<span class="c1"># Copyright 2018 Capital One Services, LLC</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="sd">&quot;&quot;&quot;Snowflake Module</span>
+<span class="sd">Module to wrap a database adapter into a Snowflake class which can be used to connect</span>
+<span class="sd">to Snowflake, and run arbitrary code.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">urlparse</span>
+<span class="kn">from</span> <span class="nn">.database</span> <span class="k">import</span> <span class="n">Database</span>
+<span class="kn">from</span> <span class="nn">.s3</span> <span class="k">import</span> <span class="n">S3</span>
+<span class="kn">from</span> <span class="nn">.utility</span> <span class="k">import</span> <span class="n">ProgressPercentage</span><span class="p">,</span> <span class="n">compress_file_list</span><span class="p">,</span> <span class="n">split_file</span><span class="p">,</span> <span class="n">write_file</span>
+<span class="kn">from</span> <span class="nn">.logger</span> <span class="k">import</span> <span class="n">get_logger</span><span class="p">,</span> <span class="n">DEBUG</span><span class="p">,</span> <span class="n">INFO</span><span class="p">,</span> <span class="n">WARN</span><span class="p">,</span> <span class="n">ERROR</span><span class="p">,</span> <span class="n">CRITICAL</span>
+<span class="kn">from</span> <span class="nn">.errors</span> <span class="k">import</span> <span class="n">CredentialsError</span><span class="p">,</span> <span class="n">DBError</span><span class="p">,</span> <span class="n">S3CredentialsError</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">INFO</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="combine_options"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.combine_options">[docs]</a><span class="k">def</span> <span class="nf">combine_options</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns the ``copy_options`` or ``format_options`` attribute with spaces in between and as</span>
+<span class="sd">    a string. If options is ``None`` then return an empty string.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    options : list, optional</span>
+<span class="sd">        list of strings which is to be converted into a single string with spaces</span>
+<span class="sd">        inbetween. Defaults to ``None``</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    str:</span>
+<span class="sd">        ``options`` attribute with spaces in between</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options</span><span class="p">)</span> <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span></div>
+
+
+<div class="viewcode-block" id="Snowflake"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake">[docs]</a><span class="k">class</span> <span class="nc">Snowflake</span><span class="p">(</span><span class="n">S3</span><span class="p">,</span> <span class="n">Database</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Locopy class which manages connections to Snowflake.  Inherits ``Database`` and implements</span>
+<span class="sd">    the specific ``COPY INTO`` functionality.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    profile : str, optional</span>
+<span class="sd">        The name of the AWS profile to use which is typically stored in the</span>
+<span class="sd">        ``credentials`` file.  You can also set environment variable</span>
+<span class="sd">        ``AWS_DEFAULT_PROFILE`` which would be used instead.</span>
+
+<span class="sd">    kms_key : str, optional</span>
+<span class="sd">        The KMS key to use for encryption</span>
+<span class="sd">        If kms_key Defaults to ``None`` then the AES256 ServerSideEncryption</span>
+<span class="sd">        will be used.</span>
+
+<span class="sd">    dbapi : DBAPI 2 module, optional</span>
+<span class="sd">        A database adapter which is Python DB API 2.0 compliant (``snowflake.connector``)</span>
+
+<span class="sd">    config_yaml : str, optional</span>
+<span class="sd">        String representing the YAML file location of the database connection keyword arguments. It</span>
+<span class="sd">        is worth noting that this should only contain valid arguments for the database connector you</span>
+<span class="sd">        plan on using. It will throw an exception if something is passed through which isn&#39;t valid.</span>
+
+<span class="sd">    **kwargs</span>
+<span class="sd">        Database connection keyword arguments.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    profile : str</span>
+<span class="sd">        String representing the AWS profile for authentication</span>
+
+<span class="sd">    kms_key : str</span>
+<span class="sd">        String representing the s3 kms key</span>
+
+<span class="sd">    session : boto3.Session</span>
+<span class="sd">        Hold the AWS session credentials / info</span>
+
+<span class="sd">    s3 : botocore.client.S3</span>
+<span class="sd">        Hold the S3 client object which is used to upload/delete files to S3</span>
+
+<span class="sd">    dbapi : DBAPI 2 module</span>
+<span class="sd">        database adapter which is Python DBAPI 2.0 compliant (snowflake.connector)</span>
+
+<span class="sd">    connection : dict</span>
+<span class="sd">        Dictionary of database connection items</span>
+
+<span class="sd">    conn : dbapi.connection</span>
+<span class="sd">        DBAPI connection instance</span>
+
+<span class="sd">    cursor : dbapi.cursor</span>
+<span class="sd">        DBAPI cursor instance</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    CredentialsError</span>
+<span class="sd">        Database credentials are not provided or valid</span>
+
+<span class="sd">    S3Error</span>
+<span class="sd">        Error initializing AWS Session (ex: invalid profile)</span>
+
+<span class="sd">    S3CredentialsError</span>
+<span class="sd">        Issue with AWS credentials</span>
+
+<span class="sd">    S3InitializationError</span>
+<span class="sd">        Issue initializing S3 session</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kms_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dbapi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">S3</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">kms_key</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">S3CredentialsError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;S3 credentials we not found. S3 functionality is disabled&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Only internal stages are available&quot;</span><span class="p">)</span>
+        <span class="n">Database</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbapi</span><span class="p">,</span> <span class="n">config_yaml</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a connection to the Snowflake cluster by</span>
+<span class="sd">        setting the values of the ``conn`` and ``cursor`` attributes.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        DBError</span>
+<span class="sd">            If there is a problem establishing a connection to Snowflake.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Snowflake</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">_connect</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;warehouse&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;USE WAREHOUSE </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">[</span><span class="s2">&quot;warehouse&quot;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;database&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;USE DATABASE </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">[</span><span class="s2">&quot;database&quot;</span><span class="p">]))</span>
+
+<div class="viewcode-block" id="Snowflake.upload_to_internal"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.upload_to_internal">[docs]</a>    <span class="k">def</span> <span class="nf">upload_to_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">auto_compress</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Upload file(s) to a internal stage via the ``PUT`` command.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        local : str</span>
+<span class="sd">            The local directory path to the file to upload. Wildcard characters (``*``, ``?``) are</span>
+<span class="sd">            supported to enable uploading multiple files in a directory.</span>
+
+<span class="sd">        stage : str</span>
+<span class="sd">            Internal stage location to load the file.</span>
+
+<span class="sd">        parallel : int, optional</span>
+<span class="sd">            Specifies the number of threads to use for uploading files.</span>
+
+<span class="sd">        auto_compress : bool, optional</span>
+<span class="sd">            Specifies if Snowflake uses gzip to compress files during upload.</span>
+<span class="sd">            If ``True``, the files are compressed (if they are not already compressed).</span>
+<span class="sd">            if ``False``, the files are uploaded as-is.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="s2">&quot;PUT file://</span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="s2"> PARALLEL=</span><span class="si">{2}</span><span class="s2"> AUTO_COMPRESS=</span><span class="si">{3}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">local</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">parallel</span><span class="p">,</span> <span class="n">auto_compress</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Snowflake.download_from_internal"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.download_from_internal">[docs]</a>    <span class="k">def</span> <span class="nf">download_from_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="n">parallel</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Download file(s) from a internal stage via the ``GET`` command.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        stage : str</span>
+<span class="sd">            Internal stage location to load the file. Can include folders so that</span>
+
+<span class="sd">        local : str, optional</span>
+<span class="sd">            The local directory path where files will be downloaded to. Defualts to the current</span>
+<span class="sd">            working directory (``os.getcwd()``)</span>
+
+<span class="sd">        parallel : int, optional</span>
+<span class="sd">            Specifies the number of threads to use for downloading files.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;GET </span><span class="si">{0}</span><span class="s2"> file://</span><span class="si">{1}</span><span class="s2"> PARALLEL=</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stage</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">parallel</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Snowflake.copy"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">format_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">copy_options</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Executes the ``COPY INTO &lt;table&gt;`` command to load CSV files from a stage into</span>
+<span class="sd">        a Snowflake table.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        table_name : str</span>
+<span class="sd">            The Snowflake table name which is being loaded. Must be fully qualified:</span>
+<span class="sd">            `&lt;namespace&gt;.&lt;table_name&gt;`</span>
+
+<span class="sd">        stage : str</span>
+<span class="sd">            Stage location of the load file. This can be a internal or external stage</span>
+
+<span class="sd">        delim : str</span>
+<span class="sd">            The delimiter in a delimited file.</span>
+
+<span class="sd">        header : bool, optional</span>
+<span class="sd">            Boolean flag if header is included in the file</span>
+
+<span class="sd">        format_options : list</span>
+<span class="sd">            List of strings of format options to provide to the ``COPY INTO`` command.</span>
+
+<span class="sd">        copy_options : list</span>
+<span class="sd">            List of strings of copy options to provide to the ``COPY INTO`` command.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        DBError</span>
+<span class="sd">            If there is a problem executing the COPY command, or a connection</span>
+<span class="sd">            has not been initalized.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_connected</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">&quot;No Snowflake connection object is present.&quot;</span><span class="p">)</span>
+
+        <span class="n">format_options_text</span> <span class="o">=</span> <span class="n">combine_options</span><span class="p">(</span><span class="n">format_options</span><span class="p">)</span>
+        <span class="n">copy_options_text</span> <span class="o">=</span> <span class="n">combine_options</span><span class="p">(</span><span class="n">copy_options</span><span class="p">)</span>
+        <span class="n">base_copy_string</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;COPY INTO </span><span class="si">{0}</span><span class="s2"> FROM &#39;</span><span class="si">{1}</span><span class="s2">&#39; &quot;</span>
+            <span class="s2">&quot;FILE_FORMAT = (TYPE=&#39;csv&#39; FIELD_DELIMITER=&#39;</span><span class="si">{2}</span><span class="s2">&#39; SKIP_HEADER=</span><span class="si">{3}</span><span class="s2"> </span><span class="si">{4}</span><span class="s2">) </span><span class="si">{5}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sql</span> <span class="o">=</span> <span class="n">base_copy_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">table_name</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">delim</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">header</span><span class="p">),</span> <span class="n">format_options_text</span><span class="p">,</span> <span class="n">copy_options_text</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error running COPY on Snowflake. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">&quot;Error running COPY on Snowflake.&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Snowflake.unload"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.unload">[docs]</a>    <span class="k">def</span> <span class="nf">unload</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">format_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">copy_options</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Executes the ``COPY INTO &lt;location&gt;`` command to export a query/table from</span>
+<span class="sd">        Snowflake to a stage.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        stage : str</span>
+<span class="sd">            Stage location (internal or external) where the data files are unloaded</span>
+
+<span class="sd">        table_name : str</span>
+<span class="sd">            The Snowflake table name which is being unloaded. Must be fully qualified:</span>
+<span class="sd">            ``&lt;namespace&gt;.&lt;table_name&gt;``</span>
+
+<span class="sd">        delim : str</span>
+<span class="sd">            The delimiter in a delimited file.</span>
+
+<span class="sd">        header : bool, optional</span>
+<span class="sd">            Boolean flag if header is included in the file(s)</span>
+
+<span class="sd">        format_options : list</span>
+<span class="sd">            List of strings of format options to provide to the ``COPY INTO`` command.</span>
+
+<span class="sd">        copy_options : list</span>
+<span class="sd">            List of strings of copy options to provide to the ``COPY INTO`` command.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        DBError</span>
+<span class="sd">            If there is a problem executing the UNLOAD command, or a connection</span>
+<span class="sd">            has not been initalized.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_connected</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">&quot;No Snowflake connection object is present&quot;</span><span class="p">)</span>
+
+        <span class="n">format_options_text</span> <span class="o">=</span> <span class="n">combine_options</span><span class="p">(</span><span class="n">format_options</span><span class="p">)</span>
+        <span class="n">copy_options_text</span> <span class="o">=</span> <span class="n">combine_options</span><span class="p">(</span><span class="n">copy_options</span><span class="p">)</span>
+        <span class="n">base_unload_string</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;COPY INTO </span><span class="si">{0}</span><span class="s2"> FROM </span><span class="si">{1}</span><span class="s2"> &quot;</span>
+            <span class="s2">&quot;FILE_FORMAT = (TYPE=&#39;csv&#39; FIELD_DELIMITER=&#39;</span><span class="si">{2}</span><span class="s2">&#39; </span><span class="si">{3}</span><span class="s2">) HEADER=</span><span class="si">{4}</span><span class="s2"> </span><span class="si">{5}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sql</span> <span class="o">=</span> <span class="n">base_unload_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">stage</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">delim</span><span class="p">,</span> <span class="n">format_options_text</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">copy_options_text</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error running UNLOAD on Snowflake. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">&quot;Error running UNLOAD on Snowflake.&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Capital One Services, LLC
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+
+  
+
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.database module &mdash; locopy 0.2.0 documentation</title>
+  <title>locopy.database module &mdash; locopy 0.3.0 documentation</title>
   
 
   
@@ -24,8 +24,7 @@
 
   
 
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -59,7 +58,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.3.0
               </div>
             
           
@@ -87,7 +86,9 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Basic Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../recipes.html">Common Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../snowflake.html">Snowflake</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer.html">Developer Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sql_injection.html">SQL Injection</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">API Reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="locopy.html">locopy package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="locopy.html#submodules">Submodules</a><ul class="current">
@@ -96,6 +97,7 @@
 <li class="toctree-l4"><a class="reference internal" href="locopy.logger.html">locopy.logger module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="locopy.redshift.html">locopy.redshift module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="locopy.s3.html">locopy.s3 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="locopy.snowflake.html">locopy.snowflake module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="locopy.utility.html">locopy.utility module</a></li>
 </ul>
 </li>
@@ -202,25 +204,57 @@ plan on using. It will throw an exception if something is passed through which i
 <dl class="attribute">
 <dt id="locopy.database.Database.dbapi">
 <code class="descname">dbapi</code><a class="headerlink" href="#locopy.database.Database.dbapi" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>DBAPI 2 module</em> – database adapter which is Python DBAPI 2.0 compliant</p>
+<dd><p>database adapter which is Python DBAPI 2.0 compliant</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">DBAPI 2 module</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="locopy.database.Database.connection">
 <code class="descname">connection</code><a class="headerlink" href="#locopy.database.Database.connection" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dict</em> – Dictionary of database connection items</p>
+<dd><p>Dictionary of database connection items</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="locopy.database.Database.conn">
 <code class="descname">conn</code><a class="headerlink" href="#locopy.database.Database.conn" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dbapi.connection</em> – DBAPI connection instance</p>
+<dd><p>DBAPI connection instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dbapi.connection</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="locopy.database.Database.cursor">
 <code class="descname">cursor</code><a class="headerlink" href="#locopy.database.Database.cursor" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dbapi.cursor</em> – DBAPI cursor instance</p>
+<dd><p>DBAPI cursor instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dbapi.cursor</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <table class="docutils field-list" frame="void" rules="none">
@@ -320,7 +354,7 @@ result.</td>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Capital One Services, LLC.
+        &copy; Copyright 2018, Capital One Services, LLC
 
     </p>
   </div>
@@ -339,28 +373,18 @@ result.</td>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'0.2.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {

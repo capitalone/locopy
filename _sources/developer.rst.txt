@@ -58,14 +58,29 @@ integration tests to work, you will need:
 
 - A Redshift connection that you can create tables in
 - Tokens set up in ``~/.aws/credentials`` with a profile name
-- A file ``~/.locopyrc`` which contains credential information use for running
-  integration tests. It should look like the following:
+- A file ``~/.locopyrc`` (``~/.locpy-sfrc`` for snowflake) which contains credential information
+  use for running integration tests. It should look like the following
+
+Redshift
 
 .. code-block:: yaml
 
     host: my.redshift.cluster.com
     port: 5439
     database: db
+    user: username
+    password: password
+    profile: MY_AWS_PROFILE
+
+
+Snowflake
+
+.. code-block:: yaml
+
+    account: my.snowflake.cluster.com
+    warehouse: warehouse
+    database: db
+    schema: schema
     user: username
     password: password
     profile: MY_AWS_PROFILE

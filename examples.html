@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Basic Examples &mdash; locopy 0.2.0 documentation</title>
+  <title>Basic Examples &mdash; locopy 0.3.0 documentation</title>
   
 
   
@@ -24,8 +24,7 @@
 
   
 
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -59,7 +58,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.3.0
               </div>
             
           
@@ -93,7 +92,9 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="recipes.html">Common Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="snowflake.html">Snowflake</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sql_injection.html">SQL Injection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a></li>
 </ul>
 
@@ -178,7 +179,7 @@
     <span class="n">profile</span><span class="o">=</span><span class="s2">&quot;aws_profile&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
 
     <span class="n">redshift</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">create_sql</span><span class="p">)</span>
-    <span class="n">redshift</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span>
+    <span class="n">redshift</span><span class="o">.</span><span class="n">load_and_copy</span><span class="p">(</span>
         <span class="n">local_file</span><span class="o">=</span><span class="s2">&quot;example_data.csv&quot;</span><span class="p">,</span>
         <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;my_s3_bucket&quot;</span><span class="p">,</span>
         <span class="n">table_name</span><span class="o">=</span><span class="s2">&quot;schema.table&quot;</span><span class="p">,</span>
@@ -223,7 +224,7 @@ there may be times when you want to tweak the options used by the <code class="d
 oddities in your data.  Locopy assigns a few options by default (<code class="docutils literal notranslate"><span class="pre">DATEFORMAT</span> <span class="pre">'auto'</span></code>,
 <code class="docutils literal notranslate"><span class="pre">COMPUPDATE</span> <span class="pre">ON</span></code>, and <code class="docutils literal notranslate"><span class="pre">TRUNCATECOLUMNS</span></code>). If you want to specify other options, or override these
 three, you can pass in a list of strings which will tweak your load:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">redshift</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span><span class="n">local_file</span><span class="o">=</span><span class="s2">&quot;example_data.csv&quot;</span><span class="p">,</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">redshift</span><span class="o">.</span><span class="n">load_and_copy</span><span class="p">(</span><span class="n">local_file</span><span class="o">=</span><span class="s2">&quot;example_data.csv&quot;</span><span class="p">,</span>
             <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;my_s3_bucket&quot;</span><span class="p">,</span>
             <span class="n">table_name</span><span class="o">=</span><span class="s2">&quot;schema.table&quot;</span><span class="p">,</span>
             <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
@@ -253,7 +254,7 @@ three, you can pass in a list of strings which will tweak your load:</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Capital One Services, LLC.
+        &copy; Copyright 2018, Capital One Services, LLC
 
     </p>
   </div>
@@ -272,28 +273,18 @@ three, you can pass in a list of strings which will tweak your load:</p>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.2.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {

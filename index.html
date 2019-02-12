@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy: Data Load and Copy using Python &mdash; locopy 0.2.0 documentation</title>
+  <title>locopy: Data Load and Copy using Python &mdash; locopy 0.3.0 documentation</title>
   
 
   
@@ -24,8 +24,7 @@
 
   
 
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -58,7 +57,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.3.0
               </div>
             
           
@@ -86,7 +85,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Basic Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="recipes.html">Common Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="snowflake.html">Snowflake</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sql_injection.html">SQL Injection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a></li>
 </ul>
 
@@ -156,15 +157,17 @@
 <a class="reference external image-reference" href="https://github.com/ambv/black"><img alt="https://img.shields.io/badge/code%20style-black-000000.svg" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a>
 <div class="section" id="locopy-data-load-and-copy-using-python">
 <h1>locopy: Data Load and Copy using Python<a class="headerlink" href="#locopy-data-load-and-copy-using-python" title="Permalink to this headline">¶</a></h1>
-<p>A Python library to load flat files to S3 and then to Amazon Redshift, and assist with ETL
-processing.</p>
+<p>A Python library to assist with ETL processing for:</p>
+<ul class="simple">
+<li>Amazon Redshift (<code class="docutils literal notranslate"><span class="pre">COPY</span></code>, <code class="docutils literal notranslate"><span class="pre">UNLOAD</span></code>)</li>
+<li>Snowflake (<code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span> <span class="pre">&lt;table&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span> <span class="pre">&lt;location&gt;</span></code>)</li>
+</ul>
+<p>In addition:</p>
 <ul class="simple">
 <li>The library supports Python 3.5+</li>
 <li>DB Driver (Adapter) agnostic. Use your favourite driver that complies with
 <a class="reference external" href="https://www.python.org/dev/peps/pep-0249/">DB-API 2.0</a></li>
-<li>It provides basic functionality to move data to S3 buckets</li>
-<li>Execute <code class="docutils literal notranslate"><span class="pre">COPY</span></code> commands to load data to S3, and into Redshift</li>
-<li>Execute <code class="docutils literal notranslate"><span class="pre">UNLOAD</span></code> commands to unload data from Redshift into S3</li>
+<li>It provides functionality to download and upload data to S3 buckets, and internal stages (Snowflake)</li>
 </ul>
 </div>
 <div class="section" id="quick-installation">
@@ -184,20 +187,21 @@ $ pip install locopy
 </div>
 <div class="section" id="python-database-api-specification-2-0">
 <h2>Python Database API Specification 2.0<a class="headerlink" href="#python-database-api-specification-2-0" title="Permalink to this headline">¶</a></h2>
-<p>Rather than using a specific Python DB Driver / Adapter for Postgres (which should support Amazon
-Redshift), <code class="docutils literal notranslate"><span class="pre">locopy</span></code> prefers to be agnostic. As an end user you can use any Python Database
-API Specification 2.0 package.</p>
+<p>Rather than using a specific Python DB Driver / Adapter for Postgres (which should supports Amazon
+Redshift or Snowflake), <code class="docutils literal notranslate"><span class="pre">locopy</span></code> prefers to be agnostic. As an end user you can use any Python
+Database API Specification 2.0 package.</p>
 <p>The following packages have been tested:</p>
 <ul class="simple">
 <li><code class="docutils literal notranslate"><span class="pre">psycopg2</span></code></li>
 <li><code class="docutils literal notranslate"><span class="pre">pg8000</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">snowflake-connector-python</span></code></li>
 </ul>
 <p>You can use which ever one you prefer by importing the package and passing it
 into the constructor input <code class="docutils literal notranslate"><span class="pre">dbapi</span></code>.</p>
 </div>
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>You need to store your Redshift connection parameters in a YAML file (or pass them in directly).
+<p>You need to store your connection parameters in a YAML file (or pass them in directly).
 The YAML would consist of the following items:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># required to connect to redshift</span>
 <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">my.redshift.cluster.com</span>
@@ -228,7 +232,7 @@ The Redshift connection (<code class="docutils literal notranslate"><span class=
 <span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
     <span class="n">redshift</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SET query_group TO quick&quot;</span><span class="p">)</span>
     <span class="n">redshift</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;CREATE TABLE schema.table (variable VARCHAR(20)) DISTKEY(variable)&quot;</span><span class="p">)</span>
-    <span class="n">redshift</span><span class="o">.</span><span class="n">run_copy</span><span class="p">(</span>
+    <span class="n">redshift</span><span class="o">.</span><span class="n">load_and_copy</span><span class="p">(</span>
         <span class="n">local_file</span><span class="o">=</span><span class="s2">&quot;example/example_data.csv&quot;</span><span class="p">,</span>
         <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;my_s3_bucket&quot;</span><span class="p">,</span>
         <span class="n">table_name</span><span class="o">=</span><span class="s2">&quot;schema.table&quot;</span><span class="p">,</span>
@@ -243,7 +247,7 @@ The Redshift connection (<code class="docutils literal notranslate"><span class=
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_profile</span> <span class="o">=</span> <span class="s2">&quot;some_profile_with_valid_tokens&quot;</span>
 <span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
     <span class="c1">##Optionally provide export if you ALSO want the exported data copied to a flat file</span>
-    <span class="n">redshift</span><span class="o">.</span><span class="n">run_unload</span><span class="p">(</span>
+    <span class="n">redshift</span><span class="o">.</span><span class="n">unload_and_copy</span><span class="p">(</span>
         <span class="n">query</span><span class="o">=</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">,</span>
         <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;my_s3_bucket&quot;</span><span class="p">,</span>
         <span class="n">export_path</span><span class="o">=</span><span class="s2">&quot;my_output_destination.csv&quot;</span><span class="p">)</span>
@@ -270,7 +274,7 @@ environment variable <code class="docutils literal notranslate"><span class="pre
 <div class="section" id="advanced-usage">
 <h2>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permalink to this headline">¶</a></h2>
 <p>See the <a class="reference external" href="https://capitalone.github.io/Data-Load-and-Copy-using-Python/">docs</a> for
-more detailed usage instructions and examples.</p>
+more detailed usage instructions and examples including Snowflake.</p>
 </div>
 <div class="section" id="contributors">
 <h2>Contributors<a class="headerlink" href="#contributors" title="Permalink to this headline">¶</a></h2>
@@ -304,6 +308,13 @@ By participating, you are expected to honor this code.</p>
 <li class="toctree-l2"><a class="reference internal" href="recipes.html#i-want-to-backup-my-table-to-s3">I want to backup my table to S3</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="snowflake.html">Snowflake</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="snowflake.html#upload-to-internal-stage-and-run-copy-into-table-command-with-yaml">Upload to internal stage and run COPY into table command with YAML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="snowflake.html#run-copy-command-without-yaml">Run COPY command without YAML</a></li>
+<li class="toctree-l2"><a class="reference internal" href="snowflake.html#aws-tokens-as-environment-variables">AWS tokens as environment variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="snowflake.html#extra-parameters-on-the-copy-job">Extra parameters on the COPY job</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Instructions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="developer.html#pre-commit-hooks">Pre-Commit Hooks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developer.html#generating-documentation">Generating Documentation</a></li>
@@ -313,6 +324,7 @@ By participating, you are expected to honor this code.</p>
 <li class="toctree-l2"><a class="reference internal" href="developer.html#generating-distribution-archives-pypi">Generating distribution archives (PyPI)</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="sql_injection.html">SQL Injection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/locopy.html">locopy package</a></li>
 </ul>
@@ -348,7 +360,7 @@ By participating, you are expected to honor this code.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Capital One Services, LLC.
+        &copy; Copyright 2018, Capital One Services, LLC
 
     </p>
   </div>
@@ -367,28 +379,18 @@ By participating, you are expected to honor this code.</p>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.2.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {

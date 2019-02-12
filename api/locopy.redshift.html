@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.redshift module &mdash; locopy 0.2.0 documentation</title>
+  <title>locopy.redshift module &mdash; locopy 0.3.0 documentation</title>
   
 
   
@@ -24,8 +24,7 @@
 
   
 
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -59,7 +58,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.3.0
               </div>
             
           
@@ -87,7 +86,9 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Basic Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../recipes.html">Common Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../snowflake.html">Snowflake</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer.html">Developer Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sql_injection.html">SQL Injection</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">API Reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="locopy.html">locopy package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="locopy.html#submodules">Submodules</a><ul class="current">
@@ -96,6 +97,7 @@
 <li class="toctree-l4"><a class="reference internal" href="locopy.logger.html">locopy.logger module</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">locopy.redshift module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="locopy.s3.html">locopy.s3 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="locopy.snowflake.html">locopy.snowflake module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="locopy.utility.html">locopy.utility module</a></li>
 </ul>
 </li>
@@ -210,49 +212,113 @@ plan on using. It will throw an exception if something is passed through which i
 <dl class="attribute">
 <dt id="locopy.redshift.Redshift.profile">
 <code class="descname">profile</code><a class="headerlink" href="#locopy.redshift.Redshift.profile" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – String representing the AWS profile for authentication</p>
+<dd><p>String representing the AWS profile for authentication</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="locopy.redshift.Redshift.kms_key">
 <code class="descname">kms_key</code><a class="headerlink" href="#locopy.redshift.Redshift.kms_key" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – String representing the s3 kms key</p>
+<dd><p>String representing the s3 kms key</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)">str</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="locopy.redshift.Redshift.session">
 <code class="descname">session</code><a class="headerlink" href="#locopy.redshift.Redshift.session" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>boto3.Session</em> – Hold the AWS session credentials / info</p>
+<dd><p>Hold the AWS session credentials / info</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">boto3.Session</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="locopy.redshift.Redshift.s3">
 <code class="descname">s3</code><a class="headerlink" href="#locopy.redshift.Redshift.s3" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>botocore.client.S3</em> – Hold the S3 client object which is used to upload/delete files to S3</p>
+<dd><p>Hold the S3 client object which is used to upload/delete files to S3</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">botocore.client.S3</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="locopy.redshift.Redshift.dbapi">
 <code class="descname">dbapi</code><a class="headerlink" href="#locopy.redshift.Redshift.dbapi" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>DBAPI 2 module</em> – database adapter which is Python DBAPI 2.0 compliant</p>
+<dd><p>database adapter which is Python DBAPI 2.0 compliant</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">DBAPI 2 module</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="locopy.redshift.Redshift.connection">
 <code class="descname">connection</code><a class="headerlink" href="#locopy.redshift.Redshift.connection" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dict</em> – Dictionary of database connection items</p>
+<dd><p>Dictionary of database connection items</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="locopy.redshift.Redshift.conn">
 <code class="descname">conn</code><a class="headerlink" href="#locopy.redshift.Redshift.conn" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dbapi.connection</em> – DBAPI connection instance</p>
+<dd><p>DBAPI connection instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dbapi.connection</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="locopy.redshift.Redshift.cursor">
 <code class="descname">cursor</code><a class="headerlink" href="#locopy.redshift.Redshift.cursor" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dbapi.cursor</em> – DBAPI cursor instance</p>
+<dd><p>DBAPI cursor instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dbapi.cursor</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <table class="docutils field-list" frame="void" rules="none">
@@ -287,6 +353,32 @@ DBAPI, it could return column names as bytes: <code class="docutils literal notr
 </dd></dl>
 
 <dl class="method">
+<dt id="locopy.redshift.Redshift.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><em>table_name</em>, <em>s3path</em>, <em>delim='|'</em>, <em>copy_options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.redshift.Redshift.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes the COPY command to load delimited files from S3 into
+a Redshift table.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The Redshift table name which is being loaded</li>
+<li><strong>s3path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – S3 path of the input file. eg: <code class="docutils literal notranslate"><span class="pre">s3://path/to/file.csv</span></code></li>
+<li><strong>delim</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The delimiter in a delimited file.</li>
+<li><strong>copy_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of strings of copy options to provide to the <code class="docutils literal notranslate"><span class="pre">COPY</span></code> command.
+Will have default options added in.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">DBError</span></code> – If there is a problem executing the COPY command, a connection
+has not been initalized, or credentials are wrong.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="locopy.redshift.Redshift.delete_from_s3">
 <code class="descname">delete_from_s3</code><span class="sig-paren">(</span><em>bucket</em>, <em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#locopy.redshift.Redshift.delete_from_s3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete a file from an S3 bucket.</p>
@@ -308,6 +400,21 @@ DBAPI, it could return column names as bytes: <code class="docutils literal notr
 </dd></dl>
 
 <dl class="method">
+<dt id="locopy.redshift.Redshift.delete_list_from_s3">
+<code class="descname">delete_list_from_s3</code><span class="sig-paren">(</span><em>s3_list</em><span class="sig-paren">)</span><a class="headerlink" href="#locopy.redshift.Redshift.delete_list_from_s3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a list of files from an S3 bucket.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s3_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of strings with the s3 paths of the files to delete. The strings should not include
+the <cite>s3://</cite> scheme.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="locopy.redshift.Redshift.download_from_s3">
 <code class="descname">download_from_s3</code><span class="sig-paren">(</span><em>bucket</em>, <em>key</em>, <em>local</em><span class="sig-paren">)</span><a class="headerlink" href="#locopy.redshift.Redshift.download_from_s3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download a file from a S3 bucket.</p>
@@ -323,6 +430,31 @@ DBAPI, it could return column names as bytes: <code class="docutils literal notr
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">S3DownloadError</span></code> – If there is a issue downloading to the S3 bucket</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="locopy.redshift.Redshift.download_list_from_s3">
+<code class="descname">download_list_from_s3</code><span class="sig-paren">(</span><em>s3_list</em>, <em>local_path='/Users/trk176/git/Data-Load-and-Copy-using-Python/docs/source'</em><span class="sig-paren">)</span><a class="headerlink" href="#locopy.redshift.Redshift.download_list_from_s3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download a list of files from s3.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>s3_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of strings with the s3 paths of the files to download</li>
+<li><strong>local_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – The local path where the files will be copied to. Defualts to the current working
+directory (<code class="docutils literal notranslate"><span class="pre">os.getcwd()</span></code>)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns a list of strings of the local file names</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
 </td>
 </tr>
 </tbody>
@@ -357,8 +489,8 @@ on the database adapter you are using</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="locopy.redshift.Redshift.run_copy">
-<code class="descname">run_copy</code><span class="sig-paren">(</span><em>local_file</em>, <em>s3_bucket</em>, <em>table_name</em>, <em>delim='|'</em>, <em>copy_options=None</em>, <em>delete_s3_after=False</em>, <em>splits=1</em>, <em>compress=True</em>, <em>s3_folder=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.run_copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.redshift.Redshift.run_copy" title="Permalink to this definition">¶</a></dt>
+<dt id="locopy.redshift.Redshift.load_and_copy">
+<code class="descname">load_and_copy</code><span class="sig-paren">(</span><em>local_file</em>, <em>s3_bucket</em>, <em>table_name</em>, <em>delim='|'</em>, <em>copy_options=None</em>, <em>delete_s3_after=False</em>, <em>splits=1</em>, <em>compress=True</em>, <em>s3_folder=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.load_and_copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.redshift.Redshift.load_and_copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads a file to S3, then copies into Redshift.  Has options to
 split a single file into multiple files, compress using gzip, and
 upload to an S3 bucket with folders within the bucket.</p>
@@ -366,6 +498,12 @@ upload to an S3 bucket with folders within the bucket.</p>
 <p>If you are using folders in your S3 bucket please be aware of having
 special chars or backward slashes (<code class="docutils literal notranslate"><span class="pre">\</span></code>). These may cause the file to
 upload but fail on the <code class="docutils literal notranslate"><span class="pre">COPY</span></code> command.</p>
+<p>By default <cite>locopy</cite> will handle the splitting of files for you, in order to reduce
+complexity in uploading to s3 and generating the <cite>COPY</cite> command.</p>
+<p>It is critical to ensure that the S3 location you are using that it only contains the files
+you want to load. In the case of a “folder” it should only contain the files you want to
+load. For a bucket the file name should be unique enough as any extensions get striped out
+in favour of the file prefix.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -397,34 +535,20 @@ file to. Defaults to <code class="docutils literal notranslate"><span class="pre
 </dd></dl>
 
 <dl class="method">
-<dt id="locopy.redshift.Redshift.run_unload">
-<code class="descname">run_unload</code><span class="sig-paren">(</span><em>query</em>, <em>s3_bucket</em>, <em>s3_folder=None</em>, <em>export_path=False</em>, <em>delimiter='</em>, <em>'</em>, <em>delete_s3_after=True</em>, <em>parallel_off=False</em>, <em>unload_options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.run_unload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.redshift.Redshift.run_unload" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="docutils literal notranslate"><span class="pre">UNLOAD</span></code> data from Redshift, with options to write to a flat file,
-and store on S3.</p>
+<dt id="locopy.redshift.Redshift.parse_s3_url">
+<code class="descname">parse_s3_url</code><span class="sig-paren">(</span><em>s3_url</em><span class="sig-paren">)</span><a class="headerlink" href="#locopy.redshift.Redshift.parse_s3_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a string of the s3 url to extract the bucket and key.
+scheme or not.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>query</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – A query to be unloaded to S3. Typically a <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> statement</li>
-<li><strong>s3_bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The AWS S3 bucket where the data from the query will be unloaded.</li>
-<li><strong>s3_folder</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – The AWS S3 folder of the bucket where the data from the query will
-be unloaded. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>. Please note that you must follow
-the <code class="docutils literal notranslate"><span class="pre">/</span></code> convention when using subfolders.</li>
-<li><strong>export_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – If a <code class="docutils literal notranslate"><span class="pre">export_path</span></code> is provided, function will write the unloaded
-files to that folder.</li>
-<li><strong>delimiter</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Delimiter for unloading and file writing. Defaults to a comma.</li>
-<li><strong>delete_s3_after</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Delete the files from S3 after unloading. Defaults to True.</li>
-<li><strong>parallel_off</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Unload data to S3 as a single file. Defaults to False.
-Not recommended as it will decrease speed.</li>
-<li><strong>unload_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>, </em><em>optional</em>) – A list of unload options that should be appended to the UNLOAD
-statement.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s3_url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – s3 url. The string can include the <cite>s3://</cite> scheme (which is disgarded)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Exception</span></code></a> – If no files are generated from the unload.
-If the column names from the query cannot be retrieved.
-If there is a issue with the execution of any of the queries.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<li><strong>bucket</strong> (<em>str</em>) – s3 bucket</li>
+<li><strong>key</strong> (<em>str</em>) – s3 key</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -450,6 +574,100 @@ result.</td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="locopy.redshift.Redshift.unload">
+<code class="descname">unload</code><span class="sig-paren">(</span><em>query</em>, <em>s3path</em>, <em>unload_options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.unload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.redshift.Redshift.unload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes the UNLOAD command to export a query from
+Redshift to S3.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>query</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – A query to be unloaded to S3.</li>
+<li><strong>s3path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – S3 path for the output files.</li>
+<li><strong>unload_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of string unload options.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">DBError</span></code> – If there is a problem executing the UNLOAD command, a connection
+has not been initalized, or credentials are wrong.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="locopy.redshift.Redshift.unload_and_copy">
+<code class="descname">unload_and_copy</code><span class="sig-paren">(</span><em>query</em>, <em>s3_bucket</em>, <em>s3_folder=None</em>, <em>export_path=False</em>, <em>delimiter='</em>, <em>'</em>, <em>delete_s3_after=True</em>, <em>parallel_off=False</em>, <em>unload_options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.unload_and_copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.redshift.Redshift.unload_and_copy" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">UNLOAD</span></code> data from Redshift, with options to write to a flat file,
+and store on S3.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>query</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – A query to be unloaded to S3. A <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> query</li>
+<li><strong>s3_bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The AWS S3 bucket where the data from the query will be unloaded.</li>
+<li><strong>s3_folder</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – The AWS S3 folder of the bucket where the data from the query will
+be unloaded. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>. Please note that you must follow
+the <code class="docutils literal notranslate"><span class="pre">/</span></code> convention when using subfolders.</li>
+<li><strong>export_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – If a <code class="docutils literal notranslate"><span class="pre">export_path</span></code> is provided, function will write the unloaded
+files to this path as a single file. If your file is very large you may not want to
+use this option.</li>
+<li><strong>delimiter</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – Delimiter for unloading and file writing. Defaults to a comma.</li>
+<li><strong>delete_s3_after</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Delete the files from S3 after unloading. Defaults to True.</li>
+<li><strong>parallel_off</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Unload data to S3 as a single file. Defaults to False.
+Not recommended as it will decrease speed.</li>
+<li><strong>unload_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a><em>, </em><em>optional</em>) – A list of unload options that should be appended to the UNLOAD
+statement.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.7)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">Exception</span></code></a> – If no files are generated from the unload.
+If the column names from the query cannot be retrieved.
+If there is a issue with the execution of any of the queries.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="locopy.redshift.Redshift.upload_list_to_s3">
+<code class="descname">upload_list_to_s3</code><span class="sig-paren">(</span><em>local_list</em>, <em>bucket</em>, <em>folder=None</em><span class="sig-paren">)</span><a class="headerlink" href="#locopy.redshift.Redshift.upload_list_to_s3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload a list of files to a S3 bucket.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>local_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of strings with the file paths of the files to upload</li>
+<li><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</li>
+<li><strong>folder</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – The AWS S3 folder of the bucket which you are copying the local
+files to. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>. Please note that you must follow the
+<code class="docutils literal notranslate"><span class="pre">/</span></code> convention when using subfolders.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns a list of the generated S3 bucket and keys of the files which were uploaded. The
+<code class="docutils literal notranslate"><span class="pre">S3://</span></code> part is NOT include. The output would look like the following:
+<code class="docutils literal notranslate"><span class="pre">[&quot;my-bucket/key1&quot;,</span> <span class="pre">&quot;my-bucket/key2&quot;,</span> <span class="pre">...]</span></code></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>There is a assumption that if you are loading multiple files (via <cite>splits</cite>) it follows a
+structure such as <cite>file_name.extension.#</cite> (<cite>#</cite> splits). It allows for the <cite>COPY</cite> statement
+to use the key prefix vs specificing an exact file name. The returned list helps with this
+process downstream.</p>
 </dd></dl>
 
 <dl class="method">
@@ -538,7 +756,7 @@ inbetween.</td>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Capital One Services, LLC.
+        &copy; Copyright 2018, Capital One Services, LLC
 
     </p>
   </div>
@@ -557,28 +775,18 @@ inbetween.</td>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'0.2.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {

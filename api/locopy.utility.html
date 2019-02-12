@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.utility module &mdash; locopy 0.2.0 documentation</title>
+  <title>locopy.utility module &mdash; locopy 0.3.0 documentation</title>
   
 
   
@@ -24,12 +24,11 @@
 
   
 
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="locopy.s3 module" href="locopy.s3.html" /> 
+    <link rel="prev" title="locopy.snowflake module" href="locopy.snowflake.html" /> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -58,7 +57,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.3.0
               </div>
             
           
@@ -86,7 +85,9 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Basic Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../recipes.html">Common Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../snowflake.html">Snowflake</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer.html">Developer Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sql_injection.html">SQL Injection</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">API Reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="locopy.html">locopy package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="locopy.html#submodules">Submodules</a><ul class="current">
@@ -95,6 +96,7 @@
 <li class="toctree-l4"><a class="reference internal" href="locopy.logger.html">locopy.logger module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="locopy.redshift.html">locopy.redshift module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="locopy.s3.html">locopy.s3 module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="locopy.snowflake.html">locopy.snowflake module</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">locopy.utility module</a></li>
 </ul>
 </li>
@@ -203,6 +205,47 @@ Please see the following url for more information:
 </dd></dl>
 
 <dl class="function">
+<dt id="locopy.utility.compress_file_list">
+<code class="descclassname">locopy.utility.</code><code class="descname">compress_file_list</code><span class="sig-paren">(</span><em>file_list</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#compress_file_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.utility.compress_file_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compresses a list of files (gzip) and clean up the old files</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>file_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of strings with the file paths of the files to compress</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of strings with the file paths of the compressed files (original file name with
+gz appended)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="locopy.utility.concatenate_files">
+<code class="descclassname">locopy.utility.</code><code class="descname">concatenate_files</code><span class="sig-paren">(</span><em>input_list</em>, <em>output_file</em>, <em>remove=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#concatenate_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.utility.concatenate_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenate a list of files into one file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of strings with the paths to input files to concateneate</li>
+<li><strong>output_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Path of the output file</li>
+<li><strong>remove</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Removes the files from the input list if <code class="docutils literal notranslate"><span class="pre">True</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">LocopyConcatError</span></code> – If <code class="docutils literal notranslate"><span class="pre">input_list</span></code> or there is a issue while concatenating the files into one</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="locopy.utility.read_config_yaml">
 <code class="descclassname">locopy.utility.</code><code class="descname">read_config_yaml</code><span class="sig-paren">(</span><em>config_yaml</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#read_config_yaml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.utility.read_config_yaml" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads a configuration YAML file to populate the database
@@ -233,7 +276,7 @@ pointer to an open file object</td>
 
 <dl class="function">
 <dt id="locopy.utility.split_file">
-<code class="descclassname">locopy.utility.</code><code class="descname">split_file</code><span class="sig-paren">(</span><em>input_file</em>, <em>output_file</em>, <em>splits=2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#split_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.utility.split_file" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">locopy.utility.</code><code class="descname">split_file</code><span class="sig-paren">(</span><em>input_file</em>, <em>output_file</em>, <em>splits=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#split_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.utility.split_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Split a file into equal files by lines.</p>
 <p>For example: <code class="docutils literal notranslate"><span class="pre">myinputfile.txt</span></code> will be split into <code class="docutils literal notranslate"><span class="pre">myoutputfile.txt.01</span></code>
 , <code class="docutils literal notranslate"><span class="pre">`myoutputfile.txt.02</span></code> etc..</p>
@@ -244,7 +287,7 @@ pointer to an open file object</td>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>input_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Path to input file to split</li>
 <li><strong>output_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Name of the output file</li>
-<li><strong>splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Number of splits to perform. Must be greater than one. Defaults to 2</li>
+<li><strong>splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Number of splits to perform. Must be greater than zero. Defaults to 1</li>
 </ul>
 </td>
 </tr>
@@ -254,7 +297,7 @@ pointer to an open file object</td>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">LocopySplitError</span></code> – If <code class="docutils literal notranslate"><span class="pre">splits</span></code> is less than 2 or some processing error when splitting</p>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">LocopySplitError</span></code> – If <code class="docutils literal notranslate"><span class="pre">splits</span></code> is less than 1 or some processing error when splitting</p>
 </td>
 </tr>
 </tbody>
@@ -294,7 +337,7 @@ See <a class="reference external" href="https://www.tutorialspoint.com/python/py
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="locopy.s3.html" class="btn btn-neutral" title="locopy.s3 module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="locopy.snowflake.html" class="btn btn-neutral" title="locopy.snowflake module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -303,7 +346,7 @@ See <a class="reference external" href="https://www.tutorialspoint.com/python/py
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Capital One Services, LLC.
+        &copy; Copyright 2018, Capital One Services, LLC
 
     </p>
   </div>
@@ -322,28 +365,18 @@ See <a class="reference external" href="https://www.tutorialspoint.com/python/py
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'0.2.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {

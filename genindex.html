@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; locopy 0.2.0 documentation</title>
+  <title>Index &mdash; locopy 0.3.0 documentation</title>
   
 
   
@@ -25,8 +25,7 @@
 
   
 
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" /> 
@@ -58,7 +57,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.3.0
               </div>
             
           
@@ -86,7 +85,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Basic Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="recipes.html">Common Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="snowflake.html">Snowflake</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sql_injection.html">SQL Injection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a></li>
 </ul>
 
@@ -181,6 +182,8 @@
 </li>
         <li><a href="api/locopy.errors.html#locopy.errors.DBError.args">(locopy.errors.DBError attribute)</a>
 </li>
+        <li><a href="api/locopy.errors.html#locopy.errors.LocopyConcatError.args">(locopy.errors.LocopyConcatError attribute)</a>
+</li>
         <li><a href="api/locopy.errors.html#locopy.errors.LocopyError.args">(locopy.errors.LocopyError attribute)</a>
 </li>
         <li><a href="api/locopy.errors.html#locopy.errors.LocopySplitError.args">(locopy.errors.LocopySplitError attribute)</a>
@@ -209,17 +212,27 @@
       <ul>
         <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.column_names">(locopy.redshift.Redshift method)</a>
 </li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.column_names">(locopy.snowflake.Snowflake method)</a>
+</li>
       </ul></li>
       <li><a href="api/locopy.redshift.html#locopy.redshift.combine_copy_options">combine_copy_options() (in module locopy.redshift)</a>
 </li>
+      <li><a href="api/locopy.snowflake.html#locopy.snowflake.combine_options">combine_options() (in module locopy.snowflake)</a>
+</li>
       <li><a href="api/locopy.utility.html#locopy.utility.compress_file">compress_file() (in module locopy.utility)</a>
 </li>
+      <li><a href="api/locopy.utility.html#locopy.utility.compress_file_list">compress_file_list() (in module locopy.utility)</a>
+</li>
       <li><a href="api/locopy.errors.html#locopy.errors.CompressionError">CompressionError</a>
+</li>
+      <li><a href="api/locopy.utility.html#locopy.utility.concatenate_files">concatenate_files() (in module locopy.utility)</a>
 </li>
       <li><a href="api/locopy.database.html#locopy.database.Database.conn">conn (locopy.database.Database attribute)</a>
 
       <ul>
         <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.conn">(locopy.redshift.Redshift attribute)</a>
+</li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.conn">(locopy.snowflake.Snowflake attribute)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -229,6 +242,14 @@
       <ul>
         <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.connection">(locopy.redshift.Redshift attribute)</a>
 </li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.connection">(locopy.snowflake.Snowflake attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.copy">copy() (locopy.redshift.Redshift method)</a>
+
+      <ul>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.copy">(locopy.snowflake.Snowflake method)</a>
+</li>
       </ul></li>
       <li><a href="api/locopy.errors.html#locopy.errors.CredentialsError">CredentialsError</a>
 </li>
@@ -236,6 +257,8 @@
 
       <ul>
         <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.cursor">(locopy.redshift.Redshift attribute)</a>
+</li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.cursor">(locopy.snowflake.Snowflake attribute)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -251,21 +274,45 @@
       <ul>
         <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.dbapi">(locopy.redshift.Redshift attribute)</a>
 </li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.dbapi">(locopy.snowflake.Snowflake attribute)</a>
+</li>
       </ul></li>
       <li><a href="api/locopy.errors.html#locopy.errors.DBError">DBError</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.delete_from_s3">delete_from_s3() (locopy.redshift.Redshift method)</a>
 
       <ul>
         <li><a href="api/locopy.s3.html#locopy.s3.S3.delete_from_s3">(locopy.s3.S3 method)</a>
 </li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.delete_from_s3">(locopy.snowflake.Snowflake method)</a>
+</li>
       </ul></li>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.delete_list_from_s3">delete_list_from_s3() (locopy.redshift.Redshift method)</a>
+
+      <ul>
+        <li><a href="api/locopy.s3.html#locopy.s3.S3.delete_list_from_s3">(locopy.s3.S3 method)</a>
+</li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.delete_list_from_s3">(locopy.snowflake.Snowflake method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.download_from_internal">download_from_internal() (locopy.snowflake.Snowflake method)</a>
+</li>
       <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.download_from_s3">download_from_s3() (locopy.redshift.Redshift method)</a>
 
       <ul>
         <li><a href="api/locopy.s3.html#locopy.s3.S3.download_from_s3">(locopy.s3.S3 method)</a>
+</li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.download_from_s3">(locopy.snowflake.Snowflake method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.download_list_from_s3">download_list_from_s3() (locopy.redshift.Redshift method)</a>
+
+      <ul>
+        <li><a href="api/locopy.s3.html#locopy.s3.S3.download_list_from_s3">(locopy.s3.S3 method)</a>
+</li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.download_list_from_s3">(locopy.snowflake.Snowflake method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -278,6 +325,8 @@
 
       <ul>
         <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.execute">(locopy.redshift.Redshift method)</a>
+</li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.execute">(locopy.snowflake.Snowflake method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -299,6 +348,8 @@
       <ul>
         <li><a href="api/locopy.s3.html#locopy.s3.S3.kms_key">(locopy.s3.S3 attribute)</a>
 </li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.kms_key">(locopy.snowflake.Snowflake attribute)</a>
+</li>
       </ul></li>
   </ul></td>
 </tr></table>
@@ -306,6 +357,8 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.load_and_copy">load_and_copy() (locopy.redshift.Redshift method)</a>
+</li>
       <li><a href="api/locopy.html#module-locopy">locopy (module)</a>
 </li>
       <li><a href="api/locopy.database.html#module-locopy.database">locopy.database (module)</a>
@@ -314,13 +367,17 @@
 </li>
       <li><a href="api/locopy.logger.html#module-locopy.logger">locopy.logger (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/locopy.redshift.html#module-locopy.redshift">locopy.redshift (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/locopy.s3.html#module-locopy.s3">locopy.s3 (module)</a>
 </li>
+      <li><a href="api/locopy.snowflake.html#module-locopy.snowflake">locopy.snowflake (module)</a>
+</li>
       <li><a href="api/locopy.utility.html#module-locopy.utility">locopy.utility (module)</a>
+</li>
+      <li><a href="api/locopy.errors.html#locopy.errors.LocopyConcatError">LocopyConcatError</a>
 </li>
       <li><a href="api/locopy.errors.html#locopy.errors.LocopyError">LocopyError</a>
 </li>
@@ -332,14 +389,24 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.parse_s3_url">parse_s3_url() (locopy.redshift.Redshift method)</a>
+
+      <ul>
+        <li><a href="api/locopy.s3.html#locopy.s3.S3.parse_s3_url">(locopy.s3.S3 method)</a>
+</li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.parse_s3_url">(locopy.snowflake.Snowflake method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.profile">profile (locopy.redshift.Redshift attribute)</a>
 
       <ul>
         <li><a href="api/locopy.s3.html#locopy.s3.S3.profile">(locopy.s3.S3 attribute)</a>
 </li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.profile">(locopy.snowflake.Snowflake attribute)</a>
+</li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/locopy.utility.html#locopy.utility.ProgressPercentage">ProgressPercentage (class in locopy.utility)</a>
 </li>
   </ul></td>
@@ -350,13 +417,9 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/locopy.utility.html#locopy.utility.read_config_yaml">read_config_yaml() (in module locopy.utility)</a>
 </li>
-      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift">Redshift (class in locopy.redshift)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.run_copy">run_copy() (locopy.redshift.Redshift method)</a>
-</li>
-      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.run_unload">run_unload() (locopy.redshift.Redshift method)</a>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift">Redshift (class in locopy.redshift)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -370,6 +433,8 @@
 
       <ul>
         <li><a href="api/locopy.s3.html#locopy.s3.S3.s3">(locopy.s3.S3 attribute)</a>
+</li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.s3">(locopy.snowflake.Snowflake attribute)</a>
 </li>
       </ul></li>
       <li><a href="api/locopy.errors.html#locopy.errors.S3CredentialsError">S3CredentialsError</a>
@@ -391,7 +456,11 @@
       <ul>
         <li><a href="api/locopy.s3.html#locopy.s3.S3.session">(locopy.s3.S3 attribute)</a>
 </li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.session">(locopy.snowflake.Snowflake attribute)</a>
+</li>
       </ul></li>
+      <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake">Snowflake (class in locopy.snowflake)</a>
+</li>
       <li><a href="api/locopy.utility.html#locopy.utility.split_file">split_file() (in module locopy.utility)</a>
 </li>
   </ul></td>
@@ -405,6 +474,8 @@
       <ul>
         <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.to_dataframe">(locopy.redshift.Redshift method)</a>
 </li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.to_dataframe">(locopy.snowflake.Snowflake method)</a>
+</li>
       </ul></li>
   </ul></td>
 </tr></table>
@@ -412,10 +483,32 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.unload">unload() (locopy.redshift.Redshift method)</a>
+
+      <ul>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.unload">(locopy.snowflake.Snowflake method)</a>
+</li>
+      </ul></li>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.unload_and_copy">unload_and_copy() (locopy.redshift.Redshift method)</a>
+</li>
+      <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.upload_list_to_s3">upload_list_to_s3() (locopy.redshift.Redshift method)</a>
+
+      <ul>
+        <li><a href="api/locopy.s3.html#locopy.s3.S3.upload_list_to_s3">(locopy.s3.S3 method)</a>
+</li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.upload_list_to_s3">(locopy.snowflake.Snowflake method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.upload_to_internal">upload_to_internal() (locopy.snowflake.Snowflake method)</a>
+</li>
       <li><a href="api/locopy.redshift.html#locopy.redshift.Redshift.upload_to_s3">upload_to_s3() (locopy.redshift.Redshift method)</a>
 
       <ul>
         <li><a href="api/locopy.s3.html#locopy.s3.S3.upload_to_s3">(locopy.s3.S3 method)</a>
+</li>
+        <li><a href="api/locopy.snowflake.html#locopy.snowflake.Snowflake.upload_to_s3">(locopy.snowflake.Snowflake method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -430,6 +523,8 @@
         <li><a href="api/locopy.errors.html#locopy.errors.CredentialsError.with_traceback">(locopy.errors.CredentialsError method)</a>
 </li>
         <li><a href="api/locopy.errors.html#locopy.errors.DBError.with_traceback">(locopy.errors.DBError method)</a>
+</li>
+        <li><a href="api/locopy.errors.html#locopy.errors.LocopyConcatError.with_traceback">(locopy.errors.LocopyConcatError method)</a>
 </li>
         <li><a href="api/locopy.errors.html#locopy.errors.LocopyError.with_traceback">(locopy.errors.LocopyError method)</a>
 </li>
@@ -467,7 +562,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Capital One Services, LLC.
+        &copy; Copyright 2018, Capital One Services, LLC
 
     </p>
   </div>
@@ -486,28 +581,18 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.2.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {

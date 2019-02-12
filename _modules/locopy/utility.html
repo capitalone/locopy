@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.utility &mdash; locopy 0.2.0 documentation</title>
+  <title>locopy.utility &mdash; locopy 0.3.0 documentation</title>
   
 
   
@@ -24,8 +24,7 @@
 
   
 
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -57,7 +56,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.3.0
               </div>
             
           
@@ -85,7 +84,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Basic Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../recipes.html">Common Recipes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../snowflake.html">Snowflake</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer Instructions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../sql_injection.html">SQL Injection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">API Reference</a></li>
 </ul>
 
@@ -178,7 +179,7 @@
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">cycle</span>
 <span class="kn">from</span> <span class="nn">.logger</span> <span class="k">import</span> <span class="n">get_logger</span><span class="p">,</span> <span class="n">DEBUG</span><span class="p">,</span> <span class="n">INFO</span><span class="p">,</span> <span class="n">WARN</span><span class="p">,</span> <span class="n">ERROR</span><span class="p">,</span> <span class="n">CRITICAL</span>
-<span class="kn">from</span> <span class="nn">.errors</span> <span class="k">import</span> <span class="n">CompressionError</span><span class="p">,</span> <span class="n">LocopySplitError</span><span class="p">,</span> <span class="n">CredentialsError</span>
+<span class="kn">from</span> <span class="nn">.errors</span> <span class="k">import</span> <span class="n">CompressionError</span><span class="p">,</span> <span class="n">LocopySplitError</span><span class="p">,</span> <span class="n">CredentialsError</span><span class="p">,</span> <span class="n">LocopyConcatError</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">INFO</span><span class="p">)</span>
 
@@ -208,8 +209,7 @@
             <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">delimiter</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">row</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unable to write file to </span><span class="si">%s</span><span class="s2"> due to err </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
-    <span class="k">return</span></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unable to write file to </span><span class="si">%s</span><span class="s2"> due to err </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="compress_file"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.compress_file">[docs]</a><span class="k">def</span> <span class="nf">compress_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
@@ -232,7 +232,29 @@
         <span class="k">raise</span> <span class="n">CompressionError</span><span class="p">(</span><span class="s2">&quot;Error compressing the file.&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="split_file"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.split_file">[docs]</a><span class="k">def</span> <span class="nf">split_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<div class="viewcode-block" id="compress_file_list"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.compress_file_list">[docs]</a><span class="k">def</span> <span class="nf">compress_file_list</span><span class="p">(</span><span class="n">file_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compresses a list of files (gzip) and clean up the old files</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file_list : list</span>
+<span class="sd">        List of strings with the file paths of the files to compress</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">        List of strings with the file paths of the compressed files (original file name with</span>
+<span class="sd">        gz appended)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">file_list</span><span class="p">):</span>
+        <span class="n">gz</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">.gz&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">compress_file</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">gz</span><span class="p">)</span>
+        <span class="n">file_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">gz</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>  <span class="c1"># cleanup old files</span>
+    <span class="k">return</span> <span class="n">file_list</span></div>
+
+
+<div class="viewcode-block" id="split_file"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.split_file">[docs]</a><span class="k">def</span> <span class="nf">split_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Split a file into equal files by lines.</span>
 
 <span class="sd">    For example: ``myinputfile.txt`` will be split into ``myoutputfile.txt.01``</span>
@@ -247,7 +269,7 @@
 <span class="sd">        Name of the output file</span>
 
 <span class="sd">    splits : int, optional</span>
-<span class="sd">        Number of splits to perform. Must be greater than one. Defaults to 2</span>
+<span class="sd">        Number of splits to perform. Must be greater than zero. Defaults to 1</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -257,14 +279,17 @@
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    LocopySplitError</span>
-<span class="sd">        If ``splits`` is less than 2 or some processing error when splitting</span>
+<span class="sd">        If ``splits`` is less than 1 or some processing error when splitting</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">splits</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span> <span class="ow">or</span> <span class="n">splits</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">splits</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span> <span class="ow">or</span> <span class="n">splits</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Number of splits is invalid&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">LocopySplitError</span><span class="p">(</span><span class="s2">&quot;Number of splits must be greater than one and an integer.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">LocopySplitError</span><span class="p">(</span><span class="s2">&quot;Number of splits must be greater than zero and an integer.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">splits</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">input_file</span><span class="p">]</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">pool</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">splits</span><span class="p">)]</span>
+        <span class="n">pool</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">splits</span><span class="p">))</span>
         <span class="n">cpool</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;splitting file: </span><span class="si">%s</span><span class="s2"> into </span><span class="si">%s</span><span class="s2"> files&quot;</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
         <span class="c1"># open output file handlers</span>
@@ -285,6 +310,40 @@
                 <span class="n">files</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">LocopySplitError</span><span class="p">(</span><span class="s2">&quot;Error splitting the file.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="concatenate_files"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.concatenate_files">[docs]</a><span class="k">def</span> <span class="nf">concatenate_files</span><span class="p">(</span><span class="n">input_list</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Concatenate a list of files into one file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_list : list</span>
+<span class="sd">        List of strings with the paths to input files to concateneate</span>
+
+<span class="sd">    output_file : str</span>
+<span class="sd">        Path of the output file</span>
+
+<span class="sd">    remove: bool, optional</span>
+<span class="sd">        Removes the files from the input list if ``True``. Defaults to ``True``</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    LocopyConcatError</span>
+<span class="sd">        If ``input_list`` or there is a issue while concatenating the files into one</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">LocopyConcatError</span><span class="p">(</span><span class="s2">&quot;Input list is empty.&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s2">&quot;ab&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">main_f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">input_list</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">temp_f</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">temp_f</span><span class="p">:</span>
+                        <span class="n">main_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">remove</span><span class="p">:</span>  <span class="c1"># as we go for space consideration</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error concateneating files. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">LocopyConcatError</span><span class="p">(</span><span class="s2">&quot;Error concateneating files.&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="read_config_yaml"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.read_config_yaml">[docs]</a><span class="k">def</span> <span class="nf">read_config_yaml</span><span class="p">(</span><span class="n">config_yaml</span><span class="p">):</span>
@@ -368,7 +427,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Capital One Services, LLC.
+        &copy; Copyright 2018, Capital One Services, LLC
 
     </p>
   </div>
@@ -387,28 +446,18 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.2.0',
-            LANGUAGE:'None',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {
