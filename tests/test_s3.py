@@ -325,9 +325,9 @@ def test_delete_list_from_s3_multiple_without_folder(mock_session, mock_delete):
 @mock.patch("locopy.s3.S3.delete_from_s3")
 @mock.patch("locopy.s3.Session")
 def test_delete_list_from_s3_single_with_folder_and_special_chars(mock_session, mock_delete):
-    calls = [mock.call("test_bucket", "test_folder/#$#@$@#$dffksdojfsdf\\\\\/test.1")]
+    calls = [mock.call("test_bucket", r"test_folder/#$#@$@#$dffksdojfsdf\\\\\/test.1")]
     s = locopy.S3()
-    s.delete_list_from_s3(["test_bucket/test_folder/#$#@$@#$dffksdojfsdf\\\\\/test.1"])
+    s.delete_list_from_s3([r"test_bucket/test_folder/#$#@$@#$dffksdojfsdf\\\\\/test.1"])
     mock_delete.assert_has_calls(calls)
 
 
@@ -346,13 +346,13 @@ def test_parse_s3_url(mock_session):
     assert s.parse_s3_url("s3://bucket/folder/file.txt") == ("bucket", "folder/file.txt")
     assert s.parse_s3_url("s3://bucket/folder/") == ("bucket", "folder/")
     assert s.parse_s3_url("s3://bucket") == ("bucket", "")
-    assert s.parse_s3_url("s3://bucket/!@#$%\\\/file.txt") == ("bucket", "!@#$%\\\/file.txt")
+    assert s.parse_s3_url(r"s3://bucket/!@#$%\\\/file.txt") == ("bucket", r"!@#$%\\\/file.txt")
     assert s.parse_s3_url("s3://") == ("", "")
 
     assert s.parse_s3_url("bucket/folder/file.txt") == ("bucket", "folder/file.txt")
     assert s.parse_s3_url("bucket/folder/") == ("bucket", "folder/")
     assert s.parse_s3_url("bucket") == ("bucket", "")
-    assert s.parse_s3_url("bucket/!@#$%\\\/file.txt") == ("bucket", "!@#$%\\\/file.txt")
+    assert s.parse_s3_url(r"bucket/!@#$%\\\/file.txt") == ("bucket", r"!@#$%\\\/file.txt")
     assert s.parse_s3_url("") == ("", "")
 
 
