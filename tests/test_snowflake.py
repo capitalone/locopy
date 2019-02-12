@@ -136,9 +136,9 @@ def test_upload_to_internal(mock_session, sf_credentials):
                 "PUT file:///some/file @~/internal PARALLEL=99 AUTO_COMPRESS=False", None
             )
 
-            sf.upload_to_internal("C:\some\file", "@~/internal")
+            sf.upload_to_internal(r"C:\some\file", "@~/internal")
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "PUT file://C:\some\file @~/internal PARALLEL=4 AUTO_COMPRESS=True", None
+                r"PUT file://C:\some\file @~/internal PARALLEL=4 AUTO_COMPRESS=True", None
             )
 
             # exception
@@ -161,9 +161,9 @@ def test_download_from_internal(mock_session, sf_credentials):
                 "GET @~/internal file:///some/file PARALLEL=99", None
             )
 
-            sf.download_from_internal("@~/internal", "C:\some\file")
+            sf.download_from_internal("@~/internal", r"C:\some\file")
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "GET @~/internal file://C:\some\file PARALLEL=10", None
+                r"GET @~/internal file://C:\some\file PARALLEL=10", None
             )
 
             # exception

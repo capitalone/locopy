@@ -167,7 +167,7 @@ class Snowflake(S3, Database):
             )
         )
 
-    def download_from_internal(self, stage, local=os.getcwd(), parallel=10):
+    def download_from_internal(self, stage, local=None, parallel=10):
         """
         Download file(s) from a internal stage via the ``GET`` command.
 
@@ -183,6 +183,9 @@ class Snowflake(S3, Database):
         parallel : int, optional
             Specifies the number of threads to use for downloading files.
         """
+        if local is None:
+            local = os.getcwd()
+
         self.execute("GET {0} file://{1} PARALLEL={2}".format(stage, local, parallel))
 
     def copy(
