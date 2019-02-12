@@ -281,7 +281,7 @@ class S3(object):
             logger.error("Error downloading from S3. err: %s", e)
             raise S3DownloadError("Error downloading from S3.")
 
-    def download_list_from_s3(self, s3_list, local_path=os.getcwd()):
+    def download_list_from_s3(self, s3_list, local_path=None):
         """
         Download a list of files from s3.
 
@@ -299,6 +299,9 @@ class S3(object):
         list
             Returns a list of strings of the local file names
         """
+        if local_path is None:
+            local_path = os.getcwd()
+
         output = []
         for f in s3_list:
             s3_bucket, key = self.parse_s3_url(f)
