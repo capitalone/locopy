@@ -20,6 +20,7 @@ to Snowflake, and run arbitrary code.
 """
 import os
 
+from pathlib import PurePath
 from urllib.parse import urlparse
 from .database import Database
 from .s3 import S3
@@ -148,7 +149,8 @@ class Snowflake(S3, Database):
         ----------
         local : str
             The local directory path to the file to upload. Wildcard characters (``*``, ``?``) are
-            supported to enable uploading multiple files in a directory.
+            supported to enable uploading multiple files in a directory. Otherwise it must be the
+            absolute path.
 
         stage : str
             Internal stage location to load the file.
@@ -161,9 +163,10 @@ class Snowflake(S3, Database):
             If ``True``, the files are compressed (if they are not already compressed).
             if ``False``, the files are uploaded as-is.
         """
+        local_uri = PurePath(local).as_posix()
         self.execute(
-            "PUT file://{0} {1} PARALLEL={2} AUTO_COMPRESS={3}".format(
-                local, stage, parallel, auto_compress
+            "PUT 'file://{0}' {1} PARALLEL={2} AUTO_COMPRESS={3}".format(
+                local_uri, stage, parallel, auto_compress
             )
         )
 
@@ -174,19 +177,19 @@ class Snowflake(S3, Database):
         Parameters
         ----------
         stage : str
-            Internal stage location to load the file. Can include folders so that
+            Internal stage location to load the file.
 
         local : str, optional
             The local directory path where files will be downloaded to. Defualts to the current
-            working directory (``os.getcwd()``)
+            working directory (``os.getcwd()``). Otherwise it must be the absolute path.
 
         parallel : int, optional
             Specifies the number of threads to use for downloading files.
         """
         if local is None:
             local = os.getcwd()
-
-        self.execute("GET {0} file://{1} PARALLEL={2}".format(stage, local, parallel))
+        local_uri = PurePath(local).as_posix()
+        self.execute("GET {0} 'file://{1}' PARALLEL={2}".format(stage, local_uri, parallel))
 
     def copy(
         self, table_name, stage, delim="|", header=False, format_options=None, copy_options=None

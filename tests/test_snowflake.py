@@ -20,10 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
 import pytest
 import snowflake.connector
 import locopy
 
+from pathlib import PureWindowsPath
 from locopy import Snowflake
 from unittest import mock
 from locopy.errors import CredentialsError, DBError
@@ -128,17 +130,12 @@ def test_upload_to_internal(mock_session, sf_credentials):
         with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
             sf.upload_to_internal("/some/file", "@~/internal")
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "PUT file:///some/file @~/internal PARALLEL=4 AUTO_COMPRESS=True", None
+                "PUT 'file:///some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True", None
             )
 
             sf.upload_to_internal("/some/file", "@~/internal", parallel=99, auto_compress=False)
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "PUT file:///some/file @~/internal PARALLEL=99 AUTO_COMPRESS=False", None
-            )
-
-            sf.upload_to_internal(r"C:\some\file", "@~/internal")
-            sf.conn.cursor.return_value.execute.assert_called_with(
-                r"PUT file://C:\some\file @~/internal PARALLEL=4 AUTO_COMPRESS=True", None
+                "PUT 'file:///some/file' @~/internal PARALLEL=99 AUTO_COMPRESS=False", None
             )
 
             # exception
@@ -147,29 +144,48 @@ def test_upload_to_internal(mock_session, sf_credentials):
                 sf.upload_to_internal("/some/file", "@~/internal")
 
 
+@mock.patch("locopy.snowflake.PurePath", new=PureWindowsPath)
+@mock.patch("locopy.s3.Session")
+def test_upload_to_internal_windows(mock_session, sf_credentials):
+    with mock.patch("snowflake.connector.connect") as mock_connect:
+        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
+
+            sf.upload_to_internal(r"C:\some\file", "@~/internal")
+            sf.conn.cursor.return_value.execute.assert_called_with(
+                "PUT 'file://C:/some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True", None
+            )
+
+
 @mock.patch("locopy.s3.Session")
 def test_download_from_internal(mock_session, sf_credentials):
     with mock.patch("snowflake.connector.connect") as mock_connect:
         with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
             sf.download_from_internal("@~/internal", "/some/file")
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "GET @~/internal file:///some/file PARALLEL=10", None
+                "GET @~/internal 'file:///some/file' PARALLEL=10", None
             )
 
             sf.download_from_internal("@~/internal", "/some/file", parallel=99)
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "GET @~/internal file:///some/file PARALLEL=99", None
-            )
-
-            sf.download_from_internal("@~/internal", r"C:\some\file")
-            sf.conn.cursor.return_value.execute.assert_called_with(
-                r"GET @~/internal file://C:\some\file PARALLEL=10", None
+                "GET @~/internal 'file:///some/file' PARALLEL=99", None
             )
 
             # exception
             sf.conn.cursor.return_value.execute.side_effect = Exception("GET Exception")
             with pytest.raises(DBError):
                 sf.download_from_internal("@~/internal", "/some/file")
+
+
+@mock.patch("locopy.snowflake.PurePath", new=PureWindowsPath)
+@mock.patch("locopy.s3.Session")
+def test_download_from_internal_windows(mock_session, sf_credentials):
+    with mock.patch("snowflake.connector.connect") as mock_connect:
+        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
+
+            sf.download_from_internal("@~/internal", r"C:\some\file")
+            sf.conn.cursor.return_value.execute.assert_called_with(
+                "GET @~/internal 'file://C:/some/file' PARALLEL=10", None
+            )
 
 
 @mock.patch("locopy.s3.Session")
