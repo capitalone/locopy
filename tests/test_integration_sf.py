@@ -119,7 +119,6 @@ def test_copy(dbapi):
         test.copy(
             "locopy_integration_testing",
             "@~/staged/mock_file.txt.gz",
-            delim="|",
             copy_options=["PURGE = TRUE"],
         )
         test.execute("SELECT * FROM locopy_integration_testing ORDER BY id")
