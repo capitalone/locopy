@@ -20,10 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
 import pytest
 import snowflake.connector
 import locopy
 
+from pathlib import PureWindowsPath
 from locopy import Snowflake
 from unittest import mock
 from locopy.errors import CredentialsError, DBError
@@ -128,17 +130,12 @@ def test_upload_to_internal(mock_session, sf_credentials):
         with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
             sf.upload_to_internal("/some/file", "@~/internal")
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "PUT file:///some/file @~/internal PARALLEL=4 AUTO_COMPRESS=True", None
+                "PUT 'file:///some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True", None
             )
 
             sf.upload_to_internal("/some/file", "@~/internal", parallel=99, auto_compress=False)
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "PUT file:///some/file @~/internal PARALLEL=99 AUTO_COMPRESS=False", None
-            )
-
-            sf.upload_to_internal(r"C:\some\file", "@~/internal")
-            sf.conn.cursor.return_value.execute.assert_called_with(
-                r"PUT file://C:\some\file @~/internal PARALLEL=4 AUTO_COMPRESS=True", None
+                "PUT 'file:///some/file' @~/internal PARALLEL=99 AUTO_COMPRESS=False", None
             )
 
             # exception
@@ -147,23 +144,30 @@ def test_upload_to_internal(mock_session, sf_credentials):
                 sf.upload_to_internal("/some/file", "@~/internal")
 
 
+@mock.patch("locopy.snowflake.PurePath", new=PureWindowsPath)
+@mock.patch("locopy.s3.Session")
+def test_upload_to_internal_windows(mock_session, sf_credentials):
+    with mock.patch("snowflake.connector.connect") as mock_connect:
+        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
+
+            sf.upload_to_internal(r"C:\some\file", "@~/internal")
+            sf.conn.cursor.return_value.execute.assert_called_with(
+                "PUT 'file://C:/some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True", None
+            )
+
+
 @mock.patch("locopy.s3.Session")
 def test_download_from_internal(mock_session, sf_credentials):
     with mock.patch("snowflake.connector.connect") as mock_connect:
         with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
             sf.download_from_internal("@~/internal", "/some/file")
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "GET @~/internal file:///some/file PARALLEL=10", None
+                "GET @~/internal 'file:///some/file' PARALLEL=10", None
             )
 
             sf.download_from_internal("@~/internal", "/some/file", parallel=99)
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "GET @~/internal file:///some/file PARALLEL=99", None
-            )
-
-            sf.download_from_internal("@~/internal", r"C:\some\file")
-            sf.conn.cursor.return_value.execute.assert_called_with(
-                r"GET @~/internal file://C:\some\file PARALLEL=10", None
+                "GET @~/internal 'file:///some/file' PARALLEL=99", None
             )
 
             # exception
@@ -172,30 +176,69 @@ def test_download_from_internal(mock_session, sf_credentials):
                 sf.download_from_internal("@~/internal", "/some/file")
 
 
+@mock.patch("locopy.snowflake.PurePath", new=PureWindowsPath)
 @mock.patch("locopy.s3.Session")
-def test_copy(mock_session, sf_credentials):
+def test_download_from_internal_windows(mock_session, sf_credentials):
     with mock.patch("snowflake.connector.connect") as mock_connect:
         with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
 
-            sf.copy("table_name", "@~/stage")
+            sf.download_from_internal("@~/internal", r"C:\some\file")
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "COPY INTO table_name FROM '@~/stage' FILE_FORMAT = (TYPE='csv' FIELD_DELIMITER='|' SKIP_HEADER=0 ) ",
-                None,
+                "GET @~/internal 'file://C:/some/file' PARALLEL=10", None
             )
 
-            sf.copy("table_name", "@~/stage", delim=",", header=True)
-            sf.conn.cursor.return_value.execute.assert_called_with(
-                "COPY INTO table_name FROM '@~/stage' FILE_FORMAT = (TYPE='csv' FIELD_DELIMITER=',' SKIP_HEADER=1 ) ",
-                None,
-            )
+
+@pytest.mark.parametrize(
+    "file_type, format_options, copy_options, expected",
+    [
+        ("csv", None, None, "(TYPE='csv' FIELD_DELIMITER='|' SKIP_HEADER=0) "),
+        (
+            "csv",
+            ["FIELD_DELIMITER=','", "SKIP_HEADER=1"],
+            None,
+            "(TYPE='csv' FIELD_DELIMITER=',' SKIP_HEADER=1) ",
+        ),
+        (
+            "csv",
+            ["FIELD_DELIMITER='|'", "SKIP_HEADER=0", "a=1", "b=2"],
+            ["c=3", "d=4"],
+            "(TYPE='csv' FIELD_DELIMITER='|' SKIP_HEADER=0 a=1 b=2) c=3 d=4",
+        ),
+        ("parquet", None, None, "(TYPE='parquet' ) "),
+        (
+            "parquet",
+            ["BINARY_AS_TEXT=FALSE"],
+            ["c=3", "d=4"],
+            "(TYPE='parquet' BINARY_AS_TEXT=FALSE) c=3 d=4",
+        ),
+        ("json", None, None, "(TYPE='json' ) "),
+        ("json", ["COMPRESSION=GZIP"], ["c=3", "d=4"], "(TYPE='json' COMPRESSION=GZIP) c=3 d=4"),
+    ],
+)
+@mock.patch("locopy.s3.Session")
+def test_copy(mock_session, file_type, format_options, copy_options, expected, sf_credentials):
+    with mock.patch("snowflake.connector.connect") as mock_connect:
+        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
 
             sf.copy(
-                "table_name", "@~/stage", format_options=["a=1", "b=2"], copy_options=["c=3", "d=4"]
+                "table_name",
+                "@~/stage",
+                file_type=file_type,
+                format_options=format_options,
+                copy_options=copy_options,
             )
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "COPY INTO table_name FROM '@~/stage' FILE_FORMAT = (TYPE='csv' FIELD_DELIMITER='|' SKIP_HEADER=0 a=1 b=2) c=3 d=4",
-                None,
+                "COPY INTO table_name FROM '@~/stage' FILE_FORMAT = {0}".format(expected), None
             )
+
+
+@mock.patch("locopy.s3.Session")
+def test_copy_exception(mock_session, sf_credentials):
+    with mock.patch("snowflake.connector.connect") as mock_connect:
+        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
+
+            with pytest.raises(ValueError):
+                sf.copy("table_name", "@~/stage", file_type="unknown")
 
             # exception
             sf.conn.cursor.return_value.execute.side_effect = Exception("COPY Exception")
@@ -207,30 +250,69 @@ def test_copy(mock_session, sf_credentials):
                 sf.copy("table_name", "@~/stage")
 
 
+@pytest.mark.parametrize(
+    "file_type, format_options, header, copy_options, expected",
+    [
+        ("csv", None, False, None, "(TYPE='csv' FIELD_DELIMITER='|') HEADER=False "),
+        (
+            "csv",
+            ["FIELD_DELIMITER=','"],
+            True,
+            None,
+            "(TYPE='csv' FIELD_DELIMITER=',') HEADER=True ",
+        ),
+        (
+            "csv",
+            ["FIELD_DELIMITER=','", "a=1", "b=2"],
+            True,
+            ["c=3", "d=4"],
+            "(TYPE='csv' FIELD_DELIMITER=',' a=1 b=2) HEADER=True c=3 d=4",
+        ),
+        ("parquet", None, False, None, "(TYPE='parquet' ) HEADER=False "),
+        (
+            "parquet",
+            ["SNAPPY_COMPRESSION=FALSE"],
+            False,
+            ["c=3", "d=4"],
+            "(TYPE='parquet' SNAPPY_COMPRESSION=FALSE) HEADER=False c=3 d=4",
+        ),
+        ("json", None, False, None, "(TYPE='json' ) HEADER=False "),
+        (
+            "json",
+            ["COMPRESSION=GZIP"],
+            False,
+            ["c=3", "d=4"],
+            "(TYPE='json' COMPRESSION=GZIP) HEADER=False c=3 d=4",
+        ),
+    ],
+)
 @mock.patch("locopy.s3.Session")
-def test_unload(mock_session, sf_credentials):
+def test_unload(
+    mock_session, file_type, format_options, header, copy_options, expected, sf_credentials
+):
     with mock.patch("snowflake.connector.connect") as mock_connect:
         with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
 
-            sf.unload("@~/stage", "table_name")
-            sf.conn.cursor.return_value.execute.assert_called_with(
-                "COPY INTO @~/stage FROM table_name FILE_FORMAT = (TYPE='csv' FIELD_DELIMITER='|' ) HEADER=False ",
-                None,
-            )
-
-            sf.unload("@~/stage", "table_name", delim=",", header=True)
-            sf.conn.cursor.return_value.execute.assert_called_with(
-                "COPY INTO @~/stage FROM table_name FILE_FORMAT = (TYPE='csv' FIELD_DELIMITER=',' ) HEADER=True ",
-                None,
-            )
-
             sf.unload(
-                "@~/stage", "table_name", format_options=["a=1", "b=2"], copy_options=["c=3", "d=4"]
+                "@~/stage",
+                "table_name",
+                file_type=file_type,
+                format_options=format_options,
+                header=header,
+                copy_options=copy_options,
             )
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "COPY INTO @~/stage FROM table_name FILE_FORMAT = (TYPE='csv' FIELD_DELIMITER='|' a=1 b=2) HEADER=False c=3 d=4",
-                None,
+                "COPY INTO @~/stage FROM table_name FILE_FORMAT = {0}".format(expected), None
             )
+
+
+@mock.patch("locopy.s3.Session")
+def test_unload_exception(mock_session, sf_credentials):
+    with mock.patch("snowflake.connector.connect") as mock_connect:
+        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
+
+            with pytest.raises(ValueError):
+                sf.unload("table_name", "@~/stage", file_type="unknown")
 
             # exception
             sf.conn.cursor.return_value.execute.side_effect = Exception("UNLOAD Exception")

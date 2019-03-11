@@ -38,6 +38,7 @@ INTEGRATION_CREDS = str(Path.home()) + os.sep + ".locopy-sfrc"
 S3_BUCKET = "locopy-integration-testing"
 CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 LOCAL_FILE = os.path.join(CURR_DIR, "data", "mock_file.txt")
+LOCAL_FILE_JSON = os.path.join(CURR_DIR, "data", "mock_file.json")
 LOCAL_FILE_DL = os.path.join(CURR_DIR, "data", "mock_file_dl.txt")
 
 CREDS_DICT = locopy.utility.read_config_yaml(INTEGRATION_CREDS)
@@ -114,12 +115,11 @@ def test_copy(dbapi):
         test.upload_to_internal(LOCAL_FILE, "@~/staged/")
         test.execute("USE SCHEMA {}".format(CREDS_DICT["schema"]))
         test.execute(
-            "CREATE TEMPORARY TABLE locopy_integration_testing (id INTEGER, variable VARCHAR(20))"
+            "CREATE OR REPLACE TEMPORARY TABLE locopy_integration_testing (id INTEGER, variable VARCHAR(20))"
         )
         test.copy(
             "locopy_integration_testing",
             "@~/staged/mock_file.txt.gz",
-            delim="|",
             copy_options=["PURGE = TRUE"],
         )
         test.execute("SELECT * FROM locopy_integration_testing ORDER BY id")
@@ -130,6 +130,38 @@ def test_copy(dbapi):
             (2, "This is liné 2"),
             (3, "This is line 3"),
             (4, "This is lïne 4"),
+        ]
+
+        for i, result in enumerate(results):
+            assert result[0] == expected[i][0]
+            assert result[1] == expected[i][1]
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("dbapi", DBAPIS)
+def test_copy_json(dbapi):
+
+    with locopy.Snowflake(dbapi=dbapi, **CREDS_DICT) as test:
+        test.upload_to_internal(LOCAL_FILE_JSON, "@~/staged/")
+        test.execute("USE SCHEMA {}".format(CREDS_DICT["schema"]))
+        test.execute(
+            "CREATE OR REPLACE TEMPORARY TABLE locopy_integration_testing (variable VARIANT)"
+        )
+        test.copy(
+            "locopy_integration_testing",
+            "@~/staged/mock_file.json.gz",
+            file_type="json",
+            copy_options=["PURGE = TRUE"],
+        )
+        test.execute(
+            "SELECT variable:location:city, variable:price FROM locopy_integration_testing ORDER BY variable"
+        )
+        results = test.cursor.fetchall()
+
+        expected = [
+            ('"Belmont"', '"92567"'),
+            ('"Lexington"', '"75836"'),
+            ('"Winchester"', '"89921"'),
         ]
 
         for i, result in enumerate(results):

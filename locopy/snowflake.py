@@ -20,6 +20,7 @@ to Snowflake, and run arbitrary code.
 """
 import os
 
+from pathlib import PurePath
 from urllib.parse import urlparse
 from .database import Database
 from .s3 import S3
@@ -28,6 +29,61 @@ from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
 from .errors import CredentialsError, DBError, S3CredentialsError
 
 logger = get_logger(__name__, INFO)
+
+
+COPY_FORMAT_OPTIONS = {
+    "csv": {
+        "compression",
+        "record_delimiter",
+        "field_delimiter",
+        "skip_header",
+        "date_format",
+        "time_format",
+        "timestamp_format",
+        "binary_format",
+        "escape",
+        "escape_unenclosed_field",
+        "trim_space",
+        "field_optionally_enclosed_by",
+        "null_if",
+        "error_on_column_count_mismatch",
+        "validate_utf8",
+        "empty_field_as_null",
+        "skip_byte_order_mark",
+        "encoding",
+    },
+    "json": {
+        "compression",
+        "file_extension",
+        "enable_octal",
+        "allow_duplicate",
+        "strip_outer_array",
+        "strip_null_values",
+        "ignore_utf8_errors",
+        "skip_byte_order_mark",
+    },
+    "parquet": {"binary_as_text"},
+}
+
+
+UNLOAD_FORMAT_OPTIONS = {
+    "csv": {
+        "compression",
+        "record_delimiter",
+        "field_delimiter",
+        "file_extension",
+        "date_format",
+        "time_format",
+        "timestamp_format",
+        "binary_format",
+        "escape",
+        "escape_unenclosed_field",
+        "field_optionally_enclosed_by",
+        "null_if",
+    },
+    "json": {"compression", "file_extension"},
+    "parquet": {"snappy_compression"},
+}
 
 
 def combine_options(options=None):
@@ -148,7 +204,8 @@ class Snowflake(S3, Database):
         ----------
         local : str
             The local directory path to the file to upload. Wildcard characters (``*``, ``?``) are
-            supported to enable uploading multiple files in a directory.
+            supported to enable uploading multiple files in a directory. Otherwise it must be the
+            absolute path.
 
         stage : str
             Internal stage location to load the file.
@@ -161,9 +218,10 @@ class Snowflake(S3, Database):
             If ``True``, the files are compressed (if they are not already compressed).
             if ``False``, the files are uploaded as-is.
         """
+        local_uri = PurePath(local).as_posix()
         self.execute(
-            "PUT file://{0} {1} PARALLEL={2} AUTO_COMPRESS={3}".format(
-                local, stage, parallel, auto_compress
+            "PUT 'file://{0}' {1} PARALLEL={2} AUTO_COMPRESS={3}".format(
+                local_uri, stage, parallel, auto_compress
             )
         )
 
@@ -174,25 +232,24 @@ class Snowflake(S3, Database):
         Parameters
         ----------
         stage : str
-            Internal stage location to load the file. Can include folders so that
+            Internal stage location to load the file.
 
         local : str, optional
             The local directory path where files will be downloaded to. Defualts to the current
-            working directory (``os.getcwd()``)
+            working directory (``os.getcwd()``). Otherwise it must be the absolute path.
 
         parallel : int, optional
             Specifies the number of threads to use for downloading files.
         """
         if local is None:
             local = os.getcwd()
+        local_uri = PurePath(local).as_posix()
+        self.execute("GET {0} 'file://{1}' PARALLEL={2}".format(stage, local_uri, parallel))
 
-        self.execute("GET {0} file://{1} PARALLEL={2}".format(stage, local, parallel))
-
-    def copy(
-        self, table_name, stage, delim="|", header=False, format_options=None, copy_options=None
-    ):
+    def copy(self, table_name, stage, file_type="csv", format_options=None, copy_options=None):
         """Executes the ``COPY INTO <table>`` command to load CSV files from a stage into
-        a Snowflake table.
+        a Snowflake table. If ``file_type == csv`` and ``format_options == None``, ``format_options``
+        will default to: ``["FIELD_DELIMITER='|'", "SKIP_HEADER=0"]``
 
         Parameters
         ----------
@@ -203,14 +260,12 @@ class Snowflake(S3, Database):
         stage : str
             Stage location of the load file. This can be a internal or external stage
 
-        delim : str
-            The delimiter in a delimited file.
-
-        header : bool, optional
-            Boolean flag if header is included in the file
+        file_type : str
+            The file type. One of ``csv``, ``json``, or ``parquet``
 
         format_options : list
-            List of strings of format options to provide to the ``COPY INTO`` command.
+            List of strings of format options to provide to the ``COPY INTO`` command. The options
+            will typically be in the format of ``["a=b", "c=d"]``
 
         copy_options : list
             List of strings of copy options to provide to the ``COPY INTO`` command.
@@ -224,15 +279,20 @@ class Snowflake(S3, Database):
         if not self._is_connected():
             raise DBError("No Snowflake connection object is present.")
 
+        if file_type not in COPY_FORMAT_OPTIONS:
+            raise ValueError(
+                "Invalid file_type. Must be one of {0}".format(list(COPY_FORMAT_OPTIONS.keys()))
+            )
+
+        if format_options is None and file_type == "csv":
+            format_options = ["FIELD_DELIMITER='|'", "SKIP_HEADER=0"]
+
         format_options_text = combine_options(format_options)
         copy_options_text = combine_options(copy_options)
-        base_copy_string = (
-            "COPY INTO {0} FROM '{1}' "
-            "FILE_FORMAT = (TYPE='csv' FIELD_DELIMITER='{2}' SKIP_HEADER={3} {4}) {5}"
-        )
+        base_copy_string = "COPY INTO {0} FROM '{1}' " "FILE_FORMAT = (TYPE='{2}' {3}) {4}"
         try:
             sql = base_copy_string.format(
-                table_name, stage, delim, int(header), format_options_text, copy_options_text
+                table_name, stage, file_type, format_options_text, copy_options_text
             )
             self.execute(sql, commit=True)
 
@@ -241,10 +301,17 @@ class Snowflake(S3, Database):
             raise DBError("Error running COPY on Snowflake.")
 
     def unload(
-        self, stage, table_name, delim="|", header=False, format_options=None, copy_options=None
+        self,
+        stage,
+        table_name,
+        file_type="csv",
+        format_options=None,
+        header=False,
+        copy_options=None,
     ):
         """Executes the ``COPY INTO <location>`` command to export a query/table from
-        Snowflake to a stage.
+        Snowflake to a stage. If ``file_type == csv`` and ``format_options == None``, ``format_options``
+        will default to: ``["FIELD_DELIMITER='|'"]``
 
         Parameters
         ----------
@@ -255,14 +322,14 @@ class Snowflake(S3, Database):
             The Snowflake table name which is being unloaded. Must be fully qualified:
             ``<namespace>.<table_name>``
 
-        delim : str
-            The delimiter in a delimited file.
-
-        header : bool, optional
-            Boolean flag if header is included in the file(s)
+        file_type : str
+            The file type. One of ``csv``, ``json``, or ``parquet``
 
         format_options : list
             List of strings of format options to provide to the ``COPY INTO`` command.
+
+        header : bool, optional
+            Boolean flag if header is included in the file(s)
 
         copy_options : list
             List of strings of copy options to provide to the ``COPY INTO`` command.
@@ -276,16 +343,23 @@ class Snowflake(S3, Database):
         if not self._is_connected():
             raise DBError("No Snowflake connection object is present")
 
+        if file_type not in COPY_FORMAT_OPTIONS:
+            raise ValueError(
+                "Invalid file_type. Must be one of {0}".format(list(UNLOAD_FORMAT_OPTIONS.keys()))
+            )
+
+        if format_options is None and file_type == "csv":
+            format_options = ["FIELD_DELIMITER='|'"]
+
         format_options_text = combine_options(format_options)
         copy_options_text = combine_options(copy_options)
         base_unload_string = (
-            "COPY INTO {0} FROM {1} "
-            "FILE_FORMAT = (TYPE='csv' FIELD_DELIMITER='{2}' {3}) HEADER={4} {5}"
+            "COPY INTO {0} FROM {1} " "FILE_FORMAT = (TYPE='{2}' {3}) HEADER={4} {5}"
         )
 
         try:
             sql = base_unload_string.format(
-                stage, table_name, delim, format_options_text, header, copy_options_text
+                stage, table_name, file_type, format_options_text, header, copy_options_text
             )
             self.execute(sql, commit=True)
         except Exception as e:
