@@ -23,6 +23,9 @@ CURR_DIR = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(CURR_DIR, "README.rst"), encoding="utf-8") as file_open:
     LONG_DESCRIPTION = file_open.read()
 
+with open(os.path.join(CURR_DIR, "requirements.txt"), encoding="utf-8") as file_open:
+    INSTALL_REQUIRES = file_open.read().split("\n")
+
 exec(open("locopy/_version.py").read())
 
 setup(
@@ -35,7 +38,7 @@ setup(
     author_email="faisal.dosani@capitalone.com",
     license="Apache Software License",
     packages=["locopy"],
-    install_requires=["boto3==1.9.92", "PyYAML==4.2b4", "pandas>=0.19.0"],
+    install_requires=INSTALL_REQUIRES,
     extras_require={
         "psycopg2": ["psycopg2==2.7.7"],
         "pg8000": ["pg8000==1.13.1"],
