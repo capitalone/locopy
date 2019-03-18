@@ -22,13 +22,11 @@ import os
 
 from pathlib import PurePath
 from urllib.parse import urlparse
+from .logger import logger
 from .database import Database
 from .s3 import S3
 from .utility import ProgressPercentage, compress_file_list, split_file, write_file
-from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
 from .errors import CredentialsError, DBError, S3CredentialsError
-
-logger = get_logger(__name__, INFO)
 
 
 COPY_FORMAT_OPTIONS = {
@@ -176,8 +174,8 @@ class Snowflake(S3, Database):
         try:
             S3.__init__(self, profile, kms_key)
         except S3CredentialsError:
-            logger.warn("S3 credentials we not found. S3 functionality is disabled")
-            logger.warn("Only internal stages are available")
+            logger.warning("S3 credentials we not found. S3 functionality is disabled")
+            logger.warning("Only internal stages are available")
         Database.__init__(self, dbapi, config_yaml, **kwargs)
 
     def _connect(self):
@@ -297,7 +295,7 @@ class Snowflake(S3, Database):
             self.execute(sql, commit=True)
 
         except Exception as e:
-            logger.error("Error running COPY on Snowflake. err: %s", e)
+            logger.error("Error running COPY on Snowflake. err: {err}", err=e)
             raise DBError("Error running COPY on Snowflake.")
 
     def unload(
@@ -363,5 +361,5 @@ class Snowflake(S3, Database):
             )
             self.execute(sql, commit=True)
         except Exception as e:
-            logger.error("Error running UNLOAD on Snowflake. err: %s", e)
+            logger.error("Error running UNLOAD on Snowflake. err: {err}", err=e)
             raise DBError("Error running UNLOAD on Snowflake.")

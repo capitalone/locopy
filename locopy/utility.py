@@ -24,11 +24,10 @@ import re
 import gzip
 import shutil
 import yaml
-from itertools import cycle
-from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
-from .errors import CompressionError, LocopySplitError, CredentialsError, LocopyConcatError
 
-logger = get_logger(__name__, INFO)
+from itertools import cycle
+from .logger import logger
+from .errors import CompressionError, LocopySplitError, CredentialsError, LocopyConcatError
 
 
 def write_file(data, delimiter, filepath, mode="w"):
@@ -50,13 +49,13 @@ def write_file(data, delimiter, filepath, mode="w"):
         Defaults to write mode.
         See https://www.tutorialspoint.com/python/python_files_io.htm
     """
-    logger.debug("Attempting to write data to file %s" % filepath)
+    logger.debug("Attempting to write data to file: {fp}", fp=filepath)
     try:
         with open(filepath, mode) as f:
             for row in data:
                 f.write(delimiter.join([str(r) for r in row]) + "\n")
     except Exception as e:
-        logger.error("Unable to write file to %s due to err %s" % (filepath, e))
+        logger.error("Unable to write file to {fp} due to err: {err}", fp=filepath, err=e)
 
 
 def compress_file(input_file, output_file):
@@ -72,10 +71,12 @@ def compress_file(input_file, output_file):
     try:
         with open(input_file, "rb") as f_in:
             with gzip.open(output_file, "wb") as f_out:
-                logger.info("compressing (gzip): %s to %s", input_file, output_file)
+                logger.info(
+                    "compressing (gzip): {input} to {output}", input=input_file, output=output_file
+                )
                 shutil.copyfileobj(f_in, f_out)
     except Exception as e:
-        logger.error("Error compressing the file. err: %s", e)
+        logger.error("Error compressing the file. err: {err}", err=e)
         raise CompressionError("Error compressing the file.")
 
 
@@ -138,7 +139,7 @@ def split_file(input_file, output_file, splits=1):
     try:
         pool = list(range(splits))
         cpool = cycle(pool)
-        logger.info("splitting file: %s into %s files", input_file, splits)
+        logger.info("splitting file: {input} into {splits} files", input=input_file, splits=splits)
         # open output file handlers
         files = [open("{0}.{1}".format(output_file, x), "wb") for x in pool]
         # open input file and send line to different handler
@@ -150,9 +151,9 @@ def split_file(input_file, output_file, splits=1):
             files[x].close()
         return [f.name for f in files]
     except Exception as e:
-        logger.error("Error splitting the file. err: %s", e)
+        logger.error("Error splitting the file. err: {err}", err=e)
         if len(files) > 0:
-            logger.error("Cleaning up intermediary files: %s", files)
+            logger.error("Cleaning up intermediary files: {files}", files=files)
             for x in pool:
                 files[x].close()
                 os.remove(files[x].name)
@@ -189,7 +190,7 @@ def concatenate_files(input_list, output_file, remove=True):
                 if remove:  # as we go for space consideration
                     os.remove(f)
     except Exception as e:
-        logger.error("Error concateneating files. err: %s", e)
+        logger.error("Error concateneating files. err: {err}", err=e)
         raise LocopyConcatError("Error concateneating files.")
 
 
@@ -227,7 +228,7 @@ def read_config_yaml(config_yaml):
         else:
             locopy_yaml = yaml.load(config_yaml)
     except Exception as e:
-        logger.error("Error reading yaml. err: %s", e)
+        logger.error("Error reading yaml. err: {err}", err=e)
         raise CredentialsError("Error reading yaml.")
     return locopy_yaml
 

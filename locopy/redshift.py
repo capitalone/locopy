@@ -20,6 +20,7 @@ to Redshift, and run arbitrary code.
 """
 import os
 
+from .logger import logger
 from .database import Database
 from .s3 import S3
 from .utility import (
@@ -29,10 +30,7 @@ from .utility import (
     write_file,
     concatenate_files,
 )
-from .logger import get_logger, DEBUG, INFO, WARN, ERROR, CRITICAL
 from .errors import CredentialsError, DBError
-
-logger = get_logger(__name__, INFO)
 
 
 def add_default_copy_options(copy_options=None):
@@ -208,7 +206,7 @@ class Redshift(S3, Database):
             self.execute(sql, commit=True)
 
         except Exception as e:
-            logger.error("Error running COPY on Redshift. err: %s", e)
+            logger.error("Error running COPY on Redshift. err: {err}", err=e)
             raise DBError("Error running COPY on Redshift.")
 
     def load_and_copy(
@@ -422,7 +420,7 @@ class Redshift(S3, Database):
             )
             self.execute(sql, commit=True)
         except Exception as e:
-            logger.error("Error running UNLOAD on redshift. err: %s", e)
+            logger.error("Error running UNLOAD on redshift. err: {err}", err=e)
             raise DBError("Error running UNLOAD on redshift.")
 
     def _get_column_names(self, query):
