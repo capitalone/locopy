@@ -92,3 +92,6 @@ ENV/
 
 #Mac
 .DS_Store
+
+# from pip install -e .
+pip-wheel-metadata/
