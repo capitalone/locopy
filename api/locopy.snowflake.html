@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.snowflake module &mdash; locopy 0.3.0 documentation</title>
+  <title>locopy.snowflake module &mdash; locopy 0.3.1 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.3.0
+                0.3.1
               </div>
             
           
@@ -351,9 +351,10 @@ DBAPI, it could return column names as bytes: <code class="docutils literal notr
 
 <dl class="method">
 <dt id="locopy.snowflake.Snowflake.copy">
-<code class="descname">copy</code><span class="sig-paren">(</span><em>table_name</em>, <em>stage</em>, <em>delim='|'</em>, <em>header=False</em>, <em>format_options=None</em>, <em>copy_options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.copy" title="Permalink to this definition">¶</a></dt>
+<code class="descname">copy</code><span class="sig-paren">(</span><em>table_name</em>, <em>stage</em>, <em>file_type='csv'</em>, <em>format_options=None</em>, <em>copy_options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executes the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span> <span class="pre">&lt;table&gt;</span></code> command to load CSV files from a stage into
-a Snowflake table.</p>
+a Snowflake table. If <code class="docutils literal notranslate"><span class="pre">file_type</span> <span class="pre">==</span> <span class="pre">csv</span></code> and <code class="docutils literal notranslate"><span class="pre">format_options</span> <span class="pre">==</span> <span class="pre">None</span></code>, <code class="docutils literal notranslate"><span class="pre">format_options</span></code>
+will default to: <code class="docutils literal notranslate"><span class="pre">[&quot;FIELD_DELIMITER='|'&quot;,</span> <span class="pre">&quot;SKIP_HEADER=0&quot;]</span></code></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -362,9 +363,9 @@ a Snowflake table.</p>
 <li><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The Snowflake table name which is being loaded. Must be fully qualified:
 <cite>&lt;namespace&gt;.&lt;table_name&gt;</cite></li>
 <li><strong>stage</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Stage location of the load file. This can be a internal or external stage</li>
-<li><strong>delim</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The delimiter in a delimited file.</li>
-<li><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Boolean flag if header is included in the file</li>
-<li><strong>format_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of strings of format options to provide to the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span></code> command.</li>
+<li><strong>file_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The file type. One of <code class="docutils literal notranslate"><span class="pre">csv</span></code>, <code class="docutils literal notranslate"><span class="pre">json</span></code>, or <code class="docutils literal notranslate"><span class="pre">parquet</span></code></li>
+<li><strong>format_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of strings of format options to provide to the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span></code> command. The options
+will typically be in the format of <code class="docutils literal notranslate"><span class="pre">[&quot;a=b&quot;,</span> <span class="pre">&quot;c=d&quot;]</span></code></li>
 <li><strong>copy_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of strings of copy options to provide to the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span></code> command.</li>
 </ul>
 </td>
@@ -422,9 +423,9 @@ the <cite>s3://</cite> scheme.</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>stage</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Internal stage location to load the file. Can include folders so that</li>
+<li><strong>stage</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Internal stage location to load the file.</li>
 <li><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – The local directory path where files will be downloaded to. Defualts to the current
-working directory (<code class="docutils literal notranslate"><span class="pre">os.getcwd()</span></code>)</li>
+working directory (<code class="docutils literal notranslate"><span class="pre">os.getcwd()</span></code>). Otherwise it must be the absolute path.</li>
 <li><strong>parallel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Specifies the number of threads to use for downloading files.</li>
 </ul>
 </td>
@@ -551,9 +552,10 @@ result.</td>
 
 <dl class="method">
 <dt id="locopy.snowflake.Snowflake.unload">
-<code class="descname">unload</code><span class="sig-paren">(</span><em>stage</em>, <em>table_name</em>, <em>delim='|'</em>, <em>header=False</em>, <em>format_options=None</em>, <em>copy_options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.unload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.unload" title="Permalink to this definition">¶</a></dt>
+<code class="descname">unload</code><span class="sig-paren">(</span><em>stage</em>, <em>table_name</em>, <em>file_type='csv'</em>, <em>format_options=None</em>, <em>header=False</em>, <em>copy_options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.unload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.unload" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executes the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span> <span class="pre">&lt;location&gt;</span></code> command to export a query/table from
-Snowflake to a stage.</p>
+Snowflake to a stage. If <code class="docutils literal notranslate"><span class="pre">file_type</span> <span class="pre">==</span> <span class="pre">csv</span></code> and <code class="docutils literal notranslate"><span class="pre">format_options</span> <span class="pre">==</span> <span class="pre">None</span></code>, <code class="docutils literal notranslate"><span class="pre">format_options</span></code>
+will default to: <code class="docutils literal notranslate"><span class="pre">[&quot;FIELD_DELIMITER='|'&quot;]</span></code></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -562,9 +564,9 @@ Snowflake to a stage.</p>
 <li><strong>stage</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Stage location (internal or external) where the data files are unloaded</li>
 <li><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The Snowflake table name which is being unloaded. Must be fully qualified:
 <code class="docutils literal notranslate"><span class="pre">&lt;namespace&gt;.&lt;table_name&gt;</span></code></li>
-<li><strong>delim</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The delimiter in a delimited file.</li>
-<li><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Boolean flag if header is included in the file(s)</li>
+<li><strong>file_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The file type. One of <code class="docutils literal notranslate"><span class="pre">csv</span></code>, <code class="docutils literal notranslate"><span class="pre">json</span></code>, or <code class="docutils literal notranslate"><span class="pre">parquet</span></code></li>
 <li><strong>format_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of strings of format options to provide to the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span></code> command.</li>
+<li><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Boolean flag if header is included in the file(s)</li>
 <li><strong>copy_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)"><em>list</em></a>) – List of strings of copy options to provide to the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span></code> command.</li>
 </ul>
 </td>
@@ -621,7 +623,8 @@ process downstream.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – The local directory path to the file to upload. Wildcard characters (<code class="docutils literal notranslate"><span class="pre">*</span></code>, <code class="docutils literal notranslate"><span class="pre">?</span></code>) are
-supported to enable uploading multiple files in a directory.</li>
+supported to enable uploading multiple files in a directory. Otherwise it must be the
+absolute path.</li>
 <li><strong>stage</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – Internal stage location to load the file.</li>
 <li><strong>parallel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Specifies the number of threads to use for uploading files.</li>
 <li><strong>auto_compress</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Specifies if Snowflake uses gzip to compress files during upload.

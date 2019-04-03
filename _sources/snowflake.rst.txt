@@ -15,7 +15,7 @@ Upload to internal stage and run COPY into table command with YAML
     with locopy.Snowflake(dbapi=snowflake.connector, config_yaml="example.yaml") as sf:
         sf.execute(create_sql)
         sf.upload_to_internal("example_data.csv", "@~/internal_stage")
-        sf.copy("namespace.table", "@~/internal_stage/example_data.csv.gz", delim=",")
+        sf.copy("namespace.table", "@~/internal_stage/example_data.csv.gz")
         sf.execute("SELECT * FROM namespace.table")
         res = sf.cursor.fetchall()
     print(res)
@@ -67,8 +67,8 @@ The  ``format_options`` and ``copy_options`` allow for adding additional paramet
     sf.copy(
       "namespace.table",
       "@~/internal_stage/example_data.csv.gz",
-      delim=",",
-      format_options=["TRIM_SPACE = TRUE"],
+      file_type="csv",
+      format_options=["FIELD_DELIMITER=','", "TRIM_SPACE = TRUE"],
       copy_options=["FORCE = TRUE", "PURGE = TRUE"])
 
 These extra options will allow you to customize the COPY process to: trim spaces, force load, and

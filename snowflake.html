@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Snowflake Examples &mdash; locopy 0.3.0 documentation</title>
+  <title>Snowflake Examples &mdash; locopy 0.3.1 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.3.0
+                0.3.1
               </div>
             
           
@@ -173,7 +173,7 @@
 <span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Snowflake</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">snowflake</span><span class="o">.</span><span class="n">connector</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;example.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">sf</span><span class="p">:</span>
     <span class="n">sf</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">create_sql</span><span class="p">)</span>
     <span class="n">sf</span><span class="o">.</span><span class="n">upload_to_internal</span><span class="p">(</span><span class="s2">&quot;example_data.csv&quot;</span><span class="p">,</span> <span class="s2">&quot;@~/internal_stage&quot;</span><span class="p">)</span>
-    <span class="n">sf</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s2">&quot;namespace.table&quot;</span><span class="p">,</span> <span class="s2">&quot;@~/internal_stage/example_data.csv.gz&quot;</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+    <span class="n">sf</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="s2">&quot;namespace.table&quot;</span><span class="p">,</span> <span class="s2">&quot;@~/internal_stage/example_data.csv.gz&quot;</span><span class="p">)</span>
     <span class="n">sf</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM namespace.table&quot;</span><span class="p">)</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">sf</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
 <span class="k">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
@@ -213,8 +213,8 @@ constructor vs. the YAML</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sf</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span>
   <span class="s2">&quot;namespace.table&quot;</span><span class="p">,</span>
   <span class="s2">&quot;@~/internal_stage/example_data.csv.gz&quot;</span><span class="p">,</span>
-  <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
-  <span class="n">format_options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;TRIM_SPACE = TRUE&quot;</span><span class="p">],</span>
+  <span class="n">file_type</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">,</span>
+  <span class="n">format_options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;FIELD_DELIMITER=&#39;,&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;TRIM_SPACE = TRUE&quot;</span><span class="p">],</span>
   <span class="n">copy_options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;FORCE = TRUE&quot;</span><span class="p">,</span> <span class="s2">&quot;PURGE = TRUE&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
