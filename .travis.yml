@@ -1,5 +1,5 @@
 language: python
-dist: trusty
+dist: xenial
 sudo: false
 cache:
   pip: true
@@ -7,6 +7,7 @@ cache:
 python:
   - "3.5"
   - "3.6"
+  - "3.7"
 install:
   - cp tests/data/.locopyrc ~/.locopyrc
   - cp tests/data/.locopy-sfrc ~/.locopy-sfrc
