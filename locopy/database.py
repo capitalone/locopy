@@ -124,7 +124,7 @@ class Database(object):
 
         params : iterable of parameters
             Parameters to submit with the query. The exact syntax will depend
-            on the database adapter you are using
+            on the database adapter you argit statuse using
 
         Raises
         ------
@@ -200,6 +200,18 @@ class Database(object):
         if len(fetched) == 0:
             return None
         return pandas.DataFrame(fetched, columns=columns)
+
+    def to_dict(self):
+        """Generate dictionaries of rows
+
+        Yields
+        ------
+        dict
+            Each row, encoded as a dict.
+        """
+        columns = self.column_names()
+        for row in self.cursor:
+            yield dict(zip(columns, row))
 
     def _is_connected(self):
         """Checks the connection and cursor class arrtribues are initalized.
