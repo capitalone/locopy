@@ -124,7 +124,7 @@ class Database(object):
 
         params : iterable of parameters
             Parameters to submit with the query. The exact syntax will depend
-            on the database adapter you argit statuse using
+            on the database adapter you are using
 
         Raises
         ------
