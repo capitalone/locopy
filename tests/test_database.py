@@ -262,3 +262,19 @@ def test_get_column_names(credentials, dbapi):
         mock_connect.return_value.cursor.return_value.description = (("COL1",), ("COL2",))
         with Database(dbapi=dbapi, **credentials) as test:
             assert test.column_names() == ["col1", "col2"]
+
+
+@pytest.mark.parametrize("dbapi", DBAPIS)
+def test_to_dict(credentials, dbapi):
+    def cols():
+        return ["col1", "col2"]
+
+    test = Database(dbapi=dbapi, **credentials)
+
+    test.column_names = cols
+    test.cursor = [(1, 2), (2, 3), (3,)]
+    assert list(test.to_dict()) == [{"col1": 1, "col2": 2}, {"col1": 2, "col2": 3}, {"col1": 3}]
+
+    test.column_names = cols
+    test.cursor = [("a", 2), (2, 3), ("b",)]
+    assert list(test.to_dict()) == [{"col1": "a", "col2": 2}, {"col1": 2, "col2": 3}, {"col1": "b"}]

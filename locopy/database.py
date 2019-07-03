@@ -201,6 +201,18 @@ class Database(object):
             return None
         return pandas.DataFrame(fetched, columns=columns)
 
+    def to_dict(self):
+        """Generate dictionaries of rows
+
+        Yields
+        ------
+        dict
+            Each row, encoded as a dict.
+        """
+        columns = self.column_names()
+        for row in self.cursor:
+            yield dict(zip(columns, row))
+
     def _is_connected(self):
         """Checks the connection and cursor class arrtribues are initalized.
 
