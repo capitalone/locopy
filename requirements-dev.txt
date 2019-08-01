@@ -1,4 +1,5 @@
 boto3==1.9.92
+hypothesis==4.32.2
 psycopg2==2.7.7
 pg8000==1.13.1
 snowflake-connector-python==1.7.6
