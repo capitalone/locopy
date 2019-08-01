@@ -24,6 +24,8 @@
 import pytest
 import snowflake.connector
 import locopy
+from hypothesis import given
+import hypothesis.strategies as s
 
 from pathlib import PureWindowsPath
 from locopy import Snowflake
@@ -43,6 +45,16 @@ password: password"""
 
 DBAPIS = snowflake.connector
 
+LIST_STRATEGY = s.lists(s.characters(blacklist_characters=" "), max_size=10)
+
+@given(LIST_STRATEGY)
+def test_random_list_combine(input_list):
+    """This function tests the combine_options function using random lists
+    """
+    output = locopy.snowflake.combine_options(input_list)
+    assert isinstance(output, str)
+    if input_list:
+        assert len(output.split(" ")) == len(input_list)
 
 def test_combine_options():
     assert locopy.snowflake.combine_options(None) == ""

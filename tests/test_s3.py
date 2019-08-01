@@ -26,6 +26,8 @@ import pytest
 import pg8000
 import psycopg2
 import locopy
+from hypothesis import given
+import hypothesis.strategies as st
 
 from unittest import mock
 from locopy.errors import (
@@ -51,21 +53,24 @@ password: pass"""
 
 DBAPIS = [pg8000, psycopg2]
 
+CHAR_STRATEGY = st.characters()
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("locopy.s3.Session")
-def test_mock_s3_session_profile_without_kms(mock_session, dbapi):
-    s = locopy.S3(profile=PROFILE)
-    mock_session.assert_called_with(profile_name=PROFILE)
+@given(profile=CHAR_STRATEGY)
+def test_mock_s3_session_profile_without_kms(profile, mock_session, dbapi):
+    s = locopy.S3(profile=profile)
+    mock_session.assert_called_with(profile_name=profile)
     assert s.kms_key == None
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("locopy.s3.Session")
-def test_mock_s3_session_profile_with_kms(mock_session, dbapi):
-    s = locopy.S3(profile=PROFILE, kms_key=KMS_KEY)
-    mock_session.assert_called_with(profile_name=PROFILE)
-    assert s.kms_key == KMS_KEY
+@given(input_kms_key=CHAR_STRATEGY, profile=CHAR_STRATEGY)
+def test_mock_s3_session_profile_with_kms(input_kms_key, profile, mock_session, dbapi):
+    s = locopy.S3(profile=profile, kms_key=input_kms_key)
+    mock_session.assert_called_with(profile_name=profile)
+    assert s.kms_key == input_kms_key
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
