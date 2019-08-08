@@ -24,6 +24,8 @@
 import pytest
 import snowflake.connector
 import locopy
+from hypothesis import given
+import hypothesis.strategies as s
 
 from pathlib import PureWindowsPath
 from locopy import Snowflake
@@ -43,6 +45,17 @@ password: password"""
 
 DBAPIS = snowflake.connector
 
+LIST_STRATEGY = s.lists(s.characters(blacklist_characters=" "), max_size=10)
+CHAR_STRATEGY = s.characters()
+
+@given(LIST_STRATEGY)
+def test_random_list_combine(input_list):
+    """This function tests the combine_options function using random lists
+    """
+    output = locopy.snowflake.combine_options(input_list)
+    assert isinstance(output, str)
+    if input_list:
+        assert len(output.split(" ")) == len(input_list)
 
 def test_combine_options():
     assert locopy.snowflake.combine_options(None) == ""
@@ -54,11 +67,12 @@ def test_combine_options():
 
 
 @mock.patch("locopy.s3.Session")
-def test_constructor(mock_session, sf_credentials):
-    sf = Snowflake(profile=PROFILE, kms_key=KMS, dbapi=DBAPIS, **sf_credentials)
-    mock_session.assert_called_with(profile_name=PROFILE)
-    assert sf.profile == PROFILE
-    assert sf.kms_key == KMS
+@given(input_kms_key=CHAR_STRATEGY, profile=CHAR_STRATEGY)
+def test_constructor(input_kms_key, profile, mock_session, sf_credentials):
+    sf = Snowflake(profile=profile, kms_key=input_kms_key, dbapi=DBAPIS, **sf_credentials)
+    mock_session.assert_called_with(profile_name=profile)
+    assert sf.profile == profile
+    assert sf.kms_key == input_kms_key
     assert sf.connection["account"] == "account"
     assert sf.connection["warehouse"] == "warehouse"
     assert sf.connection["database"] == "database"
@@ -68,11 +82,12 @@ def test_constructor(mock_session, sf_credentials):
 
 @mock.patch("locopy.utility.open", mock.mock_open(read_data=GOOD_CONFIG_YAML))
 @mock.patch("locopy.s3.Session")
-def test_constructor_yaml(mock_session):
-    sf = Snowflake(profile=PROFILE, kms_key=KMS, dbapi=DBAPIS, config_yaml="some_config.yml")
-    mock_session.assert_called_with(profile_name=PROFILE)
-    assert sf.profile == PROFILE
-    assert sf.kms_key == KMS
+@given(input_kms_key=CHAR_STRATEGY, profile=CHAR_STRATEGY)
+def test_constructor_yaml(input_kms_key, profile, mock_session):
+    sf = Snowflake(profile=profile, kms_key=input_kms_key, dbapi=DBAPIS, config_yaml="some_config.yml")
+    mock_session.assert_called_with(profile_name=profile)
+    assert sf.profile == profile
+    assert sf.kms_key == input_kms_key
     assert sf.connection["account"] == "account"
     assert sf.connection["warehouse"] == "warehouse"
     assert sf.connection["database"] == "database"
