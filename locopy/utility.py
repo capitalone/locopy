@@ -233,6 +233,38 @@ def read_config_yaml(config_yaml):
     return locopy_yaml
 
 
+# make it more granular, eg. include length
+def find_column_type(dataframe):
+    """
+    Find data type of each column from the dataframe.
+
+    Parameters
+    ----------
+    dataframe : Pandas dataframe
+
+    Returns
+    -------
+    dict
+        A dictionary of columns with their data type
+    """
+
+    from datetime import datetime
+    column_type = []
+    for column in dataframe.columns:
+        data = dataframe[column].dropna()
+        if data.size == 0:
+            column_type.append('varchar')
+        elif str(data.dtype).startswith('object'):
+            column_type.append('varchar')
+        elif str(data.dtype).startswith('int'):
+            column_type.append('int')
+        elif str(data.dtype).startswith('float'):
+            column_type.append('float')
+        elif isinstance(data[0], datetime):
+            column_type.append('date')
+    return dict(zip(list(dataframe.columns), column_type))
+
+
 class ProgressPercentage(object):
     """
     ProgressPercentage class is used by the S3Transfer upload_file callback

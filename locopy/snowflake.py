@@ -25,7 +25,7 @@ from urllib.parse import urlparse
 from .logger import logger
 from .database import Database
 from .s3 import S3
-from .utility import ProgressPercentage, compress_file_list, split_file, write_file
+from .utility import ProgressPercentage, compress_file_list, split_file, write_file, find_column_type
 from .errors import CredentialsError, DBError, S3CredentialsError
 
 
@@ -365,3 +365,65 @@ class Snowflake(S3, Database):
         except Exception as e:
             logger.error("Error running UNLOAD on Snowflake. err: {err}", err=e)
             raise DBError("Error running UNLOAD on Snowflake.")
+
+    def insert_dataframe_to_table(
+        self,
+        dataframe,
+        table_name,
+        columns = None,
+        create = False,
+        metadata = None
+    ):
+        """
+        Insert a Pandas dataframe to an existing table or a new table.
+
+        Parameters
+        ----------
+        dataframe: Pandas Dataframe
+            The pandas dataframe which needs to be inserted.
+
+        table_name: str
+            The name of the Snowflake table which is being inserted.
+
+        columns: list, optional
+            The list of columns which will be uploaded.
+
+        create: bool, optional
+            Boolean flag if a new table need to be created and insert to.
+
+        metadata: dictionary, optional
+            If metadata==None, it will be generated based on data
+        """
+
+        if columns:
+            dataframe = dataframe[columns]
+
+        all_columns = columns or list(dataframe.columns)
+        column_sql = "(" + ','.join(all_columns) + ")"
+        string_join = "(" + ",".join(["%s"] * len(all_columns)) + ")"
+
+        # create a list of tuples for insert
+        to_insert = []
+        for row in dataframe.head().itertuples(index=False):
+            none_row = tuple([None if pd.isnull(val) else val for val in row])
+            to_insert.append(none_row)
+
+        if create:
+            if not metadata:
+                logger.info('Metadata is missing. Generating metadata ...')
+                metadata = find_column_type(dataframe)
+                logger.info('Metadata is complete. Creating new table ...')
+
+            create_join = "(" + ',\n'.join([list(metadata.keys())[i]+' '+list(metadata.values())[i] for i in range(len(metadata))]) + ")"
+            create_query = "CREATE TABLE {table_name} {create_join}".\
+                format(table_name=table_name, create_join = create_join)
+            self.execute(create_query)
+            logger.info('New table has been created')
+
+        insert_query = """
+        INSERT INTO {table_name} {columns} VALUES{values}
+        """.format(table_name=table_name, columns=column_sql, values=string_join)
+
+        logger.info('Inserting records...')
+        self.execute(insert_query, to_insert, many=True)
+        logger.info('Table insertion has completed')
