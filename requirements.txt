@@ -2,3 +2,4 @@ boto3==1.9.92
 PyYAML>=5.1
 pandas>=0.19.0
 loguru==0.2.5
+asn1crypto==0.24.0
