@@ -22,6 +22,7 @@
 
 import pytest
 import mock
+import sqlite3
 import pg8000, psycopg2
 import snowflake.connector
 
@@ -40,7 +41,7 @@ other: stuff
 extra: 123
 another: 321"""
 
-DBAPIS = [pg8000, psycopg2, snowflake.connector]
+DBAPIS = [sqlite3, pg8000, psycopg2, snowflake.connector]
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
