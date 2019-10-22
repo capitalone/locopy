@@ -383,7 +383,7 @@ def test_redshiftcopy(mock_session, credentials, dbapi):
                     r.session.get_credentials().secret_key,
                     r.session.get_credentials().token,
                 ),
-                None,
+                (),
             )
         )
 
@@ -400,7 +400,7 @@ def test_redshiftcopy(mock_session, credentials, dbapi):
                     r.session.get_credentials().secret_key,
                     r.session.get_credentials().token,
                 ),
-                None,
+                (),
             )
         )
 
@@ -583,7 +583,7 @@ def test_get_column_names(mock_session, credentials, dbapi):
         r._connect()
         assert r._get_column_names("query") == None
         sql = "SELECT * FROM (query) WHERE 1 = 0"
-        assert mock_connect.return_value.cursor.return_value.execute.called_with(sql, None)
+        assert mock_connect.return_value.cursor.return_value.execute.called_with(sql, ())
 
         mock_connect.return_value.cursor.return_value.description = [["COL1 "], ["COL2 "]]
         r = locopy.Redshift(dbapi=dbapi, **credentials)

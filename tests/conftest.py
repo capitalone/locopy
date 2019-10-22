@@ -42,6 +42,7 @@ def sf_credentials():
         "account": "account",
         "warehouse": "warehouse",
         "database": "database",
+        "schema": "schema",
         "user": "user",
         "password": "password",
     }

@@ -193,6 +193,8 @@ class Snowflake(S3, Database):
             self.execute("USE WAREHOUSE {0}".format(self.connection["warehouse"]))
         if self.connection.get("database") is not None:
             self.execute("USE DATABASE {0}".format(self.connection["database"]))
+        if self.connection.get("schema") is not None:
+            self.execute("USE SCHEMA {0}".format(self.connection["schema"]))
 
     def upload_to_internal(self, local, stage, parallel=4, auto_compress=True):
         """

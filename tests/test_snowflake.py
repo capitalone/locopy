@@ -48,6 +48,7 @@ DBAPIS = snowflake.connector
 LIST_STRATEGY = s.lists(s.characters(blacklist_characters=" "), max_size=10)
 CHAR_STRATEGY = s.characters()
 
+
 @given(LIST_STRATEGY)
 def test_random_list_combine(input_list):
     """This function tests the combine_options function using random lists
@@ -56,6 +57,7 @@ def test_random_list_combine(input_list):
     assert isinstance(output, str)
     if input_list:
         assert len(output.split(" ")) == len(input_list)
+
 
 def test_combine_options():
     assert locopy.snowflake.combine_options(None) == ""
@@ -76,6 +78,7 @@ def test_constructor(input_kms_key, profile, mock_session, sf_credentials):
     assert sf.connection["account"] == "account"
     assert sf.connection["warehouse"] == "warehouse"
     assert sf.connection["database"] == "database"
+    assert sf.connection["schema"] == "schema"
     assert sf.connection["user"] == "user"
     assert sf.connection["password"] == "password"
 
@@ -84,7 +87,9 @@ def test_constructor(input_kms_key, profile, mock_session, sf_credentials):
 @mock.patch("locopy.s3.Session")
 @given(input_kms_key=CHAR_STRATEGY, profile=CHAR_STRATEGY)
 def test_constructor_yaml(input_kms_key, profile, mock_session):
-    sf = Snowflake(profile=profile, kms_key=input_kms_key, dbapi=DBAPIS, config_yaml="some_config.yml")
+    sf = Snowflake(
+        profile=profile, kms_key=input_kms_key, dbapi=DBAPIS, config_yaml="some_config.yml"
+    )
     mock_session.assert_called_with(profile_name=profile)
     assert sf.profile == profile
     assert sf.kms_key == input_kms_key
@@ -107,10 +112,12 @@ def test_connect(mock_session, sf_credentials):
             warehouse="warehouse",
             password="password",
             database="database",
+            schema="schema",
         )
         sf.conn.cursor.assert_called_with()
-        sf.conn.cursor.return_value.execute.assert_any_call("USE WAREHOUSE warehouse", None)
-        sf.conn.cursor.return_value.execute.assert_any_call("USE DATABASE database", None)
+        sf.conn.cursor.return_value.execute.assert_any_call("USE WAREHOUSE warehouse", ())
+        sf.conn.cursor.return_value.execute.assert_any_call("USE DATABASE database", ())
+        sf.conn.cursor.return_value.execute.assert_any_call("USE SCHEMA schema", ())
 
         # side effect exception
         mock_connect.side_effect = Exception("Connect Exception")
@@ -128,10 +135,12 @@ def test_with_connect(mock_session, sf_credentials):
                 warehouse="warehouse",
                 password="password",
                 database="database",
+                schema="schema",
             )
             sf.conn.cursor.assert_called_with()
-            sf.conn.cursor.return_value.execute.assert_any_call("USE WAREHOUSE warehouse", None)
-            sf.conn.cursor.return_value.execute.assert_any_call("USE DATABASE database", None)
+            sf.conn.cursor.return_value.execute.assert_any_call("USE WAREHOUSE warehouse", ())
+            sf.conn.cursor.return_value.execute.assert_any_call("USE DATABASE database", ())
+            sf.conn.cursor.return_value.execute.assert_any_call("USE SCHEMA schema", ())
 
         mock_connect.side_effect = Exception("Connect Exception")
         with pytest.raises(DBError):
@@ -145,12 +154,12 @@ def test_upload_to_internal(mock_session, sf_credentials):
         with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
             sf.upload_to_internal("/some/file", "@~/internal")
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "PUT 'file:///some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True", None
+                "PUT 'file:///some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True", ()
             )
 
             sf.upload_to_internal("/some/file", "@~/internal", parallel=99, auto_compress=False)
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "PUT 'file:///some/file' @~/internal PARALLEL=99 AUTO_COMPRESS=False", None
+                "PUT 'file:///some/file' @~/internal PARALLEL=99 AUTO_COMPRESS=False", ()
             )
 
             # exception
@@ -167,7 +176,7 @@ def test_upload_to_internal_windows(mock_session, sf_credentials):
 
             sf.upload_to_internal(r"C:\some\file", "@~/internal")
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "PUT 'file://C:/some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True", None
+                "PUT 'file://C:/some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True", ()
             )
 
 
@@ -177,12 +186,12 @@ def test_download_from_internal(mock_session, sf_credentials):
         with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
             sf.download_from_internal("@~/internal", "/some/file")
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "GET @~/internal 'file:///some/file' PARALLEL=10", None
+                "GET @~/internal 'file:///some/file' PARALLEL=10", ()
             )
 
             sf.download_from_internal("@~/internal", "/some/file", parallel=99)
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "GET @~/internal 'file:///some/file' PARALLEL=99", None
+                "GET @~/internal 'file:///some/file' PARALLEL=99", ()
             )
 
             # exception
@@ -199,7 +208,7 @@ def test_download_from_internal_windows(mock_session, sf_credentials):
 
             sf.download_from_internal("@~/internal", r"C:\some\file")
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "GET @~/internal 'file://C:/some/file' PARALLEL=10", None
+                "GET @~/internal 'file://C:/some/file' PARALLEL=10", ()
             )
 
 
@@ -243,7 +252,7 @@ def test_copy(mock_session, file_type, format_options, copy_options, expected, s
                 copy_options=copy_options,
             )
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "COPY INTO table_name FROM '@~/stage' FILE_FORMAT = {0}".format(expected), None
+                "COPY INTO table_name FROM '@~/stage' FILE_FORMAT = {0}".format(expected), ()
             )
 
 
@@ -317,7 +326,7 @@ def test_unload(
                 copy_options=copy_options,
             )
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "COPY INTO @~/stage FROM table_name FILE_FORMAT = {0}".format(expected), None
+                "COPY INTO @~/stage FROM table_name FILE_FORMAT = {0}".format(expected), ()
             )
 
 
