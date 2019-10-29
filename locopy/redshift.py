@@ -150,7 +150,11 @@ class Redshift(S3, Database):
     """
 
     def __init__(self, profile=None, kms_key=None, dbapi=None, config_yaml=None, **kwargs):
-        S3.__init__(self, profile, kms_key)
+        try:
+            S3.__init__(self, profile, kms_key)
+        except S3CredentialsError:
+            logger.warning("S3 credentials we not found. S3 functionality is disabled")
+            logger.warning("Only internal stages are available")
         Database.__init__(self, dbapi, config_yaml, **kwargs)
 
     def _connect(self):
