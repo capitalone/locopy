@@ -40,6 +40,7 @@ CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 LOCAL_FILE = os.path.join(CURR_DIR, "data", "mock_file.txt")
 LOCAL_FILE_JSON = os.path.join(CURR_DIR, "data", "mock_file.json")
 LOCAL_FILE_DL = os.path.join(CURR_DIR, "data", "mock_file_dl.txt")
+TEST_DF = pd.read_csv(os.path.join(CURR_DIR, "data", "mock_dataframe.txt"), sep=',')
 
 CREDS_DICT = locopy.utility.read_config_yaml(INTEGRATION_CREDS)
 
@@ -167,3 +168,26 @@ def test_copy_json(dbapi):
         for i, result in enumerate(results):
             assert result[0] == expected[i][0]
             assert result[1] == expected[i][1]
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("dbapi", DBAPIS)
+def test_insert_dataframe_to_table(dbapi):
+
+    with locopy.Snowflake(dbapi=dbapi, **CREDS_DICT) as test:
+        test.insert_dataframe_to_table(TEST_DF, "test", create=True)
+        test.execute(
+            "SELECT a, b, c FROM test ORDER BY a ASC"
+        )
+        results = test.cursor.fetchall()
+        test.execute("drop table if exists test")
+
+        expected = [
+            (1, "x", pd.to_datetime("2011-01-01").date()),
+            (2, "y", pd.to_datetime("2001-04-02").date()),
+        ]
+
+        for i, result in enumerate(results):
+            assert result[0] == expected[i][0]
+            assert result[1] == expected[i][1]
+            assert result[2] == expected[i][2]

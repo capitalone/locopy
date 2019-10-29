@@ -395,6 +395,7 @@ class Snowflake(S3, Database):
             If metadata==None, it will be generated based on data
         """
 
+        import pandas as pd
         if columns:
             dataframe = dataframe[columns]
 
@@ -408,22 +409,24 @@ class Snowflake(S3, Database):
             none_row = tuple([None if pd.isnull(val) else val for val in row])
             to_insert.append(none_row)
 
+        if not create and metadata:
+            logger.warning('Metadata will not be used because create is set to False.')
+
         if create:
             if not metadata:
                 logger.info('Metadata is missing. Generating metadata ...')
                 metadata = find_column_type(dataframe)
                 logger.info('Metadata is complete. Creating new table ...')
 
-            create_join = "(" + ',\n'.join([list(metadata.keys())[i]+' '+list(metadata.values())[i] for i in range(len(metadata))]) + ")"
+            create_join = "(" + ','.join([list(metadata.keys())[i]+' '+list(metadata.values())[i] for i in range(len(metadata))]) + ")"
+            column_sql = "(" + ','.join(list(metadata.keys())) + ")"
             create_query = "CREATE TABLE {table_name} {create_join}".\
                 format(table_name=table_name, create_join = create_join)
             self.execute(create_query)
             logger.info('New table has been created')
 
-        insert_query = """
-        INSERT INTO {table_name} {columns} VALUES{values}
-        """.format(table_name=table_name, columns=column_sql, values=string_join)
+        insert_query = """INSERT INTO {table_name} {columns} VALUES {values}""".format(table_name=table_name, columns=column_sql, values=string_join)
 
         logger.info('Inserting records...')
-        self.execute(insert_query, to_insert, many=True)
+        self.execute(insert_query, params=to_insert, many=True)
         logger.info('Table insertion has completed')
