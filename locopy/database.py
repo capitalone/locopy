@@ -110,7 +110,6 @@ class Database(object):
         else:
             logger.info("No connection to close")
 
-
     def execute(self, sql, commit=True, params=(), many=False):
         """Execute some sql against the connection.
 

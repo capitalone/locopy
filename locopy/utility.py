@@ -251,12 +251,12 @@ def find_column_type(dataframe):
 
     def validate_date(date_text):
         try:
-            datetime.strptime(date_text, '%Y-%m-%d')
-            return 'date'
+            datetime.strptime(date_text, "%Y-%m-%d")
+            return "date"
         except ValueError:
             try:
-                datetime.strptime(date_text, '%Y-%m-%d %H:%M:%S')
-                return 'timestamp'
+                datetime.strptime(date_text, "%Y-%m-%d %H:%M:%S")
+                return "timestamp"
             except ValueError:
                 return None
 
@@ -264,24 +264,24 @@ def find_column_type(dataframe):
     for column in dataframe.columns:
         data = dataframe[column].dropna()
         if data.size == 0:
-            column_type.append('varchar')
+            column_type.append("varchar")
         elif isinstance(data[0], datetime):
-            column_type.append('timestamp')
+            column_type.append("timestamp")
         elif isinstance(data[0], date):
-            column_type.append('date')
-        elif str(data.dtype).startswith('object'):
+            column_type.append("date")
+        elif str(data.dtype).startswith("object"):
             date_types = [validate_date(i) for i in data.tolist()]
-            if sum([not i for i in date_types])==0:
-                if 'timestamp' in date_types:
-                    column_type.append('timestamp')
+            if sum([not i for i in date_types]) == 0:
+                if "timestamp" in date_types:
+                    column_type.append("timestamp")
                 else:
-                    column_type.append('date')
+                    column_type.append("date")
             else:
-                column_type.append('varchar')
-        elif str(data.dtype).startswith('int'):
-            column_type.append('int')
-        elif str(data.dtype).startswith('float'):
-            column_type.append('float')
+                column_type.append("varchar")
+        elif str(data.dtype).startswith("int"):
+            column_type.append("int")
+        elif str(data.dtype).startswith("float"):
+            column_type.append("float")
     return dict(zip(list(dataframe.columns), column_type))
 
 

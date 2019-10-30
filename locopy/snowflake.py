@@ -25,7 +25,13 @@ from urllib.parse import urlparse
 from .logger import logger
 from .database import Database
 from .s3 import S3
-from .utility import ProgressPercentage, compress_file_list, split_file, write_file, find_column_type
+from .utility import (
+    ProgressPercentage,
+    compress_file_list,
+    split_file,
+    write_file,
+    find_column_type,
+)
 from .errors import CredentialsError, DBError, S3CredentialsError
 
 
@@ -367,12 +373,7 @@ class Snowflake(S3, Database):
             raise DBError("Error running UNLOAD on Snowflake.")
 
     def insert_dataframe_to_table(
-        self,
-        dataframe,
-        table_name,
-        columns = None,
-        create = False,
-        metadata = None
+        self, dataframe, table_name, columns=None, create=False, metadata=None
     ):
         """
         Insert a Pandas dataframe to an existing table or a new table.
@@ -396,11 +397,12 @@ class Snowflake(S3, Database):
         """
 
         import pandas as pd
+
         if columns:
             dataframe = dataframe[columns]
 
         all_columns = columns or list(dataframe.columns)
-        column_sql = "(" + ','.join(all_columns) + ")"
+        column_sql = "(" + ",".join(all_columns) + ")"
         string_join = "(" + ",".join(["%s"] * len(all_columns)) + ")"
 
         # create a list of tuples for insert
@@ -410,23 +412,35 @@ class Snowflake(S3, Database):
             to_insert.append(none_row)
 
         if not create and metadata:
-            logger.warning('Metadata will not be used because create is set to False.')
+            logger.warning("Metadata will not be used because create is set to False.")
 
         if create:
             if not metadata:
-                logger.info('Metadata is missing. Generating metadata ...')
+                logger.info("Metadata is missing. Generating metadata ...")
                 metadata = find_column_type(dataframe)
-                logger.info('Metadata is complete. Creating new table ...')
+                logger.info("Metadata is complete. Creating new table ...")
 
-            create_join = "(" + ','.join([list(metadata.keys())[i]+' '+list(metadata.values())[i] for i in range(len(metadata))]) + ")"
-            column_sql = "(" + ','.join(list(metadata.keys())) + ")"
-            create_query = "CREATE TABLE {table_name} {create_join}".\
-                format(table_name=table_name, create_join = create_join)
+            create_join = (
+                "("
+                + ",".join(
+                    [
+                        list(metadata.keys())[i] + " " + list(metadata.values())[i]
+                        for i in range(len(metadata))
+                    ]
+                )
+                + ")"
+            )
+            column_sql = "(" + ",".join(list(metadata.keys())) + ")"
+            create_query = "CREATE TABLE {table_name} {create_join}".format(
+                table_name=table_name, create_join=create_join
+            )
             self.execute(create_query)
-            logger.info('New table has been created')
+            logger.info("New table has been created")
 
-        insert_query = """INSERT INTO {table_name} {columns} VALUES {values}""".format(table_name=table_name, columns=column_sql, values=string_join)
+        insert_query = """INSERT INTO {table_name} {columns} VALUES {values}""".format(
+            table_name=table_name, columns=column_sql, values=string_join
+        )
 
-        logger.info('Inserting records...')
+        logger.info("Inserting records...")
         self.execute(insert_query, params=to_insert, many=True)
-        logger.info('Table insertion has completed')
+        logger.info("Table insertion has completed")
