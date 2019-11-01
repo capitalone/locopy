@@ -126,6 +126,9 @@ class Database(object):
             Parameters to submit with the query. The exact syntax will depend
             on the database adapter you are using
 
+        many : bool, default False
+            Whether to execute the script as an "execute many"
+
         Raises
         ------
         DBError
