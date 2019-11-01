@@ -92,3 +92,6 @@ ENV/
 
 #Mac
 .DS_Store
+
+# pycharm
+.idea/
