@@ -22,16 +22,21 @@
 
 import os
 import sys
-import pytest
-
-from unittest import mock
 from io import StringIO
 from itertools import cycle
-from botocore.credentials import Credentials
-from locopy.utility import compress_file, compress_file_list, split_file, concatenate_files
-from locopy.errors import CompressionError, LocopySplitError, CredentialsError, LocopyConcatError
-import locopy.utility as util
+from unittest import mock
 
+import pytest
+
+import locopy.utility as util
+from locopy.errors import CompressionError, CredentialsError, LocopyConcatError, LocopySplitError
+from locopy.utility import (
+    compress_file,
+    compress_file_list,
+    concatenate_files,
+    find_column_type,
+    split_file,
+)
 
 GOOD_CONFIG_YAML = u"""host: my.redshift.cluster.com
 port: 1234
@@ -227,3 +232,37 @@ def test_concatenate_files_exception():
         mock_open.side_effect = Exception()
         with pytest.raises(LocopyConcatError):
             concatenate_files(inputs, output, remove=False)
+
+
+def test_find_column_type():
+
+    import pandas as pd
+
+    # add timestamp
+    input_text = pd.DataFrame.from_dict(
+        {
+            "a": [1, 2, 3],
+            "b": ["x", "y", "z"],
+            "c": ["2019-91-01", "2011-01-01", "2011-10-01"],
+            "d": ["2011-01-01", "2001-04-02", "2019-04-23"],
+            "e": [1.2, 2.44, 4.23],
+            "f": [11, 14, None],
+            "g": [None, None, None],
+            "h": [
+                pd.to_datetime("2019-01-01"),
+                pd.to_datetime("2019-03-01"),
+                pd.to_datetime("2019-04-01"),
+            ],
+        }
+    )
+    output_text = {
+        "a": "int",
+        "b": "varchar",
+        "c": "varchar",
+        "d": "date",
+        "e": "float",
+        "f": "float",
+        "g": "varchar",
+        "h": "timestamp",
+    }
+    assert find_column_type(input_text) == output_text

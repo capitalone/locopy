@@ -21,7 +21,6 @@
 # SOFTWARE.
 
 import pytest
-
 from botocore.credentials import Credentials
 
 

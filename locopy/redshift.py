@@ -20,17 +20,16 @@ to Redshift, and run arbitrary code.
 """
 import os
 
-from .logger import logger
 from .database import Database
+from .errors import DBError
+from .logger import logger
 from .s3 import S3
 from .utility import (
-    ProgressPercentage,
     compress_file_list,
+    concatenate_files,
     split_file,
     write_file,
-    concatenate_files,
 )
-from .errors import CredentialsError, DBError
 
 
 def add_default_copy_options(copy_options=None):
@@ -150,7 +149,10 @@ class Redshift(S3, Database):
     """
 
     def __init__(self, profile=None, kms_key=None, dbapi=None, config_yaml=None, **kwargs):
-        S3.__init__(self, profile, kms_key)
+        try:
+            S3.__init__(self, profile, kms_key)
+        except S3CredentialsError:
+            logger.warning("S3 credentials we not found. S3 functionality is disabled")
         Database.__init__(self, dbapi, config_yaml, **kwargs)
 
     def _connect(self):

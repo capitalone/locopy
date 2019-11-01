@@ -18,8 +18,8 @@
 """
 import time
 
-from .logger import logger
 from .errors import CredentialsError, DBError
+from .logger import logger
 from .utility import read_config_yaml
 
 
@@ -110,7 +110,7 @@ class Database(object):
         else:
             logger.info("No connection to close")
 
-    def execute(self, sql, commit=True, params=()):
+    def execute(self, sql, commit=True, params=(), many=False):
         """Execute some sql against the connection.
 
         Parameters
@@ -126,6 +126,9 @@ class Database(object):
             Parameters to submit with the query. The exact syntax will depend
             on the database adapter you are using
 
+        many : bool, default False
+            Whether to execute the script as an "execute many"
+
         Raises
         ------
         DBError
@@ -138,7 +141,10 @@ class Database(object):
             start_time = time.time()
             logger.info("Running SQL: {sql}", sql=sql)
             try:
-                self.cursor.execute(sql, params)
+                if many:
+                    self.cursor.executemany(sql, params)
+                else:
+                    self.cursor.execute(sql, params)
             except Exception as e:
                 logger.error("Error running SQL query. err: {err}", err=e)
                 raise DBError("Error running SQL query.")

@@ -95,3 +95,6 @@ ENV/
 
 # from pip install -e .
 pip-wheel-metadata/
+
+# pycharm
+.idea/

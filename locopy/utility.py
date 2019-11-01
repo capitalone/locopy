@@ -17,17 +17,18 @@
 """Utility Module
 Module which utility functions for use within the application
 """
-import threading
-import sys
-import os
-import re
 import gzip
+import os
 import shutil
+import sys
+import threading
+from collections import OrderedDict
+from itertools import cycle
+
 import yaml
 
-from itertools import cycle
+from .errors import CompressionError, CredentialsError, LocopyConcatError, LocopySplitError
 from .logger import logger
-from .errors import CompressionError, LocopySplitError, CredentialsError, LocopyConcatError
 
 
 def write_file(data, delimiter, filepath, mode="w"):
@@ -231,6 +232,58 @@ def read_config_yaml(config_yaml):
         logger.error("Error reading yaml. err: {err}", err=e)
         raise CredentialsError("Error reading yaml.")
     return locopy_yaml
+
+
+# make it more granular, eg. include length
+def find_column_type(dataframe):
+    """
+    Find data type of each column from the dataframe.
+
+    Parameters
+    ----------
+    dataframe : Pandas dataframe
+
+    Returns
+    -------
+    dict
+        A dictionary of columns with their data type
+    """
+    from datetime import datetime, date
+
+    def validate_date(date_text):
+        try:
+            datetime.strptime(date_text, "%Y-%m-%d")
+            return "date"
+        except ValueError:
+            try:
+                datetime.strptime(date_text, "%Y-%m-%d %H:%M:%S")
+                return "timestamp"
+            except ValueError:
+                return None
+
+    column_type = []
+    for column in dataframe.columns:
+        data = dataframe[column].dropna()
+        if data.size == 0:
+            column_type.append("varchar")
+        elif isinstance(data[0], datetime):
+            column_type.append("timestamp")
+        elif isinstance(data[0], date):
+            column_type.append("date")
+        elif str(data.dtype).startswith("object"):
+            date_types = [validate_date(i) for i in data.tolist()]
+            if sum([not i for i in date_types]) == 0:
+                if "timestamp" in date_types:
+                    column_type.append("timestamp")
+                else:
+                    column_type.append("date")
+            else:
+                column_type.append("varchar")
+        elif str(data.dtype).startswith("int"):
+            column_type.append("int")
+        elif str(data.dtype).startswith("float"):
+            column_type.append("float")
+    return OrderedDict(zip(list(dataframe.columns), column_type))
 
 
 class ProgressPercentage(object):

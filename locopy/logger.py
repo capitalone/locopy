@@ -18,6 +18,7 @@
 Module which setsup the basic logging infrustrcuture for the application
 """
 import sys
+
 from loguru import logger
 
 logger.remove()
