@@ -20,17 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
 import filecmp
-import pytest
-import pg8000, psycopg2
-import pandas as pd
-import numpy as np
-import boto3
-import locopy
-
+import os
 from pathlib import Path
 
+import boto3
+import numpy as np
+import pandas as pd
+import pg8000
+import psycopg2
+import pytest
+
+import locopy
 
 DBAPIS = [pg8000, psycopg2]
 INTEGRATION_CREDS = str(Path.home()) + "/.locopyrc"

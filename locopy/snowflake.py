@@ -19,21 +19,13 @@ Module to wrap a database adapter into a Snowflake class which can be used to co
 to Snowflake, and run arbitrary code.
 """
 import os
-
 from pathlib import PurePath
-from urllib.parse import urlparse
-from .logger import logger
-from .database import Database
-from .s3 import S3
-from .utility import (
-    ProgressPercentage,
-    compress_file_list,
-    split_file,
-    write_file,
-    find_column_type,
-)
-from .errors import CredentialsError, DBError, S3CredentialsError
 
+from .database import Database
+from .errors import DBError, S3CredentialsError
+from .logger import logger
+from .s3 import S3
+from .utility import find_column_type
 
 COPY_FORMAT_OPTIONS = {
     "csv": {

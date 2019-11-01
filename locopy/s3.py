@@ -24,16 +24,16 @@ from boto3 import Session
 from boto3.s3.transfer import TransferConfig
 from botocore.client import Config
 
-from .logger import logger
-from .utility import ProgressPercentage
 from .errors import (
-    S3Error,
     S3CredentialsError,
+    S3DeletionError,
+    S3DownloadError,
+    S3Error,
     S3InitializationError,
     S3UploadError,
-    S3DownloadError,
-    S3DeletionError,
 )
+from .logger import logger
+from .utility import ProgressPercentage
 
 
 class S3(object):

@@ -20,16 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import pytest
-import mock
 import sqlite3
-import pg8000, psycopg2
+from unittest import mock
+
+import pg8000
+import psycopg2
+import pytest
 import snowflake.connector
 
 from locopy import Database
-from locopy.utility import read_config_yaml
-from locopy.errors import DBError, CredentialsError
-
+from locopy.errors import CredentialsError, DBError
 
 GOOD_CONFIG_YAML = """
 host: host

@@ -22,21 +22,22 @@
 
 import os
 import tempfile
-import pytest
+from unittest import mock
+
+import hypothesis.strategies as st
 import pg8000
 import psycopg2
-import locopy
+import pytest
 from hypothesis import given
-import hypothesis.strategies as st
 
-from unittest import mock
+import locopy
 from locopy.errors import (
-    S3Error,
     S3CredentialsError,
+    S3DeletionError,
+    S3DownloadError,
+    S3Error,
     S3InitializationError,
     S3UploadError,
-    S3DownloadError,
-    S3DeletionError,
 )
 
 PROFILE = "test"

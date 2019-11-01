@@ -20,18 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os
 import filecmp
+import os
 import shutil
-import pytest
-import snowflake.connector
-import pandas as pd
-import numpy as np
-import boto3
-import locopy
-
 from pathlib import Path
 
+import boto3
+import numpy as np
+import pandas as pd
+import pytest
+import snowflake.connector
+
+import locopy
 
 DBAPIS = [snowflake.connector]
 INTEGRATION_CREDS = str(Path.home()) + os.sep + ".locopy-sfrc"

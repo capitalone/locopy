@@ -22,22 +22,21 @@
 
 import os
 import sys
-import pytest
-
-from unittest import mock
 from io import StringIO
 from itertools import cycle
-from botocore.credentials import Credentials
+from unittest import mock
+
+import pytest
+
+import locopy.utility as util
+from locopy.errors import CompressionError, CredentialsError, LocopyConcatError, LocopySplitError
 from locopy.utility import (
     compress_file,
     compress_file_list,
-    split_file,
     concatenate_files,
     find_column_type,
+    split_file,
 )
-from locopy.errors import CompressionError, LocopySplitError, CredentialsError, LocopyConcatError
-import locopy.utility as util
-
 
 GOOD_CONFIG_YAML = u"""host: my.redshift.cluster.com
 port: 1234

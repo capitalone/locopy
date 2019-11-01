@@ -18,8 +18,8 @@
 """
 import time
 
-from .logger import logger
 from .errors import CredentialsError, DBError
+from .logger import logger
 from .utility import read_config_yaml
 
 

@@ -20,14 +20,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import pytest
-import pg8000, psycopg2
-import locopy
-
-from locopy import Redshift
 from unittest import mock
-from locopy.errors import CredentialsError, DBError
 
+import pg8000
+import psycopg2
+import pytest
+
+import locopy
+from locopy import Redshift
+from locopy.errors import CredentialsError, DBError
 
 PROFILE = "test"
 GOOD_CONFIG_YAML = """
