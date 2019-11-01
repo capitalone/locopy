@@ -21,19 +21,19 @@
 # SOFTWARE.
 
 
+import os
+from collections import OrderedDict
+from pathlib import PureWindowsPath
+from unittest import mock
+
+import hypothesis.strategies as s
 import pytest
 import snowflake.connector
-import locopy
-
 from hypothesis import given
-import hypothesis.strategies as s
-import os
 
-from pathlib import PureWindowsPath
+import locopy
 from locopy import Snowflake
-from unittest import mock
 from locopy.errors import CredentialsError, DBError
-
 
 PROFILE = "test"
 KMS = "kms_test"
@@ -385,7 +385,7 @@ def test_insert_dataframe_to_table(mock_session, sf_credentials):
                 test_df,
                 "database.schema.test",
                 create=True,
-                metadata={"col1": "int", "col2": "varchar", "col3": "date"},
+                metadata=OrderedDict([("col1", "int"), ("col2", "varchar"), ("col3", "date")]),
             )
 
             sf.conn.cursor.return_value.execute.assert_any_call(
@@ -400,7 +400,7 @@ def test_insert_dataframe_to_table(mock_session, sf_credentials):
                 test_df,
                 "database.schema.test",
                 create=False,
-                metadata={"col1": "int", "col2": "varchar", "col3": "date"},
+                metadata=OrderedDict([("col1", "int"), ("col2", "varchar"), ("col3", "date")]),
             )
 
             # mock_session.warn.assert_called_with('Metadata will not be used because create is set to False.')
