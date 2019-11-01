@@ -17,17 +17,18 @@
 """Utility Module
 Module which utility functions for use within the application
 """
-import threading
-import sys
-import os
-import re
 import gzip
+import os
 import shutil
+import sys
+import threading
+from collections import OrderedDict
+from itertools import cycle
+
 import yaml
 
-from itertools import cycle
+from .errors import CompressionError, CredentialsError, LocopyConcatError, LocopySplitError
 from .logger import logger
-from .errors import CompressionError, LocopySplitError, CredentialsError, LocopyConcatError
 
 
 def write_file(data, delimiter, filepath, mode="w"):
@@ -282,7 +283,7 @@ def find_column_type(dataframe):
             column_type.append("int")
         elif str(data.dtype).startswith("float"):
             column_type.append("float")
-    return dict(zip(list(dataframe.columns), column_type))
+    return OrderedDict(zip(list(dataframe.columns), column_type))
 
 
 class ProgressPercentage(object):
