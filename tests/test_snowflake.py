@@ -368,7 +368,7 @@ def test_insert_dataframe_to_table(mock_session, sf_credentials):
 
             sf.insert_dataframe_to_table(test_df, "database.schema.test", create=True)
             sf.conn.cursor.return_value.execute.assert_any_call(
-                "CREATE TABLE database.schema.test (a int,b varchar,c date)", None
+                "CREATE TABLE database.schema.test (a int,b varchar,c date)", ()
             )
             sf.conn.cursor.return_value.executemany.assert_called_with(
                 "INSERT INTO database.schema.test (a,b,c) VALUES (%s,%s,%s)",
@@ -389,7 +389,7 @@ def test_insert_dataframe_to_table(mock_session, sf_credentials):
             )
 
             sf.conn.cursor.return_value.execute.assert_any_call(
-                "CREATE TABLE database.schema.test (col1 int,col2 varchar,col3 date)", None
+                "CREATE TABLE database.schema.test (col1 int,col2 varchar,col3 date)", ()
             )
             sf.conn.cursor.return_value.executemany.assert_called_with(
                 "INSERT INTO database.schema.test (col1,col2,col3) VALUES (%s,%s,%s)",
