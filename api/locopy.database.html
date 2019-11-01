@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.database module &mdash; locopy 0.3.1 documentation</title>
+  <title>locopy.database module &mdash; locopy 0.3.2 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.3.1
+                0.3.2
               </div>
             
           
@@ -180,7 +180,7 @@
 <dl class="class">
 <dt id="locopy.database.Database">
 <em class="property">class </em><code class="descclassname">locopy.database.</code><code class="descname">Database</code><span class="sig-paren">(</span><em>dbapi</em>, <em>config_yaml=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.database.Database" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>This is the base class for all DBAPI 2 database connectors which will inherit this
 functionality. The <code class="docutils literal notranslate"><span class="pre">Database</span></code> class will manage connections and handle executing queries.
 Most of the functionality should work out of the box for classes which inherit minus the
@@ -192,7 +192,7 @@ abstract method for <code class="docutils literal notranslate"><span class="pre"
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>dbapi</strong> (<em>DBAPI 2 module</em><em>, </em><em>optional</em>) – A database adapter which is Python DB API 2.0 compliant
 (<code class="docutils literal notranslate"><span class="pre">psycopg2</span></code>, <code class="docutils literal notranslate"><span class="pre">pg8000</span></code>, etc.)</li>
-<li><strong>config_yaml</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a><em>, </em><em>optional</em>) – String representing the YAML file location of the database connection keyword arguments. It
+<li><strong>config_yaml</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – String representing the YAML file location of the database connection keyword arguments. It
 is worth noting that this should only contain valid arguments for the database connector you
 plan on using. It will throw an exception if something is passed through which isn’t valid.</li>
 <li><strong>**kwargs</strong> – Database connection keyword arguments.</li>
@@ -223,7 +223,7 @@ plan on using. It will throw an exception if something is passed through which i
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.7)">dict</a></td>
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a></td>
 </tr>
 </tbody>
 </table>
@@ -276,7 +276,7 @@ DBAPI, it could return column names as bytes: <code class="docutils literal notr
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of column names, all in lower-case</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.7)">list</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
 </tr>
 </tbody>
 </table>
@@ -284,18 +284,19 @@ DBAPI, it could return column names as bytes: <code class="docutils literal notr
 
 <dl class="method">
 <dt id="locopy.database.Database.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><em>sql</em>, <em>commit=True</em>, <em>params=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.database.Database.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><em>sql</em>, <em>commit=True</em>, <em>params=()</em>, <em>many=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.database.Database.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute some sql against the connection.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>sql</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.7)"><em>str</em></a>) – SQL to run against the connection.  Could be one or multiple
+<li><strong>sql</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – SQL to run against the connection.  Could be one or multiple
 statements.</li>
 <li><strong>commit</strong> (<em>Boolean</em><em>, </em><em>default True</em>) – Whether to “commit” the commands to the cluster immediately or not.</li>
 <li><strong>params</strong> (<em>iterable of parameters</em>) – Parameters to submit with the query. The exact syntax will depend
 on the database adapter you are using</li>
+<li><strong>many</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>default False</em>) – Whether to execute the script as an “execute many”</li>
 </ul>
 </td>
 </tr>
@@ -319,12 +320,26 @@ convenience method.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.7)"><em>int</em></a><em>, </em><em>optional</em>) – Chunk size to fetch.  Defaults to None.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Chunk size to fetch.  Defaults to None.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Dataframe with lowercase column names.  Returns None if no fetched
 result.</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">pandas.DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="locopy.database.Database.to_dict">
+<code class="descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.database.Database.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate dictionaries of rows</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Yields:</th><td class="field-body"><em>dict</em> – Each row, encoded as a dict.</td>
 </tr>
 </tbody>
 </table>

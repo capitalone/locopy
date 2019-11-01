@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.redshift &mdash; locopy 0.3.1 documentation</title>
+  <title>locopy.redshift &mdash; locopy 0.3.2 documentation</title>
   
 
   
@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                0.3.1
+                0.3.2
               </div>
             
           
@@ -173,17 +173,16 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
-<span class="kn">from</span> <span class="nn">.logger</span> <span class="k">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">.database</span> <span class="k">import</span> <span class="n">Database</span>
+<span class="kn">from</span> <span class="nn">.errors</span> <span class="k">import</span> <span class="n">DBError</span>
+<span class="kn">from</span> <span class="nn">.logger</span> <span class="k">import</span> <span class="n">logger</span>
 <span class="kn">from</span> <span class="nn">.s3</span> <span class="k">import</span> <span class="n">S3</span>
 <span class="kn">from</span> <span class="nn">.utility</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">ProgressPercentage</span><span class="p">,</span>
     <span class="n">compress_file_list</span><span class="p">,</span>
+    <span class="n">concatenate_files</span><span class="p">,</span>
     <span class="n">split_file</span><span class="p">,</span>
     <span class="n">write_file</span><span class="p">,</span>
-    <span class="n">concatenate_files</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">.errors</span> <span class="k">import</span> <span class="n">CredentialsError</span><span class="p">,</span> <span class="n">DBError</span>
 
 
 <div class="viewcode-block" id="add_default_copy_options"><a class="viewcode-back" href="../../api/locopy.redshift.html#locopy.redshift.add_default_copy_options">[docs]</a><span class="k">def</span> <span class="nf">add_default_copy_options</span><span class="p">(</span><span class="n">copy_options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -303,7 +302,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kms_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dbapi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">S3</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">kms_key</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">S3</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">kms_key</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">S3CredentialsError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;S3 credentials we not found. S3 functionality is disabled&quot;</span><span class="p">)</span>
         <span class="n">Database</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbapi</span><span class="p">,</span> <span class="n">config_yaml</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

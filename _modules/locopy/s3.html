@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.s3 &mdash; locopy 0.3.1 documentation</title>
+  <title>locopy.s3 &mdash; locopy 0.3.2 documentation</title>
   
 
   
@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                0.3.1
+                0.3.2
               </div>
             
           
@@ -177,16 +177,16 @@
 <span class="kn">from</span> <span class="nn">boto3.s3.transfer</span> <span class="k">import</span> <span class="n">TransferConfig</span>
 <span class="kn">from</span> <span class="nn">botocore.client</span> <span class="k">import</span> <span class="n">Config</span>
 
-<span class="kn">from</span> <span class="nn">.logger</span> <span class="k">import</span> <span class="n">logger</span>
-<span class="kn">from</span> <span class="nn">.utility</span> <span class="k">import</span> <span class="n">ProgressPercentage</span>
 <span class="kn">from</span> <span class="nn">.errors</span> <span class="k">import</span> <span class="p">(</span>
-    <span class="n">S3Error</span><span class="p">,</span>
     <span class="n">S3CredentialsError</span><span class="p">,</span>
+    <span class="n">S3DeletionError</span><span class="p">,</span>
+    <span class="n">S3DownloadError</span><span class="p">,</span>
+    <span class="n">S3Error</span><span class="p">,</span>
     <span class="n">S3InitializationError</span><span class="p">,</span>
     <span class="n">S3UploadError</span><span class="p">,</span>
-    <span class="n">S3DownloadError</span><span class="p">,</span>
-    <span class="n">S3DeletionError</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.logger</span> <span class="k">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">.utility</span> <span class="k">import</span> <span class="n">ProgressPercentage</span>
 
 
 <div class="viewcode-block" id="S3"><a class="viewcode-back" href="../../api/locopy.s3.html#locopy.redshift.S3">[docs]</a><span class="k">class</span> <span class="nc">S3</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>

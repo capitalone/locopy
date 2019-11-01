@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Developer Instructions &mdash; locopy 0.3.1 documentation</title>
+  <title>Developer Instructions &mdash; locopy 0.3.2 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.3.1
+                0.3.2
               </div>
             
           
@@ -215,22 +215,22 @@ integration tests to work, you will need:</p>
 use for running integration tests. It should look like the following</li>
 </ul>
 <p>Redshift</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">my.redshift.cluster.com</span>
-<span class="l l-Scalar l-Scalar-Plain">port</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">5439</span>
-<span class="l l-Scalar l-Scalar-Plain">database</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">db</span>
-<span class="l l-Scalar l-Scalar-Plain">user</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">username</span>
-<span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
-<span class="l l-Scalar l-Scalar-Plain">profile</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">MY_AWS_PROFILE</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">my.redshift.cluster.com</span>
+<span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5439</span>
+<span class="nt">database</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">db</span>
+<span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">username</span>
+<span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
+<span class="nt">profile</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">MY_AWS_PROFILE</span>
 </pre></div>
 </div>
 <p>Snowflake</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">account</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">my.snowflake.cluster.com</span>
-<span class="l l-Scalar l-Scalar-Plain">warehouse</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">warehouse</span>
-<span class="l l-Scalar l-Scalar-Plain">database</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">db</span>
-<span class="l l-Scalar l-Scalar-Plain">schema</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">schema</span>
-<span class="l l-Scalar l-Scalar-Plain">user</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">username</span>
-<span class="l l-Scalar l-Scalar-Plain">password</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
-<span class="l l-Scalar l-Scalar-Plain">profile</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">MY_AWS_PROFILE</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">account</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">my.snowflake.cluster.com</span>
+<span class="nt">warehouse</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">warehouse</span>
+<span class="nt">database</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">db</span>
+<span class="nt">schema</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">schema</span>
+<span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">username</span>
+<span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
+<span class="nt">profile</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">MY_AWS_PROFILE</span>
 </pre></div>
 </div>
 <p>The integration tests run through a number of selects, loads and unloads.  They
