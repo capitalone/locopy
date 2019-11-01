@@ -55,6 +55,7 @@ DBAPIS = [pg8000, psycopg2]
 
 CHAR_STRATEGY = st.characters()
 
+
 @pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("locopy.s3.Session")
 @given(profile=CHAR_STRATEGY)
