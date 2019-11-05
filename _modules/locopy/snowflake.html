@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.snowflake &mdash; locopy 0.3.2 documentation</title>
+  <title>locopy.snowflake &mdash; locopy 0.3.3 documentation</title>
   
 
   
@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                0.3.2
+                0.3.3
               </div>
             
           
@@ -552,7 +552,7 @@
 
         <span class="c1"># create a list of tuples for insert</span>
         <span class="n">to_insert</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
             <span class="n">none_row</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="kc">None</span> <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">else</span> <span class="n">val</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">row</span><span class="p">])</span>
             <span class="n">to_insert</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">none_row</span><span class="p">)</span>
 
