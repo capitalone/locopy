@@ -24,12 +24,7 @@ from .database import Database
 from .errors import DBError
 from .logger import logger
 from .s3 import S3
-from .utility import (
-    compress_file_list,
-    concatenate_files,
-    split_file,
-    write_file,
-)
+from .utility import compress_file_list, concatenate_files, split_file, write_file
 
 
 def add_default_copy_options(copy_options=None):

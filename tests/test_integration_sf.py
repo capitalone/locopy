@@ -41,6 +41,7 @@ LOCAL_FILE = os.path.join(CURR_DIR, "data", "mock_file.txt")
 LOCAL_FILE_JSON = os.path.join(CURR_DIR, "data", "mock_file.json")
 LOCAL_FILE_DL = os.path.join(CURR_DIR, "data", "mock_file_dl.txt")
 TEST_DF = pd.read_csv(os.path.join(CURR_DIR, "data", "mock_dataframe.txt"), sep=",")
+TEST_DF_2 = pd.read_csv(os.path.join(CURR_DIR, "data", "mock_dataframe_2.txt"), sep=",")
 
 CREDS_DICT = locopy.utility.read_config_yaml(INTEGRATION_CREDS)
 
@@ -185,7 +186,28 @@ def test_insert_dataframe_to_table(dbapi):
             (2, "y", pd.to_datetime("2001-04-02").date()),
         ]
 
+        assert len(expected) == len(results)
         for i, result in enumerate(results):
             assert result[0] == expected[i][0]
             assert result[1] == expected[i][1]
             assert result[2] == expected[i][2]
+
+        test.insert_dataframe_to_table(TEST_DF_2, "test_2", create=True)
+        test.execute("SELECT col1, col2 FROM test_2 ORDER BY col1 ASC")
+        results = test.cursor.fetchall()
+        test.execute("drop table if exists test_2")
+
+        expected = [
+            (1, "a"),
+            (2, "b"),
+            (3, "c"),
+            (4, "d"),
+            (5, "e"),
+            (6, "f"),
+            (7, "g")
+        ]
+
+        assert len(expected) == len(results)
+        for i, result in enumerate(results):
+            assert result[0] == expected[i][0]
+            assert result[1] == expected[i][1]
