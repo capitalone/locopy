@@ -109,7 +109,7 @@ def test_constructor_yaml(input_kms_key, profile, mock_session):
 def test_connect(mock_session, sf_credentials):
     with mock.patch("snowflake.connector.connect") as mock_connect:
         sf = Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials)
-        sf._connect()
+        sf.connect()
 
         mock_connect.assert_called_with(
             account="account",
@@ -127,7 +127,7 @@ def test_connect(mock_session, sf_credentials):
         # side effect exception
         mock_connect.side_effect = Exception("Connect Exception")
         with pytest.raises(DBError):
-            sf._connect()
+            sf.connect()
 
 
 @mock.patch("locopy.s3.Session")

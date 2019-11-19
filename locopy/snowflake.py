@@ -176,7 +176,7 @@ class Snowflake(S3, Database):
             logger.warning("Only internal stages are available")
         Database.__init__(self, dbapi, config_yaml, **kwargs)
 
-    def _connect(self):
+    def connect(self):
         """Creates a connection to the Snowflake cluster by
         setting the values of the ``conn`` and ``cursor`` attributes.
 
@@ -185,7 +185,7 @@ class Snowflake(S3, Database):
         DBError
             If there is a problem establishing a connection to Snowflake.
         """
-        super(Snowflake, self)._connect()
+        super(Snowflake, self).connect()
 
         if self.connection.get("warehouse") is not None:
             self.execute("USE WAREHOUSE {0}".format(self.connection["warehouse"]))
