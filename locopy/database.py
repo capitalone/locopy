@@ -27,7 +27,7 @@ class Database(object):
     """This is the base class for all DBAPI 2 database connectors which will inherit this
     functionality. The ``Database`` class will manage connections and handle executing queries.
     Most of the functionality should work out of the box for classes which inherit minus the
-    abstract method for ``_connect`` which may vary across databases.
+    abstract method for ``connect`` which may vary across databases.
 
     Parameters
     ----------
@@ -74,7 +74,7 @@ class Database(object):
         if config_yaml:
             self.connection = read_config_yaml(config_yaml)
 
-    def _connect(self):
+    def connect(self):
         """Creates a connection to a database by setting the values of the ``conn`` and ``cursor``
         attributes.
 
@@ -90,7 +90,7 @@ class Database(object):
             logger.error("Error connecting to the database. err: {err}", err=e)
             raise DBError("Error connecting to the database.")
 
-    def _disconnect(self):
+    def disconnect(self):
         """Terminates the connection by closing the values of the ``conn`` and ``cursor``
         attributes.
 
@@ -234,11 +234,11 @@ class Database(object):
 
     def __enter__(self):
         logger.info("Connecting...")
-        self._connect()
+        self.connect()
         logger.info("Connection established.")
         return self
 
     def __exit__(self, exc_type, exc, exc_tb):
         logger.info("Closing connection...")
-        self._disconnect()
+        self.disconnect()
         logger.info("Connection closed.")

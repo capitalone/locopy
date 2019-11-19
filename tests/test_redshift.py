@@ -95,7 +95,7 @@ def test_constructor_yaml(mock_session, dbapi):
 def test_redshift_connect(mock_session, credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         r = Redshift(profile=PROFILE, dbapi=dbapi, **credentials)
-        r._connect()
+        r.connect()
 
         if dbapi.__name__ == "pg8000":
             mock_connect.assert_called_with(
@@ -120,7 +120,7 @@ def test_redshift_connect(mock_session, credentials, dbapi):
         # side effect exception
         mock_connect.side_effect = Exception("Connect Exception")
         with pytest.raises(DBError):
-            r._connect()
+            r.connect()
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
@@ -152,7 +152,7 @@ def test_load_and_copy(
 
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         r = Redshift(dbapi=dbapi, **credentials)
-        r._connect()
+        r.connect()
 
         expected_calls_no_folder = [
             mock.call("/path/local_file.0", "s3_bucket", "local_file.0"),
@@ -371,7 +371,7 @@ def test_redshiftcopy(mock_session, credentials, dbapi):
 
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         r = locopy.Redshift(dbapi=dbapi, **credentials)
-        r._connect()
+        r.connect()
         r.copy("table", "s3bucket")
         assert mock_connect.return_value.cursor.return_value.execute.called
         (
@@ -556,7 +556,7 @@ def test_unload_and_copy(
 def test_unload_generated_files(mock_session, credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         r = locopy.Redshift(dbapi=dbapi, **credentials)
-        r._connect()
+        r.connect()
         r._unload_generated_files()
         assert r._unload_generated_files() == None
 
@@ -565,13 +565,13 @@ def test_unload_generated_files(mock_session, credentials, dbapi):
             ["File2 "],
         ]
         r = locopy.Redshift(dbapi=dbapi, **credentials)
-        r._connect()
+        r.connect()
         r._unload_generated_files()
         assert r._unload_generated_files() == ["File1", "File2"]
 
         mock_connect.return_value.cursor.return_value.execute.side_effect = Exception()
         r = locopy.Redshift(dbapi=dbapi, **credentials)
-        r._connect()
+        r.connect()
         with pytest.raises(Exception):
             r._unload_generated_files()
 
@@ -581,19 +581,19 @@ def test_unload_generated_files(mock_session, credentials, dbapi):
 def test_get_column_names(mock_session, credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         r = locopy.Redshift(dbapi=dbapi, **credentials)
-        r._connect()
+        r.connect()
         assert r._get_column_names("query") == None
         sql = "SELECT * FROM (query) WHERE 1 = 0"
         assert mock_connect.return_value.cursor.return_value.execute.called_with(sql, ())
 
         mock_connect.return_value.cursor.return_value.description = [["COL1 "], ["COL2 "]]
         r = locopy.Redshift(dbapi=dbapi, **credentials)
-        r._connect()
+        r.connect()
         assert r._get_column_names("query") == ["COL1", "COL2"]
 
         mock_connect.return_value.cursor.return_value.execute.side_effect = Exception()
         r = locopy.Redshift(dbapi=dbapi, **credentials)
-        r._connect()
+        r.connect()
         with pytest.raises(Exception):
             r._get_column_names("query")
 
@@ -603,7 +603,7 @@ def test_get_column_names(mock_session, credentials, dbapi):
 def testunload(mock_session, credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         r = locopy.Redshift(dbapi=dbapi, **credentials)
-        r._connect()
+        r.connect()
         r.unload("query", "path")
         assert mock_connect.return_value.cursor.return_value.execute.called
 
@@ -618,6 +618,6 @@ def testunload_no_connection(mock_session, credentials, dbapi):
 
         mock_connect.return_value.cursor.return_value.execute.side_effect = Exception()
         r = locopy.Redshift(dbapi=dbapi, **credentials)
-        r._connect()
+        r.connect()
         with pytest.raises(Exception):
             r.unload("query", "path")
