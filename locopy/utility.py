@@ -263,7 +263,7 @@ def find_column_type(dataframe):
 
     column_type = []
     for column in dataframe.columns:
-        data = dataframe[column].dropna()
+        data = dataframe[column].dropna().reset_index(drop=True)
         if data.size == 0:
             column_type.append("varchar")
         elif isinstance(data[0], datetime):

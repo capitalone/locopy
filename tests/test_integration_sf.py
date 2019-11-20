@@ -197,15 +197,7 @@ def test_insert_dataframe_to_table(dbapi):
         results = test.cursor.fetchall()
         test.execute("drop table if exists test_2")
 
-        expected = [
-            (1, "a"),
-            (2, "b"),
-            (3, "c"),
-            (4, "d"),
-            (5, "e"),
-            (6, "f"),
-            (7, "g")
-        ]
+        expected = [(1, "a"), (2, "b"), (3, "c"), (4, "d"), (5, "e"), (6, "f"), (7, "g")]
 
         assert len(expected) == len(results)
         for i, result in enumerate(results):

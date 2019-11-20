@@ -253,6 +253,8 @@ def test_find_column_type():
                 pd.to_datetime("2019-03-01"),
                 pd.to_datetime("2019-04-01"),
             ],
+            "i": [None, "2011-04-02", "2002-04-23"],
+            "j": [None, "2011-01-01 12:11:02", "2022-03-02 23:59:59"],
         }
     )
     output_text = {
@@ -264,5 +266,7 @@ def test_find_column_type():
         "f": "float",
         "g": "varchar",
         "h": "timestamp",
+        "i": "date",
+        "j": "timestamp",
     }
     assert find_column_type(input_text) == output_text
