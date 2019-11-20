@@ -117,7 +117,7 @@ def test_is_connected(credentials, dbapi):
 
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         b = Database(dbapi=dbapi, **credentials)
-        b._connect()
+        b.connect()
         assert b._is_connected() is True
 
     # throws exception in _is_connected
@@ -130,7 +130,7 @@ def test_is_connected(credentials, dbapi):
 def test_connect(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         b = Database(dbapi=dbapi, **credentials)
-        b._connect()
+        b.connect()
         mock_connect.assert_called_with(
             host="host", user="user", port="port", password="password", database="database"
         )
@@ -139,7 +139,7 @@ def test_connect(credentials, dbapi):
     credentials["another"] = 321
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         b = Database(dbapi=dbapi, **credentials)
-        b._connect()
+        b.connect()
         mock_connect.assert_called_with(
             host="host",
             user="user",
@@ -153,31 +153,31 @@ def test_connect(credentials, dbapi):
     # side effect exception
     mock_connect.side_effect = Exception("Connect Exception")
     with pytest.raises(DBError):
-        b._connect()
+        b.connect()
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_disconnect(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         b = Database(dbapi=dbapi, **credentials)
-        b._connect()
-        b._disconnect()
+        b.connect()
+        b.disconnect()
         b.conn.close.assert_called_with()
         b.cursor.close.assert_called_with()
 
     # side effect exception
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
-        b._connect()
+        b.connect()
         b.conn.close.side_effect = Exception("Disconnect Exception")
         with pytest.raises(DBError):
-            b._disconnect()
+            b.disconnect()
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_disconnect_no_conn(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         b = Database(dbapi=dbapi, **credentials)
-        b._disconnect()
+        b.disconnect()
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)

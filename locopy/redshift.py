@@ -150,7 +150,7 @@ class Redshift(S3, Database):
             logger.warning("S3 credentials we not found. S3 functionality is disabled")
         Database.__init__(self, dbapi, config_yaml, **kwargs)
 
-    def _connect(self):
+    def connect(self):
         """Creates a connection to the Redshift cluster by
         setting the values of the ``conn`` and ``cursor`` attributes.
 
@@ -163,7 +163,7 @@ class Redshift(S3, Database):
             self.connection["sslmode"] = "require"
         elif self.dbapi.__name__ == "pg8000":
             self.connection["ssl"] = True
-        super(Redshift, self)._connect()
+        super(Redshift, self).connect()
 
     def copy(self, table_name, s3path, delim="|", copy_options=None):
         """Executes the COPY command to load delimited files from S3 into
