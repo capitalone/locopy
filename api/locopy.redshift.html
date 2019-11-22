@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.redshift module &mdash; locopy 0.3.3 documentation</title>
+  <title>locopy.redshift module &mdash; locopy 0.3.4 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.3.3
+                0.3.4
               </div>
             
           
@@ -353,6 +353,21 @@ DBAPI, it could return column names as bytes: <code class="docutils literal notr
 </dd></dl>
 
 <dl class="method">
+<dt id="locopy.redshift.Redshift.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.redshift.Redshift.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a connection to the Redshift cluster by
+setting the values of the <code class="docutils literal notranslate"><span class="pre">conn</span></code> and <code class="docutils literal notranslate"><span class="pre">cursor</span></code> attributes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">DBError</span></code> – If there is a problem establishing a connection to Redshift.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="locopy.redshift.Redshift.copy">
 <code class="descname">copy</code><span class="sig-paren">(</span><em>table_name</em>, <em>s3path</em>, <em>delim='|'</em>, <em>copy_options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.redshift.Redshift.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executes the COPY command to load delimited files from S3 into
@@ -409,6 +424,21 @@ has not been initalized, or credentials are wrong.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s3_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of strings with the s3 paths of the files to delete. The strings should not include
 the <cite>s3://</cite> scheme.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="locopy.redshift.Redshift.disconnect">
+<code class="descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#locopy.redshift.Redshift.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terminates the connection by closing the values of the <code class="docutils literal notranslate"><span class="pre">conn</span></code> and <code class="docutils literal notranslate"><span class="pre">cursor</span></code>
+attributes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">DBError</span></code> – If there is a problem disconnecting from the database.</td>
 </tr>
 </tbody>
 </table>

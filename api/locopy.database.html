@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.database module &mdash; locopy 0.3.3 documentation</title>
+  <title>locopy.database module &mdash; locopy 0.3.4 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.3.3
+                0.3.4
               </div>
             
           
@@ -184,7 +184,7 @@
 <p>This is the base class for all DBAPI 2 database connectors which will inherit this
 functionality. The <code class="docutils literal notranslate"><span class="pre">Database</span></code> class will manage connections and handle executing queries.
 Most of the functionality should work out of the box for classes which inherit minus the
-abstract method for <code class="docutils literal notranslate"><span class="pre">_connect</span></code> which may vary across databases.</p>
+abstract method for <code class="docutils literal notranslate"><span class="pre">connect</span></code> which may vary across databases.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -277,6 +277,36 @@ DBAPI, it could return column names as bytes: <code class="docutils literal notr
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">List of column names, all in lower-case</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="locopy.database.Database.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.database.Database.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a connection to a database by setting the values of the <code class="docutils literal notranslate"><span class="pre">conn</span></code> and <code class="docutils literal notranslate"><span class="pre">cursor</span></code>
+attributes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">DBError</span></code> – If there is a problem establishing a connection.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="locopy.database.Database.disconnect">
+<code class="descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.database.Database.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terminates the connection by closing the values of the <code class="docutils literal notranslate"><span class="pre">conn</span></code> and <code class="docutils literal notranslate"><span class="pre">cursor</span></code>
+attributes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">DBError</span></code> – If there is a problem disconnecting from the database.</td>
 </tr>
 </tbody>
 </table>

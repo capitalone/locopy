@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.snowflake module &mdash; locopy 0.3.3 documentation</title>
+  <title>locopy.snowflake module &mdash; locopy 0.3.4 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.3.3
+                0.3.4
               </div>
             
           
@@ -350,6 +350,21 @@ DBAPI, it could return column names as bytes: <code class="docutils literal notr
 </dd></dl>
 
 <dl class="method">
+<dt id="locopy.snowflake.Snowflake.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a connection to the Snowflake cluster by
+setting the values of the <code class="docutils literal notranslate"><span class="pre">conn</span></code> and <code class="docutils literal notranslate"><span class="pre">cursor</span></code> attributes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">DBError</span></code> – If there is a problem establishing a connection to Snowflake.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="locopy.snowflake.Snowflake.copy">
 <code class="descname">copy</code><span class="sig-paren">(</span><em>table_name</em>, <em>stage</em>, <em>file_type='csv'</em>, <em>format_options=None</em>, <em>copy_options=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executes the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span> <span class="pre">&lt;table&gt;</span></code> command to load CSV files from a stage into
@@ -409,6 +424,21 @@ has not been initalized.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s3_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of strings with the s3 paths of the files to delete. The strings should not include
 the <cite>s3://</cite> scheme.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="locopy.snowflake.Snowflake.disconnect">
+<code class="descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#locopy.snowflake.Snowflake.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Terminates the connection by closing the values of the <code class="docutils literal notranslate"><span class="pre">conn</span></code> and <code class="docutils literal notranslate"><span class="pre">cursor</span></code>
+attributes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">DBError</span></code> – If there is a problem disconnecting from the database.</td>
 </tr>
 </tbody>
 </table>
