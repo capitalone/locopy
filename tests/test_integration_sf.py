@@ -203,3 +203,28 @@ def test_insert_dataframe_to_table(dbapi):
         for i, result in enumerate(results):
             assert result[0] == expected[i][0]
             assert result[1] == expected[i][1]
+
+        from decimal import Decimal
+
+        TEST_DF_3 = pd.DataFrame(
+            {
+                "a": [1, 2],
+                "b": [pd.to_datetime("2013-01-01"), pd.to_datetime("2019-01-01")],
+                "c": ["1.2", "3.5"],
+                "d": [Decimal(2), Decimal(3)],
+            }
+        )
+        test.insert_dataframe_to_table(TEST_DF_3, "test_3", create=True)
+        test.execute("SELECT a, b FROM test_3 ORDER BY a ASC")
+        results = test.cursor.fetchall()
+        test.execute("drop table if exists test_3")
+
+        expected = [
+            (1, pd.to_datetime("2013-01-01"), 1.2, 2),
+            (2, pd.to_datetime("2019-01-01"), 3.5, 3),
+        ]
+
+        assert len(expected) == len(results)
+        for i, result in enumerate(results):
+            assert result[0] == expected[i][0]
+            assert result[1] == expected[i][1]

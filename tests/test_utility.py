@@ -237,6 +237,7 @@ def test_concatenate_files_exception():
 def test_find_column_type():
 
     import pandas as pd
+    from decimal import Decimal
 
     # add timestamp
     input_text = pd.DataFrame.from_dict(
@@ -255,6 +256,7 @@ def test_find_column_type():
             ],
             "i": [None, "2011-04-02", "2002-04-23"],
             "j": [None, "2011-01-01 12:11:02", "2022-03-02 23:59:59"],
+            "k": [Decimal(3.3), Decimal(100), None],
         }
     )
     output_text = {
@@ -268,5 +270,6 @@ def test_find_column_type():
         "h": "timestamp",
         "i": "date",
         "j": "timestamp",
+        "k": "float",
     }
     assert find_column_type(input_text) == output_text

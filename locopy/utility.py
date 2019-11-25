@@ -261,6 +261,13 @@ def find_column_type(dataframe):
             except ValueError:
                 return None
 
+    def validate_object(text):
+        try:
+            float(text)
+            return "float"
+        except ValueError:
+            return validate_date(text)
+
     column_type = []
     for column in dataframe.columns:
         data = dataframe[column].dropna().reset_index(drop=True)
@@ -271,12 +278,16 @@ def find_column_type(dataframe):
         elif isinstance(data[0], date):
             column_type.append("date")
         elif str(data.dtype).startswith("object"):
-            date_types = [validate_date(i) for i in data.tolist()]
+            date_types = [validate_object(i) for i in data.tolist()]
             if sum([not i for i in date_types]) == 0:
-                if "timestamp" in date_types:
+                if set(["float"]) == set(date_types):
+                    column_type.append("float")
+                elif set(["timestamp"]) == set(date_types):
                     column_type.append("timestamp")
-                else:
+                elif set(["date"]) == set(date_types):
                     column_type.append("date")
+                else:
+                    column_type.append("varchar")
             else:
                 column_type.append("varchar")
         elif str(data.dtype).startswith("int"):
