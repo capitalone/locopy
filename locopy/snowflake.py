@@ -400,7 +400,7 @@ class Snowflake(S3, Database):
         # create a list of tuples for insert
         to_insert = []
         for row in dataframe.itertuples(index=False):
-            none_row = tuple([None if pd.isnull(val) else val for val in row])
+            none_row = tuple([None if pd.isnull(val) else str(val) for val in row])
             to_insert.append(none_row)
 
         if not create and metadata:

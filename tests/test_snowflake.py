@@ -363,7 +363,7 @@ def test_insert_dataframe_to_table(mock_session, sf_credentials):
             sf.insert_dataframe_to_table(test_df, "database.schema.test")
             sf.conn.cursor.return_value.executemany.assert_called_with(
                 "INSERT INTO database.schema.test (a,b,c) VALUES (%s,%s,%s)",
-                [(1, "x", "2011-01-01"), (2, "y", "2001-04-02")],
+                [("1", "x", "2011-01-01"), ("2", "y", "2001-04-02")],
             )
 
             sf.insert_dataframe_to_table(test_df, "database.schema.test", create=True)
@@ -372,13 +372,13 @@ def test_insert_dataframe_to_table(mock_session, sf_credentials):
             )
             sf.conn.cursor.return_value.executemany.assert_called_with(
                 "INSERT INTO database.schema.test (a,b,c) VALUES (%s,%s,%s)",
-                [(1, "x", "2011-01-01"), (2, "y", "2001-04-02")],
+                [("1", "x", "2011-01-01"), ("2", "y", "2001-04-02")],
             )
 
             sf.insert_dataframe_to_table(test_df, "database.schema.test", columns=["a", "b"])
 
             sf.conn.cursor.return_value.executemany.assert_called_with(
-                "INSERT INTO database.schema.test (a,b) VALUES (%s,%s)", [(1, "x"), (2, "y")]
+                "INSERT INTO database.schema.test (a,b) VALUES (%s,%s)", [("1", "x"), ("2", "y")]
             )
 
             sf.insert_dataframe_to_table(
@@ -393,7 +393,7 @@ def test_insert_dataframe_to_table(mock_session, sf_credentials):
             )
             sf.conn.cursor.return_value.executemany.assert_called_with(
                 "INSERT INTO database.schema.test (col1,col2,col3) VALUES (%s,%s,%s)",
-                [(1, "x", "2011-01-01"), (2, "y", "2001-04-02")],
+                [("1", "x", "2011-01-01"), ("2", "y", "2001-04-02")],
             )
 
             sf.insert_dataframe_to_table(
@@ -406,5 +406,5 @@ def test_insert_dataframe_to_table(mock_session, sf_credentials):
             # mock_session.warn.assert_called_with('Metadata will not be used because create is set to False.')
             sf.conn.cursor.return_value.executemany.assert_called_with(
                 "INSERT INTO database.schema.test (a,b,c) VALUES (%s,%s,%s)",
-                [(1, "x", "2011-01-01"), (2, "y", "2001-04-02")],
+                [("1", "x", "2011-01-01"), ("2", "y", "2001-04-02")],
             )
