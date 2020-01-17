@@ -22,9 +22,12 @@ import os
 
 from .database import Database
 from .errors import DBError
-from .logger import logger
+from .logger import get_logger, INFO
 from .s3 import S3
 from .utility import compress_file_list, concatenate_files, split_file, write_file
+
+
+logger = get_logger(__name__, INFO)
 
 
 def add_default_copy_options(copy_options=None):
@@ -203,7 +206,7 @@ class Redshift(S3, Database):
             self.execute(sql, commit=True)
 
         except Exception as e:
-            logger.error("Error running COPY on Redshift. err: {err}", err=e)
+            logger.error("Error running COPY on Redshift. err: %s", e)
             raise DBError("Error running COPY on Redshift.")
 
     def load_and_copy(
@@ -417,7 +420,7 @@ class Redshift(S3, Database):
             )
             self.execute(sql, commit=True)
         except Exception as e:
-            logger.error("Error running UNLOAD on redshift. err: {err}", err=e)
+            logger.error("Error running UNLOAD on redshift. err: %s", e)
             raise DBError("Error running UNLOAD on redshift.")
 
     def _get_column_names(self, query):

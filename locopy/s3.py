@@ -32,8 +32,11 @@ from .errors import (
     S3InitializationError,
     S3UploadError,
 )
-from .logger import logger
+from .logger import get_logger, INFO
 from .utility import ProgressPercentage
+
+
+logger = get_logger(__name__, INFO)
 
 
 class S3(object):
@@ -97,7 +100,7 @@ class S3(object):
             self.session = Session(profile_name=self.profile)
             logger.info("Initialized AWS session.")
         except Exception as e:
-            logger.error("Error initializing AWS Session, err: {err}", err=e)
+            logger.error("Error initializing AWS Session, err: %s", e)
             raise S3Error("Error initializing AWS Session.")
         credentials = self.session.get_credentials()
         if credentials is None:
@@ -108,7 +111,7 @@ class S3(object):
             self.s3 = self.session.client("s3", config=Config(signature_version="s3v4"))
             logger.info("Successfully initialized S3 client.")
         except Exception as e:
-            logger.error("Error initializing S3 Client, err: {err}", err=e)
+            logger.error("Error initializing S3 Client, err: %s", e)
             raise S3InitializationError("Error initializing S3 Client.")
 
     def _credentials_string(self):
@@ -202,14 +205,12 @@ class S3(object):
                 extra_args["SSEKMSKeyId"] = self.kms_key
                 logger.info("Using KMS Keys for encryption")
 
-            logger.info(
-                "Uploading file to S3 bucket: {bucket}", bucket=self._generate_s3_path(bucket, key)
-            )
+            logger.info("Uploading file to S3 bucket: %s", self._generate_s3_path(bucket, key))
             self.s3.upload_file(
                 local, bucket, key, ExtraArgs=extra_args, Callback=ProgressPercentage(local)
             )
         except Exception as e:
-            logger.error("Error uploading to S3. err: {err}", err=e)
+            logger.error("Error uploading to S3. err: %s", e)
             raise S3UploadError("Error uploading to S3.")
 
     def upload_list_to_s3(self, local_list, bucket, folder=None):
@@ -275,13 +276,12 @@ class S3(object):
         """
         try:
             logger.info(
-                "Downloading file from S3 bucket: {bucket}",
-                bucket=self._generate_s3_path(bucket, key),
+                "Downloading file from S3 bucket: %s", self._generate_s3_path(bucket, key),
             )
             config = TransferConfig(max_concurrency=5)
             self.s3.download_file(bucket, key, local, Config=config)
         except Exception as e:
-            logger.error("Error downloading from S3. err: {err}", err=e)
+            logger.error("Error downloading from S3. err: %s", e)
             raise S3DownloadError("Error downloading from S3.")
 
     def download_list_from_s3(self, s3_list, local_path=None):
@@ -331,12 +331,10 @@ class S3(object):
             If there is a issue deleting from the S3 bucket
         """
         try:
-            logger.info(
-                "Deleting file from S3 bucket: {bucket}", bucket=self._generate_s3_path(bucket, key)
-            )
+            logger.info("Deleting file from S3 bucket: %s", self._generate_s3_path(bucket, key))
             self.s3.delete_object(Bucket=bucket, Key=key)
         except Exception as e:
-            logger.error("Error deleting from S3. err: {err}", err=e)
+            logger.error("Error deleting from S3. err: %s", e)
             raise S3DeletionError("Error deleting from S3.")
 
     def delete_list_from_s3(self, s3_list):

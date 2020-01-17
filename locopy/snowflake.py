@@ -23,9 +23,12 @@ from pathlib import PurePath
 
 from .database import Database
 from .errors import DBError, S3CredentialsError
-from .logger import logger
+from .logger import get_logger, INFO
 from .s3 import S3
 from .utility import find_column_type
+
+
+logger = get_logger(__name__, INFO)
 
 COPY_FORMAT_OPTIONS = {
     "csv": {
@@ -295,7 +298,7 @@ class Snowflake(S3, Database):
             self.execute(sql, commit=True)
 
         except Exception as e:
-            logger.error("Error running COPY on Snowflake. err: {err}", err=e)
+            logger.error("Error running COPY on Snowflake. err: %s", e)
             raise DBError("Error running COPY on Snowflake.")
 
     def unload(
@@ -361,7 +364,7 @@ class Snowflake(S3, Database):
             )
             self.execute(sql, commit=True)
         except Exception as e:
-            logger.error("Error running UNLOAD on Snowflake. err: {err}", err=e)
+            logger.error("Error running UNLOAD on Snowflake. err: %s", e)
             raise DBError("Error running UNLOAD on Snowflake.")
 
     def insert_dataframe_to_table(

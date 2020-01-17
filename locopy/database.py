@@ -19,8 +19,11 @@
 import time
 
 from .errors import CredentialsError, DBError
-from .logger import logger
+from .logger import get_logger, INFO
 from .utility import read_config_yaml
+
+
+logger = get_logger(__name__, INFO)
 
 
 class Database(object):
@@ -87,7 +90,7 @@ class Database(object):
             self.conn = self.dbapi.connect(**self.connection)
             self.cursor = self.conn.cursor()
         except Exception as e:
-            logger.error("Error connecting to the database. err: {err}", err=e)
+            logger.error("Error connecting to the database. err: %s", e)
             raise DBError("Error connecting to the database.")
 
     def disconnect(self):
@@ -105,7 +108,7 @@ class Database(object):
                 self.cursor.close()
                 self.conn.close()
             except Exception as e:
-                logger.error("Error disconnecting from the database. err: {err}", err=e)
+                logger.error("Error disconnecting from the database. err: %s", e)
                 raise DBError("There is a problem disconnecting from the database.")
         else:
             logger.info("No connection to close")
@@ -139,14 +142,14 @@ class Database(object):
         """
         if self._is_connected():
             start_time = time.time()
-            logger.info("Running SQL: {sql}", sql=sql)
+            logger.info("Running SQL: %s", sql)
             try:
                 if many:
                     self.cursor.executemany(sql, params)
                 else:
                     self.cursor.execute(sql, params)
             except Exception as e:
-                logger.error("Error running SQL query. err: {err}", err=e)
+                logger.error("Error running SQL query. err: %s", e)
                 raise DBError("Error running SQL query.")
             if commit:
                 self.conn.commit()
@@ -156,7 +159,7 @@ class Database(object):
             else:
                 time_str = ""
             time_str += str(int(elapsed) % 60) + " seconds"
-            logger.info("Time elapsed: {time}", time=time_str)
+            logger.info("Time elapsed: %s", time_str)
         else:
             raise DBError("Cannot execute SQL on a closed connection.")
 
