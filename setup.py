@@ -40,9 +40,9 @@ setup(
     packages=["locopy"],
     install_requires=INSTALL_REQUIRES,
     extras_require={
-        "psycopg2": ["psycopg2==2.7.7"],
-        "pg8000": ["pg8000==1.13.1"],
-        "snowflake": ["snowflake-connector-python==1.7.6"],
+        "psycopg2": ["psycopg2>=2.7.7"],
+        "pg8000": ["pg8000>=1.13.1"],
+        "snowflake": ["snowflake-connector-python>=1.7.6"],
     },
     zip_safe=False,
 )
