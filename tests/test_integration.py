@@ -39,8 +39,11 @@ S3_BUCKET = "locopy-integration-testing"
 CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 LOCAL_FILE = os.path.join(CURR_DIR, "data", "mock_file.txt")
 LOCAL_FILE_DL = os.path.join(CURR_DIR, "data", "mock_file_dl.txt")
+TEST_DF = pd.read_csv(os.path.join(CURR_DIR, "data", "mock_dataframe.txt"), sep=",")
+TEST_DF_2 = pd.read_csv(os.path.join(CURR_DIR, "data", "mock_dataframe_2.txt"), sep=",")
 
 CREDS_DICT = locopy.utility.read_config_yaml(INTEGRATION_CREDS)
+
 
 
 @pytest.fixture()
@@ -151,3 +154,65 @@ def test_unload(s3_bucket, dbapi):
             assert result[0].strftime("%Y-%m-%d") == expected[i][0]
 
         os.remove(LOCAL_FILE_DL)
+
+@pytest.mark.integration
+@pytest.mark.parametrize("dbapi", DBAPIS)
+def test_insert_dataframe_to_table(s3_bucket, dbapi):
+
+    with locopy.Redshift(dbapi=dbapi, **CREDS_DICT) as redshift:
+        redshift.insert_dataframe_to_table(TEST_DF, "locopy_df_test", create=True)
+        redshift.execute("SELECT a, b, c FROM locopy_df_test ORDER BY a ASC")
+        results = redshift.cursor.fetchall()
+        redshift.execute("drop table if exists locopy_df_test")
+
+        expected = [
+            (1, "x", pd.to_datetime("2011-01-01").date()),
+            (2, "y", pd.to_datetime("2001-04-02").date()),
+        ]
+
+        assert len(expected) == len(results)
+        for i, result in enumerate(results):
+            assert result[0] == expected[i][0]
+            assert result[1] == expected[i][1]
+            assert result[2] == expected[i][2]
+
+        redshift.insert_dataframe_to_table(TEST_DF_2, "locopy_test_2", create=True, batch_size=3)
+        redshift.execute("SELECT col1, col2 FROM locopy_test_2 ORDER BY col1 ASC")
+        results = redshift.cursor.fetchall()
+        redshift.execute("drop table if exists locopy_test_2")
+
+        expected = [(1, "a"), (2, "b"), (3, "c"), (4, "d"), (5, "e"), (6, "f"), (7, "g")]
+
+        assert len(expected) == len(results)
+        for i, result in enumerate(results):
+            assert result[0] == expected[i][0]
+            assert result[1] == expected[i][1]
+
+        from decimal import Decimal
+
+        TEST_DF_3 = pd.DataFrame(
+            {
+                "a": [1, 2],
+                "b": [pd.to_datetime("2013-01-01"), pd.to_datetime("2019-01-01")],
+                "c": [True, False],
+                "d": [Decimal(2), Decimal(3)],
+                "e": [None, "x'y"]
+            }
+        )
+        redshift.insert_dataframe_to_table(TEST_DF_3, "locopy_test_3", create=True)
+        redshift.execute("SELECT a, b, c, d, e FROM locopy_test_3 ORDER BY a ASC")
+        results = redshift.cursor.fetchall()
+        redshift.execute("drop table if exists locopy_test_3")
+
+        expected = [
+            (1, pd.to_datetime("2013-01-01"), True, 2, None),
+            (2, pd.to_datetime("2019-01-01"), False, 3, "x'y"),
+        ]
+
+        assert len(expected) == len(results)
+        for i, result in enumerate(results):
+            assert result[0] == expected[i][0]
+            assert result[1] == expected[i][1]
+            assert result[2] == expected[i][2]
+            assert result[3] == expected[i][3]
+            assert result[4] == expected[i][4]

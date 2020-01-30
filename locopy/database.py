@@ -113,7 +113,7 @@ class Database(object):
         else:
             logger.info("No connection to close")
 
-    def execute(self, sql, commit=True, params=(), many=False):
+    def execute(self, sql, commit=True, params=(), many=False, verbose=True):
         """Execute some sql against the connection.
 
         Parameters
@@ -132,6 +132,9 @@ class Database(object):
         many : bool, default False
             Whether to execute the script as an "execute many"
 
+        verbose: bool, default True
+            Whether to print executed query
+
         Raises
         ------
         DBError
@@ -142,7 +145,8 @@ class Database(object):
         """
         if self._is_connected():
             start_time = time.time()
-            logger.info("Running SQL: %s", sql)
+            if verbose:
+                logger.info("Running SQL: %s", sql)
             try:
                 if many:
                     self.cursor.executemany(sql, params)

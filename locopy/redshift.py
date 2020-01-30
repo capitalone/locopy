@@ -24,7 +24,7 @@ from .database import Database
 from .errors import DBError
 from .logger import get_logger, INFO
 from .s3 import S3
-from .utility import compress_file_list, concatenate_files, split_file, write_file
+from .utility import compress_file_list, concatenate_files, split_file, write_file, find_column_type
 
 
 logger = get_logger(__name__, INFO)
@@ -470,3 +470,81 @@ class Redshift(S3, Database):
         except Exception as e:
             logger.error("Error retrieving unloads generated files")
             raise
+
+    def insert_dataframe_to_table(
+        self, dataframe, table_name, columns=None, create=False, metadata=None, batch_size=1000, verbose=False
+    ):
+        """
+        Insert a Pandas dataframe to an existing table or a new table.
+
+        Parameters
+        ----------
+        dataframe: Pandas Dataframe
+            The pandas dataframe which needs to be inserted.
+
+        table_name: str
+            The name of the Snowflake table which is being inserted.
+
+        columns: list, optional
+            The list of columns which will be uploaded.
+
+        create: bool, default False
+            Boolean flag if a new table need to be created and insert to.
+
+        metadata: dictionary, optional
+            If metadata==None, it will be generated based on data
+
+        batch_size: int, default 1000
+            The number of records to insert in each batch
+
+        verbose: bool, default False
+            Whether or not to print out insert query
+        """
+
+        import pandas as pd
+
+        if columns:
+            dataframe = dataframe[columns]
+
+        all_columns = columns or list(dataframe.columns)
+        column_sql = "(" + ",".join(all_columns) + ")"
+
+        if not create and metadata:
+            logger.warning("Metadata will not be used because create is set to False.")
+
+        if create:
+            if not metadata:
+                logger.info("Metadata is missing. Generating metadata ...")
+                metadata = find_column_type(dataframe)
+                logger.info("Metadata is complete. Creating new table ...")
+
+            create_join = (
+                "("
+                + ",".join(
+                    [
+                        list(metadata.keys())[i] + " " + list(metadata.values())[i]
+                        for i in range(len(metadata))
+                    ]
+                )
+                + ")"
+            )
+            column_sql = "(" + ",".join(list(metadata.keys())) + ")"
+            create_query = "CREATE TABLE {table_name} {create_join}".format(
+                table_name=table_name, create_join=create_join
+            )
+            self.execute(create_query)
+            logger.info("New table has been created")
+
+        logger.info("Inserting records...")
+        for start in range(0, len(dataframe), batch_size):
+            # create a list of tuples for insert
+            to_insert = []
+            for row in dataframe[start:(start + batch_size)].itertuples(index=False):
+                none_row = '(' + ', '.join(['NULL' if pd.isnull(val) else "'"+str(val).replace("'", "''")+"'" for val in row]) + ')'
+                to_insert.append(none_row)
+            string_join = ', '.join(to_insert)
+            insert_query = """INSERT INTO {table_name} {columns} VALUES {values}""".format(
+                table_name=table_name, columns=column_sql, values=string_join
+            )
+            self.execute(insert_query, verbose=verbose)
+        logger.info("Table insertion has completed")
