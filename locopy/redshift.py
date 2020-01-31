@@ -472,10 +472,20 @@ class Redshift(S3, Database):
             raise
 
     def insert_dataframe_to_table(
-        self, dataframe, table_name, columns=None, create=False, metadata=None, batch_size=1000, verbose=False
+        self,
+        dataframe,
+        table_name,
+        columns=None,
+        create=False,
+        metadata=None,
+        batch_size=1000,
+        verbose=False,
     ):
         """
         Insert a Pandas dataframe to an existing table or a new table.
+
+        `executemany` in psycopg2 and pg8000 has very poor performance in terms of running speed.
+        To overcome this issue, we instead format the insert query and then run `execute`.
 
         Parameters
         ----------
@@ -499,6 +509,8 @@ class Redshift(S3, Database):
 
         verbose: bool, default False
             Whether or not to print out insert query
+
+
         """
 
         import pandas as pd
@@ -539,10 +551,19 @@ class Redshift(S3, Database):
         for start in range(0, len(dataframe), batch_size):
             # create a list of tuples for insert
             to_insert = []
-            for row in dataframe[start:(start + batch_size)].itertuples(index=False):
-                none_row = '(' + ', '.join(['NULL' if pd.isnull(val) else "'"+str(val).replace("'", "''")+"'" for val in row]) + ')'
+            for row in dataframe[start : (start + batch_size)].itertuples(index=False):
+                none_row = (
+                    "("
+                    + ", ".join(
+                        [
+                            "NULL" if pd.isnull(val) else "'" + str(val).replace("'", "''") + "'"
+                            for val in row
+                        ]
+                    )
+                    + ")"
+                )
                 to_insert.append(none_row)
-            string_join = ', '.join(to_insert)
+            string_join = ", ".join(to_insert)
             insert_query = """INSERT INTO {table_name} {columns} VALUES {values}""".format(
                 table_name=table_name, columns=column_sql, values=string_join
             )

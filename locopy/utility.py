@@ -255,10 +255,10 @@ def find_column_type(dataframe):
     def validate_date_object(column):
         try:
             pd.to_datetime(column)
-            if re.search(r'\d+:\d+:\d+', column.sample(1).to_string(index=False)):
-                return 'timestamp'
+            if re.search(r"\d+:\d+:\d+", column.sample(1).to_string(index=False)):
+                return "timestamp"
             else:
-                return 'date'
+                return "date"
         except (ValueError, TypeError):
             return None
 
@@ -276,14 +276,14 @@ def find_column_type(dataframe):
         print(data)
         if data.size == 0:
             column_type.append("varchar")
-        elif data.dtype in ['datetime64[ns]', 'M8[ns]']:
+        elif data.dtype in ["datetime64[ns]", "M8[ns]"]:
             column_type.append("timestamp")
-        elif data.dtype=='bool':
+        elif data.dtype == "bool":
             column_type.append("boolean")
         elif str(data.dtype).startswith("object"):
-            data_type =  validate_float_object(data) or validate_date_object(data)
+            data_type = validate_float_object(data) or validate_date_object(data)
             if not data_type:
-                column_type.append('varchar')
+                column_type.append("varchar")
             else:
                 column_type.append(data_type)
         elif str(data.dtype).startswith("int"):
@@ -291,6 +291,7 @@ def find_column_type(dataframe):
         elif str(data.dtype).startswith("float"):
             column_type.append("float")
     return OrderedDict(zip(list(dataframe.columns), column_type))
+
 
 class ProgressPercentage(object):
     """

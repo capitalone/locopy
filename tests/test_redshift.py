@@ -638,47 +638,45 @@ def testinsert_dataframe_to_table(mock_session, credentials, dbapi):
         r.connect()
         r.insert_dataframe_to_table(test_df, "database.schema.test")
         mock_connect.return_value.cursor.return_value.execute.assert_called_with(
-                "INSERT INTO database.schema.test (a,b,c) VALUES ('1', 'x', '2011-01-01'), ('2', 'y', '2001-04-02')", ()
-            )
+            "INSERT INTO database.schema.test (a,b,c) VALUES ('1', 'x', '2011-01-01'), ('2', 'y', '2001-04-02')",
+            (),
+        )
 
         r.insert_dataframe_to_table(test_df, "database.schema.test", create=True)
         mock_connect.return_value.cursor.return_value.execute.assert_any_call(
-                "CREATE TABLE database.schema.test (a int,b varchar,c date)", ()
-            )
+            "CREATE TABLE database.schema.test (a int,b varchar,c date)", ()
+        )
         mock_connect.return_value.cursor.return_value.execute.assert_called_with(
-                "INSERT INTO database.schema.test (a,b,c) VALUES ('1', 'x', '2011-01-01'), ('2', 'y', '2001-04-02')", ()
-            )
+            "INSERT INTO database.schema.test (a,b,c) VALUES ('1', 'x', '2011-01-01'), ('2', 'y', '2001-04-02')",
+            (),
+        )
 
         r.insert_dataframe_to_table(test_df, "database.schema.test", columns=["a", "b"])
 
         mock_connect.return_value.cursor.return_value.execute.assert_called_with(
-                "INSERT INTO database.schema.test (a,b) VALUES ('1', 'x'), ('2', 'y')", ()
-            )
+            "INSERT INTO database.schema.test (a,b) VALUES ('1', 'x'), ('2', 'y')", ()
+        )
 
         r.insert_dataframe_to_table(
-                test_df,
-                "database.schema.test",
-                create=True,
-                metadata=OrderedDict([("col1", "int"), ("col2", "varchar"), ("col3", "date")]),
-            )
-
-        mock_connect.return_value.cursor.return_value.execute.assert_any_call(
-                "CREATE TABLE database.schema.test (col1 int,col2 varchar,col3 date)", ()
-            )
-        mock_connect.return_value.cursor.return_value.execute.assert_called_with(
-                "INSERT INTO database.schema.test (col1,col2,col3) VALUES ('1', 'x', '2011-01-01'), ('2', 'y', '2001-04-02')", ()
-            )
-
-        r.insert_dataframe_to_table(
-                test_df,
-                "database.schema.test",
-                create=False,
-                batch_size = 1
+            test_df,
+            "database.schema.test",
+            create=True,
+            metadata=OrderedDict([("col1", "int"), ("col2", "varchar"), ("col3", "date")]),
         )
 
         mock_connect.return_value.cursor.return_value.execute.assert_any_call(
-                "INSERT INTO database.schema.test (a,b,c) VALUES ('1', 'x', '2011-01-01')", ()
-            )
+            "CREATE TABLE database.schema.test (col1 int,col2 varchar,col3 date)", ()
+        )
+        mock_connect.return_value.cursor.return_value.execute.assert_called_with(
+            "INSERT INTO database.schema.test (col1,col2,col3) VALUES ('1', 'x', '2011-01-01'), ('2', 'y', '2001-04-02')",
+            (),
+        )
+
+        r.insert_dataframe_to_table(test_df, "database.schema.test", create=False, batch_size=1)
+
         mock_connect.return_value.cursor.return_value.execute.assert_any_call(
-                "INSERT INTO database.schema.test (a,b,c) VALUES ('2', 'y', '2001-04-02')", ()
-            )
+            "INSERT INTO database.schema.test (a,b,c) VALUES ('1', 'x', '2011-01-01')", ()
+        )
+        mock_connect.return_value.cursor.return_value.execute.assert_any_call(
+            "INSERT INTO database.schema.test (a,b,c) VALUES ('2', 'y', '2001-04-02')", ()
+        )

@@ -45,7 +45,6 @@ TEST_DF_2 = pd.read_csv(os.path.join(CURR_DIR, "data", "mock_dataframe_2.txt"), 
 CREDS_DICT = locopy.utility.read_config_yaml(INTEGRATION_CREDS)
 
 
-
 @pytest.fixture()
 def s3_bucket():
     session = boto3.Session(profile_name=CREDS_DICT["profile"])
@@ -155,6 +154,7 @@ def test_unload(s3_bucket, dbapi):
 
         os.remove(LOCAL_FILE_DL)
 
+
 @pytest.mark.integration
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_insert_dataframe_to_table(s3_bucket, dbapi):
@@ -196,7 +196,7 @@ def test_insert_dataframe_to_table(s3_bucket, dbapi):
                 "b": [pd.to_datetime("2013-01-01"), pd.to_datetime("2019-01-01")],
                 "c": [True, False],
                 "d": [Decimal(2), Decimal(3)],
-                "e": [None, "x'y"]
+                "e": [None, "x'y"],
             }
         )
         redshift.insert_dataframe_to_table(TEST_DF_3, "locopy_test_3", create=True)
