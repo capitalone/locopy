@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.utility &mdash; locopy 0.3.4 documentation</title>
+  <title>locopy.utility &mdash; locopy 0.3.6 documentation</title>
   
 
   
@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                0.3.4
+                0.3.6
               </div>
             
           
@@ -175,13 +175,15 @@
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">threading</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">cycle</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">cycle</span>
 
 <span class="kn">import</span> <span class="nn">yaml</span>
 
-<span class="kn">from</span> <span class="nn">.errors</span> <span class="k">import</span> <span class="n">CompressionError</span><span class="p">,</span> <span class="n">CredentialsError</span><span class="p">,</span> <span class="n">LocopyConcatError</span><span class="p">,</span> <span class="n">LocopySplitError</span>
-<span class="kn">from</span> <span class="nn">.logger</span> <span class="k">import</span> <span class="n">logger</span>
+<span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="n">CompressionError</span><span class="p">,</span> <span class="n">CredentialsError</span><span class="p">,</span> <span class="n">LocopyConcatError</span><span class="p">,</span> <span class="n">LocopySplitError</span>
+<span class="kn">from</span> <span class="nn">.logger</span> <span class="kn">import</span> <span class="n">get_logger</span><span class="p">,</span> <span class="n">INFO</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">INFO</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="write_file"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.write_file">[docs]</a><span class="k">def</span> <span class="nf">write_file</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">):</span>
@@ -203,13 +205,13 @@
 <span class="sd">        Defaults to write mode.</span>
 <span class="sd">        See https://www.tutorialspoint.com/python/python_files_io.htm</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Attempting to write data to file: </span><span class="si">{fp}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fp</span><span class="o">=</span><span class="n">filepath</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Attempting to write data to file: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filepath</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
                 <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">delimiter</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">row</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unable to write file to </span><span class="si">{fp}</span><span class="s2"> due to err: </span><span class="si">{err}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fp</span><span class="o">=</span><span class="n">filepath</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="n">e</span><span class="p">)</span></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unable to write file to </span><span class="si">%s</span><span class="s2"> due to err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="compress_file"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.compress_file">[docs]</a><span class="k">def</span> <span class="nf">compress_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
@@ -225,12 +227,10 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_in</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_out</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
-                    <span class="s2">&quot;compressing (gzip): </span><span class="si">{input}</span><span class="s2"> to </span><span class="si">{output}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">input</span><span class="o">=</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">output_file</span>
-                <span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;compressing (gzip): </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
                 <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">f_in</span><span class="p">,</span> <span class="n">f_out</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error compressing the file. err: </span><span class="si">{err}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error compressing the file. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">CompressionError</span><span class="p">(</span><span class="s2">&quot;Error compressing the file.&quot;</span><span class="p">)</span></div>
 
 
@@ -293,7 +293,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">pool</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">splits</span><span class="p">))</span>
         <span class="n">cpool</span> <span class="o">=</span> <span class="n">cycle</span><span class="p">(</span><span class="n">pool</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;splitting file: </span><span class="si">{input}</span><span class="s2"> into </span><span class="si">{splits}</span><span class="s2"> files&quot;</span><span class="p">,</span> <span class="nb">input</span><span class="o">=</span><span class="n">input_file</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;splitting file: </span><span class="si">%s</span><span class="s2"> into </span><span class="si">%s</span><span class="s2"> files&quot;</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span>
         <span class="c1"># open output file handlers</span>
         <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="nb">open</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">.</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pool</span><span class="p">]</span>
         <span class="c1"># open input file and send line to different handler</span>
@@ -305,9 +305,9 @@
             <span class="n">files</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error splitting the file. err: </span><span class="si">{err}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error splitting the file. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Cleaning up intermediary files: </span><span class="si">{files}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="n">files</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Cleaning up intermediary files: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">files</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pool</span><span class="p">:</span>
                 <span class="n">files</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -344,7 +344,7 @@
                 <span class="k">if</span> <span class="n">remove</span><span class="p">:</span>  <span class="c1"># as we go for space consideration</span>
                     <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error concateneating files. err: </span><span class="si">{err}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error concateneating files. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">LocopyConcatError</span><span class="p">(</span><span class="s2">&quot;Error concateneating files.&quot;</span><span class="p">)</span></div>
 
 
@@ -382,7 +382,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">locopy_yaml</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config_yaml</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error reading yaml. err: </span><span class="si">{err}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">err</span><span class="o">=</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error reading yaml. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">CredentialsError</span><span class="p">(</span><span class="s2">&quot;Error reading yaml.&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">locopy_yaml</span></div>
 
@@ -401,7 +401,7 @@
 <span class="sd">    dict</span>
 <span class="sd">        A dictionary of columns with their data type</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">date</span>
+    <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">date</span>
 
     <span class="k">def</span> <span class="nf">validate_date</span><span class="p">(</span><span class="n">date_text</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -414,6 +414,13 @@
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">None</span>
 
+    <span class="k">def</span> <span class="nf">validate_object</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">float</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;float&quot;</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">validate_date</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
     <span class="n">column_type</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -424,12 +431,16 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">date</span><span class="p">):</span>
             <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">):</span>
-            <span class="n">date_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">validate_date</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span>
+            <span class="n">date_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">validate_object</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">tolist</span><span class="p">()]</span>
             <span class="k">if</span> <span class="nb">sum</span><span class="p">([</span><span class="ow">not</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">date_types</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">if</span> <span class="s2">&quot;timestamp&quot;</span> <span class="ow">in</span> <span class="n">date_types</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;float&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">date_types</span><span class="p">):</span>
+                    <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;timestamp&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">date_types</span><span class="p">):</span>
                     <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;timestamp&quot;</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;date&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">date_types</span><span class="p">):</span>
                     <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;varchar&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;varchar&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">):</span>
@@ -446,7 +457,7 @@
 <span class="sd">    http://boto3.readthedocs.org/en/latest/reference/customizations/s3.html#ref-s3transfer-usage</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initiate the ProgressPercentage class, using the base information which</span>
 <span class="sd">        makes up a pipeline</span>
@@ -459,7 +470,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_seen_so_far</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bytes_amount</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bytes_amount</span><span class="p">):</span>
         <span class="c1"># To simplify we&#39;ll assume this is hooked up</span>
         <span class="c1"># to a single filename.</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>

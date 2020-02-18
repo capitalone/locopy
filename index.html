@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy: Data Load and Copy using Python &mdash; locopy 0.3.4 documentation</title>
+  <title>locopy: Data Load and Copy using Python &mdash; locopy 0.3.6 documentation</title>
   
 
   
@@ -57,7 +57,7 @@
             
             
               <div class="version">
-                0.3.4
+                0.3.6
               </div>
             
           
@@ -222,7 +222,7 @@ The Redshift connection (<code class="docutils literal notranslate"><span class=
 <span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
     <span class="n">redshift</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">)</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">redshift</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If you want to load data to Redshift via S3, the <code class="docutils literal notranslate"><span class="pre">Redshift</span></code> class inherits from <code class="docutils literal notranslate"><span class="pre">S3</span></code>:</p>
@@ -240,7 +240,7 @@ The Redshift connection (<code class="docutils literal notranslate"><span class=
     <span class="n">redshift</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">)</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">redshift</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
 
-<span class="k">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If you want to download data from Redshift to a CSV, or read it into Python</p>

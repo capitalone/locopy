@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Basic Examples &mdash; locopy 0.3.4 documentation</title>
+  <title>Basic Examples &mdash; locopy 0.3.6 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.3.4
+                0.3.6
               </div>
             
           
@@ -184,10 +184,10 @@
         <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;my_s3_bucket&quot;</span><span class="p">,</span>
         <span class="n">table_name</span><span class="o">=</span><span class="s2">&quot;schema.table&quot;</span><span class="p">,</span>
         <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
-        <span class="n">compress</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">compress</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">redshift</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">)</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">redshift</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

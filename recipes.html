@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Common Recipes &mdash; locopy 0.3.4 documentation</title>
+  <title>Common Recipes &mdash; locopy 0.3.6 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                0.3.4
+                0.3.6
               </div>
             
           
@@ -232,7 +232,7 @@ Redshift cluster.</p>
         <span class="n">s3_folder</span><span class="o">=</span><span class="s2">&quot;s3_folder_to_use/s3_subfolder_to_use&quot;</span><span class="p">,</span>
         <span class="n">table_name</span><span class="o">=</span><span class="s2">&quot;redshift_table_to_load&quot;</span><span class="p">,</span>
         <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
-        <span class="n">compress</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">compress</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Depending on your own requirements it might make sense to turn off compression
@@ -294,7 +294,7 @@ the S3 files from being automatically deleted after the run.</p>
         <span class="n">query</span><span class="o">=</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">,</span>
         <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;s3_bucket_to_use&quot;</span><span class="p">,</span>
         <span class="n">s3_folder</span><span class="o">=</span><span class="s2">&quot;s3_folder_to_use/s3_subfolder_to_use/&quot;</span><span class="p">,</span>
-        <span class="n">delete_s3_after</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="c1"># defaults to True</span>
+        <span class="n">delete_s3_after</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># defaults to True</span>
 </pre></div>
 </div>
 <p>By default, the Redshift unloads data to multiple files in S3 for performance
@@ -306,8 +306,8 @@ If you want to back it up as a single file, you can run:</p>
         <span class="n">query</span><span class="o">=</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">,</span>
         <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;s3_bucket_to_use&quot;</span><span class="p">,</span>
         <span class="n">s3_folder</span><span class="o">=</span><span class="s2">&quot;s3_folder_to_use/s3_subfolder_to_use/&quot;</span><span class="p">,</span>
-        <span class="n">delete_s3_after</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-        <span class="n">parallel_off</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">delete_s3_after</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">parallel_off</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
