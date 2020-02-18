@@ -249,47 +249,43 @@ def find_column_type(dataframe):
         A dictionary of columns with their data type
     """
     from datetime import datetime, date
+    import pandas as pd
+    import re
 
-    def validate_date(date_text):
+    def validate_date_object(column):
         try:
-            datetime.strptime(date_text, "%Y-%m-%d")
-            return "date"
-        except ValueError:
-            try:
-                datetime.strptime(date_text, "%Y-%m-%d %H:%M:%S")
+            pd.to_datetime(column)
+            if re.search(r"\d+:\d+:\d+", column.sample(1).to_string(index=False)):
                 return "timestamp"
-            except ValueError:
-                return None
+            else:
+                return "date"
+        except (ValueError, TypeError):
+            return None
 
-    def validate_object(text):
+    def validate_float_object(column):
         try:
-            float(text)
+            pd.to_numeric(column)
             return "float"
-        except ValueError:
-            return validate_date(text)
+        except (ValueError, TypeError):
+            return None
 
     column_type = []
     for column in dataframe.columns:
+        print(column)
         data = dataframe[column].dropna().reset_index(drop=True)
+        print(data)
         if data.size == 0:
             column_type.append("varchar")
-        elif isinstance(data[0], datetime):
+        elif data.dtype in ["datetime64[ns]", "M8[ns]"]:
             column_type.append("timestamp")
-        elif isinstance(data[0], date):
-            column_type.append("date")
+        elif data.dtype == "bool":
+            column_type.append("boolean")
         elif str(data.dtype).startswith("object"):
-            date_types = [validate_object(i) for i in data.tolist()]
-            if sum([not i for i in date_types]) == 0:
-                if set(["float"]) == set(date_types):
-                    column_type.append("float")
-                elif set(["timestamp"]) == set(date_types):
-                    column_type.append("timestamp")
-                elif set(["date"]) == set(date_types):
-                    column_type.append("date")
-                else:
-                    column_type.append("varchar")
-            else:
+            data_type = validate_float_object(data) or validate_date_object(data)
+            if not data_type:
                 column_type.append("varchar")
+            else:
+                column_type.append(data_type)
         elif str(data.dtype).startswith("int"):
             column_type.append("int")
         elif str(data.dtype).startswith("float"):
