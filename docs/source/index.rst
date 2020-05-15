@@ -12,8 +12,8 @@
    Basic Examples <examples>
    Common Recipes <recipes>
    Snowflake <snowflake>
-   Developer Instructions <developer>
    SQL Injection <sql_injection>
+   Developer Instructions <developer>
 
 .. toctree::
    :maxdepth: 4

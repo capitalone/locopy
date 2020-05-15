@@ -101,6 +101,28 @@ requirements file ``requirements-black.txt`` which is used only for code formatt
 hooks. Black only works with Python 3.6.0+ and conflicts with the Travis CI build (Python 3.5)
 
 
+Release Guide
+-------------
+
+For ``locopy`` we want to use a simple workflow branching style and follow
+`Semantic Versioning <https://semver.org/>`_ for each release.
+
+``develop`` is the default branch where most people will work with day to day. All features must be squash merged into
+this branch. The reason we squash merge is to prevent the develop branch from being polluted with endless commit messages
+when people are developing. Squashing collapses all the commits into one single new commit. It will also make it much easier to
+back out changes if something breaks.
+
+``master`` is where official releases will go. Each release on ``master`` should be tagged properly to denote a "version"
+that will have the corresponding artifact on pypi for users to ``pip install``.
+
+``gh-pages`` is where official documentation will go. After each release you should build the docs and push the HTML to
+the pages branch. When first setting up the repo you want to make sure your gh-pages is a orphaned branch since it is
+disconnected and independent from the code: ``git checkout --orphan gh-pages``.
+
+The repo has a ``Makefile`` in the root folder which has helper commands such as ``make sphinx``, and
+``make ghpages`` to help streamline building and pushing docs once they are setup right.
+
+
 
 Generating distribution archives (PyPI)
 ---------------------------------------
