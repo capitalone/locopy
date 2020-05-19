@@ -104,7 +104,7 @@ hooks. Black only works with Python 3.6.0+ and conflicts with the Travis CI buil
 Release Guide
 -------------
 
-For ``locopy`` we want to use a simple workflow branching style and follow
+For ``locopy`` we use a simple workflow branching style and follow
 `Semantic Versioning <https://semver.org/>`_ for each release.
 
 ``develop`` is the default branch where most people will work with day to day. All features must be squash merged into
