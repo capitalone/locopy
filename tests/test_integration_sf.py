@@ -65,6 +65,7 @@ def test_snowflake_execute_single_rows(dbapi):
     with locopy.Snowflake(dbapi=dbapi, **CREDS_DICT) as test:
         test.execute("SELECT 1 AS field_1, 2 AS field_2 ")
         df = test.to_dataframe()
+        df.columns = [c.lower() for c in df.columns]
 
     assert np.allclose(df["field_1"], expected["field_1"])
 
@@ -79,6 +80,7 @@ def test_snowflake_execute_multiple_rows(dbapi):
             "SELECT 1 AS field_1, 1 AS field_2 " "UNION " "SELECT 2 AS field_1, 2 AS field_2"
         )
         df = test.to_dataframe()
+        df.columns = [c.lower() for c in df.columns]
 
     assert np.allclose(df["field_1"], expected["field_1"])
     assert np.allclose(df["field_2"], expected["field_2"])
@@ -169,6 +171,52 @@ def test_copy_json(dbapi):
         for i, result in enumerate(results):
             assert result[0] == expected[i][0]
             assert result[1] == expected[i][1]
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("dbapi", DBAPIS)
+def test_to_dataframe(dbapi):
+
+    with locopy.Snowflake(dbapi=dbapi, **CREDS_DICT) as test:
+        test.upload_to_internal(LOCAL_FILE_JSON, "@~/staged/")
+        test.execute("USE SCHEMA {}".format(CREDS_DICT["schema"]))
+        test.execute(
+            "CREATE OR REPLACE TEMPORARY TABLE locopy_integration_testing (variable VARIANT)"
+        )
+        test.copy(
+            "locopy_integration_testing",
+            "@~/staged/mock_file.json.gz",
+            file_type="json",
+            copy_options=["PURGE = TRUE"],
+        )
+
+        # get all
+        test.execute(
+            "SELECT variable:location:city, variable:price FROM locopy_integration_testing ORDER BY variable"
+        )
+        result = test.to_dataframe()
+        result.columns = [c.lower() for c in result.columns]
+        expected = pd.DataFrame(
+            [('"Belmont"', '"92567"'), ('"Lexington"', '"75836"'), ('"Winchester"', '"89921"'),],
+            columns=["variable:location:city", "variable:price"],
+        )
+
+        assert (result["variable:location:city"] == expected["variable:location:city"]).all()
+        assert (result["variable:price"] == expected["variable:price"]).all()
+
+        # with size of 2
+        test.execute(
+            "SELECT variable:location:city, variable:price FROM locopy_integration_testing ORDER BY variable"
+        )
+        result = test.to_dataframe(size=2)
+        result.columns = [c.lower() for c in result.columns]
+        expected = pd.DataFrame(
+            [('"Belmont"', '"92567"'), ('"Lexington"', '"75836"'),],
+            columns=["variable:location:city", "variable:price"],
+        )
+
+        assert (result["variable:location:city"] == expected["variable:location:city"]).all()
+        assert (result["variable:price"] == expected["variable:price"]).all()
 
 
 @pytest.mark.integration
