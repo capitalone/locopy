@@ -159,12 +159,20 @@ def test_upload_to_internal(mock_session, sf_credentials):
         with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
             sf.upload_to_internal("/some/file", "@~/internal")
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "PUT 'file:///some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True", ()
+                "PUT 'file:///some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True OVERWRITE=True",
+                (),
             )
 
             sf.upload_to_internal("/some/file", "@~/internal", parallel=99, auto_compress=False)
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "PUT 'file:///some/file' @~/internal PARALLEL=99 AUTO_COMPRESS=False", ()
+                "PUT 'file:///some/file' @~/internal PARALLEL=99 AUTO_COMPRESS=False OVERWRITE=True",
+                (),
+            )
+
+            sf.upload_to_internal("/some/file", "@~/internal", overwrite=False)
+            sf.conn.cursor.return_value.execute.assert_called_with(
+                "PUT 'file:///some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True OVERWRITE=False",
+                (),
             )
 
             # exception
@@ -181,7 +189,8 @@ def test_upload_to_internal_windows(mock_session, sf_credentials):
 
             sf.upload_to_internal(r"C:\some\file", "@~/internal")
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "PUT 'file://C:/some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True", ()
+                "PUT 'file://C:/some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True OVERWRITE=True",
+                (),
             )
 
 
