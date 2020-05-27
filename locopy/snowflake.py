@@ -197,7 +197,7 @@ class Snowflake(S3, Database):
         if self.connection.get("schema") is not None:
             self.execute("USE SCHEMA {0}".format(self.connection["schema"]))
 
-    def upload_to_internal(self, local, stage, parallel=4, auto_compress=True):
+    def upload_to_internal(self, local, stage, parallel=4, auto_compress=True, overwrite=True):
         """
         Upload file(s) to a internal stage via the ``PUT`` command.
 
@@ -218,11 +218,16 @@ class Snowflake(S3, Database):
             Specifies if Snowflake uses gzip to compress files during upload.
             If ``True``, the files are compressed (if they are not already compressed).
             if ``False``, the files are uploaded as-is.
+
+        overwrite : bool, optional
+            Specifies whether Snowflake overwrites an existing file with the same name during upload.
+            If ``True``, existing file with the same name is overwritten.
+            if ``False``, existing file with the same name is not overwritten.
         """
         local_uri = PurePath(local).as_posix()
         self.execute(
-            "PUT 'file://{0}' {1} PARALLEL={2} AUTO_COMPRESS={3}".format(
-                local_uri, stage, parallel, auto_compress
+            "PUT 'file://{0}' {1} PARALLEL={2} AUTO_COMPRESS={3} OVERWRITE={4}".format(
+                local_uri, stage, parallel, auto_compress, overwrite
             )
         )
 
