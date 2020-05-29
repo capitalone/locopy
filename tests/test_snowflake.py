@@ -363,6 +363,20 @@ def test_unload_exception(mock_session, sf_credentials):
 
 
 @mock.patch("locopy.s3.Session")
+def test_to_pandas(mock_session, sf_credentials):
+    import pandas as pd
+
+    test_df = pd.read_csv(os.path.join(CURR_DIR, "data", "mock_dataframe.txt"), sep=",")
+    with mock.patch("snowflake.connector.connect") as mock_connect:
+        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
+            sf.to_dataframe()
+            sf.conn.cursor.return_value.fetch_pandas_all.assert_called_with()
+
+            sf.to_dataframe(5)
+            sf.conn.cursor.return_value.fetchmany.assert_called_with(5)
+
+
+@mock.patch("locopy.s3.Session")
 def test_insert_dataframe_to_table(mock_session, sf_credentials):
     import pandas as pd
 

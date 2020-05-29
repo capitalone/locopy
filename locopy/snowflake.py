@@ -376,7 +376,13 @@ class Snowflake(S3, Database):
         self, dataframe, table_name, columns=None, create=False, metadata=None
     ):
         """
-        Insert a Pandas dataframe to an existing table or a new table.
+        Insert a Pandas dataframe to an existing table or a new table. In newer versions of the
+        python snowflake connector (v2.1.2+) users can call the ``write_pandas`` method from the cursor
+        directly, ``insert_dataframe_to_table`` is a custom implementation and does not use
+        ``write_pandas``. Instead of using ``COPY INTO`` the method builds a list of tuples to
+        insert directly into the table. There are also options to create the table if it doesn't
+        exist and use your own metadata. If your data is significantly large then using
+        ``COPY INTO <table>`` is more appropriate.
 
         Parameters
         ----------
@@ -444,3 +450,26 @@ class Snowflake(S3, Database):
         logger.info("Inserting records...")
         self.execute(insert_query, params=to_insert, many=True)
         logger.info("Table insertion has completed")
+
+    def to_dataframe(self, size=None):
+        """Return a dataframe of the last query results. This is just a convenience method. This
+        method overrides the base classes implementation in favour for the snowflake connectors
+        built-in ``fetch_pandas_all`` when ``size==None``. If ``size != None`` then we will continue
+        to use the existing functionality where we iterate through the cursor and build the
+        dataframe.
+
+        Parameters
+        ----------
+        size : int, optional
+            Chunk size to fetch.  Defaults to None.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Dataframe with lowercase column names.  Returns None if no fetched
+            result.
+        """
+        if size is None:
+            return self.cursor.fetch_pandas_all()
+        else:
+            return super(Snowflake, self).to_dataframe(size)
