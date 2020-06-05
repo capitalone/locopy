@@ -35,8 +35,8 @@ from locopy.utility import (
     compress_file_list,
     concatenate_files,
     find_column_type,
-    split_file,
     get_ignoreheader_number,
+    split_file,
 )
 
 GOOD_CONFIG_YAML = u"""host: my.redshift.cluster.com

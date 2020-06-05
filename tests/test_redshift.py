@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
+from collections import OrderedDict
 from unittest import mock
 
 import pg8000
@@ -29,9 +31,6 @@ import pytest
 import locopy
 from locopy import Redshift
 from locopy.errors import CredentialsError, DBError
-
-import os
-from collections import OrderedDict
 
 PROFILE = "test"
 GOOD_CONFIG_YAML = """
