@@ -22,17 +22,16 @@ import os
 
 from .database import Database
 from .errors import DBError
-from .logger import get_logger, INFO
+from .logger import INFO, get_logger
 from .s3 import S3
 from .utility import (
     compress_file_list,
     concatenate_files,
-    split_file,
-    write_file,
     find_column_type,
     get_ignoreheader_number,
+    split_file,
+    write_file,
 )
-
 
 logger = get_logger(__name__, INFO)
 

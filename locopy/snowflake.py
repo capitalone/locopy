@@ -23,10 +23,9 @@ from pathlib import PurePath
 
 from .database import Database
 from .errors import DBError, S3CredentialsError
-from .logger import get_logger, INFO
+from .logger import INFO, get_logger
 from .s3 import S3
 from .utility import find_column_type
-
 
 logger = get_logger(__name__, INFO)
 

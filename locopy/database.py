@@ -19,9 +19,8 @@
 import time
 
 from .errors import CredentialsError, DBError
-from .logger import get_logger, INFO
+from .logger import INFO, get_logger
 from .utility import read_config_yaml
-
 
 logger = get_logger(__name__, INFO)
 

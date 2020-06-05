@@ -31,10 +31,10 @@ from .errors import (
     CompressionError,
     CredentialsError,
     LocopyConcatError,
-    LocopySplitError,
     LocopyIgnoreHeaderError,
+    LocopySplitError,
 )
-from .logger import get_logger, INFO
+from .logger import INFO, get_logger
 
 logger = get_logger(__name__, INFO)
 
