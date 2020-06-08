@@ -1,0 +1,5 @@
+number|line
+1|This iš line 1
+2|This is liné 2
+3|This is line 3
+4|This is lïne 4

@@ -22,10 +22,16 @@ import os
 
 from .database import Database
 from .errors import DBError
-from .logger import get_logger, INFO
+from .logger import INFO, get_logger
 from .s3 import S3
-from .utility import compress_file_list, concatenate_files, split_file, write_file, find_column_type
-
+from .utility import (
+    compress_file_list,
+    concatenate_files,
+    find_column_type,
+    get_ignoreheader_number,
+    split_file,
+    write_file,
+)
 
 logger = get_logger(__name__, INFO)
 
@@ -281,7 +287,14 @@ class Redshift(S3, Database):
             copy_options = []
 
         # generate the actual splitting of the files
-        upload_list = split_file(local_file, local_file, splits=splits)
+        # We need to check if IGNOREHEADER is set as this can cause issues.
+        ignore_header = get_ignoreheader_number(copy_options)
+        upload_list = split_file(local_file, local_file, splits=splits, ignore_header=ignore_header)
+
+        if splits > 1 and ignore_header > 0:
+            # remove the IGNOREHEADER from copy_options
+            logger.info("Removing the IGNOREHEADER option as split is enabled")
+            copy_options = [i for i in copy_options if not i.startswith("IGNOREHEADER ")]
 
         if compress:
             copy_options.append("GZIP")

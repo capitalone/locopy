@@ -33,6 +33,12 @@ class LocopySplitError(LocopyError):
     """
 
 
+class LocopyIgnoreHeaderError(LocopyError):
+    """
+    Raised when Multiple IGNOREHEADERS are found in copy options.
+    """
+
+
 class LocopyConcatError(LocopyError):
     """
     Raised when there is an error concatenating files.
