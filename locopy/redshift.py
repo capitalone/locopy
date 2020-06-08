@@ -293,7 +293,7 @@ class Redshift(S3, Database):
 
         if splits > 1 and ignore_header > 0:
             # remove the IGNOREHEADER from copy_options
-            logger.info("Removing the IGNOREHEADER option as split  column names")
+            logger.info("Removing the IGNOREHEADER option as split is enabled")
             copy_options = [i for i in copy_options if not i.startswith("IGNOREHEADER ")]
 
         if compress:

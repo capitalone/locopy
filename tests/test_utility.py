@@ -29,7 +29,13 @@ from unittest import mock
 import pytest
 
 import locopy.utility as util
-from locopy.errors import CompressionError, CredentialsError, LocopyConcatError, LocopySplitError
+from locopy.errors import (
+    CompressionError,
+    CredentialsError,
+    LocopyConcatError,
+    LocopyIgnoreHeaderError,
+    LocopySplitError,
+)
 from locopy.utility import (
     compress_file,
     compress_file_list,
@@ -388,3 +394,6 @@ def test_get_ignoreheader_number():
         == 0
     )
     assert get_ignoreheader_number([]) == 0
+
+    with pytest.raises(LocopyIgnoreHeaderError):
+        get_ignoreheader_number(["IGNOREHEADER 1", "IGNOREHEADER 99"])
