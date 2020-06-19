@@ -316,6 +316,7 @@ class Redshift(S3, Database):
         query,
         s3_bucket,
         s3_folder=None,
+        export_dir_path=None,
         export_path=False,
         delimiter=",",
         delete_s3_after=True,
@@ -337,9 +338,13 @@ class Redshift(S3, Database):
             The AWS S3 folder of the bucket where the data from the query will
             be unloaded. Defaults to ``None``. Please note that you must follow
             the ``/`` convention when using subfolders.
+        
+        export_dir_path : str, optional
+            The local path where the files will be copied to. Defualts to the current working
+            directory (``os.getcwd()``)
 
         export_path : str, optional
-            If a ``export_path`` is provided, function will write the unloaded
+            If a ``export_path`` is provided, function will concatenate and write the unloaded
             files to this path as a single file. If your file is very large you may not want to
             use this option.
 
@@ -390,7 +395,7 @@ class Redshift(S3, Database):
             raise Exception("Unable to retrieve column names from exported data.")
 
         # download files locally with same name
-        local_list = self.download_list_from_s3(s3_download_list)
+        local_list = self.download_list_from_s3(s3_download_list, export_dir_path)
         if export_path:
             write_file([columns], delimiter, export_path)  # column
             concatenate_files(local_list, export_path)  # data
