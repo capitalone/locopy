@@ -107,7 +107,7 @@ def test_redshift_connect(mock_session, credentials, dbapi):
                 port="port",
                 password="password",
                 database="database",
-                ssl=True,
+                ssl_context=True,
             )
         else:
             mock_connect.assert_called_with(
@@ -658,6 +658,7 @@ def test_unload_and_copy(
             query="query",
             s3_bucket="s3_bucket",
             s3_folder=None,
+            raw_unload_path=None,
             export_path=False,
             delimiter=",",
             delete_s3_after=False,
@@ -684,6 +685,7 @@ def test_unload_and_copy(
             query="query",
             s3_bucket="s3_bucket",
             s3_folder=None,
+            raw_unload_path=None,
             export_path=False,
             delimiter="|",
             delete_s3_after=False,
@@ -725,6 +727,7 @@ def test_unload_and_copy(
             query="query",
             s3_bucket="s3_bucket",
             s3_folder=None,
+            raw_unload_path=None,
             export_path="my_output.csv",
             delimiter=",",
             delete_s3_after=True,
@@ -733,6 +736,26 @@ def test_unload_and_copy(
         mock_concat.assert_called_with(mock_download_list_from_s3.return_value, "my_output.csv")
         assert mock_write.called
         assert mock_delete_list_from_s3.called_with("s3_bucket", "my_output.csv")
+
+        ##
+        ## Test 6: raw_unload_path check
+        reset_mocks()
+        mock_get_col_names.return_value = ["dummy_col_name"]
+        mock_download_list_from_s3.return_value = ["s3.file"]
+        mock_generate_unload_path.return_value = "dummy_s3_path"
+        mock_unload_generated_files.return_value = ["/dummy_file"]
+        ## ensure nothing is returned when read=False
+        r.unload_and_copy(
+            query="query",
+            s3_bucket="s3_bucket",
+            s3_folder=None,
+            raw_unload_path="/somefolder/",
+            export_path=False,
+            delimiter=",",
+            delete_s3_after=False,
+            parallel_off=False,
+        )
+        mock_download_list_from_s3.assert_called_with(["/dummy_file"], "/somefolder/")
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
