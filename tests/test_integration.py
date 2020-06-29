@@ -40,6 +40,7 @@ CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 LOCAL_FILE = os.path.join(CURR_DIR, "data", "mock_file.txt")
 LOCAL_FILE_HEADER = os.path.join(CURR_DIR, "data", "mock_file_header.txt")
 LOCAL_FILE_DL = os.path.join(CURR_DIR, "data", "mock_file_dl.txt")
+UNLOAD_PATH = os.path.join(CURR_DIR, "data", "unload_path")
 TEST_DF = pd.read_csv(os.path.join(CURR_DIR, "data", "mock_dataframe.txt"), sep=",")
 TEST_DF_2 = pd.read_csv(os.path.join(CURR_DIR, "data", "mock_dataframe_2.txt"), sep=",")
 
@@ -187,6 +188,37 @@ def test_unload(s3_bucket, dbapi):
         for i, result in enumerate(results):
             assert result[0].strftime("%Y-%m-%d") == expected[i][0]
 
+        os.remove(LOCAL_FILE_DL)
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("dbapi", DBAPIS)
+def test_unload_raw_unload_path(s3_bucket, dbapi):
+    os.mkdir(UNLOAD_PATH)
+
+    with locopy.Redshift(dbapi=dbapi, **CREDS_DICT) as redshift:
+        redshift.execute(
+            "CREATE TEMPORARY TABLE locopy_integration_testing AS SELECT ('2017-12-31'::date + row_number() over (order by 1))::date from SVV_TABLES LIMIT 5"
+        )
+        sql = "SELECT * FROM locopy_integration_testing"
+        redshift.unload_and_copy(
+            sql, S3_BUCKET, delimiter="|", raw_unload_path=UNLOAD_PATH, export_path=LOCAL_FILE_DL
+        )
+        redshift.execute("SELECT * FROM locopy_integration_testing ORDER BY date")
+        results = redshift.cursor.fetchall()
+
+        expected = [
+            ("2018-01-01",),
+            ("2018-01-02",),
+            ("2018-01-03",),
+            ("2018-01-04",),
+            ("2018-01-05",),
+        ]
+
+        for i, result in enumerate(results):
+            assert result[0].strftime("%Y-%m-%d") == expected[i][0]
+
+        os.rmdir(UNLOAD_PATH)
         os.remove(LOCAL_FILE_DL)
 
 
