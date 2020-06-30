@@ -27,8 +27,14 @@ from itertools import cycle
 
 import yaml
 
-from .errors import CompressionError, CredentialsError, LocopyConcatError, LocopySplitError
-from .logger import get_logger, INFO
+from .errors import (
+    CompressionError,
+    CredentialsError,
+    LocopyConcatError,
+    LocopyIgnoreHeaderError,
+    LocopySplitError,
+)
+from .logger import INFO, get_logger
 
 logger = get_logger(__name__, INFO)
 
@@ -103,7 +109,7 @@ def compress_file_list(file_list):
     return file_list
 
 
-def split_file(input_file, output_file, splits=1):
+def split_file(input_file, output_file, splits=1, ignore_header=0):
     """Split a file into equal files by lines.
 
     For example: ``myinputfile.txt`` will be split into ``myoutputfile.txt.01``
@@ -119,6 +125,10 @@ def split_file(input_file, output_file, splits=1):
 
     splits : int, optional
         Number of splits to perform. Must be greater than zero. Defaults to 1
+
+    ignore_header : int, optional
+        If ``ignore_header`` is > 0 then that number of rows will be removed from the beginning of
+        the files as they are split. Defaults to 0
 
     Returns
     -------
@@ -145,6 +155,9 @@ def split_file(input_file, output_file, splits=1):
         files = [open("{0}.{1}".format(output_file, x), "wb") for x in pool]
         # open input file and send line to different handler
         with open(input_file, "rb") as f_in:
+            # if we have a value in ignore_header then skip those many lines to start
+            for _ in range(ignore_header):
+                next(f_in)
             for line in f_in:
                 files[next(cpool)].write(line)
         # close file connection
@@ -323,3 +336,32 @@ class ProgressPercentage(object):
                 "\rTransfering [{0}] {1:.2f}%".format("#" * int(percentage / 10), percentage)
             )
             sys.stdout.flush()
+
+
+def get_ignoreheader_number(options):
+    """
+    Return the ``number_rows`` from ``IGNOREHEADER [ AS ] number_rows`` This doesn't not validate
+    that the ``AS`` is valid.
+
+    Parameters
+    ----------
+    options : A list (str) of copy options that should be appended to the COPY
+        statement.
+
+    Returns
+    -------
+    int
+        The ``number_rows`` from ``IGNOREHEADER [ AS ] number_rows``
+
+    Raises
+    ------
+    LocopyIgnoreHeaderError
+        If more than one IGNOREHEADER is found in the options
+    """
+    ignore = [i for i in options if i.startswith("IGNOREHEADER ")]
+    if len(ignore) == 0:
+        return 0
+    elif len(ignore) == 1:
+        return int(ignore[0].strip().split(" ")[-1])
+    else:
+        raise LocopyIgnoreHeaderError("Found more than one IGNOREHEADER in the options")

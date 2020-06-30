@@ -29,12 +29,19 @@ from unittest import mock
 import pytest
 
 import locopy.utility as util
-from locopy.errors import CompressionError, CredentialsError, LocopyConcatError, LocopySplitError
+from locopy.errors import (
+    CompressionError,
+    CredentialsError,
+    LocopyConcatError,
+    LocopyIgnoreHeaderError,
+    LocopySplitError,
+)
 from locopy.utility import (
     compress_file,
     compress_file_list,
     concatenate_files,
     find_column_type,
+    get_ignoreheader_number,
     split_file,
 )
 
@@ -141,6 +148,46 @@ def test_split_file():
     splits = split_file(input_file, output_file, 5)
     assert splits == expected
     assert compare_file_contents(input_file, expected)
+    cleanup(splits)
+
+
+def test_split_file_header():
+    input_file = "tests/data/mock_file_header.txt"
+    input_file_no_header = "tests/data/mock_file.txt"
+    output_file = "tests/data/mock_output_file_header.txt"
+
+    splits = split_file(input_file, output_file, ignore_header=1)
+    assert splits == [input_file]
+
+    expected = [
+        "tests/data/mock_output_file_header.txt.0",
+        "tests/data/mock_output_file_header.txt.1",
+    ]
+    splits = split_file(input_file, output_file, 2, ignore_header=1)
+    assert splits == expected
+    assert compare_file_contents(input_file_no_header, expected)
+    cleanup(splits)
+
+    expected = [
+        "tests/data/mock_output_file_header.txt.0",
+        "tests/data/mock_output_file_header.txt.1",
+        "tests/data/mock_output_file_header.txt.2",
+    ]
+    splits = split_file(input_file, output_file, 3, ignore_header=1)
+    assert splits == expected
+    assert compare_file_contents(input_file_no_header, expected)
+    cleanup(splits)
+
+    expected = [
+        "tests/data/mock_output_file_header.txt.0",
+        "tests/data/mock_output_file_header.txt.1",
+        "tests/data/mock_output_file_header.txt.2",
+        "tests/data/mock_output_file_header.txt.3",
+        "tests/data/mock_output_file_header.txt.4",
+    ]
+    splits = split_file(input_file, output_file, 5, ignore_header=1)
+    assert splits == expected
+    assert compare_file_contents(input_file_no_header, expected)
     cleanup(splits)
 
 
@@ -273,3 +320,80 @@ def test_find_column_type():
         "k": "float",
     }
     assert find_column_type(input_text) == output_text
+
+
+def test_get_ignoreheader_number():
+    assert (
+        get_ignoreheader_number(
+            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "IGNOREHEADER as 1"]
+        )
+        == 1
+    )
+    assert (
+        get_ignoreheader_number(
+            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "IGNOREHEADER as 2"]
+        )
+        == 2
+    )
+    assert (
+        get_ignoreheader_number(
+            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "IGNOREHEADER as 99"]
+        )
+        == 99
+    )
+
+    assert (
+        get_ignoreheader_number(
+            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "IGNOREHEADER 1"]
+        )
+        == 1
+    )
+    assert (
+        get_ignoreheader_number(
+            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "IGNOREHEADER 2"]
+        )
+        == 2
+    )
+    assert (
+        get_ignoreheader_number(
+            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "IGNOREHEADER 99"]
+        )
+        == 99
+    )
+
+    assert (
+        get_ignoreheader_number(
+            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "IGNOREHEADER is 1"]
+        )
+        == 1
+    )
+    assert (
+        get_ignoreheader_number(
+            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "IGNOREHEADER is 2"]
+        )
+        == 2
+    )
+    assert (
+        get_ignoreheader_number(
+            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "IGNOREHEADER is 99"]
+        )
+        == 99
+    )
+
+    assert get_ignoreheader_number(["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS"]) == 0
+    assert (
+        get_ignoreheader_number(
+            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "IGNOREHEADERAS 2"]
+        )
+        == 0
+    )
+    assert (
+        get_ignoreheader_number(
+            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "SOMETHINGIGNOREHEADER AS 2"]
+        )
+        == 0
+    )
+    assert get_ignoreheader_number([]) == 0
+
+    with pytest.raises(LocopyIgnoreHeaderError):
+        get_ignoreheader_number(["IGNOREHEADER 1", "IGNOREHEADER 99"])

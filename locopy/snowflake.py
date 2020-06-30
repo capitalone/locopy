@@ -23,10 +23,9 @@ from pathlib import PurePath
 
 from .database import Database
 from .errors import DBError, S3CredentialsError
-from .logger import get_logger, INFO
+from .logger import INFO, get_logger
 from .s3 import S3
 from .utility import find_column_type
-
 
 logger = get_logger(__name__, INFO)
 
@@ -197,7 +196,7 @@ class Snowflake(S3, Database):
         if self.connection.get("schema") is not None:
             self.execute("USE SCHEMA {0}".format(self.connection["schema"]))
 
-    def upload_to_internal(self, local, stage, parallel=4, auto_compress=True):
+    def upload_to_internal(self, local, stage, parallel=4, auto_compress=True, overwrite=True):
         """
         Upload file(s) to a internal stage via the ``PUT`` command.
 
@@ -218,11 +217,16 @@ class Snowflake(S3, Database):
             Specifies if Snowflake uses gzip to compress files during upload.
             If ``True``, the files are compressed (if they are not already compressed).
             if ``False``, the files are uploaded as-is.
+
+        overwrite : bool, optional
+            Specifies whether Snowflake overwrites an existing file with the same name during upload.
+            If ``True``, existing file with the same name is overwritten.
+            if ``False``, existing file with the same name is not overwritten.
         """
         local_uri = PurePath(local).as_posix()
         self.execute(
-            "PUT 'file://{0}' {1} PARALLEL={2} AUTO_COMPRESS={3}".format(
-                local_uri, stage, parallel, auto_compress
+            "PUT 'file://{0}' {1} PARALLEL={2} AUTO_COMPRESS={3} OVERWRITE={4}".format(
+                local_uri, stage, parallel, auto_compress, overwrite
             )
         )
 
@@ -371,7 +375,13 @@ class Snowflake(S3, Database):
         self, dataframe, table_name, columns=None, create=False, metadata=None
     ):
         """
-        Insert a Pandas dataframe to an existing table or a new table.
+        Insert a Pandas dataframe to an existing table or a new table. In newer versions of the
+        python snowflake connector (v2.1.2+) users can call the ``write_pandas`` method from the cursor
+        directly, ``insert_dataframe_to_table`` is a custom implementation and does not use
+        ``write_pandas``. Instead of using ``COPY INTO`` the method builds a list of tuples to
+        insert directly into the table. There are also options to create the table if it doesn't
+        exist and use your own metadata. If your data is significantly large then using
+        ``COPY INTO <table>`` is more appropriate.
 
         Parameters
         ----------
@@ -439,3 +449,26 @@ class Snowflake(S3, Database):
         logger.info("Inserting records...")
         self.execute(insert_query, params=to_insert, many=True)
         logger.info("Table insertion has completed")
+
+    def to_dataframe(self, size=None):
+        """Return a dataframe of the last query results. This is just a convenience method. This
+        method overrides the base classes implementation in favour for the snowflake connectors
+        built-in ``fetch_pandas_all`` when ``size==None``. If ``size != None`` then we will continue
+        to use the existing functionality where we iterate through the cursor and build the
+        dataframe.
+
+        Parameters
+        ----------
+        size : int, optional
+            Chunk size to fetch.  Defaults to None.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Dataframe with lowercase column names.  Returns None if no fetched
+            result.
+        """
+        if size is None:
+            return self.cursor.fetch_pandas_all()
+        else:
+            return super(Snowflake, self).to_dataframe(size)

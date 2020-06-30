@@ -42,7 +42,7 @@ setup(
     extras_require={
         "psycopg2": ["psycopg2>=2.7.7"],
         "pg8000": ["pg8000>=1.13.1"],
-        "snowflake": ["snowflake-connector-python>=1.7.6"],
+        "snowflake": ["snowflake-connector-python[pandas]>=2.1.2"],
     },
     zip_safe=False,
 )

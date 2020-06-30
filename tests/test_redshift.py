@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
+from collections import OrderedDict
 from unittest import mock
 
 import pg8000
@@ -29,9 +31,6 @@ import pytest
 import locopy
 from locopy import Redshift
 from locopy.errors import CredentialsError, DBError
-
-import os
-from collections import OrderedDict
 
 PROFILE = "test"
 GOOD_CONFIG_YAML = """
@@ -108,7 +107,7 @@ def test_redshift_connect(mock_session, credentials, dbapi):
                 port="port",
                 password="password",
                 database="database",
-                ssl=True,
+                ssl_context=True,
             )
         else:
             mock_connect.assert_called_with(
@@ -220,7 +219,9 @@ def test_load_and_copy(
         )
 
         # assert
-        mock_split_file.assert_called_with("/path/local_file", "/path/local_file", splits=3)
+        mock_split_file.assert_called_with(
+            "/path/local_file", "/path/local_file", splits=3, ignore_header=0
+        )
         mock_compress_file_list.assert_called_with(
             ["/path/local_file.0", "/path/local_file.1", "/path/local_file.2"]
         )
@@ -270,7 +271,9 @@ def test_load_and_copy(
             compress=False,
         )
         # assert
-        mock_split_file.assert_called_with("/path/local_file", "/path/local_file", splits=3)
+        mock_split_file.assert_called_with(
+            "/path/local_file", "/path/local_file", splits=3, ignore_header=0
+        )
         assert not mock_compress_file_list.called
         # assert not mock_remove.called
         mock_s3_upload.assert_has_calls(expected_calls_no_folder)
@@ -323,7 +326,9 @@ def test_load_and_copy(
             delete_s3_after=True,
         )
         # assert
-        mock_split_file.assert_called_with("/path/local_file", "/path/local_file", splits=3)
+        mock_split_file.assert_called_with(
+            "/path/local_file", "/path/local_file", splits=3, ignore_header=0
+        )
         assert not mock_compress_file_list.called
         # assert not mock_remove.called
         mock_s3_upload.assert_has_calls(expected_calls_folder)
@@ -356,7 +361,9 @@ def test_load_and_copy(
             s3_folder="test",
         )
         # assert
-        mock_split_file.assert_called_with("/path/local_file", "/path/local_file", splits=3)
+        mock_split_file.assert_called_with(
+            "/path/local_file", "/path/local_file", splits=3, ignore_header=0
+        )
         assert mock_compress_file_list.called
         # assert mock_remove.called
         mock_s3_upload.assert_has_calls(expected_calls_folder_gzip)
@@ -367,6 +374,179 @@ def test_load_and_copy(
             copy_options=["SOME OPTION", "GZIP"],
         )
         assert not mock_s3_delete.called
+
+
+@pytest.mark.parametrize("dbapi", DBAPIS)
+@mock.patch("locopy.utility.os.remove")
+@mock.patch("locopy.redshift.Redshift.copy")
+@mock.patch("locopy.redshift.Redshift.upload_to_s3")
+@mock.patch("locopy.redshift.Redshift.delete_from_s3")
+@mock.patch("locopy.s3.Session")
+@mock.patch("locopy.redshift.compress_file_list")
+@mock.patch("locopy.redshift.split_file")
+def test_load_and_copy_split_and_header(
+    mock_split_file,
+    mock_compress_file_list,
+    mock_session,
+    mock_s3_delete,
+    mock_s3_upload,
+    mock_rs_copy,
+    mock_remove,
+    credentials,
+    dbapi,
+):
+    def reset_mocks():
+        mock_split_file.reset_mock()
+        mock_compress_file_list.reset_mock()
+        mock_s3_upload.reset_mock()
+        mock_s3_delete.reset_mock()
+        mock_rs_copy.reset_mock()
+        mock_remove.reset_mock()
+
+    with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
+        r = Redshift(dbapi=dbapi, **credentials)
+        r.connect()
+
+        expected_calls_no_folder = [
+            mock.call("/path/local_file.0", "s3_bucket", "local_file.0"),
+            mock.call("/path/local_file.1", "s3_bucket", "local_file.1"),
+            mock.call("/path/local_file.2", "s3_bucket", "local_file.2"),
+        ]
+
+        expected_calls_no_folder_gzip = [
+            mock.call("/path/local_file.0.gz", "s3_bucket", "local_file.0.gz"),
+            mock.call("/path/local_file.1.gz", "s3_bucket", "local_file.1.gz"),
+            mock.call("/path/local_file.2.gz", "s3_bucket", "local_file.2.gz"),
+        ]
+
+        expected_calls_folder = [
+            mock.call("/path/local_file.0", "s3_bucket", "test/local_file.0"),
+            mock.call("/path/local_file.1", "s3_bucket", "test/local_file.1"),
+            mock.call("/path/local_file.2", "s3_bucket", "test/local_file.2"),
+        ]
+
+        expected_calls_folder_gzip = [
+            mock.call("/path/local_file.0.gz", "s3_bucket", "test/local_file.0.gz"),
+            mock.call("/path/local_file.1.gz", "s3_bucket", "test/local_file.1.gz"),
+            mock.call("/path/local_file.2.gz", "s3_bucket", "test/local_file.2.gz"),
+        ]
+
+        mock_split_file.return_value = ["/path/local_file.txt"]
+        mock_compress_file_list.return_value = ["/path/local_file.txt.gz"]
+
+        #### neither ignore or split only
+        r.load_and_copy("/path/local_file.txt", "s3_bucket", "table_name", delim="|")
+
+        # assert
+        assert mock_split_file.called
+        mock_compress_file_list.assert_called_with(["/path/local_file.txt"])
+        # mock_remove.assert_called_with("/path/local_file.txt")
+        mock_s3_upload.assert_called_with(
+            "/path/local_file.txt.gz", "s3_bucket", "local_file.txt.gz"
+        )
+        mock_rs_copy.assert_called_with(
+            "table_name", "s3://s3_bucket/local_file", "|", copy_options=["GZIP"]
+        )
+        assert not mock_s3_delete.called, "Only delete when explicit"
+
+        #### ignore only
+        reset_mocks()
+        r.load_and_copy(
+            "/path/local_file.txt",
+            "s3_bucket",
+            "table_name",
+            delim="|",
+            copy_options=["IGNOREHEADER as 1"],
+        )
+
+        # assert
+        assert mock_split_file.called
+        mock_compress_file_list.assert_called_with(["/path/local_file.txt"])
+        # mock_remove.assert_called_with("/path/local_file.txt")
+        mock_s3_upload.assert_called_with(
+            "/path/local_file.txt.gz", "s3_bucket", "local_file.txt.gz"
+        )
+        mock_rs_copy.assert_called_with(
+            "table_name",
+            "s3://s3_bucket/local_file",
+            "|",
+            copy_options=["IGNOREHEADER as 1", "GZIP"],
+        )
+        assert not mock_s3_delete.called, "Only delete when explicit"
+
+        #### split only
+        reset_mocks()
+        mock_split_file.return_value = [
+            "/path/local_file.0",
+            "/path/local_file.1",
+            "/path/local_file.2",
+        ]
+        mock_compress_file_list.return_value = [
+            "/path/local_file.0.gz",
+            "/path/local_file.1.gz",
+            "/path/local_file.2.gz",
+        ]
+        r.load_and_copy(
+            "/path/local_file",
+            "s3_bucket",
+            "table_name",
+            delim="|",
+            splits=3,
+            delete_s3_after=True,
+        )
+
+        # assert
+        mock_split_file.assert_called_with(
+            "/path/local_file", "/path/local_file", splits=3, ignore_header=0
+        )
+        mock_compress_file_list.assert_called_with(
+            ["/path/local_file.0", "/path/local_file.1", "/path/local_file.2"]
+        )
+        mock_s3_upload.assert_has_calls(expected_calls_no_folder_gzip)
+        mock_rs_copy.assert_called_with(
+            "table_name", "s3://s3_bucket/local_file", "|", copy_options=["GZIP"]
+        )
+        assert mock_s3_delete.called_with("s3_bucket", "local_file.0.gz")
+        assert mock_s3_delete.called_with("s3_bucket", "local_file.1.gz")
+        assert mock_s3_delete.called_with("s3_bucket", "local_file.2.gz")
+
+        #### split and ignore
+        reset_mocks()
+        mock_split_file.return_value = [
+            "/path/local_file.0",
+            "/path/local_file.1",
+            "/path/local_file.2",
+        ]
+        mock_compress_file_list.return_value = [
+            "/path/local_file.0.gz",
+            "/path/local_file.1.gz",
+            "/path/local_file.2.gz",
+        ]
+        r.load_and_copy(
+            "/path/local_file",
+            "s3_bucket",
+            "table_name",
+            delim="|",
+            copy_options=["IGNOREHEADER as 1"],
+            splits=3,
+            delete_s3_after=True,
+        )
+
+        # assert
+        mock_split_file.assert_called_with(
+            "/path/local_file", "/path/local_file", splits=3, ignore_header=1
+        )
+        mock_compress_file_list.assert_called_with(
+            ["/path/local_file.0", "/path/local_file.1", "/path/local_file.2"]
+        )
+        # mock_remove.assert_called_with("/path/local_file.2")
+        mock_s3_upload.assert_has_calls(expected_calls_no_folder_gzip)
+        mock_rs_copy.assert_called_with(
+            "table_name", "s3://s3_bucket/local_file", "|", copy_options=["GZIP"]
+        )
+        assert mock_s3_delete.called_with("s3_bucket", "local_file.0.gz")
+        assert mock_s3_delete.called_with("s3_bucket", "local_file.1.gz")
+        assert mock_s3_delete.called_with("s3_bucket", "local_file.2.gz")
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
@@ -478,6 +658,7 @@ def test_unload_and_copy(
             query="query",
             s3_bucket="s3_bucket",
             s3_folder=None,
+            raw_unload_path=None,
             export_path=False,
             delimiter=",",
             delete_s3_after=False,
@@ -504,6 +685,7 @@ def test_unload_and_copy(
             query="query",
             s3_bucket="s3_bucket",
             s3_folder=None,
+            raw_unload_path=None,
             export_path=False,
             delimiter="|",
             delete_s3_after=False,
@@ -545,6 +727,7 @@ def test_unload_and_copy(
             query="query",
             s3_bucket="s3_bucket",
             s3_folder=None,
+            raw_unload_path=None,
             export_path="my_output.csv",
             delimiter=",",
             delete_s3_after=True,
@@ -553,6 +736,26 @@ def test_unload_and_copy(
         mock_concat.assert_called_with(mock_download_list_from_s3.return_value, "my_output.csv")
         assert mock_write.called
         assert mock_delete_list_from_s3.called_with("s3_bucket", "my_output.csv")
+
+        ##
+        ## Test 6: raw_unload_path check
+        reset_mocks()
+        mock_get_col_names.return_value = ["dummy_col_name"]
+        mock_download_list_from_s3.return_value = ["s3.file"]
+        mock_generate_unload_path.return_value = "dummy_s3_path"
+        mock_unload_generated_files.return_value = ["/dummy_file"]
+        ## ensure nothing is returned when read=False
+        r.unload_and_copy(
+            query="query",
+            s3_bucket="s3_bucket",
+            s3_folder=None,
+            raw_unload_path="/somefolder/",
+            export_path=False,
+            delimiter=",",
+            delete_s3_after=False,
+            parallel_off=False,
+        )
+        mock_download_list_from_s3.assert_called_with(["/dummy_file"], "/somefolder/")
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
