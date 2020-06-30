@@ -1,54 +1,57 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Basic Examples &mdash; locopy 0.3.6 documentation</title>
+  <title>Basic Examples &mdash; locopy 0.3.7 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Common Recipes" href="recipes.html" />
     <link rel="prev" title="locopy: Data Load and Copy using Python" href="index.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
-            <a href="index.html" class="icon icon-home"> locopy
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> locopy
           
 
           
@@ -58,7 +61,7 @@
             
             
               <div class="version">
-                0.3.6
+                0.3.7
               </div>
             
           
@@ -75,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -93,14 +97,19 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="recipes.html">Common Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="snowflake.html">Snowflake</a></li>
-<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sql_injection.html">SQL Injection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Instructions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/capitalone/Data-Load-and-Copy-using-Python">Github Repo</a></li>
 </ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -139,7 +148,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Basic Examples</li>
     
@@ -165,8 +174,8 @@
 <div class="section" id="upload-to-s3-and-run-copy-command-with-yaml">
 <h2>Upload to S3 and run COPY command with YAML<a class="headerlink" href="#upload-to-s3-and-run-copy-command-with-yaml" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>no compression or splitting</li>
-<li>using <code class="docutils literal notranslate"><span class="pre">~/.aws/credentials</span></code> file</li>
+<li><p>no compression or splitting</p></li>
+<li><p>using <code class="docutils literal notranslate"><span class="pre">~/.aws/credentials</span></code> file</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span> <span class="c1"># can also be psycopg2</span>
 <span class="kn">import</span> <span class="nn">locopy</span>
@@ -245,7 +254,7 @@ three, you can pass in a list of strings which will tweak your load:</p>
         <a href="recipes.html" class="btn btn-neutral float-right" title="Common Recipes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="locopy: Data Load and Copy using Python" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="locopy: Data Load and Copy using Python" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -254,11 +263,19 @@ three, you can pass in a list of strings which will tweak your load:</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2018, Capital One Services, LLC
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -270,27 +287,16 @@ three, you can pass in a list of strings which will tweak your load:</p>
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

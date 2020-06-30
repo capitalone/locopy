@@ -2,6 +2,6 @@ locopy.errors module
 ====================
 
 .. automodule:: locopy.errors
-    :members:
-    :undoc-members:
-    :show-inheritance:
+   :members:
+   :undoc-members:
+   :show-inheritance:

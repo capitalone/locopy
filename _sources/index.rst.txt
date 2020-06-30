@@ -12,9 +12,15 @@
    Basic Examples <examples>
    Common Recipes <recipes>
    Snowflake <snowflake>
-   Developer Instructions <developer>
    SQL Injection <sql_injection>
+   Developer Instructions <developer>
+
+.. toctree::
+   :maxdepth: 4
+   :caption: API Reference
+
    API Reference <api/modules>
+   Github Repo <https://github.com/capitalone/Data-Load-and-Copy-using-Python>
 
 
 Indices and tables

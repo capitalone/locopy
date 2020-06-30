@@ -1,52 +1,55 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.snowflake &mdash; locopy 0.3.6 documentation</title>
+  <title>locopy.snowflake &mdash; locopy 0.3.7 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" /> 
 
   
-  <script src="../../_static/js/modernizr.min.js"></script>
+  
+  
+  
 
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
-            <a href="../../index.html" class="icon icon-home"> locopy
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> locopy
           
 
           
@@ -56,7 +59,7 @@
             
             
               <div class="version">
-                0.3.6
+                0.3.7
               </div>
             
           
@@ -73,6 +76,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -85,14 +89,19 @@
 <li class="toctree-l1"><a class="reference internal" href="../../examples.html">Basic Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../recipes.html">Common Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../snowflake.html">Snowflake</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../sql_injection.html">SQL Injection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer.html">Developer Instructions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/capitalone/Data-Load-and-Copy-using-Python">Github Repo</a></li>
 </ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -131,7 +140,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -176,10 +185,9 @@
 
 <span class="kn">from</span> <span class="nn">.database</span> <span class="kn">import</span> <span class="n">Database</span>
 <span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="n">DBError</span><span class="p">,</span> <span class="n">S3CredentialsError</span>
-<span class="kn">from</span> <span class="nn">.logger</span> <span class="kn">import</span> <span class="n">get_logger</span><span class="p">,</span> <span class="n">INFO</span>
+<span class="kn">from</span> <span class="nn">.logger</span> <span class="kn">import</span> <span class="n">INFO</span><span class="p">,</span> <span class="n">get_logger</span>
 <span class="kn">from</span> <span class="nn">.s3</span> <span class="kn">import</span> <span class="n">S3</span>
 <span class="kn">from</span> <span class="nn">.utility</span> <span class="kn">import</span> <span class="n">find_column_type</span>
-
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">INFO</span><span class="p">)</span>
 
@@ -350,7 +358,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;schema&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;USE SCHEMA </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">[</span><span class="s2">&quot;schema&quot;</span><span class="p">]))</span></div>
 
-<div class="viewcode-block" id="Snowflake.upload_to_internal"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.upload_to_internal">[docs]</a>    <span class="k">def</span> <span class="nf">upload_to_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">auto_compress</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Snowflake.upload_to_internal"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.upload_to_internal">[docs]</a>    <span class="k">def</span> <span class="nf">upload_to_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">auto_compress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Upload file(s) to a internal stage via the ``PUT`` command.</span>
 
@@ -371,11 +379,16 @@
 <span class="sd">            Specifies if Snowflake uses gzip to compress files during upload.</span>
 <span class="sd">            If ``True``, the files are compressed (if they are not already compressed).</span>
 <span class="sd">            if ``False``, the files are uploaded as-is.</span>
+
+<span class="sd">        overwrite : bool, optional</span>
+<span class="sd">            Specifies whether Snowflake overwrites an existing file with the same name during upload.</span>
+<span class="sd">            If ``True``, existing file with the same name is overwritten.</span>
+<span class="sd">            if ``False``, existing file with the same name is not overwritten.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">local_uri</span> <span class="o">=</span> <span class="n">PurePath</span><span class="p">(</span><span class="n">local</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-            <span class="s2">&quot;PUT &#39;file://</span><span class="si">{0}</span><span class="s2">&#39; </span><span class="si">{1}</span><span class="s2"> PARALLEL=</span><span class="si">{2}</span><span class="s2"> AUTO_COMPRESS=</span><span class="si">{3}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">local_uri</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">parallel</span><span class="p">,</span> <span class="n">auto_compress</span>
+            <span class="s2">&quot;PUT &#39;file://</span><span class="si">{0}</span><span class="s2">&#39; </span><span class="si">{1}</span><span class="s2"> PARALLEL=</span><span class="si">{2}</span><span class="s2"> AUTO_COMPRESS=</span><span class="si">{3}</span><span class="s2"> OVERWRITE=</span><span class="si">{4}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">local_uri</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">parallel</span><span class="p">,</span> <span class="n">auto_compress</span><span class="p">,</span> <span class="n">overwrite</span>
             <span class="p">)</span>
         <span class="p">)</span></div>
 
@@ -524,7 +537,13 @@
         <span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Insert a Pandas dataframe to an existing table or a new table.</span>
+<span class="sd">        Insert a Pandas dataframe to an existing table or a new table. In newer versions of the</span>
+<span class="sd">        python snowflake connector (v2.1.2+) users can call the ``write_pandas`` method from the cursor</span>
+<span class="sd">        directly, ``insert_dataframe_to_table`` is a custom implementation and does not use</span>
+<span class="sd">        ``write_pandas``. Instead of using ``COPY INTO`` the method builds a list of tuples to</span>
+<span class="sd">        insert directly into the table. There are also options to create the table if it doesn&#39;t</span>
+<span class="sd">        exist and use your own metadata. If your data is significantly large then using</span>
+<span class="sd">        ``COPY INTO &lt;table&gt;`` is more appropriate.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -591,7 +610,30 @@
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Inserting records...&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">insert_query</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">to_insert</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Table insertion has completed&quot;</span><span class="p">)</span></div></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Table insertion has completed&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Snowflake.to_dataframe"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.to_dataframe">[docs]</a>    <span class="k">def</span> <span class="nf">to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a dataframe of the last query results. This is just a convenience method. This</span>
+<span class="sd">        method overrides the base classes implementation in favour for the snowflake connectors</span>
+<span class="sd">        built-in ``fetch_pandas_all`` when ``size==None``. If ``size != None`` then we will continue</span>
+<span class="sd">        to use the existing functionality where we iterate through the cursor and build the</span>
+<span class="sd">        dataframe.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        size : int, optional</span>
+<span class="sd">            Chunk size to fetch.  Defaults to None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.DataFrame</span>
+<span class="sd">            Dataframe with lowercase column names.  Returns None if no fetched</span>
+<span class="sd">            result.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetch_pandas_all</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Snowflake</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">(</span><span class="n">size</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
@@ -604,11 +646,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2018, Capital One Services, LLC
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -620,27 +670,16 @@
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

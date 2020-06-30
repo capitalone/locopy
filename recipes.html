@@ -1,54 +1,57 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Common Recipes &mdash; locopy 0.3.6 documentation</title>
+  <title>Common Recipes &mdash; locopy 0.3.7 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Snowflake Examples" href="snowflake.html" />
     <link rel="prev" title="Basic Examples" href="examples.html" /> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
-            <a href="index.html" class="icon icon-home"> locopy
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> locopy
           
 
           
@@ -58,7 +61,7 @@
             
             
               <div class="version">
-                0.3.6
+                0.3.7
               </div>
             
           
@@ -75,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -94,14 +98,19 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="snowflake.html">Snowflake</a></li>
-<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sql_injection.html">SQL Injection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Instructions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/capitalone/Data-Load-and-Copy-using-Python">Github Repo</a></li>
 </ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -140,7 +149,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html">Docs</a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
       <li>Common Recipes</li>
     
@@ -169,8 +178,8 @@
 <h2>I have a file I want to load to Redshift<a class="headerlink" href="#i-have-a-file-i-want-to-load-to-redshift" title="Permalink to this headline">¶</a></h2>
 <p>This is probably the most common use case. What you need to start:</p>
 <ul class="simple">
-<li>Read/Write S3 access</li>
-<li>Read/Write Redshift Access</li>
+<li><p>Read/Write S3 access</p></li>
+<li><p>Read/Write Redshift Access</p></li>
 </ul>
 <p>There are a couple of ways you can authenticate with Redshift. If you are running
 this process on a regular basis it might make sense to use a <code class="docutils literal notranslate"><span class="pre">YAML</span></code> file to
@@ -190,11 +199,11 @@ tokens in order to access the appropriate AWS resources (S3 bucket).</p>
 </pre></div>
 </div>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">some_data_to_load.txt</span></code> will be compressed (gzip) and the original file deleted</li>
-<li><code class="docutils literal notranslate"><span class="pre">some_data_to_load.txt</span></code> will be uploaded to the S3 bucket:
-<code class="docutils literal notranslate"><span class="pre">s3_bucket_to_use</span></code> at the location of <code class="docutils literal notranslate"><span class="pre">s3_folder_to_use/s3_subfolder_to_use</span></code></li>
-<li>A <code class="docutils literal notranslate"><span class="pre">COPY</span></code> command will be executed to load the contents of
-<code class="docutils literal notranslate"><span class="pre">some_data_to_load.txt</span></code> to <code class="docutils literal notranslate"><span class="pre">redshift_table_to_load</span></code> using the delimiter <code class="docutils literal notranslate"><span class="pre">,</span></code></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">some_data_to_load.txt</span></code> will be compressed (gzip) and the original file deleted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">some_data_to_load.txt</span></code> will be uploaded to the S3 bucket:
+<code class="docutils literal notranslate"><span class="pre">s3_bucket_to_use</span></code> at the location of <code class="docutils literal notranslate"><span class="pre">s3_folder_to_use/s3_subfolder_to_use</span></code></p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">COPY</span></code> command will be executed to load the contents of
+<code class="docutils literal notranslate"><span class="pre">some_data_to_load.txt</span></code> to <code class="docutils literal notranslate"><span class="pre">redshift_table_to_load</span></code> using the delimiter <code class="docutils literal notranslate"><span class="pre">,</span></code></p></li>
 </ul>
 </div>
 <div class="section" id="i-d-like-to-split-my-file-into-n-files">
@@ -264,8 +273,8 @@ to <code class="docutils literal notranslate"><span class="pre">locopy.Redshift.
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If your bucket has previously unloaded files, you may get an
+<p class="admonition-title">Note</p>
+<p>If your bucket has previously unloaded files, you may get an
 error when unloading. If you don’t want to delete the older files, you can
 unload your data to a new folder or with a different prefix by specifying the
 <code class="docutils literal notranslate"><span class="pre">s3_folder</span></code> parameter. You can specify a folder to write to, i.e.
@@ -324,7 +333,7 @@ If you want to back it up as a single file, you can run:</p>
         <a href="snowflake.html" class="btn btn-neutral float-right" title="Snowflake Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="examples.html" class="btn btn-neutral" title="Basic Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="examples.html" class="btn btn-neutral float-left" title="Basic Examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -333,11 +342,19 @@ If you want to back it up as a single file, you can run:</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2018, Capital One Services, LLC
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -349,27 +366,16 @@ If you want to back it up as a single file, you can run:</p>
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

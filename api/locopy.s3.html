@@ -1,54 +1,57 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.s3 module &mdash; locopy 0.3.6 documentation</title>
+  <title>locopy.s3 module &mdash; locopy 0.3.7 documentation</title>
   
 
   
-  
-  
-  
-
-  
-
-  
-  
-    
-
-  
-
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="locopy.snowflake module" href="locopy.snowflake.html" />
     <link rel="prev" title="locopy.redshift module" href="locopy.redshift.html" /> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
-
 </head>
 
 <body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
-            <a href="../index.html" class="icon icon-home"> locopy
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> locopy
           
 
           
@@ -58,7 +61,7 @@
             
             
               <div class="version">
-                0.3.6
+                0.3.7
               </div>
             
           
@@ -75,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -83,12 +87,15 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Basic Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../recipes.html">Common Recipes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../snowflake.html">Snowflake</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../developer.html">Developer Instructions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../sql_injection.html">SQL Injection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer.html">Developer Instructions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Reference</span></p>
+<ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">API Reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="locopy.html">locopy package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="locopy.html#submodules">Submodules</a><ul class="current">
@@ -106,11 +113,13 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/capitalone/Data-Load-and-Copy-using-Python">Github Repo</a></li>
 </ul>
 
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -149,7 +158,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../index.html">Docs</a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="modules.html">locopy</a> &raquo;</li>
         
@@ -179,229 +188,188 @@
 <p>S3 Module
 Module to wrap the boto3 api usage and provide functionality to manage
 multipart upload to S3 buckets</p>
-<dl class="class">
+<dl class="py class">
 <dt id="locopy.s3.S3">
-<em class="property">class </em><code class="descclassname">locopy.s3.</code><code class="descname">S3</code><span class="sig-paren">(</span><em>profile=None</em>, <em>kms_key=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">locopy.s3.</code><code class="sig-name descname">S3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">profile</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kms_key</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>S3 wrapper class which utilizes the boto3 library to push files to an S3
 bucket.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>profile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – The name of the AWS profile to use which is typical stored in the
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>profile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – The name of the AWS profile to use which is typical stored in the
 <code class="docutils literal notranslate"><span class="pre">credentials</span></code> file.  You can also set environment variable
-<code class="docutils literal notranslate"><span class="pre">AWS_DEFAULT_PROFILE</span></code> which would be used instead.</li>
-<li><strong>kms_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – The KMS key to use for encryption
+<code class="docutils literal notranslate"><span class="pre">AWS_DEFAULT_PROFILE</span></code> which would be used instead.</p></li>
+<li><p><strong>kms_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – The KMS key to use for encryption
 If kms_key Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the AES256 ServerSideEncryption
-will be used.</li>
-<li><strong>**kwargs</strong> – Optional keyword arguments.</li>
+will be used.</p></li>
+<li><p><strong>**kwargs</strong> – Optional keyword arguments.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
+</dd>
+</dl>
+<dl class="py attribute">
 <dt id="locopy.s3.S3.profile">
-<code class="descname">profile</code><a class="headerlink" href="#locopy.s3.S3.profile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">profile</code><a class="headerlink" href="#locopy.s3.S3.profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>String representing the AWS profile for authentication</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="locopy.s3.S3.kms_key">
-<code class="descname">kms_key</code><a class="headerlink" href="#locopy.s3.S3.kms_key" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">kms_key</code><a class="headerlink" href="#locopy.s3.S3.kms_key" title="Permalink to this definition">¶</a></dt>
 <dd><p>String representing the s3 kms key</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="locopy.s3.S3.session">
-<code class="descname">session</code><a class="headerlink" href="#locopy.s3.S3.session" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">session</code><a class="headerlink" href="#locopy.s3.S3.session" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hold the AWS session credentials / info</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">boto3.Session</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>boto3.Session</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="locopy.s3.S3.s3">
-<code class="descname">s3</code><a class="headerlink" href="#locopy.s3.S3.s3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">s3</code><a class="headerlink" href="#locopy.s3.S3.s3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hold the S3 client object which is used to upload/delete files to S3</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">botocore.client.S3</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>botocore.client.S3</p>
+</dd>
+</dl>
 </dd></dl>
 
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
-<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">S3Error</span></code> – Error initializing AWS Session (ex: invalid profile)</li>
-<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">S3CredentialsError</span></code> – Issue with AWS credentials</li>
-<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">S3InitializationError</span></code> – Issue initializing S3 session</li>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3Error" title="locopy.errors.S3Error"><strong>S3Error</strong></a> – Error initializing AWS Session (ex: invalid profile)</p></li>
+<li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3CredentialsError" title="locopy.errors.S3CredentialsError"><strong>S3CredentialsError</strong></a> – Issue with AWS credentials</p></li>
+<li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3InitializationError" title="locopy.errors.S3InitializationError"><strong>S3InitializationError</strong></a> – Issue initializing S3 session</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
+</dd>
+</dl>
+<dl class="py method">
 <dt id="locopy.s3.S3.delete_from_s3">
-<code class="descname">delete_from_s3</code><span class="sig-paren">(</span><em>bucket</em>, <em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.delete_from_s3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3.delete_from_s3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">delete_from_s3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bucket</span></em>, <em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.delete_from_s3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3.delete_from_s3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete a file from an S3 bucket.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The AWS S3 bucket from which you are deleting the file.</li>
-<li><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The name of the S3 object.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The AWS S3 bucket from which you are deleting the file.</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The name of the S3 object.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">S3DeletionError</span></code> – If there is a issue deleting from the S3 bucket</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3DeletionError" title="locopy.errors.S3DeletionError"><strong>S3DeletionError</strong></a> – If there is a issue deleting from the S3 bucket</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="locopy.s3.S3.delete_list_from_s3">
-<code class="descname">delete_list_from_s3</code><span class="sig-paren">(</span><em>s3_list</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.delete_list_from_s3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3.delete_list_from_s3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">delete_list_from_s3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s3_list</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.delete_list_from_s3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3.delete_list_from_s3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete a list of files from an S3 bucket.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s3_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of strings with the s3 paths of the files to delete. The strings should not include
-the <cite>s3://</cite> scheme.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>s3_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of strings with the s3 paths of the files to delete. The strings should not include
+the <cite>s3://</cite> scheme.</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="locopy.s3.S3.download_from_s3">
-<code class="descname">download_from_s3</code><span class="sig-paren">(</span><em>bucket</em>, <em>key</em>, <em>local</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.download_from_s3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3.download_from_s3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">download_from_s3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bucket</span></em>, <em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">local</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.download_from_s3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3.download_from_s3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download a file from a S3 bucket.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</li>
-<li><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The key to name the S3 object.</li>
-<li><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The local file which you wish to copy to.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The key to name the S3 object.</p></li>
+<li><p><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The local file which you wish to copy to.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">S3DownloadError</span></code> – If there is a issue downloading to the S3 bucket</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3DownloadError" title="locopy.errors.S3DownloadError"><strong>S3DownloadError</strong></a> – If there is a issue downloading to the S3 bucket</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="locopy.s3.S3.download_list_from_s3">
-<code class="descname">download_list_from_s3</code><span class="sig-paren">(</span><em>s3_list</em>, <em>local_path=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.download_list_from_s3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3.download_list_from_s3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">download_list_from_s3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s3_list</span></em>, <em class="sig-param"><span class="n">local_path</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.download_list_from_s3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3.download_list_from_s3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Download a list of files from s3.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>s3_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of strings with the s3 paths of the files to download</li>
-<li><strong>local_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – The local path where the files will be copied to. Defualts to the current working
-directory (<code class="docutils literal notranslate"><span class="pre">os.getcwd()</span></code>)</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s3_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of strings with the s3 paths of the files to download</p></li>
+<li><p><strong>local_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – The local path where the files will be copied to. Defualts to the current working
+directory (<code class="docutils literal notranslate"><span class="pre">os.getcwd()</span></code>)</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns a list of strings of the local file names</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a list of strings of the local file names</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="locopy.s3.S3.parse_s3_url">
-<code class="descname">parse_s3_url</code><span class="sig-paren">(</span><em>s3_url</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.parse_s3_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3.parse_s3_url" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">parse_s3_url</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s3_url</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.parse_s3_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3.parse_s3_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse a string of the s3 url to extract the bucket and key.
 scheme or not.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s3_url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – s3 url. The string can include the <cite>s3://</cite> scheme (which is disgarded)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
-<li><strong>bucket</strong> (<em>str</em>) – s3 bucket</li>
-<li><strong>key</strong> (<em>str</em>) – s3 key</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>s3_url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – s3 url. The string can include the <cite>s3://</cite> scheme (which is disgarded)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>bucket</strong> (<em>str</em>) – s3 bucket</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – s3 key</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="locopy.s3.S3.upload_list_to_s3">
-<code class="descname">upload_list_to_s3</code><span class="sig-paren">(</span><em>local_list</em>, <em>bucket</em>, <em>folder=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.upload_list_to_s3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3.upload_list_to_s3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">upload_list_to_s3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">local_list</span></em>, <em class="sig-param"><span class="n">bucket</span></em>, <em class="sig-param"><span class="n">folder</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.upload_list_to_s3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3.upload_list_to_s3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload a list of files to a S3 bucket.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>local_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of strings with the file paths of the files to upload</li>
-<li><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</li>
-<li><strong>folder</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – The AWS S3 folder of the bucket which you are copying the local
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>local_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of strings with the file paths of the files to upload</p></li>
+<li><p><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</p></li>
+<li><p><strong>folder</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – The AWS S3 folder of the bucket which you are copying the local
 files to. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>. Please note that you must follow the
-<code class="docutils literal notranslate"><span class="pre">/</span></code> convention when using subfolders.</li>
+<code class="docutils literal notranslate"><span class="pre">/</span></code> convention when using subfolders.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns a list of the generated S3 bucket and keys of the files which were uploaded. The
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns a list of the generated S3 bucket and keys of the files which were uploaded. The
 <code class="docutils literal notranslate"><span class="pre">S3://</span></code> part is NOT include. The output would look like the following:
 <code class="docutils literal notranslate"><span class="pre">[&quot;my-bucket/key1&quot;,</span> <span class="pre">&quot;my-bucket/key2&quot;,</span> <span class="pre">...]</span></code></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>There is a assumption that if you are loading multiple files (via <cite>splits</cite>) it follows a
 structure such as <cite>file_name.extension.#</cite> (<cite>#</cite> splits). It allows for the <cite>COPY</cite> statement
@@ -409,26 +377,22 @@ to use the key prefix vs specificing an exact file name. The returned list helps
 process downstream.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="locopy.s3.S3.upload_to_s3">
-<code class="descname">upload_to_s3</code><span class="sig-paren">(</span><em>local</em>, <em>bucket</em>, <em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.upload_to_s3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3.upload_to_s3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">upload_to_s3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">local</span></em>, <em class="sig-param"><span class="n">bucket</span></em>, <em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.upload_to_s3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3.upload_to_s3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload a file to a S3 bucket.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The local file which you wish to copy.</li>
-<li><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</li>
-<li><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The key to name the S3 object.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The local file which you wish to copy.</p></li>
+<li><p><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The key to name the S3 object.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">S3UploadError</span></code> – If there is a issue uploading to the S3 bucket</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3UploadError" title="locopy.errors.S3UploadError"><strong>S3UploadError</strong></a> – If there is a issue uploading to the S3 bucket</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -446,7 +410,7 @@ process downstream.</p>
         <a href="locopy.snowflake.html" class="btn btn-neutral float-right" title="locopy.snowflake module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="locopy.redshift.html" class="btn btn-neutral" title="locopy.redshift module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="locopy.redshift.html" class="btn btn-neutral float-left" title="locopy.redshift module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -455,11 +419,19 @@ process downstream.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2018, Capital One Services, LLC
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -471,27 +443,16 @@ process downstream.</p>
   </div>
   
 
-
-  
-
-    
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
-    
-
-  
-
-  <script type="text/javascript" src="../_static/js/theme.js"></script>
-
   <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>
