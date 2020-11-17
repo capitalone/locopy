@@ -369,8 +369,13 @@ def test_to_pandas(mock_session, sf_credentials):
     test_df = pd.read_csv(os.path.join(CURR_DIR, "data", "mock_dataframe.txt"), sep=",")
     with mock.patch("snowflake.connector.connect") as mock_connect:
         with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
+            sf.cursor._query_result_format = "arrow"
             sf.to_dataframe()
             sf.conn.cursor.return_value.fetch_pandas_all.assert_called_with()
+
+            sf.cursor._query_result_format = "json"
+            sf.to_dataframe()
+            sf.conn.cursor.return_value.fetchall.assert_called_with()
 
             sf.to_dataframe(5)
             sf.conn.cursor.return_value.fetchmany.assert_called_with(5)

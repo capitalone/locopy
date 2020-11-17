@@ -219,9 +219,9 @@ def test_to_dataframe(dbapi):
         assert (result["variable:price"] == expected["variable:price"]).all()
 
         # with non-select query
-        test.execute('DROP table locopy_integration_testing')
+        test.execute("DROP table locopy_integration_testing")
         result = test.to_dataframe()
-        assert result['status'][0] == 'LOCOPY_INTEGRATION_TESTING successfully dropped.'
+        assert result["status"][0] == "LOCOPY_INTEGRATION_TESTING successfully dropped."
 
 
 @pytest.mark.integration
