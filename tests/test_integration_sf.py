@@ -218,6 +218,11 @@ def test_to_dataframe(dbapi):
         assert (result["variable:location:city"] == expected["variable:location:city"]).all()
         assert (result["variable:price"] == expected["variable:price"]).all()
 
+        # with non-select query
+        test.execute("DROP table locopy_integration_testing")
+        result = test.to_dataframe()
+        assert result["status"][0] == "LOCOPY_INTEGRATION_TESTING successfully dropped."
+
 
 @pytest.mark.integration
 @pytest.mark.parametrize("dbapi", DBAPIS)
