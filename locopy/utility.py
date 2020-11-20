@@ -284,9 +284,8 @@ def find_column_type(dataframe):
 
     column_type = []
     for column in dataframe.columns:
-        print(column)
+        logger.debug("Checking column: %s", column)
         data = dataframe[column].dropna().reset_index(drop=True)
-        print(data)
         if data.size == 0:
             column_type.append("varchar")
         elif data.dtype in ["datetime64[ns]", "M8[ns]"]:
