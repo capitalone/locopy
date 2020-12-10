@@ -238,9 +238,9 @@ def read_config_yaml(config_yaml):
     try:
         if isinstance(config_yaml, str):
             with open(config_yaml) as config:
-                locopy_yaml = yaml.load(config)
+                locopy_yaml = yaml.safe_load(config)
         else:
-            locopy_yaml = yaml.load(config_yaml)
+            locopy_yaml = yaml.safe_load(config_yaml)
     except Exception as e:
         logger.error("Error reading yaml. err: %s", e)
         raise CredentialsError("Error reading yaml.")
