@@ -302,6 +302,9 @@ def find_column_type(dataframe):
             column_type.append("int")
         elif str(data.dtype).startswith("float"):
             column_type.append("float")
+        else:
+            column_type.append("varchar")
+        logger.info("Parsing column %s to %s", column, column_type[-1])
     return OrderedDict(zip(list(dataframe.columns), column_type))
 
 
