@@ -33,7 +33,7 @@ setup(
     version=__version__,
     description="Loading/Unloading to Amazon Redshift using Python",
     long_description=LONG_DESCRIPTION,
-    url="https://github.com/capitalone/Data-Load-and-Copy-using-Python",
+    url="https://github.com/capitalone/locopy",
     author="Faisal Dosani",
     author_email="faisal.dosani@capitalone.com",
     license="Apache Software License",

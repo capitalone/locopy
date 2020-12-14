@@ -1,5 +1,5 @@
-.. image:: https://travis-ci.org/capitalone/Data-Load-and-Copy-using-Python.svg?branch=master
-    :target: https://travis-ci.org/capitalone/Data-Load-and-Copy-using-Python
+.. image:: https://travis-ci.org/capitalone/locopy.svg?branch=master
+    :target: https://travis-ci.org/capitalone/locopy
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/ambv/black
 
@@ -148,7 +148,7 @@ for more information, but you can:
 Advanced Usage
 --------------
 
-See the `docs <https://capitalone.github.io/Data-Load-and-Copy-using-Python/>`_ for
+See the `docs <https://capitalone.github.io/locopy/>`_ for
 more detailed usage instructions and examples including Snowflake.
 
 
