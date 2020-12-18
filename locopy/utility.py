@@ -252,6 +252,17 @@ def find_column_type(dataframe):
     """
     Find data type of each column from the dataframe.
 
+    Following is the list of pandas data types that the function checks and their mapping in sql:
+        bool -> boolean
+        datetime64[ns] -> timestamp
+        M8[ns] -> timestamp
+        int -> int
+        float -> float
+        float object -> float
+        datetime object -> timestamp
+        object -> varchar
+    For all other data types, the column will be mapped to varchar type.
+
     Parameters
     ----------
     dataframe : Pandas dataframe
