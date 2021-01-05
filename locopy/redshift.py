@@ -21,7 +21,7 @@ to Redshift, and run arbitrary code.
 import os
 
 from .database import Database
-from .errors import DBError
+from .errors import DBError, S3CredentialsError
 from .logger import INFO, get_logger
 from .s3 import S3
 from .utility import (
