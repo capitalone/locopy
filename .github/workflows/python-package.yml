@@ -1,0 +1,36 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Python package
+
+on:
+  push:
+    branches: [develop, master]
+  pull_request:
+    branches: [develop, master]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        cp tests/data/.locopyrc ~/.locopyrc
+        cp tests/data/.locopy-sfrc ~/.locopy-sfrc
+        python -m pip install --upgrade pip
+        python -m pip install azure-storage-blob==2.1.0
+        if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
+        python setup.py install
+    - name: Test with pytest (using Makefile)
+      run: |
+        make not_integration
