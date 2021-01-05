@@ -1,5 +1,5 @@
-.. image:: https://travis-ci.org/capitalone/Data-Load-and-Copy-using-Python.svg?branch=master
-    :target: https://travis-ci.org/capitalone/Data-Load-and-Copy-using-Python
+.. image:: https://github.com/capitalone/locopy/workflows/Python%20package/badge.svg
+    :target: https://github.com/capitalone/locopy/actions
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/ambv/black
 
@@ -13,7 +13,7 @@ A Python library to assist with ETL processing for:
 
 In addition:
 
-- The library supports Python 3.5+
+- The library supports Python 3.6 to 3.8
 - DB Driver (Adapter) agnostic. Use your favourite driver that complies with
   `DB-API 2.0 <https://www.python.org/dev/peps/pep-0249/>`_
 - It provides functionality to download and upload data to S3 buckets, and internal stages (Snowflake)
@@ -26,6 +26,12 @@ Quick Installation
 
     pip install locopy
 
+or install from conda-forge
+
+.. code-block:: bash
+
+    conda config --add channels conda-forge
+    conda install locopy
 
 Installation instructions
 -------------------------
@@ -148,7 +154,7 @@ for more information, but you can:
 Advanced Usage
 --------------
 
-See the `docs <https://capitalone.github.io/Data-Load-and-Copy-using-Python/>`_ for
+See the `docs <https://capitalone.github.io/locopy/>`_ for
 more detailed usage instructions and examples including Snowflake.
 
 

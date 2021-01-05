@@ -20,7 +20,7 @@
    :caption: API Reference
 
    API Reference <api/modules>
-   Github Repo <https://github.com/capitalone/Data-Load-and-Copy-using-Python>
+   Github Repo <https://github.com/capitalone/locopy>
 
 
 Indices and tables

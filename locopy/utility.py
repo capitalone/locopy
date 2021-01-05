@@ -238,9 +238,9 @@ def read_config_yaml(config_yaml):
     try:
         if isinstance(config_yaml, str):
             with open(config_yaml) as config:
-                locopy_yaml = yaml.load(config)
+                locopy_yaml = yaml.safe_load(config)
         else:
-            locopy_yaml = yaml.load(config_yaml)
+            locopy_yaml = yaml.safe_load(config_yaml)
     except Exception as e:
         logger.error("Error reading yaml. err: %s", e)
         raise CredentialsError("Error reading yaml.")
@@ -251,6 +251,17 @@ def read_config_yaml(config_yaml):
 def find_column_type(dataframe):
     """
     Find data type of each column from the dataframe.
+
+    Following is the list of pandas data types that the function checks and their mapping in sql:
+        bool -> boolean
+        datetime64[ns] -> timestamp
+        M8[ns] -> timestamp
+        int -> int
+        float -> float
+        float object -> float
+        datetime object -> timestamp
+        object -> varchar
+    For all other data types, the column will be mapped to varchar type.
 
     Parameters
     ----------
@@ -284,9 +295,8 @@ def find_column_type(dataframe):
 
     column_type = []
     for column in dataframe.columns:
-        print(column)
+        logger.debug("Checking column: %s", column)
         data = dataframe[column].dropna().reset_index(drop=True)
-        print(data)
         if data.size == 0:
             column_type.append("varchar")
         elif data.dtype in ["datetime64[ns]", "M8[ns]"]:
@@ -303,6 +313,9 @@ def find_column_type(dataframe):
             column_type.append("int")
         elif str(data.dtype).startswith("float"):
             column_type.append("float")
+        else:
+            column_type.append("varchar")
+        logger.info("Parsing column %s to %s", column, column_type[-1])
     return OrderedDict(zip(list(dataframe.columns), column_type))
 
 

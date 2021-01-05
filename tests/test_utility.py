@@ -25,6 +25,7 @@ import sys
 from io import StringIO
 from itertools import cycle
 from unittest import mock
+from pathlib import Path
 
 import pytest
 
@@ -212,25 +213,18 @@ def test_split_file_exception():
         split_file(input_file, output_file, "Test")
 
     with mock.patch("{0}.next".format(builtin_module_name)) as mock_next:
-        with mock.patch("os.remove") as mock_remove:
             mock_next.side_effect = Exception("SomeException")
 
             with pytest.raises(LocopySplitError):
                 split_file(input_file, output_file, 2)
-            assert mock_remove.call_count == 2
-            mock_remove.reset_mock()
+            assert not Path("tests/data/mock_output_file.txt.0").exists()
+            assert not Path("tests/data/mock_output_file.txt.1").exists()
 
             with pytest.raises(LocopySplitError):
                 split_file(input_file, output_file, 3)
-            assert mock_remove.call_count == 3
-
-    cleanup(
-        [
-            "tests/data/mock_output_file.txt.0",
-            "tests/data/mock_output_file.txt.1",
-            "tests/data/mock_output_file.txt.2",
-        ]
-    )
+            assert not Path("tests/data/mock_output_file.txt.0").exists()
+            assert not Path("tests/data/mock_output_file.txt.1").exists()
+            assert not Path("tests/data/mock_output_file.txt.2").exists()
 
 
 @mock.patch("locopy.utility.open", mock.mock_open(read_data=GOOD_CONFIG_YAML))
@@ -304,6 +298,7 @@ def test_find_column_type():
             "i": [None, "2011-04-02", "2002-04-23"],
             "j": [None, "2011-01-01 12:11:02", "2022-03-02 23:59:59"],
             "k": [Decimal(3.3), Decimal(100), None],
+            "l": pd.Series([1, 2, 3], dtype="category"),
         }
     )
     output_text = {
@@ -318,6 +313,7 @@ def test_find_column_type():
         "i": "date",
         "j": "timestamp",
         "k": "float",
+        "l": "varchar",
     }
     assert find_column_type(input_text) == output_text
 
