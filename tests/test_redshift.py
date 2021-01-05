@@ -79,6 +79,12 @@ def test_constructor(mock_session, credentials, dbapi):
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
+def test_constructor_credential_error(credentials, dbapi, caplog):
+    r = Redshift(dbapi=dbapi, **credentials)
+    assert "S3 credentials were not found. S3 functionality is disabled" in caplog.text
+
+
+@pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("locopy.utility.open", mock.mock_open(read_data=GOOD_CONFIG_YAML))
 @mock.patch("locopy.s3.Session")
 def test_constructor_yaml(mock_session, dbapi):
@@ -487,12 +493,7 @@ def test_load_and_copy_split_and_header(
             "/path/local_file.2.gz",
         ]
         r.load_and_copy(
-            "/path/local_file",
-            "s3_bucket",
-            "table_name",
-            delim="|",
-            splits=3,
-            delete_s3_after=True,
+            "/path/local_file", "s3_bucket", "table_name", delim="|", splits=3, delete_s3_after=True
         )
 
         # assert
