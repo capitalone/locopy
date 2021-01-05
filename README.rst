@@ -1,5 +1,5 @@
-.. image:: https://travis-ci.org/capitalone/locopy.svg?branch=master
-    :target: https://travis-ci.org/capitalone/locopy
+.. image:: https://github.com/capitalone/locopy/workflows/Python%20package/badge.svg
+    :target: https://github.com/capitalone/locopy/actions
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/ambv/black
 
