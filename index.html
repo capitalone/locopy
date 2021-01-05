@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy: Data Load and Copy using Python &mdash; locopy 0.3.7 documentation</title>
+  <title>locopy: Data Load and Copy using Python &mdash; locopy 0.3.8 documentation</title>
   
 
   
@@ -29,7 +29,6 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -60,7 +59,7 @@
             
             
               <div class="version">
-                0.3.7
+                0.3.8
               </div>
             
           
@@ -96,7 +95,7 @@
 <p class="caption"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/capitalone/Data-Load-and-Copy-using-Python">Github Repo</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/capitalone/locopy">Github Repo</a></li>
 </ul>
 
             
@@ -162,7 +161,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <a class="reference external image-reference" href="https://travis-ci.org/capitalone/Data-Load-and-Copy-using-Python"><img alt="https://travis-ci.org/capitalone/Data-Load-and-Copy-using-Python.svg?branch=master" src="https://travis-ci.org/capitalone/Data-Load-and-Copy-using-Python.svg?branch=master" /></a>
+  <a class="reference external image-reference" href="https://github.com/capitalone/locopy/actions"><img alt="https://github.com/capitalone/locopy/workflows/Python%20package/badge.svg" src="https://github.com/capitalone/locopy/workflows/Python%20package/badge.svg" /></a>
 <a class="reference external image-reference" href="https://github.com/ambv/black"><img alt="https://img.shields.io/badge/code%20style-black-000000.svg" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a>
 <div class="section" id="locopy-data-load-and-copy-using-python">
 <h1>locopy: Data Load and Copy using Python<a class="headerlink" href="#locopy-data-load-and-copy-using-python" title="Permalink to this headline">¶</a></h1>
@@ -173,7 +172,7 @@
 </ul>
 <p>In addition:</p>
 <ul class="simple">
-<li><p>The library supports Python 3.5+</p></li>
+<li><p>The library supports Python 3.6 to 3.8</p></li>
 <li><p>DB Driver (Adapter) agnostic. Use your favourite driver that complies with
 <a class="reference external" href="https://www.python.org/dev/peps/pep-0249/">DB-API 2.0</a></p></li>
 <li><p>It provides functionality to download and upload data to S3 buckets, and internal stages (Snowflake)</p></li>
@@ -182,6 +181,11 @@
 <div class="section" id="quick-installation">
 <h1>Quick Installation<a class="headerlink" href="#quick-installation" title="Permalink to this headline">¶</a></h1>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install locopy
+</pre></div>
+</div>
+<p>or install from conda-forge</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda config --add channels conda-forge
+conda install locopy
 </pre></div>
 </div>
 <div class="section" id="installation-instructions">
@@ -282,7 +286,7 @@ environment variable <code class="docutils literal notranslate"><span class="pre
 </div>
 <div class="section" id="advanced-usage">
 <h2>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permalink to this headline">¶</a></h2>
-<p>See the <a class="reference external" href="https://capitalone.github.io/Data-Load-and-Copy-using-Python/">docs</a> for
+<p>See the <a class="reference external" href="https://capitalone.github.io/locopy/">docs</a> for
 more detailed usage instructions and examples including Snowflake.</p>
 </div>
 <div class="section" id="contributors">
@@ -357,7 +361,7 @@ By participating, you are expected to honor this code.</p>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/capitalone/Data-Load-and-Copy-using-Python">Github Repo</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/capitalone/locopy">Github Repo</a></li>
 </ul>
 </div>
 </div>

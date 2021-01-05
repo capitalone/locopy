@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>locopy.s3 module &mdash; locopy 0.3.7 documentation</title>
+  <title>locopy.s3 module &mdash; locopy 0.3.8 documentation</title>
   
 
   
@@ -29,7 +29,6 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -61,7 +60,7 @@
             
             
               <div class="version">
-                0.3.7
+                0.3.8
               </div>
             
           
@@ -113,7 +112,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/capitalone/Data-Load-and-Copy-using-Python">Github Repo</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/capitalone/locopy">Github Repo</a></li>
 </ul>
 
             
@@ -191,16 +190,16 @@ multipart upload to S3 buckets</p>
 <dl class="py class">
 <dt id="locopy.s3.S3">
 <em class="property">class </em><code class="sig-prename descclassname">locopy.s3.</code><code class="sig-name descname">S3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">profile</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kms_key</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.s3.S3" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>S3 wrapper class which utilizes the boto3 library to push files to an S3
 bucket.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>profile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – The name of the AWS profile to use which is typical stored in the
+<li><p><strong>profile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – The name of the AWS profile to use which is typical stored in the
 <code class="docutils literal notranslate"><span class="pre">credentials</span></code> file.  You can also set environment variable
 <code class="docutils literal notranslate"><span class="pre">AWS_DEFAULT_PROFILE</span></code> which would be used instead.</p></li>
-<li><p><strong>kms_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – The KMS key to use for encryption
+<li><p><strong>kms_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – The KMS key to use for encryption
 If kms_key Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the AES256 ServerSideEncryption
 will be used.</p></li>
 <li><p><strong>**kwargs</strong> – Optional keyword arguments.</p></li>
@@ -213,7 +212,7 @@ will be used.</p></li>
 <dd><p>String representing the AWS profile for authentication</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -224,7 +223,7 @@ will be used.</p></li>
 <dd><p>String representing the s3 kms key</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -267,8 +266,8 @@ will be used.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The AWS S3 bucket from which you are deleting the file.</p></li>
-<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The name of the S3 object.</p></li>
+<li><p><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The AWS S3 bucket from which you are deleting the file.</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The name of the S3 object.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -283,7 +282,7 @@ will be used.</p></li>
 <dd><p>Delete a list of files from an S3 bucket.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>s3_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of strings with the s3 paths of the files to delete. The strings should not include
+<dd class="field-odd"><p><strong>s3_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – List of strings with the s3 paths of the files to delete. The strings should not include
 the <cite>s3://</cite> scheme.</p>
 </dd>
 </dl>
@@ -296,9 +295,9 @@ the <cite>s3://</cite> scheme.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</p></li>
-<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The key to name the S3 object.</p></li>
-<li><p><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The local file which you wish to copy to.</p></li>
+<li><p><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The key to name the S3 object.</p></li>
+<li><p><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The local file which you wish to copy to.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -314,8 +313,8 @@ the <cite>s3://</cite> scheme.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>s3_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of strings with the s3 paths of the files to download</p></li>
-<li><p><strong>local_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – The local path where the files will be copied to. Defualts to the current working
+<li><p><strong>s3_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – List of strings with the s3 paths of the files to download</p></li>
+<li><p><strong>local_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – The local path where the files will be copied to. Defualts to the current working
 directory (<code class="docutils literal notranslate"><span class="pre">os.getcwd()</span></code>)</p></li>
 </ul>
 </dd>
@@ -323,7 +322,7 @@ directory (<code class="docutils literal notranslate"><span class="pre">os.getcw
 <dd class="field-even"><p>Returns a list of strings of the local file names</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -335,7 +334,7 @@ directory (<code class="docutils literal notranslate"><span class="pre">os.getcw
 scheme or not.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>s3_url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – s3 url. The string can include the <cite>s3://</cite> scheme (which is disgarded)</p>
+<dd class="field-odd"><p><strong>s3_url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – s3 url. The string can include the <cite>s3://</cite> scheme (which is disgarded)</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
@@ -354,9 +353,9 @@ scheme or not.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>local_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of strings with the file paths of the files to upload</p></li>
-<li><p><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</p></li>
-<li><p><strong>folder</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – The AWS S3 folder of the bucket which you are copying the local
+<li><p><strong>local_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – List of strings with the file paths of the files to upload</p></li>
+<li><p><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</p></li>
+<li><p><strong>folder</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – The AWS S3 folder of the bucket which you are copying the local
 files to. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>. Please note that you must follow the
 <code class="docutils literal notranslate"><span class="pre">/</span></code> convention when using subfolders.</p></li>
 </ul>
@@ -367,7 +366,7 @@ files to. Defaults to <code class="docutils literal notranslate"><span class="pr
 <code class="docutils literal notranslate"><span class="pre">[&quot;my-bucket/key1&quot;,</span> <span class="pre">&quot;my-bucket/key2&quot;,</span> <span class="pre">...]</span></code></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -384,9 +383,9 @@ process downstream.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The local file which you wish to copy.</p></li>
-<li><p><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</p></li>
-<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The key to name the S3 object.</p></li>
+<li><p><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The local file which you wish to copy.</p></li>
+<li><p><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The key to name the S3 object.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
