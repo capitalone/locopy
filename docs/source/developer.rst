@@ -95,10 +95,8 @@ knowing what they're doing.  Caveat emptor!
 Management of Requirements
 --------------------------
 
-Requirements of the project should be added to ``requirements.txt``.  Optional
-requirements used only for testing are added to ``requirements-dev.txt``. There is a third
-requirements file ``requirements-black.txt`` which is used only for code formatting and pre-commit
-hooks. Black only works with Python 3.6.0+ and conflicts with the Travis CI build (Python 3.5)
+Requirements of the project should be added to ``requirements.txt``.  Optional requirements used only for testing,
+documentation, or code quality are added to ``setup.py`` and ``EXTRAS_REQUIRE``
 
 
 Release Guide

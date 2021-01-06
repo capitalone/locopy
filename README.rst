@@ -36,7 +36,7 @@ or install from conda-forge
 Installation instructions
 -------------------------
 
-A virtual environment is highly recommended
+A virtual or conda environment is highly recommended
 
 .. code-block:: bash
 
