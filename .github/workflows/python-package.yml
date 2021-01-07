@@ -29,8 +29,7 @@ jobs:
         cp tests/data/.locopy-sfrc ~/.locopy-sfrc
         python -m pip install --upgrade pip
         python -m pip install azure-storage-blob==2.1.0
-        if [ -f requirements-dev.txt ]; then pip install -r requirements-dev.txt; fi
-        python setup.py install
+        python -m pip install .[dev]
     - name: Test with pytest (using Makefile)
       run: |
         make not_integration
