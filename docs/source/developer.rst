@@ -6,23 +6,19 @@ Guidance for developers.
 Pre-Commit Hooks
 ----------------
 
-We use the excellent `pre-commit <https://pre-commit.com/>`_ to run the excellent
-`black <https://github.com/ambv/black>`_ on all changes before commits.  ``pre-commit`` is included
-in the black requirements below, and you'll have to run ``pre-commit install`` once per environment
-before committing changes, or else manually install ``black`` and run it.  If you have ``pre-commit``
-installed, trying to commit a change will first run black against any changed Python files, and force
-you to add/commit any changes.
+We use the excellent `pre-commit <https://pre-commit.com/>`_ to run several hooks on all changes before commits.
+``pre-commit`` is included in the ``dev`` extra installs. You'll have to run ``pre-commit install`` once per environment
+before committing changes.
 
-The reason behind running black as a pre-commit hook is to let a machine make style decisions, based
-on the collective wisdom of the Python community.  The only change made from the default black setup
-is to allow lines up to 100 characters long.
+The reason behind running black, isort, and others as a pre-commit hook is to let a machine make style decisions, based
+on the collective wisdom of the Python community.
 
 Generating Documentation
 ------------------------
 
-You will need to ``pip install`` the test requirements::
+You will need to ``pip install`` the ``dev`` requirements::
 
-    pip install -r requirements-dev.txt
+    pip install -e .[dev]
 
 From the root directory type::
 
