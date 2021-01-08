@@ -1,5 +1,3 @@
 include README.rst
 include LICENSE
 include requirements.txt
-include requirements-black.txt
-include requirements-dev.txt
