@@ -29,7 +29,7 @@ from unittest import mock
 import hypothesis.strategies as s
 import pytest
 import snowflake.connector
-from hypothesis import given
+from hypothesis import HealthCheck, given, settings
 
 import locopy
 from locopy import Snowflake
@@ -53,8 +53,7 @@ CHAR_STRATEGY = s.characters()
 
 @given(LIST_STRATEGY)
 def test_random_list_combine(input_list):
-    """This function tests the combine_options function using random lists
-    """
+    """This function tests the combine_options function using random lists"""
     output = locopy.snowflake.combine_options(input_list)
     assert isinstance(output, str)
     if input_list:
@@ -75,8 +74,11 @@ def test_combine_options():
 
 @mock.patch("locopy.s3.Session")
 @given(input_kms_key=CHAR_STRATEGY, profile=CHAR_STRATEGY)
+@settings(suppress_health_check=[HealthCheck.function_scoped_fixture])
 def test_constructor(input_kms_key, profile, mock_session, sf_credentials):
-    sf = Snowflake(profile=profile, kms_key=input_kms_key, dbapi=DBAPIS, **sf_credentials)
+    sf = Snowflake(
+        profile=profile, kms_key=input_kms_key, dbapi=DBAPIS, **sf_credentials
+    )
     mock_session.assert_called_with(profile_name=profile)
     assert sf.profile == profile
     assert sf.kms_key == input_kms_key
@@ -93,7 +95,10 @@ def test_constructor(input_kms_key, profile, mock_session, sf_credentials):
 @given(input_kms_key=CHAR_STRATEGY, profile=CHAR_STRATEGY)
 def test_constructor_yaml(input_kms_key, profile, mock_session):
     sf = Snowflake(
-        profile=profile, kms_key=input_kms_key, dbapi=DBAPIS, config_yaml="some_config.yml"
+        profile=profile,
+        kms_key=input_kms_key,
+        dbapi=DBAPIS,
+        config_yaml="some_config.yml",
     )
     mock_session.assert_called_with(profile_name=profile)
     assert sf.profile == profile
@@ -120,7 +125,9 @@ def test_connect(mock_session, sf_credentials):
             schema="schema",
         )
         sf.conn.cursor.assert_called_with()
-        sf.conn.cursor.return_value.execute.assert_any_call("USE WAREHOUSE warehouse", ())
+        sf.conn.cursor.return_value.execute.assert_any_call(
+            "USE WAREHOUSE warehouse", ()
+        )
         sf.conn.cursor.return_value.execute.assert_any_call("USE DATABASE database", ())
         sf.conn.cursor.return_value.execute.assert_any_call("USE SCHEMA schema", ())
 
@@ -143,8 +150,12 @@ def test_with_connect(mock_session, sf_credentials):
                 schema="schema",
             )
             sf.conn.cursor.assert_called_with()
-            sf.conn.cursor.return_value.execute.assert_any_call("USE WAREHOUSE warehouse", ())
-            sf.conn.cursor.return_value.execute.assert_any_call("USE DATABASE database", ())
+            sf.conn.cursor.return_value.execute.assert_any_call(
+                "USE WAREHOUSE warehouse", ()
+            )
+            sf.conn.cursor.return_value.execute.assert_any_call(
+                "USE DATABASE database", ()
+            )
             sf.conn.cursor.return_value.execute.assert_any_call("USE SCHEMA schema", ())
 
         mock_connect.side_effect = Exception("Connect Exception")
@@ -163,7 +174,9 @@ def test_upload_to_internal(mock_session, sf_credentials):
                 (),
             )
 
-            sf.upload_to_internal("/some/file", "@~/internal", parallel=99, auto_compress=False)
+            sf.upload_to_internal(
+                "/some/file", "@~/internal", parallel=99, auto_compress=False
+            )
             sf.conn.cursor.return_value.execute.assert_called_with(
                 "PUT 'file:///some/file' @~/internal PARALLEL=99 AUTO_COMPRESS=False OVERWRITE=True",
                 (),
@@ -250,11 +263,18 @@ def test_download_from_internal_windows(mock_session, sf_credentials):
             "(TYPE='parquet' BINARY_AS_TEXT=FALSE) c=3 d=4",
         ),
         ("json", None, None, "(TYPE='json' ) "),
-        ("json", ["COMPRESSION=GZIP"], ["c=3", "d=4"], "(TYPE='json' COMPRESSION=GZIP) c=3 d=4"),
+        (
+            "json",
+            ["COMPRESSION=GZIP"],
+            ["c=3", "d=4"],
+            "(TYPE='json' COMPRESSION=GZIP) c=3 d=4",
+        ),
     ],
 )
 @mock.patch("locopy.s3.Session")
-def test_copy(mock_session, file_type, format_options, copy_options, expected, sf_credentials):
+def test_copy(
+    mock_session, file_type, format_options, copy_options, expected, sf_credentials
+):
     with mock.patch("snowflake.connector.connect") as mock_connect:
         with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
 
@@ -266,7 +286,10 @@ def test_copy(mock_session, file_type, format_options, copy_options, expected, s
                 copy_options=copy_options,
             )
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "COPY INTO table_name FROM '@~/stage' FILE_FORMAT = {0}".format(expected), ()
+                "COPY INTO table_name FROM '@~/stage' FILE_FORMAT = {0}".format(
+                    expected
+                ),
+                (),
             )
 
 
@@ -279,7 +302,9 @@ def test_copy_exception(mock_session, sf_credentials):
                 sf.copy("table_name", "@~/stage", file_type="unknown")
 
             # exception
-            sf.conn.cursor.return_value.execute.side_effect = Exception("COPY Exception")
+            sf.conn.cursor.return_value.execute.side_effect = Exception(
+                "COPY Exception"
+            )
             with pytest.raises(DBError):
                 sf.copy("table_name", "@~/stage")
 
@@ -326,7 +351,13 @@ def test_copy_exception(mock_session, sf_credentials):
 )
 @mock.patch("locopy.s3.Session")
 def test_unload(
-    mock_session, file_type, format_options, header, copy_options, expected, sf_credentials
+    mock_session,
+    file_type,
+    format_options,
+    header,
+    copy_options,
+    expected,
+    sf_credentials,
 ):
     with mock.patch("snowflake.connector.connect") as mock_connect:
         with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
@@ -340,7 +371,8 @@ def test_unload(
                 copy_options=copy_options,
             )
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "COPY INTO @~/stage FROM table_name FILE_FORMAT = {0}".format(expected), ()
+                "COPY INTO @~/stage FROM table_name FILE_FORMAT = {0}".format(expected),
+                (),
             )
 
 
@@ -353,7 +385,9 @@ def test_unload_exception(mock_session, sf_credentials):
                 sf.unload("table_name", "@~/stage", file_type="unknown")
 
             # exception
-            sf.conn.cursor.return_value.execute.side_effect = Exception("UNLOAD Exception")
+            sf.conn.cursor.return_value.execute.side_effect = Exception(
+                "UNLOAD Exception"
+            )
             with pytest.raises(DBError):
                 sf.unload("@~/stage", "table_name")
 
@@ -403,21 +437,27 @@ def test_insert_dataframe_to_table(mock_session, sf_credentials):
                 [("1", "x", "2011-01-01"), ("2", "y", "2001-04-02")],
             )
 
-            sf.insert_dataframe_to_table(test_df, "database.schema.test", columns=["a", "b"])
+            sf.insert_dataframe_to_table(
+                test_df, "database.schema.test", columns=["a", "b"]
+            )
 
             sf.conn.cursor.return_value.executemany.assert_called_with(
-                "INSERT INTO database.schema.test (a,b) VALUES (%s,%s)", [("1", "x"), ("2", "y")]
+                "INSERT INTO database.schema.test (a,b) VALUES (%s,%s)",
+                [("1", "x"), ("2", "y")],
             )
 
             sf.insert_dataframe_to_table(
                 test_df,
                 "database.schema.test",
                 create=True,
-                metadata=OrderedDict([("col1", "int"), ("col2", "varchar"), ("col3", "date")]),
+                metadata=OrderedDict(
+                    [("col1", "int"), ("col2", "varchar"), ("col3", "date")]
+                ),
             )
 
             sf.conn.cursor.return_value.execute.assert_any_call(
-                "CREATE TABLE database.schema.test (col1 int,col2 varchar,col3 date)", ()
+                "CREATE TABLE database.schema.test (col1 int,col2 varchar,col3 date)",
+                (),
             )
             sf.conn.cursor.return_value.executemany.assert_called_with(
                 "INSERT INTO database.schema.test (col1,col2,col3) VALUES (%s,%s,%s)",
@@ -428,7 +468,9 @@ def test_insert_dataframe_to_table(mock_session, sf_credentials):
                 test_df,
                 "database.schema.test",
                 create=False,
-                metadata=OrderedDict([("col1", "int"), ("col2", "varchar"), ("col3", "date")]),
+                metadata=OrderedDict(
+                    [("col1", "int"), ("col2", "varchar"), ("col3", "date")]
+                ),
             )
 
             # mock_session.warn.assert_called_with('Metadata will not be used because create is set to False.')
