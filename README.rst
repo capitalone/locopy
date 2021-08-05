@@ -171,4 +171,4 @@ By participating, you are expected to honor this code.
 Roadmap
 -------
 
-Roadmap details can be found `here <https://github.com/capitalone/locopy/blob/master/ROADMAP.rst>`_
+Roadmap details can be found `here <https://github.com/capitalone/locopy/blob/develop/ROADMAP.rst>`_
