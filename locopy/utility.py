@@ -142,7 +142,9 @@ def split_file(input_file, output_file, splits=1, ignore_header=0):
     """
     if type(splits) is not int or splits <= 0:
         logger.error("Number of splits is invalid")
-        raise LocopySplitError("Number of splits must be greater than zero and an integer.")
+        raise LocopySplitError(
+            "Number of splits must be greater than zero and an integer."
+        )
 
     if splits == 1:
         return [input_file]
@@ -253,14 +255,16 @@ def find_column_type(dataframe):
     Find data type of each column from the dataframe.
 
     Following is the list of pandas data types that the function checks and their mapping in sql:
-        bool -> boolean
-        datetime64[ns] -> timestamp
-        M8[ns] -> timestamp
-        int -> int
-        float -> float
-        float object -> float
-        datetime object -> timestamp
-        object -> varchar
+
+        - bool -> boolean
+        - datetime64[ns] -> timestamp
+        - M8[ns] -> timestamp
+        - int -> int
+        - float -> float
+        - float object -> float
+        - datetime object -> timestamp
+        - object -> varchar
+
     For all other data types, the column will be mapped to varchar type.
 
     Parameters
@@ -272,9 +276,10 @@ def find_column_type(dataframe):
     dict
         A dictionary of columns with their data type
     """
-    from datetime import datetime, date
-    import pandas as pd
     import re
+    from datetime import date, datetime
+
+    import pandas as pd
 
     def validate_date_object(column):
         try:
@@ -346,7 +351,9 @@ class ProgressPercentage(object):
             self._seen_so_far += bytes_amount
             percentage = (self._seen_so_far / self._size) * 100
             sys.stdout.write(
-                "\rTransfering [{0}] {1:.2f}%".format("#" * int(percentage / 10), percentage)
+                "\rTransfering [{0}] {1:.2f}%".format(
+                    "#" * int(percentage / 10), percentage
+                )
             )
             sys.stdout.flush()
 
