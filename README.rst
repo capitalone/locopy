@@ -13,7 +13,7 @@ A Python library to assist with ETL processing for:
 
 In addition:
 
-- The library supports Python 3.6 to 3.8
+- The library supports Python 3.7 to 3.9
 - DB Driver (Adapter) agnostic. Use your favourite driver that complies with
   `DB-API 2.0 <https://www.python.org/dev/peps/pep-0249/>`_
 - It provides functionality to download and upload data to S3 buckets, and internal stages (Snowflake)
