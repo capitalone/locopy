@@ -98,3 +98,6 @@ pip-wheel-metadata/
 
 # pycharm
 .idea/
+
+#edgetest
+.edgetest/

@@ -31,7 +31,7 @@ exec(open("locopy/_version.py").read())
 
 # No versioning on extras for dev, always grab the latest
 EXTRAS_REQUIRE = {
-    "psycopg2": ["psycopg2>=2.7.7"],
+    "psycopg2": ["psycopg2-binary>=2.7.7"],
     "pg8000": ["pg8000>=1.13.1"],
     "snowflake": ["snowflake-connector-python[pandas]>=2.1.2"],
     "docs": ["sphinx", "sphinx_rtd_theme"],
@@ -46,6 +46,7 @@ EXTRAS_REQUIRE = {
         "isort",
     ],
     "build": ["twine", "wheel"],
+    "edgetest": ["edgetest", "edgetest-conda"],
 }
 
 EXTRAS_REQUIRE["dev"] = (
