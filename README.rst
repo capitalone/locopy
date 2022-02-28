@@ -13,7 +13,7 @@ A Python library to assist with ETL processing for:
 
 In addition:
 
-- The library supports Python 3.6 to 3.8
+- The library supports Python 3.7 to 3.9
 - DB Driver (Adapter) agnostic. Use your favourite driver that complies with
   `DB-API 2.0 <https://www.python.org/dev/peps/pep-0249/>`_
 - It provides functionality to download and upload data to S3 buckets, and internal stages (Snowflake)
@@ -36,7 +36,7 @@ or install from conda-forge
 Installation instructions
 -------------------------
 
-A virtual environment is highly recommended
+A virtual or conda environment is highly recommended
 
 .. code-block:: bash
 
@@ -161,15 +161,14 @@ more detailed usage instructions and examples including Snowflake.
 Contributors
 ------------
 
-We welcome your interest in Capital One’s Open Source Projects (the "Project").
-Any Contributor to the project must accept and sign a CLA indicating agreement to
-the license terms. Except for the license granted in this CLA to Capital One and
-to recipients of software distributed by Capital One, you reserve all right, title,
-and interest in and to your contributions; this CLA does not impact your rights to
-use your own contributions for any other purpose.
+We welcome and appreciate your contributions! Before we can accept any contributions, we ask that you please be sure to
+sign the `Contributor License Agreement (CLA) <https://cla-assistant.io/capitalone/locopy>`_.
 
-- `Link to Individual CLA <https://docs.google.com/forms/d/19LpBBjykHPox18vrZvBbZUcK6gQTj7qv1O5hCduAZFU/viewform>`_
-- `Link to Corporate CLA <https://docs.google.com/forms/d/e/1FAIpQLSeAbobIPLCVZD_ccgtMWBDAcN68oqbAJBQyDTSAQ1AkYuCp_g/viewform>`_
-
-This project adheres to the `Open Source Code of Conduct <https://developer.capitalone.com/resources/code-of-conduct>`_.
+This project adheres to the `Open Source Code of Conduct <https://developer.capitalone.com/resources/code-of-conduct/>`_.
 By participating, you are expected to honor this code.
+
+
+Roadmap
+-------
+
+Roadmap details can be found `here <https://github.com/capitalone/locopy/blob/develop/ROADMAP.rst>`_

@@ -6,23 +6,19 @@ Guidance for developers.
 Pre-Commit Hooks
 ----------------
 
-We use the excellent `pre-commit <https://pre-commit.com/>`_ to run the excellent
-`black <https://github.com/ambv/black>`_ on all changes before commits.  ``pre-commit`` is included
-in the black requirements below, and you'll have to run ``pre-commit install`` once per environment
-before committing changes, or else manually install ``black`` and run it.  If you have ``pre-commit``
-installed, trying to commit a change will first run black against any changed Python files, and force
-you to add/commit any changes.
+We use the excellent `pre-commit <https://pre-commit.com/>`_ to run several hooks on all changes before commits.
+``pre-commit`` is included in the ``dev`` extra installs. You'll have to run ``pre-commit install`` once per environment
+before committing changes.
 
-The reason behind running black as a pre-commit hook is to let a machine make style decisions, based
-on the collective wisdom of the Python community.  The only change made from the default black setup
-is to allow lines up to 100 characters long.
+The reason behind running black, isort, and others as a pre-commit hook is to let a machine make style decisions, based
+on the collective wisdom of the Python community.
 
 Generating Documentation
 ------------------------
 
-You will need to ``pip install`` the test requirements::
+You will need to ``pip install`` the ``dev`` requirements::
 
-    pip install -r requirements-dev.txt
+    pip install -e .[dev]
 
 From the root directory type::
 
@@ -95,10 +91,36 @@ knowing what they're doing.  Caveat emptor!
 Management of Requirements
 --------------------------
 
-Requirements of the project should be added to ``requirements.txt``.  Optional
-requirements used only for testing are added to ``requirements-dev.txt``. There is a third
-requirements file ``requirements-black.txt`` which is used only for code formatting and pre-commit
-hooks. Black only works with Python 3.6.0+ and conflicts with the Travis CI build (Python 3.5)
+Requirements of the project should be added to ``requirements.txt``.  Optional requirements used only for testing,
+documentation, or code quality are added to ``setup.py`` and ``EXTRAS_REQUIRE``
+
+edgetest
+--------
+
+edgetest is a utility to help keep requirements up to date and ensure a subset of testing requirements still work.
+More on edgetest `here <https://github.com/capitalone/edgetest>`_.
+
+The ``setup.cfg`` has configuration details on how to run edgetest. This process can be automated via GitHub Actions.
+(A future addition, which will come soon).
+
+In order to execute edgetest locally you can run the following after install ``edgetest``:
+
+.. code-block:: bash
+
+    edgetest -c setup.cfg -r requirements.txt --export
+
+This should return output like the following and also updating ``requirements.txt``:
+
+.. code-block:: bash
+
+    =============  ===============  ===================  =================
+    Environment    Passing tests    Upgraded packages    Package version
+    =============  ===============  ===================  =================
+    core           True             boto3                1.21.7
+    core           True             pandas               1.3.5
+    core           True             PyYAML               6.0
+    =============  ===============  ===================  =================
+    No PEP-517 style requirements in setup.cfg to update. Updating requirements.txt
 
 
 Release Guide

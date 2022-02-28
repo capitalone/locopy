@@ -15,8 +15,8 @@
 # limitations under the License.
 
 import os
-from setuptools import setup
 
+from setuptools import setup
 
 CURR_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -27,6 +27,35 @@ with open(os.path.join(CURR_DIR, "requirements.txt"), encoding="utf-8") as file_
     INSTALL_REQUIRES = file_open.read().split("\n")
 
 exec(open("locopy/_version.py").read())
+
+
+# No versioning on extras for dev, always grab the latest
+EXTRAS_REQUIRE = {
+    "psycopg2": ["psycopg2-binary>=2.7.7"],
+    "pg8000": ["pg8000>=1.13.1"],
+    "snowflake": ["snowflake-connector-python[pandas]>=2.1.2"],
+    "docs": ["sphinx", "sphinx_rtd_theme"],
+    "tests": [
+        "hypothesis",
+        "pytest",
+        "pytest-cov",
+    ],
+    "qa": [
+        "pre-commit",
+        "black",
+        "isort",
+    ],
+    "build": ["twine", "wheel"],
+    "edgetest": ["edgetest", "edgetest-conda"],
+}
+
+EXTRAS_REQUIRE["dev"] = (
+    EXTRAS_REQUIRE["tests"]
+    + EXTRAS_REQUIRE["docs"]
+    + EXTRAS_REQUIRE["qa"]
+    + EXTRAS_REQUIRE["build"]
+)
+
 
 setup(
     name="locopy",
@@ -39,10 +68,6 @@ setup(
     license="Apache Software License",
     packages=["locopy"],
     install_requires=INSTALL_REQUIRES,
-    extras_require={
-        "psycopg2": ["psycopg2>=2.7.7"],
-        "pg8000": ["pg8000>=1.13.1"],
-        "snowflake": ["snowflake-connector-python[pandas]>=2.1.2"],
-    },
+    extras_require=EXTRAS_REQUIRE,
     zip_safe=False,
 )
