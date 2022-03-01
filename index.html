@@ -1,70 +1,36 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>locopy: Data Load and Copy using Python &mdash; locopy 0.3.8 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>locopy: Data Load and Copy using Python &mdash; locopy 0.4.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Basic Examples" href="examples.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="#" class="icon icon-home" alt="Documentation Home"> locopy
-          
-
-          
+            <a href="#" class="icon icon-home"> locopy
           </a>
-
-          
-            
-            
               <div class="version">
-                0.3.8
+                0.4.0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -72,19 +38,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Basic Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="recipes.html">Common Recipes</a></li>
@@ -92,78 +47,39 @@
 <li class="toctree-l1"><a class="reference internal" href="sql_injection.html">SQL Injection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Instructions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/capitalone/locopy">Github Repo</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="#">locopy</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="#" class="icon icon-home"></a> &raquo;</li>
-        
       <li>locopy: Data Load and Copy using Python</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <a class="reference external image-reference" href="https://github.com/capitalone/locopy/actions"><img alt="https://github.com/capitalone/locopy/workflows/Python%20package/badge.svg" src="https://github.com/capitalone/locopy/workflows/Python%20package/badge.svg" /></a>
 <a class="reference external image-reference" href="https://github.com/ambv/black"><img alt="https://img.shields.io/badge/code%20style-black-000000.svg" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a>
-<div class="section" id="locopy-data-load-and-copy-using-python">
+<section id="locopy-data-load-and-copy-using-python">
 <h1>locopy: Data Load and Copy using Python<a class="headerlink" href="#locopy-data-load-and-copy-using-python" title="Permalink to this headline">¶</a></h1>
 <p>A Python library to assist with ETL processing for:</p>
 <ul class="simple">
@@ -172,13 +88,13 @@
 </ul>
 <p>In addition:</p>
 <ul class="simple">
-<li><p>The library supports Python 3.6 to 3.8</p></li>
+<li><p>The library supports Python 3.7 to 3.9</p></li>
 <li><p>DB Driver (Adapter) agnostic. Use your favourite driver that complies with
 <a class="reference external" href="https://www.python.org/dev/peps/pep-0249/">DB-API 2.0</a></p></li>
 <li><p>It provides functionality to download and upload data to S3 buckets, and internal stages (Snowflake)</p></li>
 </ul>
-</div>
-<div class="section" id="quick-installation">
+</section>
+<section id="quick-installation">
 <h1>Quick Installation<a class="headerlink" href="#quick-installation" title="Permalink to this headline">¶</a></h1>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install locopy
 </pre></div>
@@ -188,17 +104,17 @@
 conda install locopy
 </pre></div>
 </div>
-<div class="section" id="installation-instructions">
+<section id="installation-instructions">
 <h2>Installation instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this headline">¶</a></h2>
-<p>A virtual environment is highly recommended</p>
+<p>A virtual or conda environment is highly recommended</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ virtualenv locopy
 $ <span class="nb">source</span> locopy/bin/activate
 $ pip install --upgrade setuptools pip
 $ pip install locopy
 </pre></div>
 </div>
-</div>
-<div class="section" id="python-database-api-specification-2-0">
+</section>
+<section id="python-database-api-specification-2-0">
 <h2>Python Database API Specification 2.0<a class="headerlink" href="#python-database-api-specification-2-0" title="Permalink to this headline">¶</a></h2>
 <p>Rather than using a specific Python DB Driver / Adapter for Postgres (which should supports Amazon
 Redshift or Snowflake), <code class="docutils literal notranslate"><span class="pre">locopy</span></code> prefers to be agnostic. As an end user you can use any Python
@@ -211,20 +127,20 @@ Database API Specification 2.0 package.</p>
 </ul>
 <p>You can use which ever one you prefer by importing the package and passing it
 into the constructor input <code class="docutils literal notranslate"><span class="pre">dbapi</span></code>.</p>
-</div>
-<div class="section" id="usage">
+</section>
+<section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>You need to store your connection parameters in a YAML file (or pass them in directly).
 The YAML would consist of the following items:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># required to connect to redshift</span>
-<span class="nt">host</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">my.redshift.cluster.com</span>
-<span class="nt">port</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5439</span>
-<span class="nt">database</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">db</span>
-<span class="nt">user</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">userid</span>
-<span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">password</span>
-<span class="c1">## optional extras for the dbapi connector</span>
-<span class="nt">sslmode</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">require</span>
-<span class="nt">another_option</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">123</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># required to connect to redshift</span><span class="w"></span>
+<span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my.redshift.cluster.com</span><span class="w"></span>
+<span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5439</span><span class="w"></span>
+<span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">db</span><span class="w"></span>
+<span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">userid</span><span class="w"></span>
+<span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">password</span><span class="w"></span>
+<span class="c1">## optional extras for the dbapi connector</span><span class="w"></span>
+<span class="nt">sslmode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">require</span><span class="w"></span>
+<span class="nt">another_option</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">123</span><span class="w"></span>
 </pre></div>
 </div>
 <p>If you aren’t loading data, you don’t need to have AWS tokens set up.
@@ -266,7 +182,7 @@ The Redshift connection (<code class="docutils literal notranslate"><span class=
         <span class="n">export_path</span><span class="o">=</span><span class="s2">&quot;my_output_destination.csv&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="section" id="note-on-tokens">
+<section id="note-on-tokens">
 <h3>Note on tokens<a class="headerlink" href="#note-on-tokens" title="Permalink to this headline">¶</a></h3>
 <p>To load data to S3, you will need to be able to generate AWS tokens, or assume the IAM role on a EC2
 instance. There are a few options for doing this, depending on where you’re running your script and
@@ -282,29 +198,25 @@ you can either call <code class="docutils literal notranslate"><span class="pre"
 environment variable <code class="docutils literal notranslate"><span class="pre">AWS_DEFAULT_PROFILE</span></code>.</p></li>
 <li><p>If you are on a EC2 instance you can assume the credentials associated with the IAM role attached.</p></li>
 </ul>
-</div>
-</div>
-<div class="section" id="advanced-usage">
+</section>
+</section>
+<section id="advanced-usage">
 <h2>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permalink to this headline">¶</a></h2>
 <p>See the <a class="reference external" href="https://capitalone.github.io/locopy/">docs</a> for
 more detailed usage instructions and examples including Snowflake.</p>
-</div>
-<div class="section" id="contributors">
+</section>
+<section id="contributors">
 <h2>Contributors<a class="headerlink" href="#contributors" title="Permalink to this headline">¶</a></h2>
-<p>We welcome your interest in Capital One’s Open Source Projects (the “Project”).
-Any Contributor to the project must accept and sign a CLA indicating agreement to
-the license terms. Except for the license granted in this CLA to Capital One and
-to recipients of software distributed by Capital One, you reserve all right, title,
-and interest in and to your contributions; this CLA does not impact your rights to
-use your own contributions for any other purpose.</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://docs.google.com/forms/d/19LpBBjykHPox18vrZvBbZUcK6gQTj7qv1O5hCduAZFU/viewform">Link to Individual CLA</a></p></li>
-<li><p><a class="reference external" href="https://docs.google.com/forms/d/e/1FAIpQLSeAbobIPLCVZD_ccgtMWBDAcN68oqbAJBQyDTSAQ1AkYuCp_g/viewform">Link to Corporate CLA</a></p></li>
-</ul>
-<p>This project adheres to the <a class="reference external" href="https://developer.capitalone.com/resources/code-of-conduct">Open Source Code of Conduct</a>.
+<p>We welcome and appreciate your contributions! Before we can accept any contributions, we ask that you please be sure to
+sign the <a class="reference external" href="https://cla-assistant.io/capitalone/locopy">Contributor License Agreement (CLA)</a>.</p>
+<p>This project adheres to the <a class="reference external" href="https://developer.capitalone.com/resources/code-of-conduct/">Open Source Code of Conduct</a>.
 By participating, you are expected to honor this code.</p>
+</section>
+<section id="roadmap">
+<h2>Roadmap<a class="headerlink" href="#roadmap" title="Permalink to this headline">¶</a></h2>
+<p>Roadmap details can be found <a class="reference external" href="https://github.com/capitalone/locopy/blob/develop/ROADMAP.rst">here</a></p>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Basic Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="examples.html#upload-to-s3-and-run-copy-command-with-yaml">Upload to S3 and run COPY command with YAML</a></li>
@@ -335,6 +247,7 @@ By participating, you are expected to honor this code.</p>
 <li class="toctree-l2"><a class="reference internal" href="developer.html#run-unit-tests">Run unit tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developer.html#integration-tests">Integration Tests</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developer.html#management-of-requirements">Management of Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developer.html#edgetest">edgetest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developer.html#release-guide">Release Guide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="developer.html#generating-distribution-archives-pypi">Generating distribution archives (PyPI)</a></li>
 </ul>
@@ -342,7 +255,7 @@ By participating, you are expected to honor this code.</p>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">API Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/locopy.html">locopy package</a><ul>
@@ -364,69 +277,45 @@ By participating, you are expected to honor this code.</p>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/capitalone/locopy">Github Repo</a></li>
 </ul>
 </div>
-</div>
-</div>
-<div class="section" id="indices-and-tables">
+</section>
+</section>
+<section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
-</div>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="examples.html" class="btn btn-neutral float-right" title="Basic Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="examples.html" class="btn btn-neutral float-right" title="Basic Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2018, Capital One Services, LLC
-
-    </p>
+    <p>&#169; Copyright 2018, Capital One Services, LLC.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

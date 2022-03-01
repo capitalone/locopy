@@ -1,7 +1,0 @@
-locopy.locopy module
-====================
-
-.. automodule:: locopy.locopy
-    :members:
-    :undoc-members:
-    :show-inheritance:

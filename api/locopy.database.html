@@ -1,71 +1,37 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>locopy.database module &mdash; locopy 0.3.8 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>locopy.database module &mdash; locopy 0.4.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="locopy.errors module" href="locopy.errors.html" />
     <link rel="prev" title="locopy package" href="locopy.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> locopy
-          
-
-          
+            <a href="../index.html" class="icon icon-home"> locopy
           </a>
-
-          
-            
-            
               <div class="version">
-                0.3.8
+                0.4.0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,19 +39,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../examples.html">Basic Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../recipes.html">Common Recipes</a></li>
@@ -93,7 +48,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../sql_injection.html">SQL Injection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../developer.html">Developer Instructions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">API Reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="locopy.html">locopy package</a><ul class="current">
@@ -115,80 +70,39 @@
 <li class="toctree-l1"><a class="reference external" href="https://github.com/capitalone/locopy">Github Repo</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">locopy</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="modules.html">locopy</a> &raquo;</li>
-        
           <li><a href="locopy.html">locopy package</a> &raquo;</li>
-        
       <li>locopy.database module</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="../_sources/api/locopy.database.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="module-locopy.database">
+             
+  <section id="module-locopy.database">
 <span id="locopy-database-module"></span><h1>locopy.database module<a class="headerlink" href="#module-locopy.database" title="Permalink to this headline">¶</a></h1>
 <p>Database Module</p>
 <dl class="py class">
-<dt id="locopy.database.Database">
-<em class="property">class </em><code class="sig-prename descclassname">locopy.database.</code><code class="sig-name descname">Database</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dbapi</span></em>, <em class="sig-param"><span class="n">config_yaml</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.database.Database" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dt class="sig sig-object py" id="locopy.database.Database">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">locopy.database.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbapi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_yaml</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.database.Database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>This is the base class for all DBAPI 2 database connectors which will inherit this
 functionality. The <code class="docutils literal notranslate"><span class="pre">Database</span></code> class will manage connections and handle executing queries.
 Most of the functionality should work out of the box for classes which inherit minus the
@@ -198,7 +112,7 @@ abstract method for <code class="docutils literal notranslate"><span class="pre"
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dbapi</strong> (<em>DBAPI 2 module</em><em>, </em><em>optional</em>) – A database adapter which is Python DB API 2.0 compliant
 (<code class="docutils literal notranslate"><span class="pre">psycopg2</span></code>, <code class="docutils literal notranslate"><span class="pre">pg8000</span></code>, etc.)</p></li>
-<li><p><strong>config_yaml</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – String representing the YAML file location of the database connection keyword arguments. It
+<li><p><strong>config_yaml</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – String representing the YAML file location of the database connection keyword arguments. It
 is worth noting that this should only contain valid arguments for the database connector you
 plan on using. It will throw an exception if something is passed through which isn’t valid.</p></li>
 <li><p><strong>**kwargs</strong> – Database connection keyword arguments.</p></li>
@@ -206,8 +120,8 @@ plan on using. It will throw an exception if something is passed through which i
 </dd>
 </dl>
 <dl class="py attribute">
-<dt id="locopy.database.Database.dbapi">
-<code class="sig-name descname">dbapi</code><a class="headerlink" href="#locopy.database.Database.dbapi" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="locopy.database.Database.dbapi">
+<span class="sig-name descname"><span class="pre">dbapi</span></span><a class="headerlink" href="#locopy.database.Database.dbapi" title="Permalink to this definition">¶</a></dt>
 <dd><p>database adapter which is Python DBAPI 2.0 compliant</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -217,19 +131,19 @@ plan on using. It will throw an exception if something is passed through which i
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="locopy.database.Database.connection">
-<code class="sig-name descname">connection</code><a class="headerlink" href="#locopy.database.Database.connection" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="locopy.database.Database.connection">
+<span class="sig-name descname"><span class="pre">connection</span></span><a class="headerlink" href="#locopy.database.Database.connection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary of database connection items</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="locopy.database.Database.conn">
-<code class="sig-name descname">conn</code><a class="headerlink" href="#locopy.database.Database.conn" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="locopy.database.Database.conn">
+<span class="sig-name descname"><span class="pre">conn</span></span><a class="headerlink" href="#locopy.database.Database.conn" title="Permalink to this definition">¶</a></dt>
 <dd><p>DBAPI connection instance</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -239,8 +153,8 @@ plan on using. It will throw an exception if something is passed through which i
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="locopy.database.Database.cursor">
-<code class="sig-name descname">cursor</code><a class="headerlink" href="#locopy.database.Database.cursor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="locopy.database.Database.cursor">
+<span class="sig-name descname"><span class="pre">cursor</span></span><a class="headerlink" href="#locopy.database.Database.cursor" title="Permalink to this definition">¶</a></dt>
 <dd><p>DBAPI cursor instance</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -255,8 +169,8 @@ plan on using. It will throw an exception if something is passed through which i
 </dd>
 </dl>
 <dl class="py method">
-<dt id="locopy.database.Database.column_names">
-<code class="sig-name descname">column_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.column_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.database.Database.column_names" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="locopy.database.Database.column_names">
+<span class="sig-name descname"><span class="pre">column_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.column_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.database.Database.column_names" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pull column names out of the cursor description. Depending on the
 DBAPI, it could return column names as bytes: <code class="docutils literal notranslate"><span class="pre">b'column_name'</span></code></p>
 <dl class="field-list simple">
@@ -264,14 +178,14 @@ DBAPI, it could return column names as bytes: <code class="docutils literal notr
 <dd class="field-odd"><p>List of column names, all in lower-case</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="locopy.database.Database.connect">
-<code class="sig-name descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.database.Database.connect" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="locopy.database.Database.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.database.Database.connect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a connection to a database by setting the values of the <code class="docutils literal notranslate"><span class="pre">conn</span></code> and <code class="docutils literal notranslate"><span class="pre">cursor</span></code>
 attributes.</p>
 <dl class="field-list simple">
@@ -282,8 +196,8 @@ attributes.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="locopy.database.Database.disconnect">
-<code class="sig-name descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.database.Database.disconnect" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="locopy.database.Database.disconnect">
+<span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.database.Database.disconnect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Terminates the connection by closing the values of the <code class="docutils literal notranslate"><span class="pre">conn</span></code> and <code class="docutils literal notranslate"><span class="pre">cursor</span></code>
 attributes.</p>
 <dl class="field-list simple">
@@ -294,19 +208,19 @@ attributes.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="locopy.database.Database.execute">
-<code class="sig-name descname">execute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sql</span></em>, <em class="sig-param"><span class="n">commit</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">params</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="n">many</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.database.Database.execute" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="locopy.database.Database.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sql</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">many</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.database.Database.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute some sql against the connection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sql</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – SQL to run against the connection.  Could be one or multiple
+<li><p><strong>sql</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – SQL to run against the connection.  Could be one or multiple
 statements.</p></li>
 <li><p><strong>commit</strong> (<em>Boolean</em><em>, </em><em>default True</em>) – Whether to “commit” the commands to the cluster immediately or not.</p></li>
 <li><p><strong>params</strong> (<em>iterable of parameters</em>) – Parameters to submit with the query. The exact syntax will depend
 on the database adapter you are using</p></li>
-<li><p><strong>many</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>default False</em>) – Whether to execute the script as an “execute many”</p></li>
-<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>default True</em>) – Whether to print executed query</p></li>
+<li><p><strong>many</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>default False</em>) – Whether to execute the script as an “execute many”</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>default True</em>) – Whether to print executed query</p></li>
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
@@ -319,14 +233,14 @@ on the database adapter you are using</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="locopy.database.Database.to_dataframe">
-<code class="sig-name descname">to_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">size</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.to_dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.database.Database.to_dataframe" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="locopy.database.Database.to_dataframe">
+<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.database.Database.to_dataframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a dataframe of the last query results.  This imports Pandas
 in here, so that it’s not needed for other use cases.  This is just a
 convenience method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – Chunk size to fetch.  Defaults to None.</p>
+<dd class="field-odd"><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Chunk size to fetch.  Defaults to None.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Dataframe with lowercase column names.  Returns None if no fetched
@@ -339,8 +253,8 @@ result.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="locopy.database.Database.to_dict">
-<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#locopy.database.Database.to_dict" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="locopy.database.Database.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.database.Database.to_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate dictionaries of rows</p>
 <dl class="field-list simple">
 <dt class="field-odd">Yields</dt>
@@ -351,62 +265,37 @@ result.</p>
 
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="locopy.errors.html" class="btn btn-neutral float-right" title="locopy.errors module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="locopy.html" class="btn btn-neutral float-left" title="locopy package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="locopy.html" class="btn btn-neutral float-left" title="locopy package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="locopy.errors.html" class="btn btn-neutral float-right" title="locopy.errors module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2018, Capital One Services, LLC
-
-    </p>
+    <p>&#169; Copyright 2018, Capital One Services, LLC.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

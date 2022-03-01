@@ -1,71 +1,37 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>Basic Examples &mdash; locopy 0.3.8 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Basic Examples &mdash; locopy 0.4.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Common Recipes" href="recipes.html" />
     <link rel="prev" title="locopy: Data Load and Copy using Python" href="index.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> locopy
-          
-
-          
+            <a href="index.html" class="icon icon-home"> locopy
           </a>
-
-          
-            
-            
               <div class="version">
-                0.3.8
+                0.4.0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,19 +39,8 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Basic Examples</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#upload-to-s3-and-run-copy-command-with-yaml">Upload to S3 and run COPY command with YAML</a></li>
@@ -99,78 +54,39 @@
 <li class="toctree-l1"><a class="reference internal" href="sql_injection.html">SQL Injection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Instructions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Reference</span></p>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/modules.html">API Reference</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/capitalone/locopy">Github Repo</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">locopy</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>Basic Examples</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/examples.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="basic-examples">
+             
+  <section id="basic-examples">
 <h1>Basic Examples<a class="headerlink" href="#basic-examples" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="upload-to-s3-and-run-copy-command-with-yaml">
+<section id="upload-to-s3-and-run-copy-command-with-yaml">
 <h2>Upload to S3 and run COPY command with YAML<a class="headerlink" href="#upload-to-s3-and-run-copy-command-with-yaml" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>no compression or splitting</p></li>
@@ -198,8 +114,8 @@
 <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="upload-to-s3-and-run-copy-command-without-yaml">
+</section>
+<section id="upload-to-s3-and-run-copy-command-without-yaml">
 <h2>Upload to S3 and run COPY command without YAML<a class="headerlink" href="#upload-to-s3-and-run-copy-command-without-yaml" title="Permalink to this headline">¶</a></h2>
 <p>Identical to the above code, but we would explicitly pass the connection details in the <code class="docutils literal notranslate"><span class="pre">Redshift</span></code>
 constructor vs. the YAML</p>
@@ -214,8 +130,8 @@ constructor vs. the YAML</p>
     <span class="o">...</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="aws-tokens-as-environment-variables">
+</section>
+<section id="aws-tokens-as-environment-variables">
 <h2>AWS tokens as environment variables<a class="headerlink" href="#aws-tokens-as-environment-variables" title="Permalink to this headline">¶</a></h2>
 <p>If you would rather provide your AWS tokens via environment variables vs. using a profile from
 <code class="docutils literal notranslate"><span class="pre">~/.aws/credentials</span></code>, you can do something as follows:</p>
@@ -224,8 +140,8 @@ constructor vs. the YAML</p>
 <span class="nb">export</span> <span class="nv">AWS_SESSION_TOKEN</span><span class="o">=</span>MY_SESSION_TOKEN
 </pre></div>
 </div>
-</div>
-<div class="section" id="extra-parameters-on-the-copy-job">
+</section>
+<section id="extra-parameters-on-the-copy-job">
 <h2>Extra parameters on the COPY job<a class="headerlink" href="#extra-parameters-on-the-copy-job" title="Permalink to this headline">¶</a></h2>
 <p>As per the AWS documentation <a class="reference external" href="http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-conversion.html">here</a>,
 there may be times when you want to tweak the options used by the <code class="docutils literal notranslate"><span class="pre">COPY</span></code> job if you have some
@@ -239,63 +155,38 @@ three, you can pass in a list of strings which will tweak your load:</p>
             <span class="n">copy_options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;NULL AS &#39;NULL&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;ESCAPE&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="recipes.html" class="btn btn-neutral float-right" title="Common Recipes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="index.html" class="btn btn-neutral float-left" title="locopy: Data Load and Copy using Python" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="locopy: Data Load and Copy using Python" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="recipes.html" class="btn btn-neutral float-right" title="Common Recipes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2018, Capital One Services, LLC
-
-    </p>
+    <p>&#169; Copyright 2018, Capital One Services, LLC.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
