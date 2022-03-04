@@ -1,10 +1,10 @@
-# This workflow runs edgetest on locopy.
+# This workflow runs edgetest on locopy @ 17:20 UTC Fridays.
 # https://github.com/fdosani/run-edgetest-action
 
 name: Run edgetest
 on:
   schedule:
-    - cron:  '0 12 * * 5'
+    - cron:  '20 17 * * 5'
 jobs:
   edgetest:
     runs-on: ubuntu-latest
