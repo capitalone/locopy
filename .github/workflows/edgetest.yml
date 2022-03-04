@@ -4,7 +4,7 @@
 name: Run edgetest
 on:
   schedule:
-    - cron:  '20 17 * * 5'
+    - cron: '35 17 * * 5'
 jobs:
   edgetest:
     runs-on: ubuntu-latest
@@ -19,7 +19,7 @@ jobs:
           cp tests/data/.locopyrc ~/.locopyrc
           cp tests/data/.locopy-sfrc ~/.locopy-sfrc
       - id: run-edgetest
-        uses: fdosani/run-edgetest-action@v1
+        uses: fdosani/run-edgetest-action@v1.0
         with:
           edgetest-flags: '-c setup.cfg -r requirements.txt --export'
           base-branch: 'develop'
