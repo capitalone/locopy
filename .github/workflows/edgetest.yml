@@ -1,0 +1,26 @@
+# This workflow runs edgetest on locopy.
+# https://github.com/fdosani/run-edgetest-action
+
+name: Run edgetest
+on:
+  schedule:
+    - cron:  '0 12 * * 5'
+jobs:
+  edgetest:
+    runs-on: ubuntu-latest
+    name: running edgetest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: develop
+      - name: Copy files for locopy
+        id: copy-files
+        run: |
+          cp tests/data/.locopyrc ~/.locopyrc
+          cp tests/data/.locopy-sfrc ~/.locopy-sfrc
+      - id: run-edgetest
+        uses: fdosani/run-edgetest-action@v1
+        with:
+          edgetest-flags: '-c setup.cfg -r requirements.txt --export'
+          base-branch: 'develop'
+          skip-pr: 'false'
