@@ -63,7 +63,7 @@ def add_default_copy_options(copy_options=None):
 
 
 def combine_copy_options(copy_options):
-    """ Returns the ``copy_options`` attribute with spaces in between and as
+    """Returns the ``copy_options`` attribute with spaces in between and as
     a string.
 
     Parameters
@@ -186,8 +186,8 @@ class Redshift(S3, Database):
         s3path : str
             S3 path of the input file. eg: ``s3://path/to/file.csv``
 
-        delim : str
-            The delimiter in a delimited file.
+        delim : str, optional
+            The delimiter in a delimited file. Can be None for non-delimited file type
 
         copy_options : list
             List of strings of copy options to provide to the ``COPY`` command.
@@ -201,10 +201,11 @@ class Redshift(S3, Database):
         """
         if not self._is_connected():
             raise DBError("No Redshift connection object is present.")
-
         copy_options = add_default_copy_options(copy_options)
+        if delim:
+            copy_options = [f"DELIMITER '{delim}'"] + copy_options
         copy_options_text = combine_copy_options(copy_options)
-        base_copy_string = "COPY {0} FROM '{1}' " "CREDENTIALS '{2}' " "DELIMITER '{3}' {4};"
+        base_copy_string = "COPY {0} FROM '{1}' " "CREDENTIALS '{2}' " "{4};"
         try:
             sql = base_copy_string.format(
                 table_name, s3path, self._credentials_string(), delim, copy_options_text
@@ -257,7 +258,7 @@ class Redshift(S3, Database):
             The Redshift table name which is being loaded
 
         delim : str, optional
-            Delimiter for Redshift ``COPY`` command. Defaults to ``|``
+            Delimiter for Redshift ``COPY`` command. Defaults to ``|``. Can be None for non-delimited file type
 
         copy_options : list, optional
             A list (str) of copy options that should be appended to the COPY
@@ -338,7 +339,7 @@ class Redshift(S3, Database):
             The AWS S3 folder of the bucket where the data from the query will
             be unloaded. Defaults to ``None``. Please note that you must follow
             the ``/`` convention when using subfolders.
-        
+
         raw_unload_path : str, optional
             The local path where the files will be copied to. Defaults to the current working
             directory (``os.getcwd()``).
@@ -349,7 +350,7 @@ class Redshift(S3, Database):
             use this option.
 
         delimiter : str, optional
-            Delimiter for unloading and file writing. Defaults to a comma.
+            Delimiter for unloading and file writing. Defaults to a comma. If None, this option will be ignored
 
         delete_s3_after : bool, optional
             Delete the files from S3 after unloading. Defaults to True.
@@ -375,8 +376,8 @@ class Redshift(S3, Database):
         ## configure unload options
         if unload_options is None:
             unload_options = []
-
-        unload_options.append("DELIMITER '{0}'".format(delimiter))
+        if delimiter:
+            unload_options.append("DELIMITER '{0}'".format(delimiter))
         if parallel_off:
             unload_options.append("PARALLEL OFF")
 

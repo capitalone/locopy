@@ -589,6 +589,22 @@ def test_redshiftcopy(mock_session, credentials, dbapi):
                 (),
             )
         )
+        # no delim
+        r.copy("table", "s3bucket", delim=None)
+        assert mock_connect.return_value.cursor.return_value.execute.called
+        (
+            mock_connect.return_value.cursor.return_value.execute.assert_called_with(
+                "COPY table FROM 's3bucket' CREDENTIALS "
+                "'aws_access_key_id={0};aws_secret_access_key={1};token={2}' "
+                "DATEFORMAT 'auto' COMPUPDATE ON "
+                "TRUNCATECOLUMNS;".format(
+                    r.session.get_credentials().access_key,
+                    r.session.get_credentials().secret_key,
+                    r.session.get_credentials().token,
+                ),
+                (),
+            )
+        )
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
@@ -696,6 +712,30 @@ def test_unload_and_copy(
         ## check that unload options are modified based on supplied args
         mock_unload.assert_called_with(
             query="query", s3path="dummy_s3_path", unload_options=["DELIMITER '|'", "PARALLEL OFF"]
+        )
+        assert not mock_delete_list_from_s3.called
+
+        ##
+        ## Test 2.5: delimiter is none
+        reset_mocks()
+        mock_unload_generated_files.return_value = ["dummy_file"]
+        mock_download_list_from_s3.return_value = ["s3.file"]
+        mock_get_col_names.return_value = ["dummy_col_name"]
+        mock_generate_unload_path.return_value = "dummy_s3_path"
+        r.unload_and_copy(
+            query="query",
+            s3_bucket="s3_bucket",
+            s3_folder=None,
+            raw_unload_path=None,
+            export_path=False,
+            delimiter=None,
+            delete_s3_after=False,
+            parallel_off=True,
+        )
+
+        ## check that unload options are modified based on supplied args
+        mock_unload.assert_called_with(
+            query="query", s3path="dummy_s3_path", unload_options=["PARALLEL OFF"]
         )
         assert not mock_delete_list_from_s3.called
 
