@@ -175,7 +175,7 @@ class Redshift(S3, Database):
         super(Redshift, self).connect()
 
     def copy(self, table_name, s3path, delim="|", copy_options=None):
-        """Executes the COPY command to load delimited files from S3 into
+        """Executes the COPY command to load files from S3 into
         a Redshift table.
 
         Parameters
@@ -201,7 +201,8 @@ class Redshift(S3, Database):
         """
         if not self._is_connected():
             raise DBError("No Redshift connection object is present.")
-        copy_options = add_default_copy_options(copy_options)
+        if "PARQUET" not in copy_options:
+            copy_options = add_default_copy_options(copy_options)
         if delim:
             copy_options = [f"DELIMITER '{delim}'"] + copy_options
         copy_options_text = combine_copy_options(copy_options)
@@ -249,7 +250,7 @@ class Redshift(S3, Database):
         Parameters
         ----------
         local_file : str
-            The local file which you wish to copy.
+            The local file which you wish to copy. This can be a folder for non-delimited file type like parquet
 
         s3_bucket : str
             The AWS S3 bucket which you are copying the local file to.
@@ -264,7 +265,8 @@ class Redshift(S3, Database):
             A list (str) of copy options that should be appended to the COPY
             statement.  The class will insert a default for DATEFORMAT,
             COMPUPDATE and TRUNCATECOLUMNS if they are not provided in this
-            list. See http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-conversion.html
+            list if PARQUET is not part of the options passed in
+            See http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-conversion.html
             for options which could be passed.
 
         delete_s3_after : bool, optional
@@ -290,7 +292,14 @@ class Redshift(S3, Database):
         # generate the actual splitting of the files
         # We need to check if IGNOREHEADER is set as this can cause issues.
         ignore_header = get_ignoreheader_number(copy_options)
-        upload_list = split_file(local_file, local_file, splits=splits, ignore_header=ignore_header)
+
+        if os.path.isdir(local_file):
+            upload_list = [local_file + "/" + x for x in os.listdir(local_file)]
+
+        else:
+            upload_list = split_file(
+                local_file, local_file, splits=splits, ignore_header=ignore_header
+            )
 
         if splits > 1 and ignore_header > 0:
             # remove the IGNOREHEADER from copy_options
@@ -303,7 +312,10 @@ class Redshift(S3, Database):
 
         # copy files to S3
         s3_upload_list = self.upload_list_to_s3(upload_list, s3_bucket, s3_folder)
-        tmp_load_path = s3_upload_list[0].split(os.extsep)[0]
+        if os.path.isdir(local_file):
+            tmp_load_path = "/".join([s3_bucket, s3_folder])
+        else:
+            tmp_load_path = s3_upload_list[0].split(os.extsep)[0]
 
         # execute Redshift COPY
         self.copy(table_name, "s3://" + tmp_load_path, delim, copy_options=copy_options)
