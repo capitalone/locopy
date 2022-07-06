@@ -133,6 +133,33 @@ def test_redshift_connect(mock_session, credentials, dbapi):
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
+@mock.patch("locopy.s3.Session")
+@mock.patch("locopy.redshift.Redshift.execute")
+def test_copy_parquet(mock_execute, mock_session, credentials, dbapi):
+    with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
+        r = Redshift(profile=PROFILE, dbapi=dbapi, **credentials)
+        r.connect()
+        r.copy("table", s3path="path", delim=None, copy_options=["PARQUET"])
+        test_sql = (
+            "COPY {0} FROM '{1}' "
+            "CREDENTIALS '{2}' "
+            "{3};".format("table", "path", r._credentials_string(), "PARQUET")
+        )
+        assert mock_execute.called_with(test_sql, commit=True)
+        mock_execute.reset_mock()
+        mock_session.reset_mock()
+        r.copy("table", s3path="path", delim=None)
+        test_sql = (
+            "COPY {0} FROM '{1}' "
+            "CREDENTIALS '{2}' "
+            "{3};".format(
+                "table", "path", r._credentials_string(), locopy.redshift.add_default_copy_options()
+            )
+        )
+        assert mock_execute.called_with(test_sql, commit=True)
+
+
+@pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("locopy.utility.os.remove")
 @mock.patch("locopy.redshift.Redshift.copy")
 @mock.patch("locopy.redshift.Redshift.upload_to_s3")
