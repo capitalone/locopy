@@ -677,7 +677,7 @@ def test_unload_and_copy(
             s3_folder=None,
             raw_unload_path=None,
             export_path=False,
-            delimiter=",",
+            delim=",",
             delete_s3_after=False,
             parallel_off=False,
         )
@@ -704,7 +704,7 @@ def test_unload_and_copy(
             s3_folder=None,
             raw_unload_path=None,
             export_path=False,
-            delimiter="|",
+            delim="|",
             delete_s3_after=False,
             parallel_off=True,
         )
@@ -728,7 +728,7 @@ def test_unload_and_copy(
             s3_folder=None,
             raw_unload_path=None,
             export_path=False,
-            delimiter=None,
+            delim=None,
             delete_s3_after=False,
             parallel_off=True,
         )
@@ -770,7 +770,7 @@ def test_unload_and_copy(
             s3_folder=None,
             raw_unload_path=None,
             export_path="my_output.csv",
-            delimiter=",",
+            delim=",",
             delete_s3_after=True,
             parallel_off=False,
         )
@@ -792,7 +792,7 @@ def test_unload_and_copy(
             s3_folder=None,
             raw_unload_path="/somefolder/",
             export_path=False,
-            delimiter=",",
+            delim=",",
             delete_s3_after=False,
             parallel_off=False,
         )
