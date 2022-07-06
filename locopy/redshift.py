@@ -202,7 +202,7 @@ class Redshift(S3, Database):
         """
         if not self._is_connected():
             raise DBError("No Redshift connection object is present.")
-        if "PARQUET" not in copy_options:
+        if copy_options and "PARQUET" not in copy_options or copy_options is None:
             copy_options = add_default_copy_options(copy_options)
         if delim:
             copy_options = [f"DELIMITER '{delim}'"] + copy_options
