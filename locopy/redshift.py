@@ -19,6 +19,7 @@ Module to wrap a database adapter into a Redshift class which can be used to con
 to Redshift, and run arbitrary code.
 """
 import os
+from pathlib import Path
 
 from .database import Database
 from .errors import DBError, S3CredentialsError
@@ -63,7 +64,7 @@ def add_default_copy_options(copy_options=None):
 
 
 def combine_copy_options(copy_options):
-    """ Returns the ``copy_options`` attribute with spaces in between and as
+    """Returns the ``copy_options`` attribute with spaces in between and as
     a string.
 
     Parameters
@@ -175,7 +176,7 @@ class Redshift(S3, Database):
         super(Redshift, self).connect()
 
     def copy(self, table_name, s3path, delim="|", copy_options=None):
-        """Executes the COPY command to load delimited files from S3 into
+        """Executes the COPY command to load files from S3 into
         a Redshift table.
 
         Parameters
@@ -186,8 +187,8 @@ class Redshift(S3, Database):
         s3path : str
             S3 path of the input file. eg: ``s3://path/to/file.csv``
 
-        delim : str
-            The delimiter in a delimited file.
+        delim : str, optional
+           None for non-delimited file type. Defaults to |
 
         copy_options : list
             List of strings of copy options to provide to the ``COPY`` command.
@@ -201,13 +202,15 @@ class Redshift(S3, Database):
         """
         if not self._is_connected():
             raise DBError("No Redshift connection object is present.")
-
-        copy_options = add_default_copy_options(copy_options)
+        if copy_options and "PARQUET" not in copy_options or copy_options is None:
+            copy_options = add_default_copy_options(copy_options)
+        if delim:
+            copy_options = [f"DELIMITER '{delim}'"] + copy_options
         copy_options_text = combine_copy_options(copy_options)
-        base_copy_string = "COPY {0} FROM '{1}' " "CREDENTIALS '{2}' " "DELIMITER '{3}' {4};"
+        base_copy_string = "COPY {0} FROM '{1}' " "CREDENTIALS '{2}' " "{3};"
         try:
             sql = base_copy_string.format(
-                table_name, s3path, self._credentials_string(), delim, copy_options_text
+                table_name, s3path, self._credentials_string(), copy_options_text
             )
             self.execute(sql, commit=True)
 
@@ -248,7 +251,7 @@ class Redshift(S3, Database):
         Parameters
         ----------
         local_file : str
-            The local file which you wish to copy.
+            The local file which you wish to copy. This can be a folder for non-delimited file type like parquet
 
         s3_bucket : str
             The AWS S3 bucket which you are copying the local file to.
@@ -257,13 +260,14 @@ class Redshift(S3, Database):
             The Redshift table name which is being loaded
 
         delim : str, optional
-            Delimiter for Redshift ``COPY`` command. Defaults to ``|``
+            Delimiter for Redshift ``COPY`` command. None for non-delimited files. Defaults to ``|``.
 
         copy_options : list, optional
             A list (str) of copy options that should be appended to the COPY
             statement.  The class will insert a default for DATEFORMAT,
             COMPUPDATE and TRUNCATECOLUMNS if they are not provided in this
-            list. See http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-conversion.html
+            list if PARQUET is not part of the options passed in
+            See http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-conversion.html
             for options which could be passed.
 
         delete_s3_after : bool, optional
@@ -289,7 +293,13 @@ class Redshift(S3, Database):
         # generate the actual splitting of the files
         # We need to check if IGNOREHEADER is set as this can cause issues.
         ignore_header = get_ignoreheader_number(copy_options)
-        upload_list = split_file(local_file, local_file, splits=splits, ignore_header=ignore_header)
+        p = Path(local_file)
+        if p.is_dir():
+            upload_list = [str(x) for x in p.glob("**/*") if x.is_file()]
+        else:
+            upload_list = split_file(
+                local_file, local_file, splits=splits, ignore_header=ignore_header
+            )
 
         if splits > 1 and ignore_header > 0:
             # remove the IGNOREHEADER from copy_options
@@ -302,7 +312,15 @@ class Redshift(S3, Database):
 
         # copy files to S3
         s3_upload_list = self.upload_list_to_s3(upload_list, s3_bucket, s3_folder)
-        tmp_load_path = s3_upload_list[0].split(os.extsep)[0]
+        if p.is_dir():
+            if s3_folder:
+                bucket = Path(s3_bucket)
+                folder = Path(s3_folder)
+                tmp_load_path = str(bucket / folder)
+            else:
+                tmp_load_path = s3_bucket
+        else:
+            tmp_load_path = s3_upload_list[0].split(os.extsep)[0]
 
         # execute Redshift COPY
         self.copy(table_name, "s3://" + tmp_load_path, delim, copy_options=copy_options)
@@ -318,7 +336,7 @@ class Redshift(S3, Database):
         s3_folder=None,
         raw_unload_path=None,
         export_path=False,
-        delimiter=",",
+        delim=",",
         delete_s3_after=True,
         parallel_off=False,
         unload_options=None,
@@ -338,7 +356,7 @@ class Redshift(S3, Database):
             The AWS S3 folder of the bucket where the data from the query will
             be unloaded. Defaults to ``None``. Please note that you must follow
             the ``/`` convention when using subfolders.
-        
+
         raw_unload_path : str, optional
             The local path where the files will be copied to. Defaults to the current working
             directory (``os.getcwd()``).
@@ -348,8 +366,8 @@ class Redshift(S3, Database):
             files to this path as a single file. If your file is very large you may not want to
             use this option.
 
-        delimiter : str, optional
-            Delimiter for unloading and file writing. Defaults to a comma.
+        delim : str, optional
+            Delimiter for unloading and file writing. Defaults to a comma. If None, this option will be ignored
 
         delete_s3_after : bool, optional
             Delete the files from S3 after unloading. Defaults to True.
@@ -375,8 +393,8 @@ class Redshift(S3, Database):
         ## configure unload options
         if unload_options is None:
             unload_options = []
-
-        unload_options.append("DELIMITER '{0}'".format(delimiter))
+        if delim:
+            unload_options.append("DELIMITER '{0}'".format(delim))
         if parallel_off:
             unload_options.append("PARALLEL OFF")
 
@@ -397,7 +415,7 @@ class Redshift(S3, Database):
         # download files locally with same name
         local_list = self.download_list_from_s3(s3_download_list, raw_unload_path)
         if export_path:
-            write_file([columns], delimiter, export_path)  # column
+            write_file([columns], delim, export_path)  # column
             concatenate_files(local_list, export_path)  # data
 
         # delete unloaded files from s3
