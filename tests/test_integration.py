@@ -77,7 +77,9 @@ def test_redshift_execute_multiple_rows(dbapi):
     expected = pd.DataFrame({"field_1": [1, 2], "field_2": [1, 2]})
     with locopy.Redshift(dbapi=dbapi, **CREDS_DICT) as test:
         test.execute(
-            "SELECT 1 AS field_1, 1 AS field_2 " "UNION " "SELECT 2 AS field_1, 2 AS field_2"
+            "SELECT 1 AS field_1, 1 AS field_2 "
+            "UNION "
+            "SELECT 2 AS field_1, 2 AS field_2"
         )
         df = test.to_dataframe()
 
@@ -173,7 +175,7 @@ def test_unload(s3_bucket, dbapi):
             "CREATE TEMPORARY TABLE locopy_integration_testing AS SELECT ('2017-12-31'::date + row_number() over (order by 1))::date from SVV_TABLES LIMIT 5"
         )
         sql = "SELECT * FROM locopy_integration_testing"
-        redshift.unload_and_copy(sql, S3_BUCKET, delimiter="|", export_path=LOCAL_FILE_DL)
+        redshift.unload_and_copy(sql, S3_BUCKET, delim="|", export_path=LOCAL_FILE_DL)
         redshift.execute("SELECT * FROM locopy_integration_testing ORDER BY date")
         results = redshift.cursor.fetchall()
 
@@ -202,7 +204,11 @@ def test_unload_raw_unload_path(s3_bucket, dbapi):
         )
         sql = "SELECT * FROM locopy_integration_testing"
         redshift.unload_and_copy(
-            sql, S3_BUCKET, delimiter="|", raw_unload_path=UNLOAD_PATH, export_path=LOCAL_FILE_DL
+            sql,
+            S3_BUCKET,
+            delim="|",
+            raw_unload_path=UNLOAD_PATH,
+            export_path=LOCAL_FILE_DL,
         )
         redshift.execute("SELECT * FROM locopy_integration_testing ORDER BY date")
         results = redshift.cursor.fetchall()
@@ -243,12 +249,22 @@ def test_insert_dataframe_to_table(s3_bucket, dbapi):
             assert result[1] == expected[i][1]
             assert result[2] == expected[i][2]
 
-        redshift.insert_dataframe_to_table(TEST_DF_2, "locopy_test_2", create=True, batch_size=3)
+        redshift.insert_dataframe_to_table(
+            TEST_DF_2, "locopy_test_2", create=True, batch_size=3
+        )
         redshift.execute("SELECT col1, col2 FROM locopy_test_2 ORDER BY col1 ASC")
         results = redshift.cursor.fetchall()
         redshift.execute("drop table if exists locopy_test_2")
 
-        expected = [(1, "a"), (2, "b"), (3, "c"), (4, "d"), (5, "e"), (6, "f"), (7, "g")]
+        expected = [
+            (1, "a"),
+            (2, "b"),
+            (3, "c"),
+            (4, "d"),
+            (5, "e"),
+            (6, "f"),
+            (7, "g"),
+        ]
 
         assert len(expected) == len(results)
         for i, result in enumerate(results):
