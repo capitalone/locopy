@@ -133,6 +133,33 @@ def test_redshift_connect(mock_session, credentials, dbapi):
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
+@mock.patch("locopy.s3.Session")
+@mock.patch("locopy.redshift.Redshift.execute")
+def test_copy_parquet(mock_execute, mock_session, credentials, dbapi):
+    with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
+        r = Redshift(profile=PROFILE, dbapi=dbapi, **credentials)
+        r.connect()
+        r.copy("table", s3path="path", delim=None, copy_options=["PARQUET"])
+        test_sql = (
+            "COPY {0} FROM '{1}' "
+            "CREDENTIALS '{2}' "
+            "{3};".format("table", "path", r._credentials_string(), "PARQUET")
+        )
+        assert mock_execute.called_with(test_sql, commit=True)
+        mock_execute.reset_mock()
+        mock_session.reset_mock()
+        r.copy("table", s3path="path", delim=None)
+        test_sql = (
+            "COPY {0} FROM '{1}' "
+            "CREDENTIALS '{2}' "
+            "{3};".format(
+                "table", "path", r._credentials_string(), locopy.redshift.add_default_copy_options()
+            )
+        )
+        assert mock_execute.called_with(test_sql, commit=True)
+
+
+@pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("locopy.utility.os.remove")
 @mock.patch("locopy.redshift.Redshift.copy")
 @mock.patch("locopy.redshift.Redshift.upload_to_s3")
@@ -589,6 +616,22 @@ def test_redshiftcopy(mock_session, credentials, dbapi):
                 (),
             )
         )
+        # no delim
+        r.copy("table", "s3bucket", delim=None)
+        assert mock_connect.return_value.cursor.return_value.execute.called
+        (
+            mock_connect.return_value.cursor.return_value.execute.assert_called_with(
+                "COPY table FROM 's3bucket' CREDENTIALS "
+                "'aws_access_key_id={0};aws_secret_access_key={1};token={2}' "
+                "DATEFORMAT 'auto' COMPUPDATE ON "
+                "TRUNCATECOLUMNS;".format(
+                    r.session.get_credentials().access_key,
+                    r.session.get_credentials().secret_key,
+                    r.session.get_credentials().token,
+                ),
+                (),
+            )
+        )
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
@@ -661,7 +704,7 @@ def test_unload_and_copy(
             s3_folder=None,
             raw_unload_path=None,
             export_path=False,
-            delimiter=",",
+            delim=",",
             delete_s3_after=False,
             parallel_off=False,
         )
@@ -688,7 +731,7 @@ def test_unload_and_copy(
             s3_folder=None,
             raw_unload_path=None,
             export_path=False,
-            delimiter="|",
+            delim="|",
             delete_s3_after=False,
             parallel_off=True,
         )
@@ -696,6 +739,30 @@ def test_unload_and_copy(
         ## check that unload options are modified based on supplied args
         mock_unload.assert_called_with(
             query="query", s3path="dummy_s3_path", unload_options=["DELIMITER '|'", "PARALLEL OFF"]
+        )
+        assert not mock_delete_list_from_s3.called
+
+        ##
+        ## Test 2.5: delimiter is none
+        reset_mocks()
+        mock_unload_generated_files.return_value = ["dummy_file"]
+        mock_download_list_from_s3.return_value = ["s3.file"]
+        mock_get_col_names.return_value = ["dummy_col_name"]
+        mock_generate_unload_path.return_value = "dummy_s3_path"
+        r.unload_and_copy(
+            query="query",
+            s3_bucket="s3_bucket",
+            s3_folder=None,
+            raw_unload_path=None,
+            export_path=False,
+            delim=None,
+            delete_s3_after=False,
+            parallel_off=True,
+        )
+
+        ## check that unload options are modified based on supplied args
+        mock_unload.assert_called_with(
+            query="query", s3path="dummy_s3_path", unload_options=["PARALLEL OFF"]
         )
         assert not mock_delete_list_from_s3.called
 
@@ -730,7 +797,7 @@ def test_unload_and_copy(
             s3_folder=None,
             raw_unload_path=None,
             export_path="my_output.csv",
-            delimiter=",",
+            delim=",",
             delete_s3_after=True,
             parallel_off=False,
         )
@@ -752,7 +819,7 @@ def test_unload_and_copy(
             s3_folder=None,
             raw_unload_path="/somefolder/",
             export_path=False,
-            delimiter=",",
+            delim=",",
             delete_s3_after=False,
             parallel_off=False,
         )
