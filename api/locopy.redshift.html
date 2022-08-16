@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.redshift module &mdash; locopy 0.4.1 documentation</title>
+  <title>locopy.redshift module &mdash; locopy 0.5.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
@@ -30,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> locopy
           </a>
               <div class="version">
-                0.4.1
+                0.5.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -97,14 +98,14 @@
            <div itemprop="articleBody">
              
   <section id="module-locopy.redshift">
-<span id="locopy-redshift-module"></span><h1>locopy.redshift module<a class="headerlink" href="#module-locopy.redshift" title="Permalink to this headline">¶</a></h1>
+<span id="locopy-redshift-module"></span><h1>locopy.redshift module<a class="headerlink" href="#module-locopy.redshift" title="Permalink to this heading">¶</a></h1>
 <p>Redshift Module
 Module to wrap a database adapter into a Redshift class which can be used to connect
 to Redshift, and run arbitrary code.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="locopy.redshift.Redshift">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">locopy.redshift.</span></span><span class="sig-name descname"><span class="pre">Redshift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kms_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dbapi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_yaml</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.redshift.Redshift" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="locopy.s3.html#locopy.s3.S3" title="locopy.s3.S3"><code class="xref py py-class docutils literal notranslate"><span class="pre">locopy.s3.S3</span></code></a>, <a class="reference internal" href="locopy.database.html#locopy.database.Database" title="locopy.database.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">locopy.database.Database</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="locopy.s3.html#locopy.s3.S3" title="locopy.s3.S3"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3</span></code></a>, <a class="reference internal" href="locopy.database.html#locopy.database.Database" title="locopy.database.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></a></p>
 <p>Locopy class which manages connections to Redshift.  Inherits <code class="docutils literal notranslate"><span class="pre">Database</span></code> and implements the
 specific <code class="docutils literal notranslate"><span class="pre">COPY</span></code> and <code class="docutils literal notranslate"><span class="pre">UNLOAD</span></code> functionality.</p>
 <p>If any of host, port, dbname, user and password are not provided, a config_yaml file must be
@@ -240,14 +241,14 @@ setting the values of the <code class="docutils literal notranslate"><span class
 <dl class="py method">
 <dt class="sig sig-object py" id="locopy.redshift.Redshift.copy">
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'|'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.redshift.Redshift.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Executes the COPY command to load delimited files from S3 into
+<dd><p>Executes the COPY command to load files from S3 into
 a Redshift table.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The Redshift table name which is being loaded</p></li>
 <li><p><strong>s3path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – S3 path of the input file. eg: <code class="docutils literal notranslate"><span class="pre">s3://path/to/file.csv</span></code></p></li>
-<li><p><strong>delim</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The delimiter in a delimited file.</p></li>
+<li><p><strong>delim</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – None for non-delimited file type. Defaults to |</p></li>
 <li><p><strong>copy_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – List of strings of copy options to provide to the <code class="docutils literal notranslate"><span class="pre">COPY</span></code> command.
 Will have default options added in.</p></li>
 </ul>
@@ -299,14 +300,15 @@ in favour of the file prefix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>local_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The local file which you wish to copy.</p></li>
+<li><p><strong>local_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The local file which you wish to copy. This can be a folder for non-delimited file type like parquet</p></li>
 <li><p><strong>s3_bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</p></li>
 <li><p><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The Redshift table name which is being loaded</p></li>
-<li><p><strong>delim</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Delimiter for Redshift <code class="docutils literal notranslate"><span class="pre">COPY</span></code> command. Defaults to <code class="docutils literal notranslate"><span class="pre">|</span></code></p></li>
+<li><p><strong>delim</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Delimiter for Redshift <code class="docutils literal notranslate"><span class="pre">COPY</span></code> command. None for non-delimited files. Defaults to <code class="docutils literal notranslate"><span class="pre">|</span></code>.</p></li>
 <li><p><strong>copy_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em>, </em><em>optional</em>) – A list (str) of copy options that should be appended to the COPY
 statement.  The class will insert a default for DATEFORMAT,
 COMPUPDATE and TRUNCATECOLUMNS if they are not provided in this
-list. See <a class="reference external" href="http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-conversion.html">http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-conversion.html</a>
+list if PARQUET is not part of the options passed in
+See <a class="reference external" href="http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-conversion.html">http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-conversion.html</a>
 for options which could be passed.</p></li>
 <li><p><strong>delete_s3_after</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Lets you specify to delete the S3 file after transfer if you want.</p></li>
 <li><p><strong>splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Number of splits to perform for paralell loading into Redshift.
@@ -344,7 +346,7 @@ Redshift to S3.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="locopy.redshift.Redshift.unload_and_copy">
-<span class="sig-name descname"><span class="pre">unload_and_copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw_unload_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">export_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_s3_after</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unload_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.unload_and_copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.redshift.Redshift.unload_and_copy" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">unload_and_copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw_unload_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">export_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_s3_after</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unload_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.unload_and_copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.redshift.Redshift.unload_and_copy" title="Permalink to this definition">¶</a></dt>
 <dd><p><code class="docutils literal notranslate"><span class="pre">UNLOAD</span></code> data from Redshift, with options to write to a flat file,
 and store on S3.</p>
 <dl class="field-list simple">
@@ -360,7 +362,7 @@ directory (<code class="docutils literal notranslate"><span class="pre">os.getcw
 <li><p><strong>export_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – If a <code class="docutils literal notranslate"><span class="pre">export_path</span></code> is provided, function will concatenate and write the unloaded
 files to this path as a single file. If your file is very large you may not want to
 use this option.</p></li>
-<li><p><strong>delimiter</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Delimiter for unloading and file writing. Defaults to a comma.</p></li>
+<li><p><strong>delim</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – Delimiter for unloading and file writing. Defaults to a comma. If None, this option will be ignored</p></li>
 <li><p><strong>delete_s3_after</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Delete the files from S3 after unloading. Defaults to True.</p></li>
 <li><p><strong>parallel_off</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Unload data to S3 as a single file. Defaults to False.
 Not recommended as it will decrease speed.</p></li>

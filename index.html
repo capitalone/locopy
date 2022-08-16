@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy: Data Load and Copy using Python &mdash; locopy 0.4.1 documentation</title>
+  <title>locopy: Data Load and Copy using Python &mdash; locopy 0.5.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -29,7 +30,7 @@
             <a href="#" class="icon icon-home"> locopy
           </a>
               <div class="version">
-                0.4.1
+                0.5.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -80,7 +81,7 @@
   <a class="reference external image-reference" href="https://github.com/capitalone/locopy/actions"><img alt="https://github.com/capitalone/locopy/workflows/Python%20package/badge.svg" src="https://github.com/capitalone/locopy/workflows/Python%20package/badge.svg" /></a>
 <a class="reference external image-reference" href="https://github.com/ambv/black"><img alt="https://img.shields.io/badge/code%20style-black-000000.svg" src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a>
 <section id="locopy-data-load-and-copy-using-python">
-<h1>locopy: Data Load and Copy using Python<a class="headerlink" href="#locopy-data-load-and-copy-using-python" title="Permalink to this headline">¶</a></h1>
+<h1>locopy: Data Load and Copy using Python<a class="headerlink" href="#locopy-data-load-and-copy-using-python" title="Permalink to this heading">¶</a></h1>
 <p>A Python library to assist with ETL processing for:</p>
 <ul class="simple">
 <li><p>Amazon Redshift (<code class="docutils literal notranslate"><span class="pre">COPY</span></code>, <code class="docutils literal notranslate"><span class="pre">UNLOAD</span></code>)</p></li>
@@ -88,14 +89,14 @@
 </ul>
 <p>In addition:</p>
 <ul class="simple">
-<li><p>The library supports Python 3.7 to 3.9</p></li>
+<li><p>The library supports Python 3.8 to 3.10</p></li>
 <li><p>DB Driver (Adapter) agnostic. Use your favourite driver that complies with
 <a class="reference external" href="https://www.python.org/dev/peps/pep-0249/">DB-API 2.0</a></p></li>
 <li><p>It provides functionality to download and upload data to S3 buckets, and internal stages (Snowflake)</p></li>
 </ul>
 </section>
 <section id="quick-installation">
-<h1>Quick Installation<a class="headerlink" href="#quick-installation" title="Permalink to this headline">¶</a></h1>
+<h1>Quick Installation<a class="headerlink" href="#quick-installation" title="Permalink to this heading">¶</a></h1>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install locopy
 </pre></div>
 </div>
@@ -105,7 +106,7 @@ conda install locopy
 </pre></div>
 </div>
 <section id="installation-instructions">
-<h2>Installation instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this headline">¶</a></h2>
+<h2>Installation instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this heading">¶</a></h2>
 <p>A virtual or conda environment is highly recommended</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ virtualenv locopy
 $ <span class="nb">source</span> locopy/bin/activate
@@ -115,7 +116,7 @@ $ pip install locopy
 </div>
 </section>
 <section id="python-database-api-specification-2-0">
-<h2>Python Database API Specification 2.0<a class="headerlink" href="#python-database-api-specification-2-0" title="Permalink to this headline">¶</a></h2>
+<h2>Python Database API Specification 2.0<a class="headerlink" href="#python-database-api-specification-2-0" title="Permalink to this heading">¶</a></h2>
 <p>Rather than using a specific Python DB Driver / Adapter for Postgres (which should supports Amazon
 Redshift or Snowflake), <code class="docutils literal notranslate"><span class="pre">locopy</span></code> prefers to be agnostic. As an end user you can use any Python
 Database API Specification 2.0 package.</p>
@@ -129,7 +130,7 @@ Database API Specification 2.0 package.</p>
 into the constructor input <code class="docutils literal notranslate"><span class="pre">dbapi</span></code>.</p>
 </section>
 <section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h2>
 <p>You need to store your connection parameters in a YAML file (or pass them in directly).
 The YAML would consist of the following items:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># required to connect to redshift</span><span class="w"></span>
@@ -183,7 +184,7 @@ The Redshift connection (<code class="docutils literal notranslate"><span class=
 </pre></div>
 </div>
 <section id="note-on-tokens">
-<h3>Note on tokens<a class="headerlink" href="#note-on-tokens" title="Permalink to this headline">¶</a></h3>
+<h3>Note on tokens<a class="headerlink" href="#note-on-tokens" title="Permalink to this heading">¶</a></h3>
 <p>To load data to S3, you will need to be able to generate AWS tokens, or assume the IAM role on a EC2
 instance. There are a few options for doing this, depending on where you’re running your script and
 how you want to handle tokens. Once you have your tokens, they need to be accessible to the AWS
@@ -201,19 +202,19 @@ environment variable <code class="docutils literal notranslate"><span class="pre
 </section>
 </section>
 <section id="advanced-usage">
-<h2>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permalink to this headline">¶</a></h2>
+<h2>Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permalink to this heading">¶</a></h2>
 <p>See the <a class="reference external" href="https://capitalone.github.io/locopy/">docs</a> for
 more detailed usage instructions and examples including Snowflake.</p>
 </section>
 <section id="contributors">
-<h2>Contributors<a class="headerlink" href="#contributors" title="Permalink to this headline">¶</a></h2>
+<h2>Contributors<a class="headerlink" href="#contributors" title="Permalink to this heading">¶</a></h2>
 <p>We welcome and appreciate your contributions! Before we can accept any contributions, we ask that you please be sure to
 sign the <a class="reference external" href="https://cla-assistant.io/capitalone/locopy">Contributor License Agreement (CLA)</a>.</p>
 <p>This project adheres to the <a class="reference external" href="https://developer.capitalone.com/resources/code-of-conduct/">Open Source Code of Conduct</a>.
 By participating, you are expected to honor this code.</p>
 </section>
 <section id="roadmap">
-<h2>Roadmap<a class="headerlink" href="#roadmap" title="Permalink to this headline">¶</a></h2>
+<h2>Roadmap<a class="headerlink" href="#roadmap" title="Permalink to this heading">¶</a></h2>
 <p>Roadmap details can be found <a class="reference external" href="https://github.com/capitalone/locopy/blob/develop/ROADMAP.rst">here</a></p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
@@ -280,7 +281,7 @@ By participating, you are expected to honor this code.</p>
 </section>
 </section>
 <section id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading">¶</a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
