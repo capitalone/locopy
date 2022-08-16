@@ -45,7 +45,7 @@ EXTRAS_REQUIRE = {
         "black",
         "isort",
     ],
-    "build": ["twine", "wheel"],
+    "build": ["build", "twine", "wheel"],
     "edgetest": ["edgetest", "edgetest-conda"],
 }
 
