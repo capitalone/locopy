@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.redshift &mdash; locopy 0.5.0 documentation</title>
+  <title>locopy.redshift &mdash; locopy 0.5.1 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -11,10 +11,8 @@
   <![endif]-->
   
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -25,14 +23,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> locopy
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            locopy
           </a>
               <div class="version">
-                0.5.0
+                0.5.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -65,9 +67,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>locopy.redshift</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">locopy.redshift</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -117,7 +119,7 @@
 
 
 <div class="viewcode-block" id="add_default_copy_options"><a class="viewcode-back" href="../../api/locopy.redshift.html#locopy.redshift.add_default_copy_options">[docs]</a><span class="k">def</span> <span class="nf">add_default_copy_options</span><span class="p">(</span><span class="n">copy_options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Adds in default options for the ``COPY`` job, unless those specific</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds in default options for the ``COPY`` job, unless those specific</span>
 <span class="sd">    options have been provided in the request.</span>
 
 <span class="sd">    Parameters</span>
@@ -143,7 +145,7 @@
 
 
 <div class="viewcode-block" id="combine_copy_options"><a class="viewcode-back" href="../../api/locopy.redshift.html#locopy.redshift.combine_copy_options">[docs]</a><span class="k">def</span> <span class="nf">combine_copy_options</span><span class="p">(</span><span class="n">copy_options</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Returns the ``copy_options`` attribute with spaces in between and as</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the ``copy_options`` attribute with spaces in between and as</span>
 <span class="sd">    a string.</span>
 
 <span class="sd">    Parameters</span>
@@ -161,7 +163,7 @@
 
 
 <div class="viewcode-block" id="Redshift"><a class="viewcode-back" href="../../api/locopy.redshift.html#locopy.redshift.Redshift">[docs]</a><span class="k">class</span> <span class="nc">Redshift</span><span class="p">(</span><span class="n">S3</span><span class="p">,</span> <span class="n">Database</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Locopy class which manages connections to Redshift.  Inherits ``Database`` and implements the</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Locopy class which manages connections to Redshift.  Inherits ``Database`` and implements the</span>
 <span class="sd">    specific ``COPY`` and ``UNLOAD`` functionality.</span>
 
 <span class="sd">    If any of host, port, dbname, user and password are not provided, a config_yaml file must be</span>
@@ -240,7 +242,7 @@
         <span class="n">Database</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbapi</span><span class="p">,</span> <span class="n">config_yaml</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Redshift.connect"><a class="viewcode-back" href="../../api/locopy.redshift.html#locopy.redshift.Redshift.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Creates a connection to the Redshift cluster by</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a connection to the Redshift cluster by</span>
 <span class="sd">        setting the values of the ``conn`` and ``cursor`` attributes.</span>
 
 <span class="sd">        Raises</span>
@@ -255,7 +257,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">Redshift</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Redshift.copy"><a class="viewcode-back" href="../../api/locopy.redshift.html#locopy.redshift.Redshift.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">s3path</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="n">copy_options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Executes the COPY command to load files from S3 into</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Executes the COPY command to load files from S3 into</span>
 <span class="sd">        a Redshift table.</span>
 
 <span class="sd">        Parameters</span>
@@ -309,7 +311,7 @@
         <span class="n">compress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">s3_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Loads a file to S3, then copies into Redshift.  Has options to</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Loads a file to S3, then copies into Redshift.  Has options to</span>
 <span class="sd">        split a single file into multiple files, compress using gzip, and</span>
 <span class="sd">        upload to an S3 bucket with folders within the bucket.</span>
 
@@ -420,7 +422,7 @@
         <span class="n">parallel_off</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">unload_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;``UNLOAD`` data from Redshift, with options to write to a flat file,</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;``UNLOAD`` data from Redshift, with options to write to a flat file,</span>
 <span class="sd">        and store on S3.</span>
 
 <span class="sd">        Parameters</span>
@@ -502,7 +504,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">delete_list_from_s3</span><span class="p">(</span><span class="n">s3_download_list</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Redshift.unload"><a class="viewcode-back" href="../../api/locopy.redshift.html#locopy.redshift.Redshift.unload">[docs]</a>    <span class="k">def</span> <span class="nf">unload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">s3path</span><span class="p">,</span> <span class="n">unload_options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Executes the UNLOAD command to export a query from</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Executes the UNLOAD command to export a query from</span>
 <span class="sd">        Redshift to S3.</span>
 
 <span class="sd">        Parameters</span>
@@ -539,7 +541,7 @@
             <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">&quot;Error running UNLOAD on redshift.&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_get_column_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets a list of column names from the supplied query.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a list of column names from the supplied query.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -566,7 +568,7 @@
             <span class="k">raise</span>
 
     <span class="k">def</span> <span class="nf">_unload_generated_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets a list of files generated by the unload process</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a list of files generated by the unload process</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -596,7 +598,7 @@
         <span class="n">batch_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Insert a Pandas dataframe to an existing table or a new table.</span>
 
 <span class="sd">        `executemany` in psycopg2 and pg8000 has very poor performance in terms of running speed.</span>

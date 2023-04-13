@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.database module &mdash; locopy 0.5.0 documentation</title>
+  <title>locopy.database module &mdash; locopy 0.5.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,10 +12,8 @@
   <![endif]-->
   
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -28,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> locopy
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            locopy
           </a>
               <div class="version">
-                0.5.0
+                0.5.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -84,10 +86,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="modules.html">locopy</a> &raquo;</li>
-          <li><a href="locopy.html">locopy package</a> &raquo;</li>
-      <li>locopy.database module</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">locopy</a></li>
+          <li class="breadcrumb-item"><a href="locopy.html">locopy package</a></li>
+      <li class="breadcrumb-item active">locopy.database module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/locopy.database.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -103,17 +105,17 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="locopy.database.Database">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">locopy.database.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbapi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_yaml</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.database.Database" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>This is the base class for all DBAPI 2 database connectors which will inherit this
 functionality. The <code class="docutils literal notranslate"><span class="pre">Database</span></code> class will manage connections and handle executing queries.
 Most of the functionality should work out of the box for classes which inherit minus the
 abstract method for <code class="docutils literal notranslate"><span class="pre">connect</span></code> which may vary across databases.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dbapi</strong> (<em>DBAPI 2 module</em><em>, </em><em>optional</em>) – A database adapter which is Python DB API 2.0 compliant
 (<code class="docutils literal notranslate"><span class="pre">psycopg2</span></code>, <code class="docutils literal notranslate"><span class="pre">pg8000</span></code>, etc.)</p></li>
-<li><p><strong>config_yaml</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – String representing the YAML file location of the database connection keyword arguments. It
+<li><p><strong>config_yaml</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>, </em><em>optional</em>) – String representing the YAML file location of the database connection keyword arguments. It
 is worth noting that this should only contain valid arguments for the database connector you
 plan on using. It will throw an exception if something is passed through which isn’t valid.</p></li>
 <li><p><strong>**kwargs</strong> – Database connection keyword arguments.</p></li>
@@ -125,7 +127,7 @@ plan on using. It will throw an exception if something is passed through which i
 <span class="sig-name descname"><span class="pre">dbapi</span></span><a class="headerlink" href="#locopy.database.Database.dbapi" title="Permalink to this definition">¶</a></dt>
 <dd><p>database adapter which is Python DBAPI 2.0 compliant</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>DBAPI 2 module</p>
 </dd>
 </dl>
@@ -136,8 +138,8 @@ plan on using. It will throw an exception if something is passed through which i
 <span class="sig-name descname"><span class="pre">connection</span></span><a class="headerlink" href="#locopy.database.Database.connection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary of database connection items</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -147,7 +149,7 @@ plan on using. It will throw an exception if something is passed through which i
 <span class="sig-name descname"><span class="pre">conn</span></span><a class="headerlink" href="#locopy.database.Database.conn" title="Permalink to this definition">¶</a></dt>
 <dd><p>DBAPI connection instance</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dbapi.connection</p>
 </dd>
 </dl>
@@ -158,14 +160,14 @@ plan on using. It will throw an exception if something is passed through which i
 <span class="sig-name descname"><span class="pre">cursor</span></span><a class="headerlink" href="#locopy.database.Database.cursor" title="Permalink to this definition">¶</a></dt>
 <dd><p>DBAPI cursor instance</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dbapi.cursor</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.CredentialsError" title="locopy.errors.CredentialsError"><strong>CredentialsError</strong></a> – Database credentials are not provided, valid, or both kwargs and a YAML config was provided.</p>
 </dd>
 </dl>
@@ -175,11 +177,11 @@ plan on using. It will throw an exception if something is passed through which i
 <dd><p>Pull column names out of the cursor description. Depending on the
 DBAPI, it could return column names as bytes: <code class="docutils literal notranslate"><span class="pre">b'column_name'</span></code></p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List of column names, all in lower-case</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)">list</a></p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -190,7 +192,7 @@ DBAPI, it could return column names as bytes: <code class="docutils literal notr
 <dd><p>Creates a connection to a database by setting the values of the <code class="docutils literal notranslate"><span class="pre">conn</span></code> and <code class="docutils literal notranslate"><span class="pre">cursor</span></code>
 attributes.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.DBError" title="locopy.errors.DBError"><strong>DBError</strong></a> – If there is a problem establishing a connection.</p>
 </dd>
 </dl>
@@ -202,7 +204,7 @@ attributes.</p>
 <dd><p>Terminates the connection by closing the values of the <code class="docutils literal notranslate"><span class="pre">conn</span></code> and <code class="docutils literal notranslate"><span class="pre">cursor</span></code>
 attributes.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.DBError" title="locopy.errors.DBError"><strong>DBError</strong></a> – If there is a problem disconnecting from the database.</p>
 </dd>
 </dl>
@@ -213,18 +215,18 @@ attributes.</p>
 <span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sql</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">many</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.database.Database.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute some sql against the connection.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>sql</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – SQL to run against the connection.  Could be one or multiple
+<li><p><strong>sql</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – SQL to run against the connection.  Could be one or multiple
 statements.</p></li>
 <li><p><strong>commit</strong> (<em>Boolean</em><em>, </em><em>default True</em>) – Whether to “commit” the commands to the cluster immediately or not.</p></li>
-<li><p><strong>params</strong> (<em>iterable of parameters</em>) – Parameters to submit with the query. The exact syntax will depend
+<li><p><strong>params</strong> (<em>iterable</em><em> of </em><em>parameters</em>) – Parameters to submit with the query. The exact syntax will depend
 on the database adapter you are using</p></li>
-<li><p><strong>many</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>default False</em>) – Whether to execute the script as an “execute many”</p></li>
-<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>default True</em>) – Whether to print executed query</p></li>
+<li><p><strong>many</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>default False</em>) – Whether to execute the script as an “execute many”</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>default True</em>) – Whether to print executed query</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.DBError" title="locopy.errors.DBError"><strong>DBError</strong></a> – if a problem occurs executing the <code class="docutils literal notranslate"><span class="pre">sql</span></code> statement</p></li>
 <li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.DBError" title="locopy.errors.DBError"><strong>DBError</strong></a> – If a connection to the database cannot be made</p></li>
@@ -240,14 +242,14 @@ on the database adapter you are using</p></li>
 in here, so that it’s not needed for other use cases.  This is just a
 convenience method.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Chunk size to fetch.  Defaults to None.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Chunk size to fetch.  Defaults to None.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Dataframe with lowercase column names.  Returns None if no fetched
 result.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>pandas.DataFrame</p>
 </dd>
 </dl>
@@ -258,7 +260,7 @@ result.</p>
 <span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.database.Database.to_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate dictionaries of rows</p>
 <dl class="field-list simple">
-<dt class="field-odd">Yields</dt>
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
 <dd class="field-odd"><p><em>dict</em> – Each row, encoded as a dict.</p>
 </dd>
 </dl>

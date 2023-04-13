@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.errors &mdash; locopy 0.5.0 documentation</title>
+  <title>locopy.errors &mdash; locopy 0.5.1 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -11,10 +11,8 @@
   <![endif]-->
   
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -25,14 +23,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> locopy
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            locopy
           </a>
               <div class="version">
-                0.5.0
+                0.5.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -65,9 +67,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>locopy.errors</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">locopy.errors</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -95,79 +97,79 @@
 
 
 <div class="viewcode-block" id="LocopyError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.LocopyError">[docs]</a><span class="k">class</span> <span class="nc">LocopyError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Baseclass for all Locopy errors.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="CompressionError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.CompressionError">[docs]</a><span class="k">class</span> <span class="nc">CompressionError</span><span class="p">(</span><span class="n">LocopyError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Raised when there is an error compressing a file.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="LocopySplitError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.LocopySplitError">[docs]</a><span class="k">class</span> <span class="nc">LocopySplitError</span><span class="p">(</span><span class="n">LocopyError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Raised when there is an error splitting a file.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="LocopyIgnoreHeaderError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.LocopyIgnoreHeaderError">[docs]</a><span class="k">class</span> <span class="nc">LocopyIgnoreHeaderError</span><span class="p">(</span><span class="n">LocopyError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Raised when Multiple IGNOREHEADERS are found in copy options.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="LocopyConcatError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.LocopyConcatError">[docs]</a><span class="k">class</span> <span class="nc">LocopyConcatError</span><span class="p">(</span><span class="n">LocopyError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Raised when there is an error concatenating files.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="DBError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.DBError">[docs]</a><span class="k">class</span> <span class="nc">DBError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for all Database errors.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="CredentialsError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.CredentialsError">[docs]</a><span class="k">class</span> <span class="nc">CredentialsError</span><span class="p">(</span><span class="n">DBError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Raised when the users credentials are not provided.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="S3Error"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.S3Error">[docs]</a><span class="k">class</span> <span class="nc">S3Error</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Base class for all S3 errors.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="S3CredentialsError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.S3CredentialsError">[docs]</a><span class="k">class</span> <span class="nc">S3CredentialsError</span><span class="p">(</span><span class="n">S3Error</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Raised when there is an error with AWS credentials.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="S3InitializationError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.S3InitializationError">[docs]</a><span class="k">class</span> <span class="nc">S3InitializationError</span><span class="p">(</span><span class="n">S3Error</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Raised when there is an error initializing S3 client.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="S3UploadError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.S3UploadError">[docs]</a><span class="k">class</span> <span class="nc">S3UploadError</span><span class="p">(</span><span class="n">S3Error</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Raised when there is an upload error to S3.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="S3DownloadError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.S3DownloadError">[docs]</a><span class="k">class</span> <span class="nc">S3DownloadError</span><span class="p">(</span><span class="n">S3Error</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Raised when there is an download error to S3.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="S3DeletionError"><a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.S3DeletionError">[docs]</a><span class="k">class</span> <span class="nc">S3DeletionError</span><span class="p">(</span><span class="n">S3Error</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Raised when there is an deletion error on S3.</span>
 <span class="sd">    &quot;&quot;&quot;</span></div>
 </pre></div>

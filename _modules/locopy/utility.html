@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.utility &mdash; locopy 0.5.0 documentation</title>
+  <title>locopy.utility &mdash; locopy 0.5.1 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -11,10 +11,8 @@
   <![endif]-->
   
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -25,14 +23,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> locopy
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            locopy
           </a>
               <div class="version">
-                0.5.0
+                0.5.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -65,9 +67,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-      <li>locopy.utility</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">locopy.utility</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -119,7 +121,7 @@
 
 
 <div class="viewcode-block" id="write_file"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.write_file">[docs]</a><span class="k">def</span> <span class="nf">write_file</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Write data to a file.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write data to a file.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -147,7 +149,7 @@
 
 
 <div class="viewcode-block" id="compress_file"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.compress_file">[docs]</a><span class="k">def</span> <span class="nf">compress_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compresses a file (gzip)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compresses a file (gzip)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -167,7 +169,7 @@
 
 
 <div class="viewcode-block" id="compress_file_list"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.compress_file_list">[docs]</a><span class="k">def</span> <span class="nf">compress_file_list</span><span class="p">(</span><span class="n">file_list</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Compresses a list of files (gzip) and clean up the old files</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compresses a list of files (gzip) and clean up the old files</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -189,7 +191,7 @@
 
 
 <div class="viewcode-block" id="split_file"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.split_file">[docs]</a><span class="k">def</span> <span class="nf">split_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ignore_header</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Split a file into equal files by lines.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Split a file into equal files by lines.</span>
 
 <span class="sd">    For example: ``myinputfile.txt`` will be split into ``myoutputfile.txt.01``</span>
 <span class="sd">    , ```myoutputfile.txt.02`` etc..</span>
@@ -256,7 +258,7 @@
 
 
 <div class="viewcode-block" id="concatenate_files"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.concatenate_files">[docs]</a><span class="k">def</span> <span class="nf">concatenate_files</span><span class="p">(</span><span class="n">input_list</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Concatenate a list of files into one file.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Concatenate a list of files into one file.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -290,7 +292,7 @@
 
 
 <div class="viewcode-block" id="read_config_yaml"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.read_config_yaml">[docs]</a><span class="k">def</span> <span class="nf">read_config_yaml</span><span class="p">(</span><span class="n">config_yaml</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Reads a configuration YAML file to populate the database</span>
 <span class="sd">    connection attributes, and validate required ones. Example::</span>
 
@@ -330,7 +332,7 @@
 
 <span class="c1"># make it more granular, eg. include length</span>
 <div class="viewcode-block" id="find_column_type"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.find_column_type">[docs]</a><span class="k">def</span> <span class="nf">find_column_type</span><span class="p">(</span><span class="n">dataframe</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find data type of each column from the dataframe.</span>
 
 <span class="sd">    Following is the list of pandas data types that the function checks and their mapping in sql:</span>
@@ -404,14 +406,14 @@
 
 
 <div class="viewcode-block" id="ProgressPercentage"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.ProgressPercentage">[docs]</a><span class="k">class</span> <span class="nc">ProgressPercentage</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    ProgressPercentage class is used by the S3Transfer upload_file callback</span>
 <span class="sd">    Please see the following url for more information:</span>
 <span class="sd">    http://boto3.readthedocs.org/en/latest/reference/customizations/s3.html#ref-s3transfer-usage</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initiate the ProgressPercentage class, using the base information which</span>
 <span class="sd">        makes up a pipeline</span>
 <span class="sd">        Args:</span>
@@ -438,7 +440,7 @@
 
 
 <div class="viewcode-block" id="get_ignoreheader_number"><a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.get_ignoreheader_number">[docs]</a><span class="k">def</span> <span class="nf">get_ignoreheader_number</span><span class="p">(</span><span class="n">options</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return the ``number_rows`` from ``IGNOREHEADER [ AS ] number_rows`` This doesn&#39;t not validate</span>
 <span class="sd">    that the ``AS`` is valid.</span>
 

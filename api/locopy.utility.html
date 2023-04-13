@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.utility module &mdash; locopy 0.5.0 documentation</title>
+  <title>locopy.utility module &mdash; locopy 0.5.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,10 +12,8 @@
   <![endif]-->
   
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -27,14 +25,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> locopy
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            locopy
           </a>
               <div class="version">
-                0.5.0
+                0.5.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -83,10 +85,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="modules.html">locopy</a> &raquo;</li>
-          <li><a href="locopy.html">locopy package</a> &raquo;</li>
-      <li>locopy.utility module</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">locopy</a></li>
+          <li class="breadcrumb-item"><a href="locopy.html">locopy package</a></li>
+      <li class="breadcrumb-item active">locopy.utility module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/locopy.utility.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -103,7 +105,7 @@ Module which utility functions for use within the application</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="locopy.utility.ProgressPercentage">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">ProgressPercentage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#ProgressPercentage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.ProgressPercentage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>ProgressPercentage class is used by the S3Transfer upload_file callback
 Please see the following url for more information:
 <a class="reference external" href="http://boto3.readthedocs.org/en/latest/reference/customizations/s3.html#ref-s3transfer-usage">http://boto3.readthedocs.org/en/latest/reference/customizations/s3.html#ref-s3transfer-usage</a></p>
@@ -114,10 +116,10 @@ Please see the following url for more information:
 <span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">compress_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#compress_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.compress_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compresses a file (gzip)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Path to input file to compress</p></li>
-<li><p><strong>output_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Path to write the compressed file</p></li>
+<li><p><strong>input_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Path to input file to compress</p></li>
+<li><p><strong>output_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Path to write the compressed file</p></li>
 </ul>
 </dd>
 </dl>
@@ -128,15 +130,15 @@ Please see the following url for more information:
 <span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">compress_file_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#compress_file_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.compress_file_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compresses a list of files (gzip) and clean up the old files</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>file_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – List of strings with the file paths of the files to compress</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – List of strings with the file paths of the files to compress</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of strings with the file paths of the compressed files (original file name with
 gz appended)</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)">list</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -146,14 +148,14 @@ gz appended)</p>
 <span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">concatenate_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#concatenate_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.concatenate_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Concatenate a list of files into one file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – List of strings with the paths to input files to concateneate</p></li>
-<li><p><strong>output_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Path of the output file</p></li>
-<li><p><strong>remove</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Removes the files from the input list if <code class="docutils literal notranslate"><span class="pre">True</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+<li><p><strong>input_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – List of strings with the paths to input files to concateneate</p></li>
+<li><p><strong>output_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Path of the output file</p></li>
+<li><p><strong>remove</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><em>bool</em></a><em>, </em><em>optional</em>) – Removes the files from the input list if <code class="docutils literal notranslate"><span class="pre">True</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.LocopyConcatError" title="locopy.errors.LocopyConcatError"><strong>LocopyConcatError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">input_list</span></code> or there is a issue while concatenating the files into one</p>
 </dd>
 </dl>
@@ -178,14 +180,14 @@ gz appended)</p>
 </div></blockquote>
 <p>For all other data types, the column will be mapped to varchar type.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>dataframe</strong> (<em>Pandas dataframe</em>) – </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dictionary of columns with their data type</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -196,16 +198,16 @@ gz appended)</p>
 <dd><p>Return the <code class="docutils literal notranslate"><span class="pre">number_rows</span></code> from <code class="docutils literal notranslate"><span class="pre">IGNOREHEADER</span> <span class="pre">[</span> <span class="pre">AS</span> <span class="pre">]</span> <span class="pre">number_rows</span></code> This doesn’t not validate
 that the <code class="docutils literal notranslate"><span class="pre">AS</span></code> is valid.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>options</strong> (<em>A list</em><em> (</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>) </em><em>of copy options that should be appended to the COPY</em>) – statement.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>options</strong> (<em>A list</em><em> (</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em>) of </em><em>copy options that should be appended to the COPY</em>) – statement.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The <code class="docutils literal notranslate"><span class="pre">number_rows</span></code> from <code class="docutils literal notranslate"><span class="pre">IGNOREHEADER</span> <span class="pre">[</span> <span class="pre">AS</span> <span class="pre">]</span> <span class="pre">number_rows</span></code></p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.LocopyIgnoreHeaderError" title="locopy.errors.LocopyIgnoreHeaderError"><strong>LocopyIgnoreHeaderError</strong></a> – If more than one IGNOREHEADER is found in the options</p>
 </dd>
 </dl>
@@ -224,17 +226,17 @@ connection attributes, and validate required ones. Example:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>config_yaml</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>file pointer</em>) – String representing the file location of the configuration file, or a
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config_yaml</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a><em> or </em><em>file pointer</em>) – String representing the file location of the configuration file, or a
 pointer to an open file object</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A dictionary of parameters for setting up a connection to the database.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)">dict</a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.CredentialsError" title="locopy.errors.CredentialsError"><strong>CredentialsError</strong></a> – If any connection items are missing from the YAML file</p>
 </dd>
 </dl>
@@ -247,22 +249,22 @@ pointer to an open file object</p>
 <p>For example: <code class="docutils literal notranslate"><span class="pre">myinputfile.txt</span></code> will be split into <code class="docutils literal notranslate"><span class="pre">myoutputfile.txt.01</span></code>
 , <code class="docutils literal notranslate"><span class="pre">`myoutputfile.txt.02</span></code> etc..</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Path to input file to split</p></li>
-<li><p><strong>output_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Name of the output file</p></li>
-<li><p><strong>splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – Number of splits to perform. Must be greater than zero. Defaults to 1</p></li>
-<li><p><strong>ignore_header</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">ignore_header</span></code> is &gt; 0 then that number of rows will be removed from the beginning of
+<li><p><strong>input_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Path to input file to split</p></li>
+<li><p><strong>output_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Name of the output file</p></li>
+<li><p><strong>splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – Number of splits to perform. Must be greater than zero. Defaults to 1</p></li>
+<li><p><strong>ignore_header</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">ignore_header</span></code> is &gt; 0 then that number of rows will be removed from the beginning of
 the files as they are split. Defaults to 0</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of strings with the file paths of the split files</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)">list</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a></p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.LocopySplitError" title="locopy.errors.LocopySplitError"><strong>LocopySplitError</strong></a> – If <code class="docutils literal notranslate"><span class="pre">splits</span></code> is less than 1 or some processing error when splitting</p>
 </dd>
 </dl>
@@ -273,12 +275,12 @@ the files as they are split. Defaults to 0</p></li>
 <span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">write_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#write_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.write_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write data to a file.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – List of lists</p></li>
-<li><p><strong>delimiter</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Delimiter by which columns will be separated</p></li>
-<li><p><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – Location of the output file</p></li>
-<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – File writing mode. Examples include ‘w’ for write or ‘a’ for append.
+<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – List of lists</p></li>
+<li><p><strong>delimiter</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Delimiter by which columns will be separated</p></li>
+<li><p><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – Location of the output file</p></li>
+<li><p><strong>mode</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – File writing mode. Examples include ‘w’ for write or ‘a’ for append.
 Defaults to write mode.
 See <a class="reference external" href="https://www.tutorialspoint.com/python/python_files_io.htm">https://www.tutorialspoint.com/python/python_files_io.htm</a></p></li>
 </ul>

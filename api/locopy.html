@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy package &mdash; locopy 0.5.0 documentation</title>
+  <title>locopy package &mdash; locopy 0.5.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,10 +12,8 @@
   <![endif]-->
   
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -28,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> locopy
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            locopy
           </a>
               <div class="version">
-                0.5.0
+                0.5.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -84,9 +86,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="modules.html">locopy</a> &raquo;</li>
-      <li>locopy package</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">locopy</a></li>
+      <li class="breadcrumb-item active">locopy package</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/locopy.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -102,13 +104,115 @@
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="locopy.database.html">locopy.database module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="locopy.errors.html">locopy.errors module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="locopy.logger.html">locopy.logger module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="locopy.redshift.html">locopy.redshift module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="locopy.s3.html">locopy.s3 module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="locopy.snowflake.html">locopy.snowflake module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="locopy.utility.html">locopy.utility module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="locopy.database.html">locopy.database module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="locopy.database.html#locopy.database.Database"><code class="docutils literal notranslate"><span class="pre">Database</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="locopy.database.html#locopy.database.Database.dbapi"><code class="docutils literal notranslate"><span class="pre">Database.dbapi</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.database.html#locopy.database.Database.connection"><code class="docutils literal notranslate"><span class="pre">Database.connection</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.database.html#locopy.database.Database.conn"><code class="docutils literal notranslate"><span class="pre">Database.conn</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.database.html#locopy.database.Database.cursor"><code class="docutils literal notranslate"><span class="pre">Database.cursor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.database.html#locopy.database.Database.column_names"><code class="docutils literal notranslate"><span class="pre">Database.column_names()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.database.html#locopy.database.Database.connect"><code class="docutils literal notranslate"><span class="pre">Database.connect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.database.html#locopy.database.Database.disconnect"><code class="docutils literal notranslate"><span class="pre">Database.disconnect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.database.html#locopy.database.Database.execute"><code class="docutils literal notranslate"><span class="pre">Database.execute()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.database.html#locopy.database.Database.to_dataframe"><code class="docutils literal notranslate"><span class="pre">Database.to_dataframe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.database.html#locopy.database.Database.to_dict"><code class="docutils literal notranslate"><span class="pre">Database.to_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="locopy.errors.html">locopy.errors module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="locopy.errors.html#locopy.errors.CompressionError"><code class="docutils literal notranslate"><span class="pre">CompressionError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.errors.html#locopy.errors.CredentialsError"><code class="docutils literal notranslate"><span class="pre">CredentialsError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.errors.html#locopy.errors.DBError"><code class="docutils literal notranslate"><span class="pre">DBError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.errors.html#locopy.errors.LocopyConcatError"><code class="docutils literal notranslate"><span class="pre">LocopyConcatError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.errors.html#locopy.errors.LocopyError"><code class="docutils literal notranslate"><span class="pre">LocopyError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.errors.html#locopy.errors.LocopyIgnoreHeaderError"><code class="docutils literal notranslate"><span class="pre">LocopyIgnoreHeaderError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.errors.html#locopy.errors.LocopySplitError"><code class="docutils literal notranslate"><span class="pre">LocopySplitError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.errors.html#locopy.errors.S3CredentialsError"><code class="docutils literal notranslate"><span class="pre">S3CredentialsError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.errors.html#locopy.errors.S3DeletionError"><code class="docutils literal notranslate"><span class="pre">S3DeletionError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.errors.html#locopy.errors.S3DownloadError"><code class="docutils literal notranslate"><span class="pre">S3DownloadError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.errors.html#locopy.errors.S3Error"><code class="docutils literal notranslate"><span class="pre">S3Error</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.errors.html#locopy.errors.S3InitializationError"><code class="docutils literal notranslate"><span class="pre">S3InitializationError</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.errors.html#locopy.errors.S3UploadError"><code class="docutils literal notranslate"><span class="pre">S3UploadError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="locopy.logger.html">locopy.logger module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="locopy.logger.html#locopy.logger.get_logger"><code class="docutils literal notranslate"><span class="pre">get_logger()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="locopy.redshift.html">locopy.redshift module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="locopy.redshift.html#locopy.redshift.Redshift"><code class="docutils literal notranslate"><span class="pre">Redshift</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="locopy.redshift.html#locopy.redshift.Redshift.profile"><code class="docutils literal notranslate"><span class="pre">Redshift.profile</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.redshift.html#locopy.redshift.Redshift.kms_key"><code class="docutils literal notranslate"><span class="pre">Redshift.kms_key</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.redshift.html#locopy.redshift.Redshift.session"><code class="docutils literal notranslate"><span class="pre">Redshift.session</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.redshift.html#locopy.redshift.Redshift.s3"><code class="docutils literal notranslate"><span class="pre">Redshift.s3</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.redshift.html#locopy.redshift.Redshift.dbapi"><code class="docutils literal notranslate"><span class="pre">Redshift.dbapi</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.redshift.html#locopy.redshift.Redshift.connection"><code class="docutils literal notranslate"><span class="pre">Redshift.connection</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.redshift.html#locopy.redshift.Redshift.conn"><code class="docutils literal notranslate"><span class="pre">Redshift.conn</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.redshift.html#locopy.redshift.Redshift.cursor"><code class="docutils literal notranslate"><span class="pre">Redshift.cursor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.redshift.html#locopy.redshift.Redshift.connect"><code class="docutils literal notranslate"><span class="pre">Redshift.connect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.redshift.html#locopy.redshift.Redshift.copy"><code class="docutils literal notranslate"><span class="pre">Redshift.copy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.redshift.html#locopy.redshift.Redshift.insert_dataframe_to_table"><code class="docutils literal notranslate"><span class="pre">Redshift.insert_dataframe_to_table()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.redshift.html#locopy.redshift.Redshift.load_and_copy"><code class="docutils literal notranslate"><span class="pre">Redshift.load_and_copy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.redshift.html#locopy.redshift.Redshift.unload"><code class="docutils literal notranslate"><span class="pre">Redshift.unload()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.redshift.html#locopy.redshift.Redshift.unload_and_copy"><code class="docutils literal notranslate"><span class="pre">Redshift.unload_and_copy()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.redshift.html#locopy.redshift.add_default_copy_options"><code class="docutils literal notranslate"><span class="pre">add_default_copy_options()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.redshift.html#locopy.redshift.combine_copy_options"><code class="docutils literal notranslate"><span class="pre">combine_copy_options()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="locopy.s3.html">locopy.s3 module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="locopy.s3.html#locopy.s3.S3"><code class="docutils literal notranslate"><span class="pre">S3</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="locopy.s3.html#locopy.s3.S3.profile"><code class="docutils literal notranslate"><span class="pre">S3.profile</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.s3.html#locopy.s3.S3.kms_key"><code class="docutils literal notranslate"><span class="pre">S3.kms_key</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.s3.html#locopy.s3.S3.session"><code class="docutils literal notranslate"><span class="pre">S3.session</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.s3.html#locopy.s3.S3.s3"><code class="docutils literal notranslate"><span class="pre">S3.s3</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.s3.html#locopy.s3.S3.delete_from_s3"><code class="docutils literal notranslate"><span class="pre">S3.delete_from_s3()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.s3.html#locopy.s3.S3.delete_list_from_s3"><code class="docutils literal notranslate"><span class="pre">S3.delete_list_from_s3()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.s3.html#locopy.s3.S3.download_from_s3"><code class="docutils literal notranslate"><span class="pre">S3.download_from_s3()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.s3.html#locopy.s3.S3.download_list_from_s3"><code class="docutils literal notranslate"><span class="pre">S3.download_list_from_s3()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.s3.html#locopy.s3.S3.parse_s3_url"><code class="docutils literal notranslate"><span class="pre">S3.parse_s3_url()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.s3.html#locopy.s3.S3.upload_list_to_s3"><code class="docutils literal notranslate"><span class="pre">S3.upload_list_to_s3()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.s3.html#locopy.s3.S3.upload_to_s3"><code class="docutils literal notranslate"><span class="pre">S3.upload_to_s3()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="locopy.snowflake.html">locopy.snowflake module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="locopy.snowflake.html#locopy.snowflake.Snowflake"><code class="docutils literal notranslate"><span class="pre">Snowflake</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="locopy.snowflake.html#locopy.snowflake.Snowflake.profile"><code class="docutils literal notranslate"><span class="pre">Snowflake.profile</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.snowflake.html#locopy.snowflake.Snowflake.kms_key"><code class="docutils literal notranslate"><span class="pre">Snowflake.kms_key</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.snowflake.html#locopy.snowflake.Snowflake.session"><code class="docutils literal notranslate"><span class="pre">Snowflake.session</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.snowflake.html#locopy.snowflake.Snowflake.s3"><code class="docutils literal notranslate"><span class="pre">Snowflake.s3</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.snowflake.html#locopy.snowflake.Snowflake.dbapi"><code class="docutils literal notranslate"><span class="pre">Snowflake.dbapi</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.snowflake.html#locopy.snowflake.Snowflake.connection"><code class="docutils literal notranslate"><span class="pre">Snowflake.connection</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.snowflake.html#locopy.snowflake.Snowflake.conn"><code class="docutils literal notranslate"><span class="pre">Snowflake.conn</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.snowflake.html#locopy.snowflake.Snowflake.cursor"><code class="docutils literal notranslate"><span class="pre">Snowflake.cursor</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.snowflake.html#locopy.snowflake.Snowflake.connect"><code class="docutils literal notranslate"><span class="pre">Snowflake.connect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.snowflake.html#locopy.snowflake.Snowflake.copy"><code class="docutils literal notranslate"><span class="pre">Snowflake.copy()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.snowflake.html#locopy.snowflake.Snowflake.download_from_internal"><code class="docutils literal notranslate"><span class="pre">Snowflake.download_from_internal()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.snowflake.html#locopy.snowflake.Snowflake.insert_dataframe_to_table"><code class="docutils literal notranslate"><span class="pre">Snowflake.insert_dataframe_to_table()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.snowflake.html#locopy.snowflake.Snowflake.to_dataframe"><code class="docutils literal notranslate"><span class="pre">Snowflake.to_dataframe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.snowflake.html#locopy.snowflake.Snowflake.unload"><code class="docutils literal notranslate"><span class="pre">Snowflake.unload()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="locopy.snowflake.html#locopy.snowflake.Snowflake.upload_to_internal"><code class="docutils literal notranslate"><span class="pre">Snowflake.upload_to_internal()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.snowflake.html#locopy.snowflake.combine_options"><code class="docutils literal notranslate"><span class="pre">combine_options()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="locopy.utility.html">locopy.utility module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="locopy.utility.html#locopy.utility.ProgressPercentage"><code class="docutils literal notranslate"><span class="pre">ProgressPercentage</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.utility.html#locopy.utility.compress_file"><code class="docutils literal notranslate"><span class="pre">compress_file()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.utility.html#locopy.utility.compress_file_list"><code class="docutils literal notranslate"><span class="pre">compress_file_list()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.utility.html#locopy.utility.concatenate_files"><code class="docutils literal notranslate"><span class="pre">concatenate_files()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.utility.html#locopy.utility.find_column_type"><code class="docutils literal notranslate"><span class="pre">find_column_type()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.utility.html#locopy.utility.get_ignoreheader_number"><code class="docutils literal notranslate"><span class="pre">get_ignoreheader_number()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.utility.html#locopy.utility.read_config_yaml"><code class="docutils literal notranslate"><span class="pre">read_config_yaml()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.utility.html#locopy.utility.split_file"><code class="docutils literal notranslate"><span class="pre">split_file()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.utility.html#locopy.utility.write_file"><code class="docutils literal notranslate"><span class="pre">write_file()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>

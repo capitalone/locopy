@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Developer Instructions &mdash; locopy 0.5.0 documentation</title>
+  <title>Developer Instructions &mdash; locopy 0.5.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,10 +12,8 @@
   <![endif]-->
   
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -28,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> locopy
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            locopy
           </a>
               <div class="version">
-                0.5.0
+                0.5.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -78,8 +80,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Developer Instructions</li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Developer Instructions</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/developer.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -138,22 +140,22 @@ integration tests to work, you will need:</p>
 use for running integration tests. It should look like the following</p></li>
 </ul>
 <p>Redshift</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my.redshift.cluster.com</span><span class="w"></span>
-<span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5439</span><span class="w"></span>
-<span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">db</span><span class="w"></span>
-<span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">username</span><span class="w"></span>
-<span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">password</span><span class="w"></span>
-<span class="nt">profile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MY_AWS_PROFILE</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my.redshift.cluster.com</span>
+<span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5439</span>
+<span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">db</span>
+<span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">username</span>
+<span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">password</span>
+<span class="nt">profile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MY_AWS_PROFILE</span>
 </pre></div>
 </div>
 <p>Snowflake</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my.snowflake.cluster.com</span><span class="w"></span>
-<span class="nt">warehouse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warehouse</span><span class="w"></span>
-<span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">db</span><span class="w"></span>
-<span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">schema</span><span class="w"></span>
-<span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">username</span><span class="w"></span>
-<span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">password</span><span class="w"></span>
-<span class="nt">profile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MY_AWS_PROFILE</span><span class="w"></span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">account</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my.snowflake.cluster.com</span>
+<span class="nt">warehouse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">warehouse</span>
+<span class="nt">database</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">db</span>
+<span class="nt">schema</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">schema</span>
+<span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">username</span>
+<span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">password</span>
+<span class="nt">profile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MY_AWS_PROFILE</span>
 </pre></div>
 </div>
 <p>The integration tests run through a number of selects, loads and unloads.  They
@@ -172,18 +174,18 @@ More on edgetest <a class="reference external" href="https://github.com/capitalo
 <p>The <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code> has configuration details on how to run edgetest. This process can be automated via GitHub Actions.
 (A future addition, which will come soon).</p>
 <p>In order to execute edgetest locally you can run the following after install <code class="docutils literal notranslate"><span class="pre">edgetest</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>edgetest -c setup.cfg -r requirements.txt --export
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>edgetest<span class="w"> </span>-c<span class="w"> </span>setup.cfg<span class="w"> </span>-r<span class="w"> </span>requirements.txt<span class="w"> </span>--export
 </pre></div>
 </div>
 <p>This should return output like the following and also updating <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">=============</span>  <span class="o">===============</span>  <span class="o">===================</span>  <span class="o">=================</span>
-Environment    Passing tests    Upgraded packages    Package <span class="nv">version</span>
-<span class="o">=============</span>  <span class="o">===============</span>  <span class="o">===================</span>  <span class="o">=================</span>
-core           True             boto3                <span class="m">1</span>.21.7
-core           True             pandas               <span class="m">1</span>.3.5
-core           True             PyYAML               <span class="m">6</span>.0
-<span class="o">=============</span>  <span class="o">===============</span>  <span class="o">===================</span>  <span class="o">=================</span>
-No PEP-517 style requirements <span class="k">in</span> setup.cfg to update. Updating requirements.txt
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">=============</span><span class="w">  </span><span class="o">===============</span><span class="w">  </span><span class="o">===================</span><span class="w">  </span><span class="o">=================</span>
+Environment<span class="w">    </span>Passing<span class="w"> </span>tests<span class="w">    </span>Upgraded<span class="w"> </span>packages<span class="w">    </span>Package<span class="w"> </span><span class="nv">version</span>
+<span class="o">=============</span><span class="w">  </span><span class="o">===============</span><span class="w">  </span><span class="o">===================</span><span class="w">  </span><span class="o">=================</span>
+core<span class="w">           </span>True<span class="w">             </span>boto3<span class="w">                </span><span class="m">1</span>.21.7
+core<span class="w">           </span>True<span class="w">             </span>pandas<span class="w">               </span><span class="m">1</span>.3.5
+core<span class="w">           </span>True<span class="w">             </span>PyYAML<span class="w">               </span><span class="m">6</span>.0
+<span class="o">=============</span><span class="w">  </span><span class="o">===============</span><span class="w">  </span><span class="o">===================</span><span class="w">  </span><span class="o">=================</span>
+No<span class="w"> </span>PEP-517<span class="w"> </span>style<span class="w"> </span>requirements<span class="w"> </span><span class="k">in</span><span class="w"> </span>setup.cfg<span class="w"> </span>to<span class="w"> </span>update.<span class="w"> </span>Updating<span class="w"> </span>requirements.txt
 </pre></div>
 </div>
 </section>
@@ -195,7 +197,7 @@ No PEP-517 style requirements <span class="k">in</span> setup.cfg to update. Upd
 this branch. The reason we squash merge is to prevent the develop branch from being polluted with endless commit messages
 when people are developing. Squashing collapses all the commits into one single new commit. It will also make it much easier to
 back out changes if something breaks.</p>
-<p><code class="docutils literal notranslate"><span class="pre">master</span></code> is where official releases will go. Each release on <code class="docutils literal notranslate"><span class="pre">master</span></code> should be tagged properly to denote a “version”
+<p><code class="docutils literal notranslate"><span class="pre">main</span></code> is where official releases will go. Each release on <code class="docutils literal notranslate"><span class="pre">main</span></code> should be tagged properly to denote a “version”
 that will have the corresponding artifact on pypi for users to <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> is where official documentation will go. After each release you should build the docs and push the HTML to
 the pages branch. When first setting up the repo you want to make sure your gh-pages is a orphaned branch since it is
