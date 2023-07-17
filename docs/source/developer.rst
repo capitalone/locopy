@@ -91,8 +91,8 @@ knowing what they're doing.  Caveat emptor!
 Management of Requirements
 --------------------------
 
-Requirements of the project should be added to ``requirements.txt``.  Optional requirements used only for testing,
-documentation, or code quality are added to ``setup.py`` and ``EXTRAS_REQUIRE``
+Requirements of the project should be added to ``dependencies`` within our ``pyproject.toml``.  Optional requirements used only for testing,
+documentation, or code quality are added to the ``project.optional-dependencies`` of our ``pyproject.toml``.
 
 edgetest
 --------
@@ -100,16 +100,15 @@ edgetest
 edgetest is a utility to help keep requirements up to date and ensure a subset of testing requirements still work.
 More on edgetest `here <https://github.com/capitalone/edgetest>`_.
 
-The ``setup.cfg`` has configuration details on how to run edgetest. This process can be automated via GitHub Actions.
-(A future addition, which will come soon).
+The ``pyproject.toml`` has configuration details on how to run edgetest. This process can be automated via GitHub Actions.
 
 In order to execute edgetest locally you can run the following after install ``edgetest``:
 
 .. code-block:: bash
 
-    edgetest -c setup.cfg -r requirements.txt --export
+    edgetest -c pyproject.toml --export
 
-This should return output like the following and also updating ``requirements.txt``:
+This should return output like the following and also update our ``dependencies`` within the ``pyproject.toml``:
 
 .. code-block:: bash
 
@@ -120,7 +119,6 @@ This should return output like the following and also updating ``requirements.tx
     core           True             pandas               1.3.5
     core           True             PyYAML               6.0
     =============  ===============  ===================  =================
-    No PEP-517 style requirements in setup.cfg to update. Updating requirements.txt
 
 
 Release Guide
