@@ -1,0 +1,88 @@
+[project]
+name = "locopy"
+description = "Loading/Unloading to Amazon Redshift using Python"
+readme = "README.rst"
+authors = [
+  { name="Faisal Dosani", email="faisal.dosani@capitalone.com" },
+]
+license = {text = "Apache Software License"}
+dependencies = [
+    "boto3<=1.28.3,>=1.9.92",
+    "PyYAML<=6.0,>=5.1",
+    "pandas<=2.0.3,>=0.25.2",
+    "numpy<=1.25.1,>=1.22.0",
+]
+
+requires-python = ">=3.8.0"
+classifiers = [
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/capitalone/locopy"
+Documentation = "https://capitalone.github.io/locopy/"
+
+[tool.setuptools]
+packages = ["locopy"]
+zip-safe = false
+
+[tool.setuptools.dynamic]
+version = {attr = "locopy._version.__version__"}
+
+[project.optional-dependencies]
+psycopg2 = ["psycopg2-binary>=2.7.7"]
+pg8000 = ["pg8000>=1.13.1"]
+snowflake = ["snowflake-connector-python[pandas]>=2.1.2"]
+docs = ["sphinx", "sphinx_rtd_theme"]
+tests = [
+    "hypothesis",
+    "pytest",
+    "pytest-cov",
+]
+qa = [
+    "pre-commit",
+    "black",
+    "isort",
+]
+build = ["build", "twine", "wheel"]
+edgetest = ["edgetest", "edgetest-conda"]
+dev = [
+    "locopy[tests]",
+    "locopy[docs]",
+    "locopy[qa]",
+    "locopy[build]",
+]
+
+[isort]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+line_length = 88
+
+[edgetest.envs.core]
+python_version = "3.9"
+extras = [
+	"tests",
+	"psycopg2",
+	"pg8000",
+	"snowflake",
+]
+command = "pytest tests -m 'not integration'"
+upgrade = [
+	"boto3",
+	"PyYAML",
+	"pandas",
+	"numpy",
+]
