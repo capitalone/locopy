@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Developer Instructions &mdash; locopy 0.5.2 documentation</title>
+  <title>Developer Instructions &mdash; locopy 0.5.3 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -33,7 +33,7 @@
             locopy
           </a>
               <div class="version">
-                0.5.2
+                0.5.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -164,20 +164,19 @@ knowing what they’re doing.  Caveat emptor!</p>
 </section>
 <section id="management-of-requirements">
 <h2>Management of Requirements<a class="headerlink" href="#management-of-requirements" title="Permalink to this heading">¶</a></h2>
-<p>Requirements of the project should be added to <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>.  Optional requirements used only for testing,
-documentation, or code quality are added to <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> and <code class="docutils literal notranslate"><span class="pre">EXTRAS_REQUIRE</span></code></p>
+<p>Requirements of the project should be added to <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> within our <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.  Optional requirements used only for testing,
+documentation, or code quality are added to the <code class="docutils literal notranslate"><span class="pre">project.optional-dependencies</span></code> of our <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p>
 </section>
 <section id="edgetest">
 <h2>edgetest<a class="headerlink" href="#edgetest" title="Permalink to this heading">¶</a></h2>
 <p>edgetest is a utility to help keep requirements up to date and ensure a subset of testing requirements still work.
 More on edgetest <a class="reference external" href="https://github.com/capitalone/edgetest">here</a>.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code> has configuration details on how to run edgetest. This process can be automated via GitHub Actions.
-(A future addition, which will come soon).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code> has configuration details on how to run edgetest. This process can be automated via GitHub Actions.</p>
 <p>In order to execute edgetest locally you can run the following after install <code class="docutils literal notranslate"><span class="pre">edgetest</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>edgetest<span class="w"> </span>-c<span class="w"> </span>setup.cfg<span class="w"> </span>-r<span class="w"> </span>requirements.txt<span class="w"> </span>--export
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>edgetest<span class="w"> </span>-c<span class="w"> </span>pyproject.toml<span class="w"> </span>--export
 </pre></div>
 </div>
-<p>This should return output like the following and also updating <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code>:</p>
+<p>This should return output like the following and also update our <code class="docutils literal notranslate"><span class="pre">dependencies</span></code> within the <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">=============</span><span class="w">  </span><span class="o">===============</span><span class="w">  </span><span class="o">===================</span><span class="w">  </span><span class="o">=================</span>
 Environment<span class="w">    </span>Passing<span class="w"> </span>tests<span class="w">    </span>Upgraded<span class="w"> </span>packages<span class="w">    </span>Package<span class="w"> </span><span class="nv">version</span>
 <span class="o">=============</span><span class="w">  </span><span class="o">===============</span><span class="w">  </span><span class="o">===================</span><span class="w">  </span><span class="o">=================</span>
@@ -185,7 +184,6 @@ core<span class="w">           </span>True<span class="w">             </span>bo
 core<span class="w">           </span>True<span class="w">             </span>pandas<span class="w">               </span><span class="m">1</span>.3.5
 core<span class="w">           </span>True<span class="w">             </span>PyYAML<span class="w">               </span><span class="m">6</span>.0
 <span class="o">=============</span><span class="w">  </span><span class="o">===============</span><span class="w">  </span><span class="o">===================</span><span class="w">  </span><span class="o">=================</span>
-No<span class="w"> </span>PEP-517<span class="w"> </span>style<span class="w"> </span>requirements<span class="w"> </span><span class="k">in</span><span class="w"> </span>setup.cfg<span class="w"> </span>to<span class="w"> </span>update.<span class="w"> </span>Updating<span class="w"> </span>requirements.txt
 </pre></div>
 </div>
 </section>
