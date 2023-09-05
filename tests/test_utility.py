@@ -300,6 +300,7 @@ def test_find_column_type():
             "l": pd.Series([1, 2, 3], dtype="category"),
             "m": ["2022-02", "2022-03", "2020-02"],
             "n": ["2020q1", "2021q2", "2022q3"],
+            "o": ["10-DEC-2022", "11-NOV-2020", "10-OCT-2020"],
         }
     )
     output_text_snowflake = {
@@ -317,6 +318,7 @@ def test_find_column_type():
         "l": "varchar",
         "m": "varchar",
         "n": "varchar",
+        "o": "date",
     }
     output_text_redshift = {
         "a": "int",
@@ -333,6 +335,7 @@ def test_find_column_type():
         "l": "varchar",
         "m": "date",
         "n": "date",
+        "o": "date",
     }
     assert find_column_type(input_text, "snowflake") == output_text_snowflake
     assert find_column_type(input_text, "redshift") == output_text_redshift

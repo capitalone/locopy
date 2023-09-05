@@ -286,7 +286,7 @@ def find_column_type(dataframe, warehouse_type: str):
             if re.search(r"\d+:\d+:\d+", sample_data):
                 return "timestamp"
             elif warehouse_type == "redshift" or re.search(
-                r"(\d{4}-\d{2}-\d{2})|(\d{2}-\d{2}-\d{4})|(\d{2}/\d{2}/\d{4})",
+                r"(\d{4}-\d{2}-\d{2})|(\d{2}-[A-Z]{3}-\d{4})|(\d{2}/\d{2}/\d{4})",
                 sample_data,
             ):
                 return "date"
