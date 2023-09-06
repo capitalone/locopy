@@ -27,13 +27,8 @@ from itertools import cycle
 
 import yaml
 
-from .errors import (
-    CompressionError,
-    CredentialsError,
-    LocopyConcatError,
-    LocopyIgnoreHeaderError,
-    LocopySplitError,
-)
+from .errors import (CompressionError, CredentialsError, LocopyConcatError,
+                     LocopyIgnoreHeaderError, LocopySplitError)
 from .logger import INFO, get_logger
 
 logger = get_logger(__name__, INFO)
@@ -250,7 +245,7 @@ def read_config_yaml(config_yaml):
 
 
 # make it more granular, eg. include length
-def find_column_type(dataframe):
+def find_column_type(dataframe, warehouse_type: str):
     """
     Find data type of each column from the dataframe.
 
@@ -271,6 +266,9 @@ def find_column_type(dataframe):
     ----------
     dataframe : Pandas dataframe
 
+    warehouse_type: str
+        Required to properly determine format of uploaded data, either "snowflake" or "redshift".
+
     Returns
     -------
     dict
@@ -284,10 +282,16 @@ def find_column_type(dataframe):
     def validate_date_object(column):
         try:
             pd.to_datetime(column)
-            if re.search(r"\d+:\d+:\d+", column.sample(1).to_string(index=False)):
+            sample_data = column.sample(1).to_string(index=False)
+            if re.search(r"\d+:\d+:\d+", sample_data):
                 return "timestamp"
-            else:
+            elif warehouse_type == "redshift" or re.search(
+                r"(\d{4}-\d{2}-\d{2})|(\d{2}-[A-Z]{3}-\d{4})|(\d{2}/\d{2}/\d{4})",
+                sample_data,
+            ):
                 return "date"
+            else:
+                return "varchar"
         except (ValueError, TypeError):
             return None
 
@@ -297,6 +301,11 @@ def find_column_type(dataframe):
             return "float"
         except (ValueError, TypeError):
             return None
+
+    if warehouse_type.lower() not in ["snowflake", "redshift"]:
+        raise ValueError(
+            'warehouse_type argument must be either "snowflake" or "redshift"'
+        )
 
     column_type = []
     for column in dataframe.columns:
