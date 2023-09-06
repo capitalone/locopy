@@ -85,7 +85,7 @@ UNLOAD_FORMAT_OPTIONS = {
 
 
 def combine_options(options=None):
-    """ Returns the ``copy_options`` or ``format_options`` attribute with spaces in between and as
+    """Returns the ``copy_options`` or ``format_options`` attribute with spaces in between and as
     a string. If options is ``None`` then return an empty string.
 
     Parameters
@@ -170,11 +170,15 @@ class Snowflake(S3, Database):
         Issue initializing S3 session
     """
 
-    def __init__(self, profile=None, kms_key=None, dbapi=None, config_yaml=None, **kwargs):
+    def __init__(
+        self, profile=None, kms_key=None, dbapi=None, config_yaml=None, **kwargs
+    ):
         try:
             S3.__init__(self, profile, kms_key)
         except S3CredentialsError:
-            logger.warning("S3 credentials were not found. S3 functionality is disabled")
+            logger.warning(
+                "S3 credentials were not found. S3 functionality is disabled"
+            )
             logger.warning("Only internal stages are available")
         Database.__init__(self, dbapi, config_yaml, **kwargs)
 
@@ -196,7 +200,9 @@ class Snowflake(S3, Database):
         if self.connection.get("schema") is not None:
             self.execute("USE SCHEMA {0}".format(self.connection["schema"]))
 
-    def upload_to_internal(self, local, stage, parallel=4, auto_compress=True, overwrite=True):
+    def upload_to_internal(
+        self, local, stage, parallel=4, auto_compress=True, overwrite=True
+    ):
         """
         Upload file(s) to a internal stage via the ``PUT`` command.
 
@@ -249,9 +255,13 @@ class Snowflake(S3, Database):
         if local is None:
             local = os.getcwd()
         local_uri = PurePath(local).as_posix()
-        self.execute("GET {0} 'file://{1}' PARALLEL={2}".format(stage, local_uri, parallel))
+        self.execute(
+            "GET {0} 'file://{1}' PARALLEL={2}".format(stage, local_uri, parallel)
+        )
 
-    def copy(self, table_name, stage, file_type="csv", format_options=None, copy_options=None):
+    def copy(
+        self, table_name, stage, file_type="csv", format_options=None, copy_options=None
+    ):
         """Executes the ``COPY INTO <table>`` command to load CSV files from a stage into
         a Snowflake table. If ``file_type == csv`` and ``format_options == None``, ``format_options``
         will default to: ``["FIELD_DELIMITER='|'", "SKIP_HEADER=0"]``
@@ -286,7 +296,9 @@ class Snowflake(S3, Database):
 
         if file_type not in COPY_FORMAT_OPTIONS:
             raise ValueError(
-                "Invalid file_type. Must be one of {0}".format(list(COPY_FORMAT_OPTIONS.keys()))
+                "Invalid file_type. Must be one of {0}".format(
+                    list(COPY_FORMAT_OPTIONS.keys())
+                )
             )
 
         if format_options is None and file_type == "csv":
@@ -294,7 +306,9 @@ class Snowflake(S3, Database):
 
         format_options_text = combine_options(format_options)
         copy_options_text = combine_options(copy_options)
-        base_copy_string = "COPY INTO {0} FROM '{1}' " "FILE_FORMAT = (TYPE='{2}' {3}) {4}"
+        base_copy_string = (
+            "COPY INTO {0} FROM '{1}' " "FILE_FORMAT = (TYPE='{2}' {3}) {4}"
+        )
         try:
             sql = base_copy_string.format(
                 table_name, stage, file_type, format_options_text, copy_options_text
@@ -350,7 +364,9 @@ class Snowflake(S3, Database):
 
         if file_type not in COPY_FORMAT_OPTIONS:
             raise ValueError(
-                "Invalid file_type. Must be one of {0}".format(list(UNLOAD_FORMAT_OPTIONS.keys()))
+                "Invalid file_type. Must be one of {0}".format(
+                    list(UNLOAD_FORMAT_OPTIONS.keys())
+                )
             )
 
         if format_options is None and file_type == "csv":
@@ -364,7 +380,12 @@ class Snowflake(S3, Database):
 
         try:
             sql = base_unload_string.format(
-                stage, table_name, file_type, format_options_text, header, copy_options_text
+                stage,
+                table_name,
+                file_type,
+                format_options_text,
+                header,
+                copy_options_text,
             )
             self.execute(sql, commit=True)
         except Exception as e:
@@ -422,7 +443,7 @@ class Snowflake(S3, Database):
         if create:
             if not metadata:
                 logger.info("Metadata is missing. Generating metadata ...")
-                metadata = find_column_type(dataframe)
+                metadata = find_column_type(dataframe, "snowflake")
                 logger.info("Metadata is complete. Creating new table ...")
 
             create_join = (

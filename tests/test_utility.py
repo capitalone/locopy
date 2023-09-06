@@ -24,29 +24,20 @@ import os
 import sys
 from io import StringIO
 from itertools import cycle
-from unittest import mock
 from pathlib import Path
+from unittest import mock
 
 import pytest
 
 import locopy.utility as util
-from locopy.errors import (
-    CompressionError,
-    CredentialsError,
-    LocopyConcatError,
-    LocopyIgnoreHeaderError,
-    LocopySplitError,
-)
-from locopy.utility import (
-    compress_file,
-    compress_file_list,
-    concatenate_files,
-    find_column_type,
-    get_ignoreheader_number,
-    split_file,
-)
+from locopy.errors import (CompressionError, CredentialsError,
+                           LocopyConcatError, LocopyIgnoreHeaderError,
+                           LocopySplitError)
+from locopy.utility import (compress_file, compress_file_list,
+                            concatenate_files, find_column_type,
+                            get_ignoreheader_number, split_file)
 
-GOOD_CONFIG_YAML = u"""host: my.redshift.cluster.com
+GOOD_CONFIG_YAML = """host: my.redshift.cluster.com
 port: 1234
 database: db
 user: userid
@@ -81,7 +72,9 @@ def test_compress_file(mock_shutil, mock_gzip_open, mock_open):
     compress_file("input", "output")
     mock_open.assert_called_with("input", "rb")
     mock_gzip_open.assert_called_with("output", "wb")
-    mock_shutil.assert_called_with(mock_open().__enter__(), mock_gzip_open().__enter__())
+    mock_shutil.assert_called_with(
+        mock_open().__enter__(), mock_gzip_open().__enter__()
+    )
 
 
 @mock.patch("locopy.utility.open")
@@ -110,7 +103,9 @@ def test_compress_file_list(mock_shutil, mock_gzip_open, mock_open, mock_remove)
 @mock.patch("locopy.utility.open")
 @mock.patch("locopy.utility.gzip.open")
 @mock.patch("locopy.utility.shutil.copyfileobj")
-def test_compress_file_list_exception(mock_shutil, mock_gzip_open, mock_open, mock_remove):
+def test_compress_file_list_exception(
+    mock_shutil, mock_gzip_open, mock_open, mock_remove
+):
     mock_shutil.side_effect = Exception("SomeException")
     with pytest.raises(CompressionError):
         compress_file_list(["input1", "input2"])
@@ -123,7 +118,10 @@ def test_split_file():
     splits = split_file(input_file, output_file)
     assert splits == [input_file]
 
-    expected = ["tests/data/mock_output_file.txt.0", "tests/data/mock_output_file.txt.1"]
+    expected = [
+        "tests/data/mock_output_file.txt.0",
+        "tests/data/mock_output_file.txt.1",
+    ]
     splits = split_file(input_file, output_file, 2)
     assert splits == expected
     assert compare_file_contents(input_file, expected)
@@ -213,18 +211,18 @@ def test_split_file_exception():
         split_file(input_file, output_file, "Test")
 
     with mock.patch("{0}.next".format(builtin_module_name)) as mock_next:
-            mock_next.side_effect = Exception("SomeException")
+        mock_next.side_effect = Exception("SomeException")
 
-            with pytest.raises(LocopySplitError):
-                split_file(input_file, output_file, 2)
-            assert not Path("tests/data/mock_output_file.txt.0").exists()
-            assert not Path("tests/data/mock_output_file.txt.1").exists()
+        with pytest.raises(LocopySplitError):
+            split_file(input_file, output_file, 2)
+        assert not Path("tests/data/mock_output_file.txt.0").exists()
+        assert not Path("tests/data/mock_output_file.txt.1").exists()
 
-            with pytest.raises(LocopySplitError):
-                split_file(input_file, output_file, 3)
-            assert not Path("tests/data/mock_output_file.txt.0").exists()
-            assert not Path("tests/data/mock_output_file.txt.1").exists()
-            assert not Path("tests/data/mock_output_file.txt.2").exists()
+        with pytest.raises(LocopySplitError):
+            split_file(input_file, output_file, 3)
+        assert not Path("tests/data/mock_output_file.txt.0").exists()
+        assert not Path("tests/data/mock_output_file.txt.1").exists()
+        assert not Path("tests/data/mock_output_file.txt.2").exists()
 
 
 @mock.patch("locopy.utility.open", mock.mock_open(read_data=GOOD_CONFIG_YAML))
@@ -277,8 +275,9 @@ def test_concatenate_files_exception():
 
 def test_find_column_type():
 
-    import pandas as pd
     from decimal import Decimal
+
+    import pandas as pd
 
     # add timestamp
     input_text = pd.DataFrame.from_dict(
@@ -299,9 +298,12 @@ def test_find_column_type():
             "j": [None, "2011-01-01 12:11:02", "2022-03-02 23:59:59"],
             "k": [Decimal(3.3), Decimal(100), None],
             "l": pd.Series([1, 2, 3], dtype="category"),
+            "m": ["2022-02", "2022-03", "2020-02"],
+            "n": ["2020q1", "2021q2", "2022q3"],
+            "o": ["10-DEC-2022", "11-NOV-2020", "10-OCT-2020"],
         }
     )
-    output_text = {
+    output_text_snowflake = {
         "a": "int",
         "b": "varchar",
         "c": "varchar",
@@ -314,26 +316,62 @@ def test_find_column_type():
         "j": "timestamp",
         "k": "float",
         "l": "varchar",
+        "m": "varchar",
+        "n": "varchar",
+        "o": "date",
     }
-    assert find_column_type(input_text) == output_text
+    output_text_redshift = {
+        "a": "int",
+        "b": "varchar",
+        "c": "varchar",
+        "d": "date",
+        "e": "float",
+        "f": "float",
+        "g": "varchar",
+        "h": "timestamp",
+        "i": "date",
+        "j": "timestamp",
+        "k": "float",
+        "l": "varchar",
+        "m": "date",
+        "n": "date",
+        "o": "date",
+    }
+    assert find_column_type(input_text, "snowflake") == output_text_snowflake
+    assert find_column_type(input_text, "redshift") == output_text_redshift
 
 
 def test_get_ignoreheader_number():
     assert (
         get_ignoreheader_number(
-            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "IGNOREHEADER as 1"]
+            [
+                "DATEFORMAT 'auto'",
+                "COMPUPDATE ON",
+                "TRUNCATECOLUMNS",
+                "IGNOREHEADER as 1",
+            ]
         )
         == 1
     )
     assert (
         get_ignoreheader_number(
-            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "IGNOREHEADER as 2"]
+            [
+                "DATEFORMAT 'auto'",
+                "COMPUPDATE ON",
+                "TRUNCATECOLUMNS",
+                "IGNOREHEADER as 2",
+            ]
         )
         == 2
     )
     assert (
         get_ignoreheader_number(
-            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "IGNOREHEADER as 99"]
+            [
+                "DATEFORMAT 'auto'",
+                "COMPUPDATE ON",
+                "TRUNCATECOLUMNS",
+                "IGNOREHEADER as 99",
+            ]
         )
         == 99
     )
@@ -359,33 +397,63 @@ def test_get_ignoreheader_number():
 
     assert (
         get_ignoreheader_number(
-            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "IGNOREHEADER is 1"]
+            [
+                "DATEFORMAT 'auto'",
+                "COMPUPDATE ON",
+                "TRUNCATECOLUMNS",
+                "IGNOREHEADER is 1",
+            ]
         )
         == 1
     )
     assert (
         get_ignoreheader_number(
-            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "IGNOREHEADER is 2"]
+            [
+                "DATEFORMAT 'auto'",
+                "COMPUPDATE ON",
+                "TRUNCATECOLUMNS",
+                "IGNOREHEADER is 2",
+            ]
         )
         == 2
     )
     assert (
         get_ignoreheader_number(
-            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "IGNOREHEADER is 99"]
+            [
+                "DATEFORMAT 'auto'",
+                "COMPUPDATE ON",
+                "TRUNCATECOLUMNS",
+                "IGNOREHEADER is 99",
+            ]
         )
         == 99
     )
 
-    assert get_ignoreheader_number(["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS"]) == 0
     assert (
         get_ignoreheader_number(
-            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "IGNOREHEADERAS 2"]
+            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS"]
         )
         == 0
     )
     assert (
         get_ignoreheader_number(
-            ["DATEFORMAT 'auto'", "COMPUPDATE ON", "TRUNCATECOLUMNS", "SOMETHINGIGNOREHEADER AS 2"]
+            [
+                "DATEFORMAT 'auto'",
+                "COMPUPDATE ON",
+                "TRUNCATECOLUMNS",
+                "IGNOREHEADERAS 2",
+            ]
+        )
+        == 0
+    )
+    assert (
+        get_ignoreheader_number(
+            [
+                "DATEFORMAT 'auto'",
+                "COMPUPDATE ON",
+                "TRUNCATECOLUMNS",
+                "SOMETHINGIGNOREHEADER AS 2",
+            ]
         )
         == 0
     )

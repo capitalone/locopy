@@ -25,14 +25,8 @@ from .database import Database
 from .errors import DBError, S3CredentialsError
 from .logger import INFO, get_logger
 from .s3 import S3
-from .utility import (
-    compress_file_list,
-    concatenate_files,
-    find_column_type,
-    get_ignoreheader_number,
-    split_file,
-    write_file,
-)
+from .utility import (compress_file_list, concatenate_files, find_column_type,
+                      get_ignoreheader_number, split_file, write_file)
 
 logger = get_logger(__name__, INFO)
 
@@ -153,11 +147,15 @@ class Redshift(S3, Database):
         Issue initializing S3 session
     """
 
-    def __init__(self, profile=None, kms_key=None, dbapi=None, config_yaml=None, **kwargs):
+    def __init__(
+        self, profile=None, kms_key=None, dbapi=None, config_yaml=None, **kwargs
+    ):
         try:
             S3.__init__(self, profile, kms_key)
         except S3CredentialsError:
-            logger.warning("S3 credentials were not found. S3 functionality is disabled")
+            logger.warning(
+                "S3 credentials were not found. S3 functionality is disabled"
+            )
         Database.__init__(self, dbapi, config_yaml, **kwargs)
 
     def connect(self):
@@ -304,7 +302,9 @@ class Redshift(S3, Database):
         if splits > 1 and ignore_header > 0:
             # remove the IGNOREHEADER from copy_options
             logger.info("Removing the IGNOREHEADER option as split is enabled")
-            copy_options = [i for i in copy_options if not i.startswith("IGNOREHEADER ")]
+            copy_options = [
+                i for i in copy_options if not i.startswith("IGNOREHEADER ")
+            ]
 
         if compress:
             copy_options.append("GZIP")
@@ -448,11 +448,16 @@ class Redshift(S3, Database):
 
         unload_options = unload_options or []
         unload_options_text = " ".join(unload_options)
-        base_unload_string = "UNLOAD ('{0}')\n" "TO '{1}'\n" "CREDENTIALS '{2}'\n" "{3};"
+        base_unload_string = (
+            "UNLOAD ('{0}')\n" "TO '{1}'\n" "CREDENTIALS '{2}'\n" "{3};"
+        )
 
         try:
             sql = base_unload_string.format(
-                query.replace("'", r"\'"), s3path, self._credentials_string(), unload_options_text
+                query.replace("'", r"\'"),
+                s3path,
+                self._credentials_string(),
+                unload_options_text,
             )
             self.execute(sql, commit=True)
         except Exception as e:
@@ -494,7 +499,10 @@ class Redshift(S3, Database):
         list
             List of S3 file names
         """
-        sql = "SELECT path FROM stl_unload_log " "WHERE query = pg_last_query_id() ORDER BY path"
+        sql = (
+            "SELECT path FROM stl_unload_log "
+            "WHERE query = pg_last_query_id() ORDER BY path"
+        )
         try:
             logger.info("Getting list of unloaded files")
             self.execute(sql)
@@ -563,7 +571,7 @@ class Redshift(S3, Database):
         if create:
             if not metadata:
                 logger.info("Metadata is missing. Generating metadata ...")
-                metadata = find_column_type(dataframe)
+                metadata = find_column_type(dataframe, "redshift")
                 logger.info("Metadata is complete. Creating new table ...")
 
             create_join = (
@@ -592,7 +600,9 @@ class Redshift(S3, Database):
                     "("
                     + ", ".join(
                         [
-                            "NULL" if pd.isnull(val) else "'" + str(val).replace("'", "''") + "'"
+                            "NULL"
+                            if pd.isnull(val)
+                            else "'" + str(val).replace("'", "''") + "'"
                             for val in row
                         ]
                     )
@@ -600,8 +610,10 @@ class Redshift(S3, Database):
                 )
                 to_insert.append(none_row)
             string_join = ", ".join(to_insert)
-            insert_query = """INSERT INTO {table_name} {columns} VALUES {values}""".format(
-                table_name=table_name, columns=column_sql, values=string_join
+            insert_query = (
+                """INSERT INTO {table_name} {columns} VALUES {values}""".format(
+                    table_name=table_name, columns=column_sql, values=string_join
+                )
             )
             self.execute(insert_query, verbose=verbose)
         logger.info("Table insertion has completed")
