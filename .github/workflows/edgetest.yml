@@ -19,7 +19,7 @@ jobs:
           cp tests/data/.locopyrc ~/.locopyrc
           cp tests/data/.locopy-sfrc ~/.locopy-sfrc
       - id: run-edgetest
-        uses: fdosani/run-edgetest-action@v1.0
+        uses: fdosani/run-edgetest-action@v1.3
         with:
           edgetest-flags: '-c pyproject.toml --export'
           base-branch: 'develop'
