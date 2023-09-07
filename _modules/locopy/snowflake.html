@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.snowflake &mdash; locopy 0.5.3 documentation</title>
+  <title>locopy.snowflake &mdash; locopy 0.5.4 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c3dca1ed"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -30,7 +30,7 @@
             locopy
           </a>
               <div class="version">
-                0.5.3
+                0.5.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -166,7 +166,7 @@
 
 
 <div class="viewcode-block" id="combine_options"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.combine_options">[docs]</a><span class="k">def</span> <span class="nf">combine_options</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Returns the ``copy_options`` or ``format_options`` attribute with spaces in between and as</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the ``copy_options`` or ``format_options`` attribute with spaces in between and as</span>
 <span class="sd">    a string. If options is ``None`` then return an empty string.</span>
 
 <span class="sd">    Parameters</span>
@@ -251,11 +251,15 @@
 <span class="sd">        Issue initializing S3 session</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kms_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dbapi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kms_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dbapi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">S3</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">kms_key</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">S3CredentialsError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;S3 credentials were not found. S3 functionality is disabled&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;S3 credentials were not found. S3 functionality is disabled&quot;</span>
+            <span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Only internal stages are available&quot;</span><span class="p">)</span>
         <span class="n">Database</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbapi</span><span class="p">,</span> <span class="n">config_yaml</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -277,7 +281,9 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;schema&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;USE SCHEMA </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">[</span><span class="s2">&quot;schema&quot;</span><span class="p">]))</span></div>
 
-<div class="viewcode-block" id="Snowflake.upload_to_internal"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.upload_to_internal">[docs]</a>    <span class="k">def</span> <span class="nf">upload_to_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">auto_compress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Snowflake.upload_to_internal"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.upload_to_internal">[docs]</a>    <span class="k">def</span> <span class="nf">upload_to_internal</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">auto_compress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Upload file(s) to a internal stage via the ``PUT`` command.</span>
 
@@ -330,9 +336,13 @@
         <span class="k">if</span> <span class="n">local</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">local</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
         <span class="n">local_uri</span> <span class="o">=</span> <span class="n">PurePath</span><span class="p">(</span><span class="n">local</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;GET </span><span class="si">{0}</span><span class="s2"> &#39;file://</span><span class="si">{1}</span><span class="s2">&#39; PARALLEL=</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stage</span><span class="p">,</span> <span class="n">local_uri</span><span class="p">,</span> <span class="n">parallel</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="s2">&quot;GET </span><span class="si">{0}</span><span class="s2"> &#39;file://</span><span class="si">{1}</span><span class="s2">&#39; PARALLEL=</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stage</span><span class="p">,</span> <span class="n">local_uri</span><span class="p">,</span> <span class="n">parallel</span><span class="p">)</span>
+        <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Snowflake.copy"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">,</span> <span class="n">format_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">copy_options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Snowflake.copy"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">,</span> <span class="n">format_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">copy_options</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Executes the ``COPY INTO &lt;table&gt;`` command to load CSV files from a stage into</span>
 <span class="sd">        a Snowflake table. If ``file_type == csv`` and ``format_options == None``, ``format_options``</span>
 <span class="sd">        will default to: ``[&quot;FIELD_DELIMITER=&#39;|&#39;&quot;, &quot;SKIP_HEADER=0&quot;]``</span>
@@ -367,7 +377,9 @@
 
         <span class="k">if</span> <span class="n">file_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">COPY_FORMAT_OPTIONS</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Invalid file_type. Must be one of </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">COPY_FORMAT_OPTIONS</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                <span class="s2">&quot;Invalid file_type. Must be one of </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="n">COPY_FORMAT_OPTIONS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="p">)</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">format_options</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;csv&quot;</span><span class="p">:</span>
@@ -375,7 +387,9 @@
 
         <span class="n">format_options_text</span> <span class="o">=</span> <span class="n">combine_options</span><span class="p">(</span><span class="n">format_options</span><span class="p">)</span>
         <span class="n">copy_options_text</span> <span class="o">=</span> <span class="n">combine_options</span><span class="p">(</span><span class="n">copy_options</span><span class="p">)</span>
-        <span class="n">base_copy_string</span> <span class="o">=</span> <span class="s2">&quot;COPY INTO </span><span class="si">{0}</span><span class="s2"> FROM &#39;</span><span class="si">{1}</span><span class="s2">&#39; &quot;</span> <span class="s2">&quot;FILE_FORMAT = (TYPE=&#39;</span><span class="si">{2}</span><span class="s2">&#39; </span><span class="si">{3}</span><span class="s2">) </span><span class="si">{4}</span><span class="s2">&quot;</span>
+        <span class="n">base_copy_string</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;COPY INTO </span><span class="si">{0}</span><span class="s2"> FROM &#39;</span><span class="si">{1}</span><span class="s2">&#39; &quot;</span> <span class="s2">&quot;FILE_FORMAT = (TYPE=&#39;</span><span class="si">{2}</span><span class="s2">&#39; </span><span class="si">{3}</span><span class="s2">) </span><span class="si">{4}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">sql</span> <span class="o">=</span> <span class="n">base_copy_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">table_name</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">file_type</span><span class="p">,</span> <span class="n">format_options_text</span><span class="p">,</span> <span class="n">copy_options_text</span>
@@ -431,7 +445,9 @@
 
         <span class="k">if</span> <span class="n">file_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">COPY_FORMAT_OPTIONS</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Invalid file_type. Must be one of </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">UNLOAD_FORMAT_OPTIONS</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                <span class="s2">&quot;Invalid file_type. Must be one of </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="n">UNLOAD_FORMAT_OPTIONS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                <span class="p">)</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">format_options</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;csv&quot;</span><span class="p">:</span>
@@ -445,7 +461,12 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">sql</span> <span class="o">=</span> <span class="n">base_unload_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">stage</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">file_type</span><span class="p">,</span> <span class="n">format_options_text</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">copy_options_text</span>
+                <span class="n">stage</span><span class="p">,</span>
+                <span class="n">table_name</span><span class="p">,</span>
+                <span class="n">file_type</span><span class="p">,</span>
+                <span class="n">format_options_text</span><span class="p">,</span>
+                <span class="n">header</span><span class="p">,</span>
+                <span class="n">copy_options_text</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -503,7 +524,7 @@
         <span class="k">if</span> <span class="n">create</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">metadata</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Metadata is missing. Generating metadata ...&quot;</span><span class="p">)</span>
-                <span class="n">metadata</span> <span class="o">=</span> <span class="n">find_column_type</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+                <span class="n">metadata</span> <span class="o">=</span> <span class="n">find_column_type</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="s2">&quot;snowflake&quot;</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Metadata is complete. Creating new table ...&quot;</span><span class="p">)</span>
 
             <span class="n">create_join</span> <span class="o">=</span> <span class="p">(</span>

@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.redshift &mdash; locopy 0.5.3 documentation</title>
+  <title>locopy.redshift &mdash; locopy 0.5.4 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/sphinx_highlight.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=c3dca1ed"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -30,7 +30,7 @@
             locopy
           </a>
               <div class="version">
-                0.5.3
+                0.5.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -106,14 +106,8 @@
 <span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="n">DBError</span><span class="p">,</span> <span class="n">S3CredentialsError</span>
 <span class="kn">from</span> <span class="nn">.logger</span> <span class="kn">import</span> <span class="n">INFO</span><span class="p">,</span> <span class="n">get_logger</span>
 <span class="kn">from</span> <span class="nn">.s3</span> <span class="kn">import</span> <span class="n">S3</span>
-<span class="kn">from</span> <span class="nn">.utility</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">compress_file_list</span><span class="p">,</span>
-    <span class="n">concatenate_files</span><span class="p">,</span>
-    <span class="n">find_column_type</span><span class="p">,</span>
-    <span class="n">get_ignoreheader_number</span><span class="p">,</span>
-    <span class="n">split_file</span><span class="p">,</span>
-    <span class="n">write_file</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.utility</span> <span class="kn">import</span> <span class="p">(</span><span class="n">compress_file_list</span><span class="p">,</span> <span class="n">concatenate_files</span><span class="p">,</span> <span class="n">find_column_type</span><span class="p">,</span>
+                      <span class="n">get_ignoreheader_number</span><span class="p">,</span> <span class="n">split_file</span><span class="p">,</span> <span class="n">write_file</span><span class="p">)</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">INFO</span><span class="p">)</span>
 
@@ -234,11 +228,15 @@
 <span class="sd">        Issue initializing S3 session</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kms_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dbapi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kms_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dbapi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+    <span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">S3</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">kms_key</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">S3CredentialsError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;S3 credentials were not found. S3 functionality is disabled&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                <span class="s2">&quot;S3 credentials were not found. S3 functionality is disabled&quot;</span>
+            <span class="p">)</span>
         <span class="n">Database</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbapi</span><span class="p">,</span> <span class="n">config_yaml</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Redshift.connect"><a class="viewcode-back" href="../../api/locopy.redshift.html#locopy.redshift.Redshift.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -385,7 +383,9 @@
         <span class="k">if</span> <span class="n">splits</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">ignore_header</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># remove the IGNOREHEADER from copy_options</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Removing the IGNOREHEADER option as split is enabled&quot;</span><span class="p">)</span>
-            <span class="n">copy_options</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">copy_options</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;IGNOREHEADER &quot;</span><span class="p">)]</span>
+            <span class="n">copy_options</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">copy_options</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;IGNOREHEADER &quot;</span><span class="p">)</span>
+            <span class="p">]</span>
 
         <span class="k">if</span> <span class="n">compress</span><span class="p">:</span>
             <span class="n">copy_options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;GZIP&quot;</span><span class="p">)</span>
@@ -529,11 +529,16 @@
 
         <span class="n">unload_options</span> <span class="o">=</span> <span class="n">unload_options</span> <span class="ow">or</span> <span class="p">[]</span>
         <span class="n">unload_options_text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">unload_options</span><span class="p">)</span>
-        <span class="n">base_unload_string</span> <span class="o">=</span> <span class="s2">&quot;UNLOAD (&#39;</span><span class="si">{0}</span><span class="s2">&#39;)</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="s2">&quot;TO &#39;</span><span class="si">{1}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="s2">&quot;CREDENTIALS &#39;</span><span class="si">{2}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="s2">&quot;</span><span class="si">{3}</span><span class="s2">;&quot;</span>
+        <span class="n">base_unload_string</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;UNLOAD (&#39;</span><span class="si">{0}</span><span class="s2">&#39;)</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="s2">&quot;TO &#39;</span><span class="si">{1}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="s2">&quot;CREDENTIALS &#39;</span><span class="si">{2}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="s2">&quot;</span><span class="si">{3}</span><span class="s2">;&quot;</span>
+        <span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">sql</span> <span class="o">=</span> <span class="n">base_unload_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\&#39;&quot;</span><span class="p">),</span> <span class="n">s3path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_credentials_string</span><span class="p">(),</span> <span class="n">unload_options_text</span>
+                <span class="n">query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\&#39;&quot;</span><span class="p">),</span>
+                <span class="n">s3path</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_credentials_string</span><span class="p">(),</span>
+                <span class="n">unload_options_text</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -575,7 +580,10 @@
 <span class="sd">        list</span>
 <span class="sd">            List of S3 file names</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT path FROM stl_unload_log &quot;</span> <span class="s2">&quot;WHERE query = pg_last_query_id() ORDER BY path&quot;</span>
+        <span class="n">sql</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;SELECT path FROM stl_unload_log &quot;</span>
+            <span class="s2">&quot;WHERE query = pg_last_query_id() ORDER BY path&quot;</span>
+        <span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Getting list of unloaded files&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
@@ -644,7 +652,7 @@
         <span class="k">if</span> <span class="n">create</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">metadata</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Metadata is missing. Generating metadata ...&quot;</span><span class="p">)</span>
-                <span class="n">metadata</span> <span class="o">=</span> <span class="n">find_column_type</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+                <span class="n">metadata</span> <span class="o">=</span> <span class="n">find_column_type</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="s2">&quot;redshift&quot;</span><span class="p">)</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Metadata is complete. Creating new table ...&quot;</span><span class="p">)</span>
 
             <span class="n">create_join</span> <span class="o">=</span> <span class="p">(</span>
@@ -673,7 +681,9 @@
                     <span class="s2">&quot;(&quot;</span>
                     <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                         <span class="p">[</span>
-                            <span class="s2">&quot;NULL&quot;</span> <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">else</span> <span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;&#39;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
+                            <span class="s2">&quot;NULL&quot;</span>
+                            <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                            <span class="k">else</span> <span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;&#39;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
                             <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">row</span>
                         <span class="p">]</span>
                     <span class="p">)</span>
@@ -681,8 +691,10 @@
                 <span class="p">)</span>
                 <span class="n">to_insert</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">none_row</span><span class="p">)</span>
             <span class="n">string_join</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">to_insert</span><span class="p">)</span>
-            <span class="n">insert_query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;INSERT INTO </span><span class="si">{table_name}</span><span class="s2"> </span><span class="si">{columns}</span><span class="s2"> VALUES </span><span class="si">{values}</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">table_name</span><span class="o">=</span><span class="n">table_name</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">column_sql</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">string_join</span>
+            <span class="n">insert_query</span> <span class="o">=</span> <span class="p">(</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;INSERT INTO {table_name} {columns} VALUES {values}&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">table_name</span><span class="o">=</span><span class="n">table_name</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">column_sql</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">string_join</span>
+                <span class="p">)</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">insert_query</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Table insertion has completed&quot;</span><span class="p">)</span></div></div>
