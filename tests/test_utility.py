@@ -26,7 +26,7 @@ from io import StringIO
 from itertools import cycle
 from pathlib import Path
 from unittest import mock
-from zoneinfo import ZoneInfo
+import datetime
 
 import pytest
 
@@ -360,7 +360,7 @@ def test_find_column_type_new():
     input_text = input_text.astype(
         dtype={
             "a": pd.Int64Dtype(), 
-            "b": pd.DatetimeTZDtype(tz=ZoneInfo("UTC")), 
+            "b": pd.DatetimeTZDtype(tz=datetime.timezone.utc), 
             "c": pd.Float64Dtype(), 
             "d": pd.StringDtype(), 
             "e": pd.BooleanDtype()
