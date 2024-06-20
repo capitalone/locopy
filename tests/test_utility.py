@@ -26,6 +26,7 @@ from io import StringIO
 from itertools import cycle
 from pathlib import Path
 from unittest import mock
+import datetime
 
 import pytest
 
@@ -339,6 +340,52 @@ def test_find_column_type():
     }
     assert find_column_type(input_text, "snowflake") == output_text_snowflake
     assert find_column_type(input_text, "redshift") == output_text_redshift
+
+def test_find_column_type_new():
+
+    from decimal import Decimal
+
+    import pandas as pd
+
+    input_text = pd.DataFrame.from_dict(
+    {
+        "a": [1],
+        "b": [pd.Timestamp('2017-01-01T12+0')],
+        "c": [1.2],
+        "d": ["a"],
+        "e": [True]
+    }
+)
+
+    input_text = input_text.astype(
+        dtype={
+            "a": pd.Int64Dtype(), 
+            "b": pd.DatetimeTZDtype(tz=datetime.timezone.utc), 
+            "c": pd.Float64Dtype(), 
+            "d": pd.StringDtype(), 
+            "e": pd.BooleanDtype()
+        }
+    )
+
+    output_text_snowflake = {
+        "a": "int",
+        "b": "timestamp",
+        "c": "float",
+        "d": "varchar",
+        "e": "boolean",
+    }
+
+    output_text_redshift = {      
+        "a": "int",
+        "b": "timestamp",
+        "c": "float",
+        "d": "varchar",
+        "e": "boolean",
+    }
+
+    assert find_column_type(input_text, "snowflake") == output_text_snowflake
+    assert find_column_type(input_text, "redshift") == output_text_redshift
+
 
 
 def test_get_ignoreheader_number():
