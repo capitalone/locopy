@@ -313,9 +313,9 @@ def find_column_type(dataframe, warehouse_type: str):
         data = dataframe[column].dropna().reset_index(drop=True)
         if data.size == 0:
             column_type.append("varchar")
-        elif data.dtype in ["datetime64[ns]", "M8[ns]"]:
+        elif (data.dtype in ["datetime64[ns]", "M8[ns]"]) or (re.match("(datetime64\[ns\,\W)([a-zA-Z]+)(\])",str(data.dtype))):
             column_type.append("timestamp")
-        elif data.dtype == "bool":
+        elif str(data.dtype).lower().startswith("bool"):
             column_type.append("boolean")
         elif str(data.dtype).startswith("object"):
             data_type = validate_float_object(data) or validate_date_object(data)
@@ -323,9 +323,9 @@ def find_column_type(dataframe, warehouse_type: str):
                 column_type.append("varchar")
             else:
                 column_type.append(data_type)
-        elif str(data.dtype).startswith("int"):
+        elif str(data.dtype).lower().startswith("int"):
             column_type.append("int")
-        elif str(data.dtype).startswith("float"):
+        elif str(data.dtype).lower().startswith("float"):
             column_type.append("float")
         else:
             column_type.append("varchar")
