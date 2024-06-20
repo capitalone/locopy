@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.utility &mdash; locopy 0.5.8 documentation</title>
+  <title>locopy.utility &mdash; locopy 0.5.9 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -12,7 +12,7 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=1c3e8845"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b8460c5c"></script>
         <script src="../../_static/doctools.js?v=888ff710"></script>
         <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -32,7 +32,7 @@
             locopy
           </a>
               <div class="version">
-                0.5.8
+                0.5.9
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -334,14 +334,14 @@
 
 <span class="sd">    Following is the list of pandas data types that the function checks and their mapping in sql:</span>
 
-<span class="sd">        - bool -&gt; boolean</span>
-<span class="sd">        - datetime64[ns] -&gt; timestamp</span>
+<span class="sd">        - bool/pd.BooleanDtype -&gt; boolean</span>
+<span class="sd">        - datetime64[ns, &lt;tz&gt;] -&gt; timestamp</span>
 <span class="sd">        - M8[ns] -&gt; timestamp</span>
-<span class="sd">        - int -&gt; int</span>
-<span class="sd">        - float -&gt; float</span>
+<span class="sd">        - int/pd.Int64Dtype -&gt; int</span>
+<span class="sd">        - float/pd.Float64Dtype -&gt; float</span>
 <span class="sd">        - float object -&gt; float</span>
 <span class="sd">        - datetime object -&gt; timestamp</span>
-<span class="sd">        - object -&gt; varchar</span>
+<span class="sd">        - object/pd.StringDtype -&gt; varchar</span>
 
 <span class="sd">    For all other data types, the column will be mapped to varchar type.</span>
 
@@ -396,9 +396,9 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;varchar&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;datetime64[ns]&quot;</span><span class="p">,</span> <span class="s2">&quot;M8[ns]&quot;</span><span class="p">]:</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;datetime64[ns]&quot;</span><span class="p">,</span> <span class="s2">&quot;M8[ns]&quot;</span><span class="p">])</span> <span class="ow">or</span> <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;(datetime64\[ns\,\W)([a-zA-Z]+)(\])&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">))):</span>
             <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;timestamp&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="s2">&quot;bool&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">):</span>
             <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;boolean&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">):</span>
             <span class="n">data_type</span> <span class="o">=</span> <span class="n">validate_float_object</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">or</span> <span class="n">validate_date_object</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -406,9 +406,9 @@
                 <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;varchar&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">):</span>
             <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">):</span>
             <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;varchar&quot;</span><span class="p">)</span>
