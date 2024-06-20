@@ -251,14 +251,14 @@ def find_column_type(dataframe, warehouse_type: str):
 
     Following is the list of pandas data types that the function checks and their mapping in sql:
 
-        - bool -> boolean
-        - datetime64[ns] -> timestamp
+        - bool/pd.BooleanDtype -> boolean
+        - datetime64[ns, <tz>] -> timestamp
         - M8[ns] -> timestamp
-        - int -> int
-        - float -> float
+        - int/pd.Int64Dtype -> int
+        - float/pd.Float64Dtype -> float
         - float object -> float
         - datetime object -> timestamp
-        - object -> varchar
+        - object/pd.StringDtype -> varchar
 
     For all other data types, the column will be mapped to varchar type.
 
