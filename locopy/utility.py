@@ -14,9 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Utility Module
-Module which utility functions for use within the application
+"""Utility Module.
+
+Module which utility functions for use within the application.
 """
+
 import gzip
 import os
 import shutil
@@ -27,9 +29,14 @@ from itertools import cycle
 
 import yaml
 
-from .errors import (CompressionError, CredentialsError, LocopyConcatError,
-                     LocopyIgnoreHeaderError, LocopySplitError)
-from .logger import INFO, get_logger
+from locopy.errors import (
+    CompressionError,
+    CredentialsError,
+    LocopyConcatError,
+    LocopyIgnoreHeaderError,
+    LocopySplitError,
+)
+from locopy.logger import INFO, get_logger
 
 logger = get_logger(__name__, INFO)
 
@@ -63,7 +70,7 @@ def write_file(data, delimiter, filepath, mode="w"):
 
 
 def compress_file(input_file, output_file):
-    """Compresses a file (gzip)
+    """Compresses a file (gzip).
 
     Parameters
     ----------
@@ -73,17 +80,16 @@ def compress_file(input_file, output_file):
         Path to write the compressed file
     """
     try:
-        with open(input_file, "rb") as f_in:
-            with gzip.open(output_file, "wb") as f_out:
-                logger.info("compressing (gzip): %s to %s", input_file, output_file)
-                shutil.copyfileobj(f_in, f_out)
+        with open(input_file, "rb") as f_in, gzip.open(output_file, "wb") as f_out:
+            logger.info("compressing (gzip): %s to %s", input_file, output_file)
+            shutil.copyfileobj(f_in, f_out)
     except Exception as e:
         logger.error("Error compressing the file. err: %s", e)
-        raise CompressionError("Error compressing the file.")
+        raise CompressionError("Error compressing the file.") from e
 
 
 def compress_file_list(file_list):
-    """Compresses a list of files (gzip) and clean up the old files
+    """Compresses a list of files (gzip) and clean up the old files.
 
     Parameters
     ----------
@@ -97,7 +103,7 @@ def compress_file_list(file_list):
         gz appended)
     """
     for i, f in enumerate(file_list):
-        gz = "{0}.gz".format(f)
+        gz = f"{f}.gz"
         compress_file(f, gz)
         file_list[i] = gz
         os.remove(f)  # cleanup old files
@@ -149,7 +155,7 @@ def split_file(input_file, output_file, splits=1, ignore_header=0):
         cpool = cycle(pool)
         logger.info("splitting file: %s into %s files", input_file, splits)
         # open output file handlers
-        files = [open("{0}.{1}".format(output_file, x), "wb") for x in pool]
+        files = [open(f"{output_file}.{x}", "wb") for x in pool]  # noqa: SIM115
         # open input file and send line to different handler
         with open(input_file, "rb") as f_in:
             # if we have a value in ignore_header then skip those many lines to start
@@ -168,7 +174,7 @@ def split_file(input_file, output_file, splits=1, ignore_header=0):
             for x in pool:
                 files[x].close()
                 os.remove(files[x].name)
-        raise LocopySplitError("Error splitting the file.")
+        raise LocopySplitError("Error splitting the file.") from e
 
 
 def concatenate_files(input_list, output_file, remove=True):
@@ -202,13 +208,15 @@ def concatenate_files(input_list, output_file, remove=True):
                     os.remove(f)
     except Exception as e:
         logger.error("Error concateneating files. err: %s", e)
-        raise LocopyConcatError("Error concateneating files.")
+        raise LocopyConcatError("Error concateneating files.") from e
 
 
 def read_config_yaml(config_yaml):
-    """
-    Reads a configuration YAML file to populate the database
-    connection attributes, and validate required ones. Example::
+    """Read a configuration YAML file.
+
+    Populate the database connection attributes, and validate required ones.
+
+    Example::
 
         host: my.redshift.cluster.com
         port: 5439
@@ -240,7 +248,7 @@ def read_config_yaml(config_yaml):
             locopy_yaml = yaml.safe_load(config_yaml)
     except Exception as e:
         logger.error("Error reading yaml. err: %s", e)
-        raise CredentialsError("Error reading yaml.")
+        raise CredentialsError("Error reading yaml.") from e
     return locopy_yaml
 
 
@@ -275,7 +283,6 @@ def find_column_type(dataframe, warehouse_type: str):
         A dictionary of columns with their data type
     """
     import re
-    from datetime import date, datetime
 
     import pandas as pd
 
@@ -313,7 +320,9 @@ def find_column_type(dataframe, warehouse_type: str):
         data = dataframe[column].dropna().reset_index(drop=True)
         if data.size == 0:
             column_type.append("varchar")
-        elif (data.dtype in ["datetime64[ns]", "M8[ns]"]) or (re.match("(datetime64\[ns\,\W)([a-zA-Z]+)(\])",str(data.dtype))):
+        elif (data.dtype in ["datetime64[ns]", "M8[ns]"]) or (
+            re.match(r"(datetime64\[ns\,\W)([a-zA-Z]+)(\])", str(data.dtype))
+        ):
             column_type.append("timestamp")
         elif str(data.dtype).lower().startswith("bool"):
             column_type.append("boolean")
@@ -333,20 +342,22 @@ def find_column_type(dataframe, warehouse_type: str):
     return OrderedDict(zip(list(dataframe.columns), column_type))
 
 
-class ProgressPercentage(object):
-    """
-    ProgressPercentage class is used by the S3Transfer upload_file callback
+class ProgressPercentage:
+    """ProgressPercentage class is used by the S3Transfer upload_file callback.
+
     Please see the following url for more information:
-    http://boto3.readthedocs.org/en/latest/reference/customizations/s3.html#ref-s3transfer-usage
+    http://boto3.readthedocs.org/en/latest/reference/customizations/s3.html#ref-s3transfer-usage.
     """
 
     def __init__(self, filename):
-        """
-        Initiate the ProgressPercentage class, using the base information which
-        makes up a pipeline
-        Args:
-            filename (str): A name of the file which we will monitor the
-            progress of
+        """Initiate the ProgressPercentage class.
+
+        Using the base information which makes up a pipeline
+
+        Parameters
+        ----------
+        filename (str): A name of the file which we will monitor the
+            progress of.
         """
         self._filename = filename
         self._size = float(os.path.getsize(filename))
@@ -354,13 +365,15 @@ class ProgressPercentage(object):
         self._lock = threading.Lock()
 
     def __call__(self, bytes_amount):
-        # To simplify we'll assume this is hooked up
-        # to a single filename.
+        """Call as a function.
+
+        To simplify we'll assume this is hooked up to a single filename.
+        """
         with self._lock:
             self._seen_so_far += bytes_amount
             percentage = (self._seen_so_far / self._size) * 100
             sys.stdout.write(
-                "\rTransfering [{0}] {1:.2f}%".format(
+                "\rTransfering [{}] {:.2f}%".format(
                     "#" * int(percentage / 10), percentage
                 )
             )
@@ -368,9 +381,9 @@ class ProgressPercentage(object):
 
 
 def get_ignoreheader_number(options):
-    """
-    Return the ``number_rows`` from ``IGNOREHEADER [ AS ] number_rows`` This doesn't not validate
-    that the ``AS`` is valid.
+    """Return the ``number_rows`` from ``IGNOREHEADER [ AS ] number_rows``.
+
+    This doesn't validate that the ``AS`` is valid.
 
     Parameters
     ----------

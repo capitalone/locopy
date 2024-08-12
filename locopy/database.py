@@ -14,20 +14,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Database Module
-"""
+"""Database Module."""
+
 import time
 
-from .errors import CredentialsError, DBError
-from .logger import INFO, get_logger
-from .utility import read_config_yaml
+from locopy.errors import CredentialsError, DBError
+from locopy.logger import INFO, get_logger
+from locopy.utility import read_config_yaml
 
 logger = get_logger(__name__, INFO)
 
 
-class Database(object):
-    """This is the base class for all DBAPI 2 database connectors which will inherit this
-    functionality. The ``Database`` class will manage connections and handle executing queries.
+class Database:
+    """Base class for all DBAPI 2 database connectors which will inherit this functionality.
+
+    The ``Database`` class will manage connections and handle executing queries.
     Most of the functionality should work out of the box for classes which inherit minus the
     abstract method for ``connect`` which may vary across databases.
 
@@ -72,13 +73,16 @@ class Database(object):
         self.cursor = None
 
         if config_yaml and self.connection:
-            raise CredentialsError("Please provide kwargs or a YAML configuraton, not both.")
+            raise CredentialsError(
+                "Please provide kwargs or a YAML configuraton, not both."
+            )
         if config_yaml:
             self.connection = read_config_yaml(config_yaml)
 
     def connect(self):
-        """Creates a connection to a database by setting the values of the ``conn`` and ``cursor``
-        attributes.
+        """Create a connection to a database.
+
+        Sets the values of the ``conn`` and ``cursor`` attributes.
 
         Raises
         ------
@@ -90,11 +94,12 @@ class Database(object):
             self.cursor = self.conn.cursor()
         except Exception as e:
             logger.error("Error connecting to the database. err: %s", e)
-            raise DBError("Error connecting to the database.")
+            raise DBError("Error connecting to the database.") from e
 
     def disconnect(self):
-        """Terminates the connection by closing the values of the ``conn`` and ``cursor``
-        attributes.
+        """Terminate the connection.
+
+        Closes the values of the ``conn`` and ``cursor`` attributes.
 
         Raises
         ------
@@ -108,7 +113,9 @@ class Database(object):
                 self.conn.close()
             except Exception as e:
                 logger.error("Error disconnecting from the database. err: %s", e)
-                raise DBError("There is a problem disconnecting from the database.")
+                raise DBError(
+                    "There is a problem disconnecting from the database."
+                ) from e
         else:
             logger.info("No connection to close")
 
@@ -153,7 +160,7 @@ class Database(object):
                     self.cursor.execute(sql, params)
             except Exception as e:
                 logger.error("Error running SQL query. err: %s", e)
-                raise DBError("Error running SQL query.")
+                raise DBError("Error running SQL query.") from e
             if commit:
                 self.conn.commit()
             elapsed = time.time() - start_time
@@ -167,8 +174,9 @@ class Database(object):
             raise DBError("Cannot execute SQL on a closed connection.")
 
     def column_names(self):
-        """Pull column names out of the cursor description. Depending on the
-        DBAPI, it could return column names as bytes: ``b'column_name'``
+        """Pull column names out of the cursor description.
+
+        Depending on the DBAPI, it could return column names as bytes: ``b'column_name'``.
 
         Returns
         -------
@@ -177,12 +185,13 @@ class Database(object):
         """
         try:
             return [column[0].decode().lower() for column in self.cursor.description]
-        except:
+        except Exception:
             return [column[0].lower() for column in self.cursor.description]
 
     def to_dataframe(self, size=None):
-        """Return a dataframe of the last query results.  This imports Pandas
-        in here, so that it's not needed for other use cases.  This is just a
+        """Return a dataframe of the last query results.
+
+        This imports Pandas in here, so that it's not needed for other use cases.  This is just a
         convenience method.
 
         Parameters
@@ -214,7 +223,7 @@ class Database(object):
         return pandas.DataFrame(fetched, columns=columns)
 
     def to_dict(self):
-        """Generate dictionaries of rows
+        """Generate dictionaries of rows.
 
         Yields
         ------
@@ -226,7 +235,7 @@ class Database(object):
             yield dict(zip(columns, row))
 
     def _is_connected(self):
-        """Checks the connection and cursor class arrtribues are initalized.
+        """Check the connection and cursor class arrtributes are initalized.
 
         Returns
         -------
@@ -235,16 +244,18 @@ class Database(object):
         """
         try:
             return self.conn is not None and self.cursor is not None
-        except:
+        except Exception:
             return False
 
     def __enter__(self):
+        """Open the connection."""
         logger.info("Connecting...")
         self.connect()
         logger.info("Connection established.")
         return self
 
     def __exit__(self, exc_type, exc, exc_tb):
+        """Close the connection."""
         logger.info("Closing connection...")
         self.disconnect()
         logger.info("Connection closed.")

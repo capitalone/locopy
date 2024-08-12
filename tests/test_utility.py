@@ -20,23 +20,31 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import datetime
 import os
 import sys
 from io import StringIO
 from itertools import cycle
 from pathlib import Path
 from unittest import mock
-import datetime
-
-import pytest
 
 import locopy.utility as util
-from locopy.errors import (CompressionError, CredentialsError,
-                           LocopyConcatError, LocopyIgnoreHeaderError,
-                           LocopySplitError)
-from locopy.utility import (compress_file, compress_file_list,
-                            concatenate_files, find_column_type,
-                            get_ignoreheader_number, split_file)
+import pytest
+from locopy.errors import (
+    CompressionError,
+    CredentialsError,
+    LocopyConcatError,
+    LocopyIgnoreHeaderError,
+    LocopySplitError,
+)
+from locopy.utility import (
+    compress_file,
+    compress_file_list,
+    concatenate_files,
+    find_column_type,
+    get_ignoreheader_number,
+    split_file,
+)
 
 GOOD_CONFIG_YAML = """host: my.redshift.cluster.com
 port: 1234
@@ -56,7 +64,7 @@ def cleanup(splits):
 
 
 def compare_file_contents(base_file, check_files):
-    check_files = cycle([open(x, "rb") for x in check_files])
+    check_files = cycle([open(x, "rb") for x in check_files])  # noqa: SIM115
     with open(base_file, "rb") as base:
         for line in base:
             cfile = next(check_files)
@@ -211,7 +219,7 @@ def test_split_file_exception():
     with pytest.raises(LocopySplitError):
         split_file(input_file, output_file, "Test")
 
-    with mock.patch("{0}.next".format(builtin_module_name)) as mock_next:
+    with mock.patch(f"{builtin_module_name}.next") as mock_next:
         mock_next.side_effect = Exception("SomeException")
 
         with pytest.raises(LocopySplitError):
@@ -229,7 +237,7 @@ def test_split_file_exception():
 @mock.patch("locopy.utility.open", mock.mock_open(read_data=GOOD_CONFIG_YAML))
 def test_read_config_yaml_good():
     actual = util.read_config_yaml("filename.yml")
-    assert set(actual.keys()) == set(["host", "port", "database", "user", "password"])
+    assert set(actual.keys()) == {"host", "port", "database", "user", "password"}
     assert actual["host"] == "my.redshift.cluster.com"
     assert actual["port"] == 1234
     assert actual["database"] == "db"
@@ -239,7 +247,7 @@ def test_read_config_yaml_good():
 
 def test_read_config_yaml_io():
     actual = util.read_config_yaml(StringIO(GOOD_CONFIG_YAML))
-    assert set(actual.keys()) == set(["host", "port", "database", "user", "password"])
+    assert set(actual.keys()) == {"host", "port", "database", "user", "password"}
     assert actual["host"] == "my.redshift.cluster.com"
     assert actual["port"] == 1234
     assert actual["database"] == "db"
@@ -258,7 +266,8 @@ def test_concatenate_files():
     with mock.patch("locopy.utility.os.remove") as mock_remove:
         concatenate_files(inputs, output)
         assert mock_remove.call_count == 3
-        assert [int(line.rstrip("\n")) for line in open(output)] == list(range(1, 16))
+        with open(output) as f:
+            assert [int(line.rstrip("\n")) for line in f] == list(range(1, 16))
     os.remove(output)
 
 
@@ -275,7 +284,6 @@ def test_concatenate_files_exception():
 
 
 def test_find_column_type():
-
     from decimal import Decimal
 
     import pandas as pd
@@ -341,29 +349,27 @@ def test_find_column_type():
     assert find_column_type(input_text, "snowflake") == output_text_snowflake
     assert find_column_type(input_text, "redshift") == output_text_redshift
 
+
 def test_find_column_type_new():
-
-    from decimal import Decimal
-
     import pandas as pd
 
     input_text = pd.DataFrame.from_dict(
-    {
-        "a": [1],
-        "b": [pd.Timestamp('2017-01-01T12+0')],
-        "c": [1.2],
-        "d": ["a"],
-        "e": [True]
-    }
-)
+        {
+            "a": [1],
+            "b": [pd.Timestamp("2017-01-01T12+0")],
+            "c": [1.2],
+            "d": ["a"],
+            "e": [True],
+        }
+    )
 
     input_text = input_text.astype(
         dtype={
-            "a": pd.Int64Dtype(), 
-            "b": pd.DatetimeTZDtype(tz=datetime.timezone.utc), 
-            "c": pd.Float64Dtype(), 
-            "d": pd.StringDtype(), 
-            "e": pd.BooleanDtype()
+            "a": pd.Int64Dtype(),
+            "b": pd.DatetimeTZDtype(tz=datetime.timezone.utc),
+            "c": pd.Float64Dtype(),
+            "d": pd.StringDtype(),
+            "e": pd.BooleanDtype(),
         }
     )
 
@@ -375,7 +381,7 @@ def test_find_column_type_new():
         "e": "boolean",
     }
 
-    output_text_redshift = {      
+    output_text_redshift = {
         "a": "int",
         "b": "timestamp",
         "c": "float",
@@ -385,7 +391,6 @@ def test_find_column_type_new():
 
     assert find_column_type(input_text, "snowflake") == output_text_snowflake
     assert find_column_type(input_text, "redshift") == output_text_redshift
-
 
 
 def test_get_ignoreheader_number():

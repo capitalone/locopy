@@ -14,17 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""S3 Module
+"""S3 Module.
+
 Module to wrap the boto3 api usage and provide functionality to manage
-multipart upload to S3 buckets
+multipart upload to S3 buckets.
 """
+
 import os
 
 from boto3 import Session
 from boto3.s3.transfer import TransferConfig
 from botocore.client import Config
 
-from .errors import (
+from locopy.errors import (
     S3CredentialsError,
     S3DeletionError,
     S3DownloadError,
@@ -32,16 +34,16 @@ from .errors import (
     S3InitializationError,
     S3UploadError,
 )
-from .logger import INFO, get_logger
-from .utility import ProgressPercentage
+from locopy.logger import INFO, get_logger
+from locopy.utility import ProgressPercentage
 
 logger = get_logger(__name__, INFO)
 
 
-class S3(object):
-    """
-    S3 wrapper class which utilizes the boto3 library to push files to an S3
-    bucket.
+class S3:
+    """S3 wrapper class.
+
+    Utilizes the boto3 library to push files to an S3 bucket.
 
     Parameters
     ----------
@@ -85,7 +87,6 @@ class S3(object):
     """
 
     def __init__(self, profile=None, kms_key=None, **kwargs):
-
         self.profile = profile
         self.kms_key = kms_key
         self.session = None
@@ -100,7 +101,7 @@ class S3(object):
             logger.info("Initialized AWS session.")
         except Exception as e:
             logger.error("Error initializing AWS Session, err: %s", e)
-            raise S3Error("Error initializing AWS Session.")
+            raise S3Error("Error initializing AWS Session.") from e
         credentials = self.session.get_credentials()
         if credentials is None:
             raise S3CredentialsError("Credentials could not be set.")
@@ -111,11 +112,12 @@ class S3(object):
             logger.info("Successfully initialized S3 client.")
         except Exception as e:
             logger.error("Error initializing S3 Client, err: %s", e)
-            raise S3InitializationError("Error initializing S3 Client.")
+            raise S3InitializationError("Error initializing S3 Client.") from e
 
     def _credentials_string(self):
-        """Returns a credentials string for the Redshift COPY or UNLOAD command,
-        containing credentials from the current session.
+        """Return a credentials string for the Redshift COPY or UNLOAD command.
+
+        Containing credentials from the current session.
 
         Returns
         -------
@@ -131,7 +133,7 @@ class S3(object):
             return temp.format(creds.access_key, creds.secret_key)
 
     def _generate_s3_path(self, bucket, key):
-        """Will return the S3 file URL in the format S3://bucket/key
+        """Will return the S3 file URL in the format S3://bucket/key.
 
         Parameters
         ----------
@@ -146,11 +148,13 @@ class S3(object):
         str
             string of the S3 file URL in the format S3://bucket/key
         """
-        return "s3://{0}/{1}".format(bucket, key)
+        return f"s3://{bucket}/{key}"
 
     def _generate_unload_path(self, bucket, folder):
-        """Will return the S3 file URL in the format s3://bucket/folder if a
-        valid (not None) folder is provided. Otherwise, returns s3://bucket
+        """Return the S3 file URL.
+
+        If a valid (not None) folder is provided, returnsin the format s3://bucket/folder.
+        Otherwise, returns s3://bucket.
 
         Parameters
         ----------
@@ -168,9 +172,9 @@ class S3(object):
             If folder is None, returns format s3://bucket
         """
         if folder:
-            s3_path = "s3://{0}/{1}".format(bucket, folder)
+            s3_path = f"s3://{bucket}/{folder}"
         else:
-            s3_path = "s3://{0}".format(bucket)
+            s3_path = f"s3://{bucket}"
         return s3_path
 
     def upload_to_s3(self, local, bucket, key):
@@ -204,13 +208,19 @@ class S3(object):
                 extra_args["SSEKMSKeyId"] = self.kms_key
                 logger.info("Using KMS Keys for encryption")
 
-            logger.info("Uploading file to S3 bucket: %s", self._generate_s3_path(bucket, key))
+            logger.info(
+                "Uploading file to S3 bucket: %s", self._generate_s3_path(bucket, key)
+            )
             self.s3.upload_file(
-                local, bucket, key, ExtraArgs=extra_args, Callback=ProgressPercentage(local)
+                local,
+                bucket,
+                key,
+                ExtraArgs=extra_args,
+                Callback=ProgressPercentage(local),
             )
         except Exception as e:
             logger.error("Error uploading to S3. err: %s", e)
-            raise S3UploadError("Error uploading to S3.")
+            raise S3UploadError("Error uploading to S3.") from e
 
     def upload_list_to_s3(self, local_list, bucket, folder=None):
         """
@@ -275,13 +285,14 @@ class S3(object):
         """
         try:
             logger.info(
-                "Downloading file from S3 bucket: %s", self._generate_s3_path(bucket, key),
+                "Downloading file from S3 bucket: %s",
+                self._generate_s3_path(bucket, key),
             )
             config = TransferConfig(max_concurrency=5)
             self.s3.download_file(bucket, key, local, Config=config)
         except Exception as e:
             logger.error("Error downloading from S3. err: %s", e)
-            raise S3DownloadError("Error downloading from S3.")
+            raise S3DownloadError("Error downloading from S3.") from e
 
     def download_list_from_s3(self, s3_list, local_path=None):
         """
@@ -330,11 +341,13 @@ class S3(object):
             If there is a issue deleting from the S3 bucket
         """
         try:
-            logger.info("Deleting file from S3 bucket: %s", self._generate_s3_path(bucket, key))
+            logger.info(
+                "Deleting file from S3 bucket: %s", self._generate_s3_path(bucket, key)
+            )
             self.s3.delete_object(Bucket=bucket, Key=key)
         except Exception as e:
             logger.error("Error deleting from S3. err: %s", e)
-            raise S3DeletionError("Error deleting from S3.")
+            raise S3DeletionError("Error deleting from S3.") from e
 
     def delete_list_from_s3(self, s3_list):
         """
@@ -351,9 +364,7 @@ class S3(object):
             self.delete_from_s3(s3_bucket, s3_key)
 
     def parse_s3_url(self, s3_url):
-        """
-        Parse a string of the s3 url to extract the bucket and key.
-        scheme or not.
+        """Extract the bucket and key from a s3 url.
 
         Parameters
         ----------

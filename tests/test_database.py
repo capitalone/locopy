@@ -27,7 +27,6 @@ import pg8000
 import psycopg2
 import pytest
 import snowflake.connector
-
 from locopy import Database
 from locopy.errors import CredentialsError, DBError
 
@@ -57,7 +56,12 @@ def test_database_constructor(credentials, dbapi):
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_database_constructor_kwargs(dbapi):
     d = Database(
-        dbapi=dbapi, host="host", port="port", database="database", user="user", password="password"
+        dbapi=dbapi,
+        host="host",
+        port="port",
+        database="database",
+        user="user",
+        password="password",
     )
     assert d.connection["host"] == "host"
     assert d.connection["port"] == "port"
@@ -132,7 +136,11 @@ def test_connect(credentials, dbapi):
         b = Database(dbapi=dbapi, **credentials)
         b.connect()
         mock_connect.assert_called_with(
-            host="host", user="user", port="port", password="password", database="database"
+            host="host",
+            user="user",
+            port="port",
+            password="password",
+            database="database",
         )
 
     credentials["extra"] = 123
@@ -182,11 +190,12 @@ def test_disconnect_no_conn(credentials, dbapi):
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_execute(credentials, dbapi):
-    with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
-        with Database(dbapi=dbapi, **credentials) as test:
-            print(test)
-            test.execute("SELECT * FROM some_table")
-            assert test.cursor.execute.called is True
+    with (
+        mock.patch(dbapi.__name__ + ".connect") as mock_connect,
+        Database(dbapi=dbapi, **credentials) as test,
+    ):
+        test.execute("SELECT * FROM some_table")
+        assert test.cursor.execute.called is True
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
@@ -201,18 +210,24 @@ def test_execute_no_connection_exception(credentials, dbapi):
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_execute_sql_exception(credentials, dbapi):
-    with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
-        with Database(dbapi=dbapi, **credentials) as test:
-            test.cursor.execute.side_effect = Exception("SQL Exception")
-            with pytest.raises(DBError):
-                test.execute("SELECT * FROM some_table")
+    with (
+        mock.patch(dbapi.__name__ + ".connect") as mock_connect,
+        Database(dbapi=dbapi, **credentials) as test,
+    ):
+        test.cursor.execute.side_effect = Exception("SQL Exception")
+        with pytest.raises(DBError):
+            test.execute("SELECT * FROM some_table")
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("pandas.DataFrame")
 def test_to_dataframe_all(mock_pandas, credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
-        mock_connect.return_value.cursor.return_value.fetchall.return_value = [(1, 2), (2, 3), (3,)]
+        mock_connect.return_value.cursor.return_value.fetchall.return_value = [
+            (1, 2),
+            (2, 3),
+            (3,),
+        ]
         with Database(dbapi=dbapi, **credentials) as test:
             test.execute("SELECT 'hello world' AS fld")
             df = test.to_dataframe()
@@ -256,11 +271,17 @@ def test_get_column_names(credentials, dbapi):
         with Database(dbapi=dbapi, **credentials) as test:
             assert test.column_names() == ["col1", "col2"]
 
-        mock_connect.return_value.cursor.return_value.description = [("COL1",), ("COL2",)]
+        mock_connect.return_value.cursor.return_value.description = [
+            ("COL1",),
+            ("COL2",),
+        ]
         with Database(dbapi=dbapi, **credentials) as test:
             assert test.column_names() == ["col1", "col2"]
 
-        mock_connect.return_value.cursor.return_value.description = (("COL1",), ("COL2",))
+        mock_connect.return_value.cursor.return_value.description = (
+            ("COL1",),
+            ("COL2",),
+        )
         with Database(dbapi=dbapi, **credentials) as test:
             assert test.column_names() == ["col1", "col2"]
 
@@ -274,8 +295,16 @@ def test_to_dict(credentials, dbapi):
 
     test.column_names = cols
     test.cursor = [(1, 2), (2, 3), (3,)]
-    assert list(test.to_dict()) == [{"col1": 1, "col2": 2}, {"col1": 2, "col2": 3}, {"col1": 3}]
+    assert list(test.to_dict()) == [
+        {"col1": 1, "col2": 2},
+        {"col1": 2, "col2": 3},
+        {"col1": 3},
+    ]
 
     test.column_names = cols
     test.cursor = [("a", 2), (2, 3), ("b",)]
-    assert list(test.to_dict()) == [{"col1": "a", "col2": 2}, {"col1": 2, "col2": 3}, {"col1": "b"}]
+    assert list(test.to_dict()) == [
+        {"col1": "a", "col2": 2},
+        {"col1": 2, "col2": 3},
+        {"col1": "b"},
+    ]

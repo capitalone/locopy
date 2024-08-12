@@ -14,18 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Snowflake Module
+"""Snowflake Module.
+
 Module to wrap a database adapter into a Snowflake class which can be used to connect
 to Snowflake, and run arbitrary code.
 """
+
 import os
 from pathlib import PurePath
 
-from .database import Database
-from .errors import DBError, S3CredentialsError
-from .logger import INFO, get_logger
-from .s3 import S3
-from .utility import find_column_type
+from locopy.database import Database
+from locopy.errors import DBError, S3CredentialsError
+from locopy.logger import INFO, get_logger
+from locopy.s3 import S3
+from locopy.utility import find_column_type
 
 logger = get_logger(__name__, INFO)
 
@@ -85,8 +87,9 @@ UNLOAD_FORMAT_OPTIONS = {
 
 
 def combine_options(options=None):
-    """Returns the ``copy_options`` or ``format_options`` attribute with spaces in between and as
-    a string. If options is ``None`` then return an empty string.
+    """Return the ``copy_options`` or ``format_options`` attribute.
+
+    With spaces in between and as a string. If options is ``None`` then return an empty string.
 
     Parameters
     ----------
@@ -103,8 +106,9 @@ def combine_options(options=None):
 
 
 class Snowflake(S3, Database):
-    """Locopy class which manages connections to Snowflake.  Inherits ``Database`` and implements
-    the specific ``COPY INTO`` functionality.
+    """Locopy class which manages connections to Snowflake.  Inherits ``Database``.
+
+    Implements the specific ``COPY INTO`` functionality.
 
     Parameters
     ----------
@@ -183,22 +187,23 @@ class Snowflake(S3, Database):
         Database.__init__(self, dbapi, config_yaml, **kwargs)
 
     def connect(self):
-        """Creates a connection to the Snowflake cluster by
-        setting the values of the ``conn`` and ``cursor`` attributes.
+        """Create a connection to the Snowflake cluster.
+
+        Setg the values of the ``conn`` and ``cursor`` attributes.
 
         Raises
         ------
         DBError
             If there is a problem establishing a connection to Snowflake.
         """
-        super(Snowflake, self).connect()
+        super().connect()
 
         if self.connection.get("warehouse") is not None:
-            self.execute("USE WAREHOUSE {0}".format(self.connection["warehouse"]))
+            self.execute("USE WAREHOUSE {}".format(self.connection["warehouse"]))
         if self.connection.get("database") is not None:
-            self.execute("USE DATABASE {0}".format(self.connection["database"]))
+            self.execute("USE DATABASE {}".format(self.connection["database"]))
         if self.connection.get("schema") is not None:
-            self.execute("USE SCHEMA {0}".format(self.connection["schema"]))
+            self.execute("USE SCHEMA {}".format(self.connection["schema"]))
 
     def upload_to_internal(
         self, local, stage, parallel=4, auto_compress=True, overwrite=True
@@ -231,9 +236,7 @@ class Snowflake(S3, Database):
         """
         local_uri = PurePath(local).as_posix()
         self.execute(
-            "PUT 'file://{0}' {1} PARALLEL={2} AUTO_COMPRESS={3} OVERWRITE={4}".format(
-                local_uri, stage, parallel, auto_compress, overwrite
-            )
+            f"PUT 'file://{local_uri}' {stage} PARALLEL={parallel} AUTO_COMPRESS={auto_compress} OVERWRITE={overwrite}"
         )
 
     def download_from_internal(self, stage, local=None, parallel=10):
@@ -255,16 +258,15 @@ class Snowflake(S3, Database):
         if local is None:
             local = os.getcwd()
         local_uri = PurePath(local).as_posix()
-        self.execute(
-            "GET {0} 'file://{1}' PARALLEL={2}".format(stage, local_uri, parallel)
-        )
+        self.execute(f"GET {stage} 'file://{local_uri}' PARALLEL={parallel}")
 
     def copy(
         self, table_name, stage, file_type="csv", format_options=None, copy_options=None
     ):
-        """Executes the ``COPY INTO <table>`` command to load CSV files from a stage into
-        a Snowflake table. If ``file_type == csv`` and ``format_options == None``, ``format_options``
-        will default to: ``["FIELD_DELIMITER='|'", "SKIP_HEADER=0"]``
+        """Load files from a stage into a Snowflake table.
+
+        Execute the ``COPY INTO <table>`` command to  If ``file_type == csv`` and ``format_options == None``, ``format_options``
+        will default to: ``["FIELD_DELIMITER='|'", "SKIP_HEADER=0"]``.
 
         Parameters
         ----------
@@ -296,9 +298,7 @@ class Snowflake(S3, Database):
 
         if file_type not in COPY_FORMAT_OPTIONS:
             raise ValueError(
-                "Invalid file_type. Must be one of {0}".format(
-                    list(COPY_FORMAT_OPTIONS.keys())
-                )
+                f"Invalid file_type. Must be one of {list(COPY_FORMAT_OPTIONS.keys())}"
             )
 
         if format_options is None and file_type == "csv":
@@ -317,7 +317,7 @@ class Snowflake(S3, Database):
 
         except Exception as e:
             logger.error("Error running COPY on Snowflake. err: %s", e)
-            raise DBError("Error running COPY on Snowflake.")
+            raise DBError("Error running COPY on Snowflake.") from e
 
     def unload(
         self,
@@ -328,9 +328,12 @@ class Snowflake(S3, Database):
         header=False,
         copy_options=None,
     ):
-        """Executes the ``COPY INTO <location>`` command to export a query/table from
-        Snowflake to a stage. If ``file_type == csv`` and ``format_options == None``, ``format_options``
-        will default to: ``["FIELD_DELIMITER='|'"]``
+        """Export a query/table from Snowflake to a stage.
+
+        Execute the ``COPY INTO <location>`` command.
+
+        If ``file_type == csv`` and ``format_options == None``, ``format_options``
+        will default to: ``["FIELD_DELIMITER='|'"]``.
 
         Parameters
         ----------
@@ -364,9 +367,7 @@ class Snowflake(S3, Database):
 
         if file_type not in COPY_FORMAT_OPTIONS:
             raise ValueError(
-                "Invalid file_type. Must be one of {0}".format(
-                    list(UNLOAD_FORMAT_OPTIONS.keys())
-                )
+                f"Invalid file_type. Must be one of {list(UNLOAD_FORMAT_OPTIONS.keys())}"
             )
 
         if format_options is None and file_type == "csv":
@@ -390,13 +391,14 @@ class Snowflake(S3, Database):
             self.execute(sql, commit=True)
         except Exception as e:
             logger.error("Error running UNLOAD on Snowflake. err: %s", e)
-            raise DBError("Error running UNLOAD on Snowflake.")
+            raise DBError("Error running UNLOAD on Snowflake.") from e
 
     def insert_dataframe_to_table(
         self, dataframe, table_name, columns=None, create=False, metadata=None
     ):
-        """
-        Insert a Pandas dataframe to an existing table or a new table. In newer versions of the
+        """Insert a Pandas dataframe to an existing table or a new table.
+
+        In newer versions of the
         python snowflake connector (v2.1.2+) users can call the ``write_pandas`` method from the cursor
         directly, ``insert_dataframe_to_table`` is a custom implementation and does not use
         ``write_pandas``. Instead of using ``COPY INTO`` the method builds a list of tuples to
@@ -421,7 +423,6 @@ class Snowflake(S3, Database):
         metadata: dictionary, optional
             If metadata==None, it will be generated based on data
         """
-
         import pandas as pd
 
         if columns:
@@ -434,7 +435,7 @@ class Snowflake(S3, Database):
         # create a list of tuples for insert
         to_insert = []
         for row in dataframe.itertuples(index=False):
-            none_row = tuple([None if pd.isnull(val) else str(val) for val in row])
+            none_row = tuple(None if pd.isnull(val) else str(val) for val in row)
             to_insert.append(none_row)
 
         if not create and metadata:
@@ -457,22 +458,20 @@ class Snowflake(S3, Database):
                 + ")"
             )
             column_sql = "(" + ",".join(list(metadata.keys())) + ")"
-            create_query = "CREATE TABLE {table_name} {create_join}".format(
-                table_name=table_name, create_join=create_join
-            )
+            create_query = f"CREATE TABLE {table_name} {create_join}"
             self.execute(create_query)
             logger.info("New table has been created")
 
-        insert_query = """INSERT INTO {table_name} {columns} VALUES {values}""".format(
-            table_name=table_name, columns=column_sql, values=string_join
-        )
+        insert_query = f"""INSERT INTO {table_name} {column_sql} VALUES {string_join}"""
 
         logger.info("Inserting records...")
         self.execute(insert_query, params=to_insert, many=True)
         logger.info("Table insertion has completed")
 
     def to_dataframe(self, size=None):
-        """Return a dataframe of the last query results. This is just a convenience method. This
+        """Return a dataframe of the last query results.
+
+        This is just a convenience method. This
         method overrides the base classes implementation in favour for the snowflake connectors
         built-in ``fetch_pandas_all`` when ``size==None``. If ``size != None`` then we will continue
         to use the existing functionality where we iterate through the cursor and build the
@@ -492,4 +491,4 @@ class Snowflake(S3, Database):
         if size is None and self.cursor._query_result_format == "arrow":
             return self.cursor.fetch_pandas_all()
         else:
-            return super(Snowflake, self).to_dataframe(size)
+            return super().to_dataframe(size)
