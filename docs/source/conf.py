@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # SPDX-Copyright: Copyright (c) Capital One Services, LLC
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2018 Capital One Services, LLC
@@ -27,8 +26,9 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import sys
 import os
+import sys
+
 import sphinx_rtd_theme
 from locopy._version import __version__
 

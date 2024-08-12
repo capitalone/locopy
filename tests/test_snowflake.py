@@ -27,13 +27,12 @@ from pathlib import PureWindowsPath
 from unittest import mock
 
 import hypothesis.strategies as s
+import locopy
 import pytest
 import snowflake.connector
 from hypothesis import HealthCheck, given, settings
-
-import locopy
 from locopy import Snowflake
-from locopy.errors import CredentialsError, DBError
+from locopy.errors import DBError
 
 PROFILE = "test"
 KMS = "kms_test"
@@ -286,9 +285,7 @@ def test_copy(
                 copy_options=copy_options,
             )
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "COPY INTO table_name FROM '@~/stage' FILE_FORMAT = {0}".format(
-                    expected
-                ),
+                f"COPY INTO table_name FROM '@~/stage' FILE_FORMAT = {expected}",
                 (),
             )
 
@@ -371,7 +368,7 @@ def test_unload(
                 copy_options=copy_options,
             )
             sf.conn.cursor.return_value.execute.assert_called_with(
-                "COPY INTO @~/stage FROM table_name FILE_FORMAT = {0}".format(expected),
+                f"COPY INTO @~/stage FROM table_name FILE_FORMAT = {expected}",
                 (),
             )
 

@@ -24,13 +24,12 @@ import os
 from collections import OrderedDict
 from unittest import mock
 
+import locopy
 import pg8000
 import psycopg2
 import pytest
-
-import locopy
 from locopy import Redshift
-from locopy.errors import CredentialsError, DBError
+from locopy.errors import DBError
 
 PROFILE = "test"
 GOOD_CONFIG_YAML = """
@@ -467,7 +466,7 @@ def test_load_and_copy_split_and_header(
         mock_split_file.return_value = ["/path/local_file.txt"]
         mock_compress_file_list.return_value = ["/path/local_file.txt.gz"]
 
-        #### neither ignore or split only
+        # neither ignore or split only
         r.load_and_copy("/path/local_file.txt", "s3_bucket", "table_name", delim="|")
 
         # assert
@@ -482,7 +481,7 @@ def test_load_and_copy_split_and_header(
         )
         assert not mock_s3_delete.called, "Only delete when explicit"
 
-        #### ignore only
+        # ignore only
         reset_mocks()
         r.load_and_copy(
             "/path/local_file.txt",
@@ -507,7 +506,7 @@ def test_load_and_copy_split_and_header(
         )
         assert not mock_s3_delete.called, "Only delete when explicit"
 
-        #### split only
+        # split only
         reset_mocks()
         mock_split_file.return_value = [
             "/path/local_file.0",
@@ -538,7 +537,7 @@ def test_load_and_copy_split_and_header(
         assert mock_s3_delete.called_with("s3_bucket", "local_file.1.gz")
         assert mock_s3_delete.called_with("s3_bucket", "local_file.2.gz")
 
-        #### split and ignore
+        # split and ignore
         reset_mocks()
         mock_split_file.return_value = [
             "/path/local_file.0",
@@ -589,13 +588,9 @@ def test_redshiftcopy(mock_session, credentials, dbapi):
         (
             mock_connect.return_value.cursor.return_value.execute.assert_called_with(
                 "COPY table FROM 's3bucket' CREDENTIALS "
-                "'aws_access_key_id={0};aws_secret_access_key={1};token={2}' "
+                f"'aws_access_key_id={r.session.get_credentials().access_key};aws_secret_access_key={r.session.get_credentials().secret_key};token={r.session.get_credentials().token}' "
                 "DELIMITER '|' DATEFORMAT 'auto' COMPUPDATE ON "
-                "TRUNCATECOLUMNS;".format(
-                    r.session.get_credentials().access_key,
-                    r.session.get_credentials().secret_key,
-                    r.session.get_credentials().token,
-                ),
+                "TRUNCATECOLUMNS;",
                 (),
             )
         )
@@ -606,13 +601,9 @@ def test_redshiftcopy(mock_session, credentials, dbapi):
         (
             mock_connect.return_value.cursor.return_value.execute.assert_called_with(
                 "COPY table FROM 's3bucket' CREDENTIALS "
-                "'aws_access_key_id={0};aws_secret_access_key={1};token={2}' "
+                f"'aws_access_key_id={r.session.get_credentials().access_key};aws_secret_access_key={r.session.get_credentials().secret_key};token={r.session.get_credentials().token}' "
                 "DELIMITER '\t' DATEFORMAT 'auto' COMPUPDATE ON "
-                "TRUNCATECOLUMNS;".format(
-                    r.session.get_credentials().access_key,
-                    r.session.get_credentials().secret_key,
-                    r.session.get_credentials().token,
-                ),
+                "TRUNCATECOLUMNS;",
                 (),
             )
         )
@@ -622,13 +613,9 @@ def test_redshiftcopy(mock_session, credentials, dbapi):
         (
             mock_connect.return_value.cursor.return_value.execute.assert_called_with(
                 "COPY table FROM 's3bucket' CREDENTIALS "
-                "'aws_access_key_id={0};aws_secret_access_key={1};token={2}' "
+                f"'aws_access_key_id={r.session.get_credentials().access_key};aws_secret_access_key={r.session.get_credentials().secret_key};token={r.session.get_credentials().token}' "
                 "DATEFORMAT 'auto' COMPUPDATE ON "
-                "TRUNCATECOLUMNS;".format(
-                    r.session.get_credentials().access_key,
-                    r.session.get_credentials().secret_key,
-                    r.session.get_credentials().token,
-                ),
+                "TRUNCATECOLUMNS;",
                 (),
             )
         )
@@ -691,13 +678,13 @@ def test_unload_and_copy(
         r = locopy.Redshift(dbapi=dbapi, **credentials)
 
         ##
-        ## Test 1: check that basic export pipeline functions are called
+        # Test 1: check that basic export pipeline functions are called
         mock_unload_generated_files.return_value = ["dummy_file"]
         mock_download_list_from_s3.return_value = ["s3.file"]
         mock_get_col_names.return_value = ["dummy_col_name"]
         mock_generate_unload_path.return_value = "dummy_s3_path"
 
-        ## ensure nothing is returned when read=False
+        # ensure nothing is returned when read=False
         r.unload_and_copy(
             query="query",
             s3_bucket="s3_bucket",
@@ -719,7 +706,7 @@ def test_unload_and_copy(
         assert not mock_delete_list_from_s3.called
 
         ##
-        ## Test 2: different delimiter
+        # Test 2: different delimiter
         reset_mocks()
         mock_unload_generated_files.return_value = ["dummy_file"]
         mock_download_list_from_s3.return_value = ["s3.file"]
@@ -736,14 +723,14 @@ def test_unload_and_copy(
             parallel_off=True,
         )
 
-        ## check that unload options are modified based on supplied args
+        # check that unload options are modified based on supplied args
         mock_unload.assert_called_with(
             query="query", s3path="dummy_s3_path", unload_options=["DELIMITER '|'", "PARALLEL OFF"]
         )
         assert not mock_delete_list_from_s3.called
 
         ##
-        ## Test 2.5: delimiter is none
+        # Test 2.5: delimiter is none
         reset_mocks()
         mock_unload_generated_files.return_value = ["dummy_file"]
         mock_download_list_from_s3.return_value = ["s3.file"]
@@ -760,14 +747,14 @@ def test_unload_and_copy(
             parallel_off=True,
         )
 
-        ## check that unload options are modified based on supplied args
+        # check that unload options are modified based on supplied args
         mock_unload.assert_called_with(
             query="query", s3path="dummy_s3_path", unload_options=["PARALLEL OFF"]
         )
         assert not mock_delete_list_from_s3.called
 
         ##
-        ## Test 3: ensure exception is raised when no column names are retrieved
+        # Test 3: ensure exception is raised when no column names are retrieved
         reset_mocks()
         mock_unload_generated_files.return_value = ["dummy_file"]
         mock_generate_unload_path.return_value = "dummy_s3_path"
@@ -776,7 +763,7 @@ def test_unload_and_copy(
             r.unload_and_copy("query", "s3_bucket", None)
 
         ##
-        ## Test 4: ensure exception is raised when no files are returned
+        # Test 4: ensure exception is raised when no files are returned
         reset_mocks()
         mock_generate_unload_path.return_value = "dummy_s3_path"
         mock_get_col_names.return_value = ["dummy_col_name"]
@@ -785,7 +772,7 @@ def test_unload_and_copy(
             r.unload_and_copy("query", "s3_bucket", None)
 
         ##
-        ## Test 5: ensure file writing is initiated when export_path is supplied
+        # Test 5: ensure file writing is initiated when export_path is supplied
         reset_mocks()
         mock_get_col_names.return_value = ["dummy_col_name"]
         mock_download_list_from_s3.return_value = ["s3.file"]
@@ -806,13 +793,13 @@ def test_unload_and_copy(
         assert mock_delete_list_from_s3.called_with("s3_bucket", "my_output.csv")
 
         ##
-        ## Test 6: raw_unload_path check
+        # Test 6: raw_unload_path check
         reset_mocks()
         mock_get_col_names.return_value = ["dummy_col_name"]
         mock_download_list_from_s3.return_value = ["s3.file"]
         mock_generate_unload_path.return_value = "dummy_s3_path"
         mock_unload_generated_files.return_value = ["/dummy_file"]
-        ## ensure nothing is returned when read=False
+        # ensure nothing is returned when read=False
         r.unload_and_copy(
             query="query",
             s3_bucket="s3_bucket",

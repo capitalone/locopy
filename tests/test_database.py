@@ -27,7 +27,6 @@ import pg8000
 import psycopg2
 import pytest
 import snowflake.connector
-
 from locopy import Database
 from locopy.errors import CredentialsError, DBError
 

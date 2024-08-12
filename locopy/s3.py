@@ -38,7 +38,7 @@ from .utility import ProgressPercentage
 logger = get_logger(__name__, INFO)
 
 
-class S3(object):
+class S3:
     """
     S3 wrapper class which utilizes the boto3 library to push files to an S3
     bucket.
@@ -146,7 +146,7 @@ class S3(object):
         str
             string of the S3 file URL in the format S3://bucket/key
         """
-        return "s3://{0}/{1}".format(bucket, key)
+        return f"s3://{bucket}/{key}"
 
     def _generate_unload_path(self, bucket, folder):
         """Will return the S3 file URL in the format s3://bucket/folder if a
@@ -168,9 +168,9 @@ class S3(object):
             If folder is None, returns format s3://bucket
         """
         if folder:
-            s3_path = "s3://{0}/{1}".format(bucket, folder)
+            s3_path = f"s3://{bucket}/{folder}"
         else:
-            s3_path = "s3://{0}".format(bucket)
+            s3_path = f"s3://{bucket}"
         return s3_path
 
     def upload_to_s3(self, local, bucket, key):

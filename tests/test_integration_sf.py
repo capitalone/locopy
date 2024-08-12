@@ -26,12 +26,11 @@ import shutil
 from pathlib import Path
 
 import boto3
+import locopy
 import numpy as np
 import pandas as pd
 import pytest
 import snowflake.connector
-
-import locopy
 
 DBAPIS = [snowflake.connector]
 INTEGRATION_CREDS = str(Path.home()) + os.sep + ".locopy-sfrc"

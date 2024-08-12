@@ -231,9 +231,7 @@ class Snowflake(S3, Database):
         """
         local_uri = PurePath(local).as_posix()
         self.execute(
-            "PUT 'file://{0}' {1} PARALLEL={2} AUTO_COMPRESS={3} OVERWRITE={4}".format(
-                local_uri, stage, parallel, auto_compress, overwrite
-            )
+            f"PUT 'file://{local_uri}' {stage} PARALLEL={parallel} AUTO_COMPRESS={auto_compress} OVERWRITE={overwrite}"
         )
 
     def download_from_internal(self, stage, local=None, parallel=10):
@@ -256,7 +254,7 @@ class Snowflake(S3, Database):
             local = os.getcwd()
         local_uri = PurePath(local).as_posix()
         self.execute(
-            "GET {0} 'file://{1}' PARALLEL={2}".format(stage, local_uri, parallel)
+            f"GET {stage} 'file://{local_uri}' PARALLEL={parallel}"
         )
 
     def copy(
@@ -296,9 +294,7 @@ class Snowflake(S3, Database):
 
         if file_type not in COPY_FORMAT_OPTIONS:
             raise ValueError(
-                "Invalid file_type. Must be one of {0}".format(
-                    list(COPY_FORMAT_OPTIONS.keys())
-                )
+                f"Invalid file_type. Must be one of {list(COPY_FORMAT_OPTIONS.keys())}"
             )
 
         if format_options is None and file_type == "csv":
@@ -364,9 +360,7 @@ class Snowflake(S3, Database):
 
         if file_type not in COPY_FORMAT_OPTIONS:
             raise ValueError(
-                "Invalid file_type. Must be one of {0}".format(
-                    list(UNLOAD_FORMAT_OPTIONS.keys())
-                )
+                f"Invalid file_type. Must be one of {list(UNLOAD_FORMAT_OPTIONS.keys())}"
             )
 
         if format_options is None and file_type == "csv":
@@ -421,7 +415,6 @@ class Snowflake(S3, Database):
         metadata: dictionary, optional
             If metadata==None, it will be generated based on data
         """
-
         import pandas as pd
 
         if columns:
@@ -457,15 +450,11 @@ class Snowflake(S3, Database):
                 + ")"
             )
             column_sql = "(" + ",".join(list(metadata.keys())) + ")"
-            create_query = "CREATE TABLE {table_name} {create_join}".format(
-                table_name=table_name, create_join=create_join
-            )
+            create_query = f"CREATE TABLE {table_name} {create_join}"
             self.execute(create_query)
             logger.info("New table has been created")
 
-        insert_query = """INSERT INTO {table_name} {columns} VALUES {values}""".format(
-            table_name=table_name, columns=column_sql, values=string_join
-        )
+        insert_query = f"""INSERT INTO {table_name} {column_sql} VALUES {string_join}"""
 
         logger.info("Inserting records...")
         self.execute(insert_query, params=to_insert, many=True)

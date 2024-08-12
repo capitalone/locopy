@@ -14,7 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .database import Database
+from .database import database
 from .redshift import Redshift
 from .s3 import S3
 from .snowflake import Snowflake
+
+__all__ = ["S3", "Redshift", "Snowflake", "database"]

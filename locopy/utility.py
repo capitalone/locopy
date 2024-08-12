@@ -27,8 +27,13 @@ from itertools import cycle
 
 import yaml
 
-from .errors import (CompressionError, CredentialsError, LocopyConcatError,
-                     LocopyIgnoreHeaderError, LocopySplitError)
+from .errors import (
+    CompressionError,
+    CredentialsError,
+    LocopyConcatError,
+    LocopyIgnoreHeaderError,
+    LocopySplitError,
+)
 from .logger import INFO, get_logger
 
 logger = get_logger(__name__, INFO)
@@ -97,7 +102,7 @@ def compress_file_list(file_list):
         gz appended)
     """
     for i, f in enumerate(file_list):
-        gz = "{0}.gz".format(f)
+        gz = f"{f}.gz"
         compress_file(f, gz)
         file_list[i] = gz
         os.remove(f)  # cleanup old files
@@ -149,7 +154,7 @@ def split_file(input_file, output_file, splits=1, ignore_header=0):
         cpool = cycle(pool)
         logger.info("splitting file: %s into %s files", input_file, splits)
         # open output file handlers
-        files = [open("{0}.{1}".format(output_file, x), "wb") for x in pool]
+        files = [open(f"{output_file}.{x}", "wb") for x in pool]
         # open input file and send line to different handler
         with open(input_file, "rb") as f_in:
             # if we have a value in ignore_header then skip those many lines to start
@@ -275,7 +280,6 @@ def find_column_type(dataframe, warehouse_type: str):
         A dictionary of columns with their data type
     """
     import re
-    from datetime import date, datetime
 
     import pandas as pd
 
@@ -313,7 +317,7 @@ def find_column_type(dataframe, warehouse_type: str):
         data = dataframe[column].dropna().reset_index(drop=True)
         if data.size == 0:
             column_type.append("varchar")
-        elif (data.dtype in ["datetime64[ns]", "M8[ns]"]) or (re.match("(datetime64\[ns\,\W)([a-zA-Z]+)(\])",str(data.dtype))):
+        elif (data.dtype in ["datetime64[ns]", "M8[ns]"]) or (re.match(r"(datetime64\[ns\,\W)([a-zA-Z]+)(\])", str(data.dtype))):
             column_type.append("timestamp")
         elif str(data.dtype).lower().startswith("bool"):
             column_type.append("boolean")
@@ -333,7 +337,7 @@ def find_column_type(dataframe, warehouse_type: str):
     return OrderedDict(zip(list(dataframe.columns), column_type))
 
 
-class ProgressPercentage(object):
+class ProgressPercentage:
     """
     ProgressPercentage class is used by the S3Transfer upload_file callback
     Please see the following url for more information:

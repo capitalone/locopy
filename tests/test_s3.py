@@ -25,12 +25,11 @@ import tempfile
 from unittest import mock
 
 import hypothesis.strategies as st
+import locopy
 import pg8000
 import psycopg2
 import pytest
 from hypothesis import given
-
-import locopy
 from locopy.errors import (
     S3CredentialsError,
     S3DeletionError,

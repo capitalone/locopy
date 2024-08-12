@@ -20,23 +20,31 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import datetime
 import os
 import sys
 from io import StringIO
 from itertools import cycle
 from pathlib import Path
 from unittest import mock
-import datetime
-
-import pytest
 
 import locopy.utility as util
-from locopy.errors import (CompressionError, CredentialsError,
-                           LocopyConcatError, LocopyIgnoreHeaderError,
-                           LocopySplitError)
-from locopy.utility import (compress_file, compress_file_list,
-                            concatenate_files, find_column_type,
-                            get_ignoreheader_number, split_file)
+import pytest
+from locopy.errors import (
+    CompressionError,
+    CredentialsError,
+    LocopyConcatError,
+    LocopyIgnoreHeaderError,
+    LocopySplitError,
+)
+from locopy.utility import (
+    compress_file,
+    compress_file_list,
+    concatenate_files,
+    find_column_type,
+    get_ignoreheader_number,
+    split_file,
+)
 
 GOOD_CONFIG_YAML = """host: my.redshift.cluster.com
 port: 1234
@@ -211,7 +219,7 @@ def test_split_file_exception():
     with pytest.raises(LocopySplitError):
         split_file(input_file, output_file, "Test")
 
-    with mock.patch("{0}.next".format(builtin_module_name)) as mock_next:
+    with mock.patch(f"{builtin_module_name}.next") as mock_next:
         mock_next.side_effect = Exception("SomeException")
 
         with pytest.raises(LocopySplitError):
@@ -341,9 +349,8 @@ def test_find_column_type():
     assert find_column_type(input_text, "snowflake") == output_text_snowflake
     assert find_column_type(input_text, "redshift") == output_text_redshift
 
-def test_find_column_type_new():
 
-    from decimal import Decimal
+def test_find_column_type_new():
 
     import pandas as pd
 
@@ -359,10 +366,10 @@ def test_find_column_type_new():
 
     input_text = input_text.astype(
         dtype={
-            "a": pd.Int64Dtype(), 
-            "b": pd.DatetimeTZDtype(tz=datetime.timezone.utc), 
-            "c": pd.Float64Dtype(), 
-            "d": pd.StringDtype(), 
+            "a": pd.Int64Dtype(),
+            "b": pd.DatetimeTZDtype(tz=datetime.timezone.utc),
+            "c": pd.Float64Dtype(),
+            "d": pd.StringDtype(),
             "e": pd.BooleanDtype()
         }
     )
@@ -375,7 +382,7 @@ def test_find_column_type_new():
         "e": "boolean",
     }
 
-    output_text_redshift = {      
+    output_text_redshift = {
         "a": "int",
         "b": "timestamp",
         "c": "float",
@@ -385,7 +392,6 @@ def test_find_column_type_new():
 
     assert find_column_type(input_text, "snowflake") == output_text_snowflake
     assert find_column_type(input_text, "redshift") == output_text_redshift
-
 
 
 def test_get_ignoreheader_number():

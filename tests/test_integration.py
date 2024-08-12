@@ -25,13 +25,12 @@ import os
 from pathlib import Path
 
 import boto3
+import locopy
 import numpy as np
 import pandas as pd
 import pg8000
 import psycopg2
 import pytest
-
-import locopy
 
 DBAPIS = [pg8000, psycopg2]
 INTEGRATION_CREDS = str(Path.home()) + "/.locopyrc"
@@ -163,7 +162,7 @@ def test_copy_split_ignore(s3_bucket, dbapi):
         for i, result in enumerate(results):
             assert result[0] == expected[i][0]
             assert result[1] == expected[i][1]
-            os.remove(LOCAL_FILE_HEADER + ".{0}".format(i))
+            os.remove(LOCAL_FILE_HEADER + f".{i}")
 
 
 @pytest.mark.integration

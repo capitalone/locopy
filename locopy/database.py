@@ -25,7 +25,7 @@ from .utility import read_config_yaml
 logger = get_logger(__name__, INFO)
 
 
-class Database(object):
+class Database:
     """This is the base class for all DBAPI 2 database connectors which will inherit this
     functionality. The ``Database`` class will manage connections and handle executing queries.
     Most of the functionality should work out of the box for classes which inherit minus the

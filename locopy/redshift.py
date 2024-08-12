@@ -25,8 +25,14 @@ from .database import Database
 from .errors import DBError, S3CredentialsError
 from .logger import INFO, get_logger
 from .s3 import S3
-from .utility import (compress_file_list, concatenate_files, find_column_type,
-                      get_ignoreheader_number, split_file, write_file)
+from .utility import (
+    compress_file_list,
+    concatenate_files,
+    find_column_type,
+    get_ignoreheader_number,
+    split_file,
+    write_file,
+)
 
 logger = get_logger(__name__, INFO)
 
@@ -200,7 +206,7 @@ class Redshift(S3, Database):
         """
         if not self._is_connected():
             raise DBError("No Redshift connection object is present.")
-        if copy_options and "PARQUET" not in copy_options or copy_options is None:
+        if (copy_options and "PARQUET" not in copy_options) or copy_options is None:
             copy_options = add_default_copy_options(copy_options)
         if delim:
             copy_options = [f"DELIMITER '{delim}'"] + copy_options
@@ -228,7 +234,7 @@ class Redshift(S3, Database):
         compress=True,
         s3_folder=None,
     ):
-        """Loads a file to S3, then copies into Redshift.  Has options to
+        r"""Loads a file to S3, then copies into Redshift.  Has options to
         split a single file into multiple files, compress using gzip, and
         upload to an S3 bucket with folders within the bucket.
 
@@ -390,18 +396,18 @@ class Redshift(S3, Database):
         # data = []
         s3path = self._generate_unload_path(s3_bucket, s3_folder)
 
-        ## configure unload options
+        # configure unload options
         if unload_options is None:
             unload_options = []
         if delim:
-            unload_options.append("DELIMITER '{0}'".format(delim))
+            unload_options.append(f"DELIMITER '{delim}'")
         if parallel_off:
             unload_options.append("PARALLEL OFF")
 
-        ## run unload
+        # run unload
         self.unload(query=query, s3path=s3path, unload_options=unload_options)
 
-        ## parse unloaded files
+        # parse unloaded files
         s3_download_list = self._unload_generated_files()
         if s3_download_list is None:
             logger.error("No files generated from unload")
@@ -477,17 +483,16 @@ class Redshift(S3, Database):
         list
             List of column names. Returns None if no columns were retrieved.
         """
-
         try:
             logger.info("Retrieving column names")
-            sql = "SELECT * FROM ({}) WHERE 1 = 0".format(query)
+            sql = f"SELECT * FROM ({query}) WHERE 1 = 0"
             self.execute(sql)
             results = [desc for desc in self.cursor.description]
             if len(results) > 0:
                 return [result[0].strip() for result in results]
             else:
                 return None
-        except Exception as e:
+        except Exception:
             logger.error("Error retrieving column names")
             raise
 
@@ -511,7 +516,7 @@ class Redshift(S3, Database):
                 return [result[0].strip() for result in results]
             else:
                 return None
-        except Exception as e:
+        except Exception:
             logger.error("Error retrieving unloads generated files")
             raise
 
@@ -556,7 +561,6 @@ class Redshift(S3, Database):
 
 
         """
-
         import pandas as pd
 
         if columns:
@@ -585,9 +589,7 @@ class Redshift(S3, Database):
                 + ")"
             )
             column_sql = "(" + ",".join(list(metadata.keys())) + ")"
-            create_query = "CREATE TABLE {table_name} {create_join}".format(
-                table_name=table_name, create_join=create_join
-            )
+            create_query = f"CREATE TABLE {table_name} {create_join}"
             self.execute(create_query)
             logger.info("New table has been created")
 
@@ -611,9 +613,7 @@ class Redshift(S3, Database):
                 to_insert.append(none_row)
             string_join = ", ".join(to_insert)
             insert_query = (
-                """INSERT INTO {table_name} {columns} VALUES {values}""".format(
-                    table_name=table_name, columns=column_sql, values=string_join
-                )
+                f"""INSERT INTO {table_name} {column_sql} VALUES {string_join}"""
             )
             self.execute(insert_query, verbose=verbose)
         logger.info("Table insertion has completed")
