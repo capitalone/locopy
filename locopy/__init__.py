@@ -13,8 +13,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""A Python library to assist with ETL processing."""
 
-from .database import Database
-from .redshift import Redshift
-from .s3 import S3
-from .snowflake import Snowflake
+from locopy.database import Database
+from locopy.redshift import Redshift
+from locopy.s3 import S3
+from locopy.snowflake import Snowflake
+
+__all__ = ["S3", "Database", "Redshift", "Snowflake"]

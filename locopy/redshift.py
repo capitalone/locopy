@@ -14,26 +14,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Redshift Module
+"""Redshift Module.
+
 Module to wrap a database adapter into a Redshift class which can be used to connect
 to Redshift, and run arbitrary code.
 """
+
 import os
 from pathlib import Path
 
-from .database import Database
-from .errors import DBError, S3CredentialsError
-from .logger import INFO, get_logger
-from .s3 import S3
-from .utility import (compress_file_list, concatenate_files, find_column_type,
-                      get_ignoreheader_number, split_file, write_file)
+from locopy.database import Database
+from locopy.errors import DBError, S3CredentialsError
+from locopy.logger import INFO, get_logger
+from locopy.s3 import S3
+from locopy.utility import (
+    compress_file_list,
+    concatenate_files,
+    find_column_type,
+    get_ignoreheader_number,
+    split_file,
+    write_file,
+)
 
 logger = get_logger(__name__, INFO)
 
 
 def add_default_copy_options(copy_options=None):
-    """Adds in default options for the ``COPY`` job, unless those specific
-    options have been provided in the request.
+    """Add in default options for the ``COPY`` job.
+
+    Unless those specific options have been provided in the request.
 
     Parameters
     ----------
@@ -58,8 +67,9 @@ def add_default_copy_options(copy_options=None):
 
 
 def combine_copy_options(copy_options):
-    """Returns the ``copy_options`` attribute with spaces in between and as
-    a string.
+    """Return the ``copy_options`` attribute with spaces in between.
+
+    Converts to a string.
 
     Parameters
     ----------
@@ -76,8 +86,9 @@ def combine_copy_options(copy_options):
 
 
 class Redshift(S3, Database):
-    """Locopy class which manages connections to Redshift.  Inherits ``Database`` and implements the
-    specific ``COPY`` and ``UNLOAD`` functionality.
+    """Locopy class which manages connections to Redshift.
+
+    Inherits ``Database`` and implements the specific ``COPY`` and ``UNLOAD`` functionality.
 
     If any of host, port, dbname, user and password are not provided, a config_yaml file must be
     provided with those parameters in it. Please note ssl is always enforced when connecting.
@@ -159,8 +170,9 @@ class Redshift(S3, Database):
         Database.__init__(self, dbapi, config_yaml, **kwargs)
 
     def connect(self):
-        """Creates a connection to the Redshift cluster by
-        setting the values of the ``conn`` and ``cursor`` attributes.
+        """Create a connection to the Redshift cluster.
+
+        Sets the values of the ``conn`` and ``cursor`` attributes.
 
         Raises
         ------
@@ -171,11 +183,10 @@ class Redshift(S3, Database):
             self.connection["sslmode"] = "require"
         elif self.dbapi.__name__ == "pg8000":
             self.connection["ssl_context"] = True
-        super(Redshift, self).connect()
+        super().connect()
 
     def copy(self, table_name, s3path, delim="|", copy_options=None):
-        """Executes the COPY command to load files from S3 into
-        a Redshift table.
+        """Execute the COPY command to load files from S3 into a Redshift table.
 
         Parameters
         ----------
@@ -200,10 +211,10 @@ class Redshift(S3, Database):
         """
         if not self._is_connected():
             raise DBError("No Redshift connection object is present.")
-        if copy_options and "PARQUET" not in copy_options or copy_options is None:
+        if (copy_options and "PARQUET" not in copy_options) or copy_options is None:
             copy_options = add_default_copy_options(copy_options)
         if delim:
-            copy_options = [f"DELIMITER '{delim}'"] + copy_options
+            copy_options = [f"DELIMITER '{delim}'", *copy_options]
         copy_options_text = combine_copy_options(copy_options)
         base_copy_string = "COPY {0} FROM '{1}' " "CREDENTIALS '{2}' " "{3};"
         try:
@@ -214,7 +225,7 @@ class Redshift(S3, Database):
 
         except Exception as e:
             logger.error("Error running COPY on Redshift. err: %s", e)
-            raise DBError("Error running COPY on Redshift.")
+            raise DBError("Error running COPY on Redshift.") from e
 
     def load_and_copy(
         self,
@@ -228,8 +239,9 @@ class Redshift(S3, Database):
         compress=True,
         s3_folder=None,
     ):
-        """Loads a file to S3, then copies into Redshift.  Has options to
-        split a single file into multiple files, compress using gzip, and
+        r"""Load a file to S3, then copies into Redshift.
+
+        Has options to split a single file into multiple files, compress using gzip, and
         upload to an S3 bucket with folders within the bucket.
 
         Notes
@@ -341,8 +353,9 @@ class Redshift(S3, Database):
         parallel_off=False,
         unload_options=None,
     ):
-        """``UNLOAD`` data from Redshift, with options to write to a flat file,
-        and store on S3.
+        """Unload data from Redshift.
+
+        With options to write to a flat file and store on S3.
 
         Parameters
         ----------
@@ -390,27 +403,27 @@ class Redshift(S3, Database):
         # data = []
         s3path = self._generate_unload_path(s3_bucket, s3_folder)
 
-        ## configure unload options
+        # configure unload options
         if unload_options is None:
             unload_options = []
         if delim:
-            unload_options.append("DELIMITER '{0}'".format(delim))
+            unload_options.append(f"DELIMITER '{delim}'")
         if parallel_off:
             unload_options.append("PARALLEL OFF")
 
-        ## run unload
+        # run unload
         self.unload(query=query, s3path=s3path, unload_options=unload_options)
 
-        ## parse unloaded files
+        # parse unloaded files
         s3_download_list = self._unload_generated_files()
         if s3_download_list is None:
             logger.error("No files generated from unload")
-            raise Exception("No files generated from unload")
+            raise DBError("No files generated from unload")
 
         columns = self._get_column_names(query)
         if columns is None:
             logger.error("Unable to retrieve column names from exported data")
-            raise Exception("Unable to retrieve column names from exported data.")
+            raise DBError("Unable to retrieve column names from exported data.")
 
         # download files locally with same name
         local_list = self.download_list_from_s3(s3_download_list, raw_unload_path)
@@ -423,8 +436,7 @@ class Redshift(S3, Database):
             self.delete_list_from_s3(s3_download_list)
 
     def unload(self, query, s3path, unload_options=None):
-        """Executes the UNLOAD command to export a query from
-        Redshift to S3.
+        """Execute the UNLOAD command to export a query from Redshift to S3.
 
         Parameters
         ----------
@@ -462,10 +474,10 @@ class Redshift(S3, Database):
             self.execute(sql, commit=True)
         except Exception as e:
             logger.error("Error running UNLOAD on redshift. err: %s", e)
-            raise DBError("Error running UNLOAD on redshift.")
+            raise DBError("Error running UNLOAD on redshift.") from e
 
     def _get_column_names(self, query):
-        """Gets a list of column names from the supplied query.
+        """Get a list of column names from the supplied query.
 
         Parameters
         ----------
@@ -477,22 +489,21 @@ class Redshift(S3, Database):
         list
             List of column names. Returns None if no columns were retrieved.
         """
-
         try:
             logger.info("Retrieving column names")
-            sql = "SELECT * FROM ({}) WHERE 1 = 0".format(query)
+            sql = f"SELECT * FROM ({query}) WHERE 1 = 0"
             self.execute(sql)
-            results = [desc for desc in self.cursor.description]
+            results = list(self.cursor.description)
             if len(results) > 0:
                 return [result[0].strip() for result in results]
             else:
                 return None
-        except Exception as e:
+        except Exception:
             logger.error("Error retrieving column names")
             raise
 
     def _unload_generated_files(self):
-        """Gets a list of files generated by the unload process
+        """Get a list of files generated by the unload process.
 
         Returns
         -------
@@ -511,7 +522,7 @@ class Redshift(S3, Database):
                 return [result[0].strip() for result in results]
             else:
                 return None
-        except Exception as e:
+        except Exception:
             logger.error("Error retrieving unloads generated files")
             raise
 
@@ -556,7 +567,6 @@ class Redshift(S3, Database):
 
 
         """
-
         import pandas as pd
 
         if columns:
@@ -585,9 +595,7 @@ class Redshift(S3, Database):
                 + ")"
             )
             column_sql = "(" + ",".join(list(metadata.keys())) + ")"
-            create_query = "CREATE TABLE {table_name} {create_join}".format(
-                table_name=table_name, create_join=create_join
-            )
+            create_query = f"CREATE TABLE {table_name} {create_join}"
             self.execute(create_query)
             logger.info("New table has been created")
 
@@ -611,9 +619,7 @@ class Redshift(S3, Database):
                 to_insert.append(none_row)
             string_join = ", ".join(to_insert)
             insert_query = (
-                """INSERT INTO {table_name} {columns} VALUES {values}""".format(
-                    table_name=table_name, columns=column_sql, values=string_join
-                )
+                f"""INSERT INTO {table_name} {column_sql} VALUES {string_join}"""
             )
             self.execute(insert_query, verbose=verbose)
         logger.info("Table insertion has completed")
