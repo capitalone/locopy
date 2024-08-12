@@ -29,7 +29,7 @@ import pg8000
 import psycopg2
 import pytest
 from locopy import Redshift
-from locopy.errors import DBError, LocopyError
+from locopy.errors import DBError
 
 PROFILE = "test"
 GOOD_CONFIG_YAML = """
