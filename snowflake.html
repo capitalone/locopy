@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Snowflake Examples &mdash; locopy 0.5.9 documentation</title>
+  <title>Snowflake Examples &mdash; locopy 0.6.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -13,9 +13,9 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b8460c5c"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=8fa8b3e9"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -35,7 +35,7 @@
             locopy
           </a>
               <div class="version">
-                0.5.9
+                0.6.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -90,9 +90,9 @@
            <div itemprop="articleBody">
              
   <section id="snowflake-examples">
-<h1>Snowflake Examples<a class="headerlink" href="#snowflake-examples" title="Permalink to this heading">¶</a></h1>
+<h1>Snowflake Examples<a class="headerlink" href="#snowflake-examples" title="Link to this heading">¶</a></h1>
 <section id="upload-to-internal-stage-and-run-copy-into-table-command-with-yaml">
-<h2>Upload to internal stage and run COPY into table command with YAML<a class="headerlink" href="#upload-to-internal-stage-and-run-copy-into-table-command-with-yaml" title="Permalink to this heading">¶</a></h2>
+<h2>Upload to internal stage and run COPY into table command with YAML<a class="headerlink" href="#upload-to-internal-stage-and-run-copy-into-table-command-with-yaml" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">snowflake.connector</span>
 <span class="kn">import</span> <span class="nn">locopy</span>
 
@@ -110,7 +110,7 @@
 </div>
 </section>
 <section id="run-copy-command-without-yaml">
-<h2>Run COPY command without YAML<a class="headerlink" href="#run-copy-command-without-yaml" title="Permalink to this heading">¶</a></h2>
+<h2>Run COPY command without YAML<a class="headerlink" href="#run-copy-command-without-yaml" title="Link to this heading">¶</a></h2>
 <p>Similar to the above code, but we would explicitly pass the connection details in the <code class="docutils literal notranslate"><span class="pre">Snowflake</span></code>
 constructor vs. the YAML</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Snowflake</span><span class="p">(</span>
@@ -126,7 +126,7 @@ constructor vs. the YAML</p>
 </div>
 </section>
 <section id="aws-tokens-as-environment-variables">
-<h2>AWS tokens as environment variables<a class="headerlink" href="#aws-tokens-as-environment-variables" title="Permalink to this heading">¶</a></h2>
+<h2>AWS tokens as environment variables<a class="headerlink" href="#aws-tokens-as-environment-variables" title="Link to this heading">¶</a></h2>
 <p>If you would rather provide your AWS tokens via environment variables vs. using a profile from
 <code class="docutils literal notranslate"><span class="pre">~/.aws/credentials</span></code>, you can do something as follows:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_ACCESS_KEY_ID</span><span class="o">=</span>MY_ACCESS_KEY_ID
@@ -136,7 +136,7 @@ constructor vs. the YAML</p>
 </div>
 </section>
 <section id="extra-parameters-on-the-copy-job">
-<h2>Extra parameters on the COPY job<a class="headerlink" href="#extra-parameters-on-the-copy-job" title="Permalink to this heading">¶</a></h2>
+<h2>Extra parameters on the COPY job<a class="headerlink" href="#extra-parameters-on-the-copy-job" title="Link to this heading">¶</a></h2>
 <p>The  <code class="docutils literal notranslate"><span class="pre">format_options</span></code> and <code class="docutils literal notranslate"><span class="pre">copy_options</span></code> allow for adding additional parameters to the
 <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">into</span> <span class="pre">&lt;table&gt;</span></code> commands. Both these options accept a list of strings. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sf</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span>

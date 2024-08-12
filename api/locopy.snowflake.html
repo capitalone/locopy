@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.snowflake module &mdash; locopy 0.5.9 documentation</title>
+  <title>locopy.snowflake module &mdash; locopy 0.6.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -13,9 +13,9 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b8460c5c"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -35,7 +35,7 @@
             locopy
           </a>
               <div class="version">
-                0.5.9
+                0.6.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -102,16 +102,16 @@
            <div itemprop="articleBody">
              
   <section id="module-locopy.snowflake">
-<span id="locopy-snowflake-module"></span><h1>locopy.snowflake module<a class="headerlink" href="#module-locopy.snowflake" title="Permalink to this heading">¶</a></h1>
-<p>Snowflake Module
-Module to wrap a database adapter into a Snowflake class which can be used to connect
+<span id="locopy-snowflake-module"></span><h1>locopy.snowflake module<a class="headerlink" href="#module-locopy.snowflake" title="Link to this heading">¶</a></h1>
+<p>Snowflake Module.</p>
+<p>Module to wrap a database adapter into a Snowflake class which can be used to connect
 to Snowflake, and run arbitrary code.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="locopy.snowflake.Snowflake">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">locopy.snowflake.</span></span><span class="sig-name descname"><span class="pre">Snowflake</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kms_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dbapi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_yaml</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.Snowflake" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">locopy.snowflake.</span></span><span class="sig-name descname"><span class="pre">Snowflake</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kms_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dbapi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_yaml</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.Snowflake" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="locopy.s3.html#locopy.s3.S3" title="locopy.s3.S3"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3</span></code></a>, <a class="reference internal" href="locopy.database.html#locopy.database.Database" title="locopy.database.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></a></p>
-<p>Locopy class which manages connections to Snowflake.  Inherits <code class="docutils literal notranslate"><span class="pre">Database</span></code> and implements
-the specific <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span></code> functionality.</p>
+<p>Locopy class which manages connections to Snowflake.  Inherits <code class="docutils literal notranslate"><span class="pre">Database</span></code>.</p>
+<p>Implements the specific <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span></code> functionality.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -131,7 +131,7 @@ plan on using. It will throw an exception if something is passed through which i
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="locopy.snowflake.Snowflake.profile">
-<span class="sig-name descname"><span class="pre">profile</span></span><a class="headerlink" href="#locopy.snowflake.Snowflake.profile" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">profile</span></span><a class="headerlink" href="#locopy.snowflake.Snowflake.profile" title="Link to this definition">¶</a></dt>
 <dd><p>String representing the AWS profile for authentication</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -142,7 +142,7 @@ plan on using. It will throw an exception if something is passed through which i
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="locopy.snowflake.Snowflake.kms_key">
-<span class="sig-name descname"><span class="pre">kms_key</span></span><a class="headerlink" href="#locopy.snowflake.Snowflake.kms_key" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">kms_key</span></span><a class="headerlink" href="#locopy.snowflake.Snowflake.kms_key" title="Link to this definition">¶</a></dt>
 <dd><p>String representing the s3 kms key</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -153,7 +153,7 @@ plan on using. It will throw an exception if something is passed through which i
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="locopy.snowflake.Snowflake.session">
-<span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#locopy.snowflake.Snowflake.session" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#locopy.snowflake.Snowflake.session" title="Link to this definition">¶</a></dt>
 <dd><p>Hold the AWS session credentials / info</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -164,7 +164,7 @@ plan on using. It will throw an exception if something is passed through which i
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="locopy.snowflake.Snowflake.s3">
-<span class="sig-name descname"><span class="pre">s3</span></span><a class="headerlink" href="#locopy.snowflake.Snowflake.s3" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">s3</span></span><a class="headerlink" href="#locopy.snowflake.Snowflake.s3" title="Link to this definition">¶</a></dt>
 <dd><p>Hold the S3 client object which is used to upload/delete files to S3</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -175,7 +175,7 @@ plan on using. It will throw an exception if something is passed through which i
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="locopy.snowflake.Snowflake.dbapi">
-<span class="sig-name descname"><span class="pre">dbapi</span></span><a class="headerlink" href="#locopy.snowflake.Snowflake.dbapi" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">dbapi</span></span><a class="headerlink" href="#locopy.snowflake.Snowflake.dbapi" title="Link to this definition">¶</a></dt>
 <dd><p>database adapter which is Python DBAPI 2.0 compliant (snowflake.connector)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -186,7 +186,7 @@ plan on using. It will throw an exception if something is passed through which i
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="locopy.snowflake.Snowflake.connection">
-<span class="sig-name descname"><span class="pre">connection</span></span><a class="headerlink" href="#locopy.snowflake.Snowflake.connection" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">connection</span></span><a class="headerlink" href="#locopy.snowflake.Snowflake.connection" title="Link to this definition">¶</a></dt>
 <dd><p>Dictionary of database connection items</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -197,7 +197,7 @@ plan on using. It will throw an exception if something is passed through which i
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="locopy.snowflake.Snowflake.conn">
-<span class="sig-name descname"><span class="pre">conn</span></span><a class="headerlink" href="#locopy.snowflake.Snowflake.conn" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">conn</span></span><a class="headerlink" href="#locopy.snowflake.Snowflake.conn" title="Link to this definition">¶</a></dt>
 <dd><p>DBAPI connection instance</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -208,7 +208,7 @@ plan on using. It will throw an exception if something is passed through which i
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="locopy.snowflake.Snowflake.cursor">
-<span class="sig-name descname"><span class="pre">cursor</span></span><a class="headerlink" href="#locopy.snowflake.Snowflake.cursor" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">cursor</span></span><a class="headerlink" href="#locopy.snowflake.Snowflake.cursor" title="Link to this definition">¶</a></dt>
 <dd><p>DBAPI cursor instance</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -229,9 +229,9 @@ plan on using. It will throw an exception if something is passed through which i
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="locopy.snowflake.Snowflake.connect">
-<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.connect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a connection to the Snowflake cluster by
-setting the values of the <code class="docutils literal notranslate"><span class="pre">conn</span></code> and <code class="docutils literal notranslate"><span class="pre">cursor</span></code> attributes.</p>
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.connect" title="Link to this definition">¶</a></dt>
+<dd><p>Create a connection to the Snowflake cluster.</p>
+<p>Setg the values of the <code class="docutils literal notranslate"><span class="pre">conn</span></code> and <code class="docutils literal notranslate"><span class="pre">cursor</span></code> attributes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.DBError" title="locopy.errors.DBError"><strong>DBError</strong></a> – If there is a problem establishing a connection to Snowflake.</p>
@@ -241,10 +241,10 @@ setting the values of the <code class="docutils literal notranslate"><span class
 
 <dl class="py method">
 <dt class="sig sig-object py" id="locopy.snowflake.Snowflake.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Executes the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span> <span class="pre">&lt;table&gt;</span></code> command to load CSV files from a stage into
-a Snowflake table. If <code class="docutils literal notranslate"><span class="pre">file_type</span> <span class="pre">==</span> <span class="pre">csv</span></code> and <code class="docutils literal notranslate"><span class="pre">format_options</span> <span class="pre">==</span> <span class="pre">None</span></code>, <code class="docutils literal notranslate"><span class="pre">format_options</span></code>
-will default to: <code class="docutils literal notranslate"><span class="pre">[&quot;FIELD_DELIMITER='|'&quot;,</span> <span class="pre">&quot;SKIP_HEADER=0&quot;]</span></code></p>
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.copy" title="Link to this definition">¶</a></dt>
+<dd><p>Load files from a stage into a Snowflake table.</p>
+<p>Execute the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span> <span class="pre">&lt;table&gt;</span></code> command to  If <code class="docutils literal notranslate"><span class="pre">file_type</span> <span class="pre">==</span> <span class="pre">csv</span></code> and <code class="docutils literal notranslate"><span class="pre">format_options</span> <span class="pre">==</span> <span class="pre">None</span></code>, <code class="docutils literal notranslate"><span class="pre">format_options</span></code>
+will default to: <code class="docutils literal notranslate"><span class="pre">[&quot;FIELD_DELIMITER='|'&quot;,</span> <span class="pre">&quot;SKIP_HEADER=0&quot;]</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -266,7 +266,7 @@ will typically be in the format of <code class="docutils literal notranslate"><s
 
 <dl class="py method">
 <dt class="sig sig-object py" id="locopy.snowflake.Snowflake.download_from_internal">
-<span class="sig-name descname"><span class="pre">download_from_internal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.download_from_internal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.download_from_internal" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">download_from_internal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.download_from_internal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.download_from_internal" title="Link to this definition">¶</a></dt>
 <dd><p>Download file(s) from a internal stage via the <code class="docutils literal notranslate"><span class="pre">GET</span></code> command.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -282,8 +282,9 @@ working directory (<code class="docutils literal notranslate"><span class="pre">
 
 <dl class="py method">
 <dt class="sig sig-object py" id="locopy.snowflake.Snowflake.insert_dataframe_to_table">
-<span class="sig-name descname"><span class="pre">insert_dataframe_to_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.insert_dataframe_to_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.insert_dataframe_to_table" title="Permalink to this definition">¶</a></dt>
-<dd><p>Insert a Pandas dataframe to an existing table or a new table. In newer versions of the
+<span class="sig-name descname"><span class="pre">insert_dataframe_to_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.insert_dataframe_to_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.insert_dataframe_to_table" title="Link to this definition">¶</a></dt>
+<dd><p>Insert a Pandas dataframe to an existing table or a new table.</p>
+<p>In newer versions of the
 python snowflake connector (v2.1.2+) users can call the <code class="docutils literal notranslate"><span class="pre">write_pandas</span></code> method from the cursor
 directly, <code class="docutils literal notranslate"><span class="pre">insert_dataframe_to_table</span></code> is a custom implementation and does not use
 <code class="docutils literal notranslate"><span class="pre">write_pandas</span></code>. Instead of using <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span></code> the method builds a list of tuples to
@@ -305,8 +306,9 @@ exist and use your own metadata. If your data is significantly large then using
 
 <dl class="py method">
 <dt class="sig sig-object py" id="locopy.snowflake.Snowflake.to_dataframe">
-<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.to_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a dataframe of the last query results. This is just a convenience method. This
+<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.to_dataframe" title="Link to this definition">¶</a></dt>
+<dd><p>Return a dataframe of the last query results.</p>
+<p>This is just a convenience method. This
 method overrides the base classes implementation in favour for the snowflake connectors
 built-in <code class="docutils literal notranslate"><span class="pre">fetch_pandas_all</span></code> when <code class="docutils literal notranslate"><span class="pre">size==None</span></code>. If <code class="docutils literal notranslate"><span class="pre">size</span> <span class="pre">!=</span> <span class="pre">None</span></code> then we will continue
 to use the existing functionality where we iterate through the cursor and build the
@@ -327,10 +329,11 @@ result.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="locopy.snowflake.Snowflake.unload">
-<span class="sig-name descname"><span class="pre">unload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.unload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.unload" title="Permalink to this definition">¶</a></dt>
-<dd><p>Executes the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span> <span class="pre">&lt;location&gt;</span></code> command to export a query/table from
-Snowflake to a stage. If <code class="docutils literal notranslate"><span class="pre">file_type</span> <span class="pre">==</span> <span class="pre">csv</span></code> and <code class="docutils literal notranslate"><span class="pre">format_options</span> <span class="pre">==</span> <span class="pre">None</span></code>, <code class="docutils literal notranslate"><span class="pre">format_options</span></code>
-will default to: <code class="docutils literal notranslate"><span class="pre">[&quot;FIELD_DELIMITER='|'&quot;]</span></code></p>
+<span class="sig-name descname"><span class="pre">unload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.unload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.unload" title="Link to this definition">¶</a></dt>
+<dd><p>Export a query/table from Snowflake to a stage.</p>
+<p>Execute the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span> <span class="pre">&lt;location&gt;</span></code> command.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">file_type</span> <span class="pre">==</span> <span class="pre">csv</span></code> and <code class="docutils literal notranslate"><span class="pre">format_options</span> <span class="pre">==</span> <span class="pre">None</span></code>, <code class="docutils literal notranslate"><span class="pre">format_options</span></code>
+will default to: <code class="docutils literal notranslate"><span class="pre">[&quot;FIELD_DELIMITER='|'&quot;]</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -352,7 +355,7 @@ will default to: <code class="docutils literal notranslate"><span class="pre">[&
 
 <dl class="py method">
 <dt class="sig sig-object py" id="locopy.snowflake.Snowflake.upload_to_internal">
-<span class="sig-name descname"><span class="pre">upload_to_internal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_compress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.upload_to_internal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.upload_to_internal" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">upload_to_internal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_compress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.upload_to_internal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.Snowflake.upload_to_internal" title="Link to this definition">¶</a></dt>
 <dd><p>Upload file(s) to a internal stage via the <code class="docutils literal notranslate"><span class="pre">PUT</span></code> command.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -377,9 +380,9 @@ if <code class="docutils literal notranslate"><span class="pre">False</span></co
 
 <dl class="py function">
 <dt class="sig sig-object py" id="locopy.snowflake.combine_options">
-<span class="sig-prename descclassname"><span class="pre">locopy.snowflake.</span></span><span class="sig-name descname"><span class="pre">combine_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#combine_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.combine_options" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the <code class="docutils literal notranslate"><span class="pre">copy_options</span></code> or <code class="docutils literal notranslate"><span class="pre">format_options</span></code> attribute with spaces in between and as
-a string. If options is <code class="docutils literal notranslate"><span class="pre">None</span></code> then return an empty string.</p>
+<span class="sig-prename descclassname"><span class="pre">locopy.snowflake.</span></span><span class="sig-name descname"><span class="pre">combine_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#combine_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.snowflake.combine_options" title="Link to this definition">¶</a></dt>
+<dd><p>Return the <code class="docutils literal notranslate"><span class="pre">copy_options</span></code> or <code class="docutils literal notranslate"><span class="pre">format_options</span></code> attribute.</p>
+<p>With spaces in between and as a string. If options is <code class="docutils literal notranslate"><span class="pre">None</span></code> then return an empty string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, </em><em>optional</em>) – list of strings which is to be converted into a single string with spaces

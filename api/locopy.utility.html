@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.utility module &mdash; locopy 0.5.9 documentation</title>
+  <title>locopy.utility module &mdash; locopy 0.6.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -13,9 +13,9 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b8460c5c"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -34,7 +34,7 @@
             locopy
           </a>
               <div class="version">
-                0.5.9
+                0.6.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -101,22 +101,22 @@
            <div itemprop="articleBody">
              
   <section id="module-locopy.utility">
-<span id="locopy-utility-module"></span><h1>locopy.utility module<a class="headerlink" href="#module-locopy.utility" title="Permalink to this heading">¶</a></h1>
-<p>Utility Module
-Module which utility functions for use within the application</p>
+<span id="locopy-utility-module"></span><h1>locopy.utility module<a class="headerlink" href="#module-locopy.utility" title="Link to this heading">¶</a></h1>
+<p>Utility Module.</p>
+<p>Module which utility functions for use within the application.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="locopy.utility.ProgressPercentage">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">ProgressPercentage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#ProgressPercentage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.ProgressPercentage" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">ProgressPercentage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#ProgressPercentage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.ProgressPercentage" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>ProgressPercentage class is used by the S3Transfer upload_file callback
-Please see the following url for more information:
-<a class="reference external" href="http://boto3.readthedocs.org/en/latest/reference/customizations/s3.html#ref-s3transfer-usage">http://boto3.readthedocs.org/en/latest/reference/customizations/s3.html#ref-s3transfer-usage</a></p>
+<p>ProgressPercentage class is used by the S3Transfer upload_file callback.</p>
+<p>Please see the following url for more information:
+<a class="reference external" href="http://boto3.readthedocs.org/en/latest/reference/customizations/s3.html#ref-s3transfer-usage">http://boto3.readthedocs.org/en/latest/reference/customizations/s3.html#ref-s3transfer-usage</a>.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="locopy.utility.compress_file">
-<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">compress_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#compress_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.compress_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compresses a file (gzip)</p>
+<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">compress_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#compress_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.compress_file" title="Link to this definition">¶</a></dt>
+<dd><p>Compresses a file (gzip).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -129,8 +129,8 @@ Please see the following url for more information:
 
 <dl class="py function">
 <dt class="sig sig-object py" id="locopy.utility.compress_file_list">
-<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">compress_file_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#compress_file_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.compress_file_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compresses a list of files (gzip) and clean up the old files</p>
+<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">compress_file_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#compress_file_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.compress_file_list" title="Link to this definition">¶</a></dt>
+<dd><p>Compresses a list of files (gzip) and clean up the old files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>file_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List of strings with the file paths of the files to compress</p>
@@ -147,7 +147,7 @@ gz appended)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="locopy.utility.concatenate_files">
-<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">concatenate_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#concatenate_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.concatenate_files" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">concatenate_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#concatenate_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.concatenate_files" title="Link to this definition">¶</a></dt>
 <dd><p>Concatenate a list of files into one file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -165,7 +165,7 @@ gz appended)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="locopy.utility.find_column_type">
-<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">find_column_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warehouse_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#find_column_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.find_column_type" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">find_column_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warehouse_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#find_column_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.find_column_type" title="Link to this definition">¶</a></dt>
 <dd><p>Find data type of each column from the dataframe.</p>
 <p>Following is the list of pandas data types that the function checks and their mapping in sql:</p>
 <blockquote>
@@ -184,7 +184,7 @@ gz appended)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataframe</strong> (<em>Pandas dataframe</em>) – </p></li>
+<li><p><strong>dataframe</strong> (<em>Pandas dataframe</em>)</p></li>
 <li><p><strong>warehouse_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Required to properly determine format of uploaded data, either “snowflake” or “redshift”.</p></li>
 </ul>
 </dd>
@@ -199,9 +199,9 @@ gz appended)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="locopy.utility.get_ignoreheader_number">
-<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">get_ignoreheader_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#get_ignoreheader_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.get_ignoreheader_number" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the <code class="docutils literal notranslate"><span class="pre">number_rows</span></code> from <code class="docutils literal notranslate"><span class="pre">IGNOREHEADER</span> <span class="pre">[</span> <span class="pre">AS</span> <span class="pre">]</span> <span class="pre">number_rows</span></code> This doesn’t not validate
-that the <code class="docutils literal notranslate"><span class="pre">AS</span></code> is valid.</p>
+<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">get_ignoreheader_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#get_ignoreheader_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.get_ignoreheader_number" title="Link to this definition">¶</a></dt>
+<dd><p>Return the <code class="docutils literal notranslate"><span class="pre">number_rows</span></code> from <code class="docutils literal notranslate"><span class="pre">IGNOREHEADER</span> <span class="pre">[</span> <span class="pre">AS</span> <span class="pre">]</span> <span class="pre">number_rows</span></code>.</p>
+<p>This doesn’t validate that the <code class="docutils literal notranslate"><span class="pre">AS</span></code> is valid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>options</strong> (<em>A list</em><em> (</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>) of </em><em>copy options that should be appended to the COPY</em>) – statement.</p>
@@ -220,9 +220,10 @@ that the <code class="docutils literal notranslate"><span class="pre">AS</span><
 
 <dl class="py function">
 <dt class="sig sig-object py" id="locopy.utility.read_config_yaml">
-<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">read_config_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_yaml</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#read_config_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.read_config_yaml" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads a configuration YAML file to populate the database
-connection attributes, and validate required ones. Example:</p>
+<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">read_config_yaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_yaml</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#read_config_yaml"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.read_config_yaml" title="Link to this definition">¶</a></dt>
+<dd><p>Read a configuration YAML file.</p>
+<p>Populate the database connection attributes, and validate required ones.</p>
+<p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">host</span><span class="p">:</span> <span class="n">my</span><span class="o">.</span><span class="n">redshift</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">com</span>
 <span class="n">port</span><span class="p">:</span> <span class="mi">5439</span>
 <span class="n">dbname</span><span class="p">:</span> <span class="n">db</span>
@@ -249,7 +250,7 @@ pointer to an open file object</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="locopy.utility.split_file">
-<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">split_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#split_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.split_file" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">split_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#split_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.split_file" title="Link to this definition">¶</a></dt>
 <dd><p>Split a file into equal files by lines.</p>
 <p>For example: <code class="docutils literal notranslate"><span class="pre">myinputfile.txt</span></code> will be split into <code class="docutils literal notranslate"><span class="pre">myoutputfile.txt.01</span></code>
 , <code class="docutils literal notranslate"><span class="pre">`myoutputfile.txt.02</span></code> etc..</p>
@@ -277,7 +278,7 @@ the files as they are split. Defaults to 0</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="locopy.utility.write_file">
-<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">write_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#write_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.write_file" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">write_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delimiter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'w'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#write_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.write_file" title="Link to this definition">¶</a></dt>
 <dd><p>Write data to a file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

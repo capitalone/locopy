@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy package &mdash; locopy 0.5.9 documentation</title>
+  <title>locopy package &mdash; locopy 0.6.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -13,9 +13,9 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b8460c5c"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/documentation_options.js?v=8fa8b3e9"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -35,7 +35,7 @@
             locopy
           </a>
               <div class="version">
-                0.5.9
+                0.6.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -67,7 +67,13 @@
 <li class="toctree-l4"><a class="reference internal" href="locopy.utility.html">locopy.utility module</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#module-locopy">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-locopy">Module contents</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#locopy.Database"><code class="docutils literal notranslate"><span class="pre">Database</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#locopy.Redshift"><code class="docutils literal notranslate"><span class="pre">Redshift</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#locopy.S3"><code class="docutils literal notranslate"><span class="pre">S3</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#locopy.Snowflake"><code class="docutils literal notranslate"><span class="pre">Snowflake</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -101,9 +107,9 @@
            <div itemprop="articleBody">
              
   <section id="locopy-package">
-<h1>locopy package<a class="headerlink" href="#locopy-package" title="Permalink to this heading">¶</a></h1>
+<h1>locopy package<a class="headerlink" href="#locopy-package" title="Link to this heading">¶</a></h1>
 <section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="locopy.database.html">locopy.database module</a><ul>
@@ -219,7 +225,930 @@
 </div>
 </section>
 <section id="module-locopy">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-locopy" title="Permalink to this heading">¶</a></h2>
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-locopy" title="Link to this heading">¶</a></h2>
+<p>A Python library to assist with ETL processing.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="locopy.Database">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">locopy.</span></span><span class="sig-name descname"><span class="pre">Database</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbapi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_yaml</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Database" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Base class for all DBAPI 2 database connectors which will inherit this functionality.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Database</span></code> class will manage connections and handle executing queries.
+Most of the functionality should work out of the box for classes which inherit minus the
+abstract method for <code class="docutils literal notranslate"><span class="pre">connect</span></code> which may vary across databases.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dbapi</strong> (<em>DBAPI 2 module</em><em>, </em><em>optional</em>) – A database adapter which is Python DB API 2.0 compliant
+(<code class="docutils literal notranslate"><span class="pre">psycopg2</span></code>, <code class="docutils literal notranslate"><span class="pre">pg8000</span></code>, etc.)</p></li>
+<li><p><strong>config_yaml</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – String representing the YAML file location of the database connection keyword arguments. It
+is worth noting that this should only contain valid arguments for the database connector you
+plan on using. It will throw an exception if something is passed through which isn’t valid.</p></li>
+<li><p><strong>**kwargs</strong> – Database connection keyword arguments.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Database.dbapi">
+<span class="sig-name descname"><span class="pre">dbapi</span></span><a class="headerlink" href="#locopy.Database.dbapi" title="Link to this definition">¶</a></dt>
+<dd><p>database adapter which is Python DBAPI 2.0 compliant</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DBAPI 2 module</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Database.connection">
+<span class="sig-name descname"><span class="pre">connection</span></span><a class="headerlink" href="#locopy.Database.connection" title="Link to this definition">¶</a></dt>
+<dd><p>Dictionary of database connection items</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Database.conn">
+<span class="sig-name descname"><span class="pre">conn</span></span><a class="headerlink" href="#locopy.Database.conn" title="Link to this definition">¶</a></dt>
+<dd><p>DBAPI connection instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dbapi.connection</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Database.cursor">
+<span class="sig-name descname"><span class="pre">cursor</span></span><a class="headerlink" href="#locopy.Database.cursor" title="Link to this definition">¶</a></dt>
+<dd><p>DBAPI cursor instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dbapi.cursor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.CredentialsError" title="locopy.errors.CredentialsError"><strong>CredentialsError</strong></a> – Database credentials are not provided, valid, or both kwargs and a YAML config was provided.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Database.column_names">
+<span class="sig-name descname"><span class="pre">column_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.column_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Database.column_names" title="Link to this definition">¶</a></dt>
+<dd><p>Pull column names out of the cursor description.</p>
+<p>Depending on the DBAPI, it could return column names as bytes: <code class="docutils literal notranslate"><span class="pre">b'column_name'</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List of column names, all in lower-case</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Database.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Database.connect" title="Link to this definition">¶</a></dt>
+<dd><p>Create a connection to a database.</p>
+<p>Sets the values of the <code class="docutils literal notranslate"><span class="pre">conn</span></code> and <code class="docutils literal notranslate"><span class="pre">cursor</span></code> attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.DBError" title="locopy.errors.DBError"><strong>DBError</strong></a> – If there is a problem establishing a connection.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Database.disconnect">
+<span class="sig-name descname"><span class="pre">disconnect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.disconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Database.disconnect" title="Link to this definition">¶</a></dt>
+<dd><p>Terminate the connection.</p>
+<p>Closes the values of the <code class="docutils literal notranslate"><span class="pre">conn</span></code> and <code class="docutils literal notranslate"><span class="pre">cursor</span></code> attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.DBError" title="locopy.errors.DBError"><strong>DBError</strong></a> – If there is a problem disconnecting from the database.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Database.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sql</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">commit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">many</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Database.execute" title="Link to this definition">¶</a></dt>
+<dd><p>Execute some sql against the connection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sql</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – SQL to run against the connection.  Could be one or multiple
+statements.</p></li>
+<li><p><strong>commit</strong> (<em>Boolean</em><em>, </em><em>default True</em>) – Whether to “commit” the commands to the cluster immediately or not.</p></li>
+<li><p><strong>params</strong> (<em>iterable</em><em> of </em><em>parameters</em>) – Parameters to submit with the query. The exact syntax will depend
+on the database adapter you are using</p></li>
+<li><p><strong>many</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>default False</em>) – Whether to execute the script as an “execute many”</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>default True</em>) – Whether to print executed query</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.DBError" title="locopy.errors.DBError"><strong>DBError</strong></a> – if a problem occurs executing the <code class="docutils literal notranslate"><span class="pre">sql</span></code> statement</p></li>
+<li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.DBError" title="locopy.errors.DBError"><strong>DBError</strong></a> – If a connection to the database cannot be made</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Database.to_dataframe">
+<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Database.to_dataframe" title="Link to this definition">¶</a></dt>
+<dd><p>Return a dataframe of the last query results.</p>
+<p>This imports Pandas in here, so that it’s not needed for other use cases.  This is just a
+convenience method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – Chunk size to fetch.  Defaults to None.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dataframe with lowercase column names.  Returns None if no fetched
+result.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Database.to_dict">
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.to_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Database.to_dict" title="Link to this definition">¶</a></dt>
+<dd><p>Generate dictionaries of rows.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Yields<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>dict</em> – Each row, encoded as a dict.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="locopy.Redshift">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">locopy.</span></span><span class="sig-name descname"><span class="pre">Redshift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kms_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dbapi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_yaml</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Redshift" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="locopy.s3.html#locopy.s3.S3" title="locopy.s3.S3"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3</span></code></a>, <a class="reference internal" href="locopy.database.html#locopy.database.Database" title="locopy.database.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></a></p>
+<p>Locopy class which manages connections to Redshift.</p>
+<p>Inherits <code class="docutils literal notranslate"><span class="pre">Database</span></code> and implements the specific <code class="docutils literal notranslate"><span class="pre">COPY</span></code> and <code class="docutils literal notranslate"><span class="pre">UNLOAD</span></code> functionality.</p>
+<p>If any of host, port, dbname, user and password are not provided, a config_yaml file must be
+provided with those parameters in it. Please note ssl is always enforced when connecting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>profile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – The name of the AWS profile to use which is typical stored in the
+<code class="docutils literal notranslate"><span class="pre">credentials</span></code> file.  You can also set environment variable
+<code class="docutils literal notranslate"><span class="pre">AWS_DEFAULT_PROFILE</span></code> which would be used instead.</p></li>
+<li><p><strong>kms_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – The KMS key to use for encryption
+If kms_key Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the AES256 ServerSideEncryption
+will be used.</p></li>
+<li><p><strong>dbapi</strong> (<em>DBAPI 2 module</em><em>, </em><em>optional</em>) – A database adapter which is Python DB API 2.0 compliant
+(<code class="docutils literal notranslate"><span class="pre">psycopg2</span></code>, <code class="docutils literal notranslate"><span class="pre">pg8000</span></code>, etc.)</p></li>
+<li><p><strong>config_yaml</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – String representing the YAML file location of the database connection keyword arguments. It
+is worth noting that this should only contain valid arguments for the database connector you
+plan on using. It will throw an exception if something is passed through which isn’t valid.</p></li>
+<li><p><strong>**kwargs</strong> – Database connection keyword arguments.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Redshift.profile">
+<span class="sig-name descname"><span class="pre">profile</span></span><a class="headerlink" href="#locopy.Redshift.profile" title="Link to this definition">¶</a></dt>
+<dd><p>String representing the AWS profile for authentication</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Redshift.kms_key">
+<span class="sig-name descname"><span class="pre">kms_key</span></span><a class="headerlink" href="#locopy.Redshift.kms_key" title="Link to this definition">¶</a></dt>
+<dd><p>String representing the s3 kms key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Redshift.session">
+<span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#locopy.Redshift.session" title="Link to this definition">¶</a></dt>
+<dd><p>Hold the AWS session credentials / info</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>boto3.Session</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Redshift.s3">
+<span class="sig-name descname"><span class="pre">s3</span></span><a class="headerlink" href="#locopy.Redshift.s3" title="Link to this definition">¶</a></dt>
+<dd><p>Hold the S3 client object which is used to upload/delete files to S3</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>botocore.client.S3</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Redshift.dbapi">
+<span class="sig-name descname"><span class="pre">dbapi</span></span><a class="headerlink" href="#locopy.Redshift.dbapi" title="Link to this definition">¶</a></dt>
+<dd><p>database adapter which is Python DBAPI 2.0 compliant</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DBAPI 2 module</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Redshift.connection">
+<span class="sig-name descname"><span class="pre">connection</span></span><a class="headerlink" href="#locopy.Redshift.connection" title="Link to this definition">¶</a></dt>
+<dd><p>Dictionary of database connection items</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Redshift.conn">
+<span class="sig-name descname"><span class="pre">conn</span></span><a class="headerlink" href="#locopy.Redshift.conn" title="Link to this definition">¶</a></dt>
+<dd><p>DBAPI connection instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dbapi.connection</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Redshift.cursor">
+<span class="sig-name descname"><span class="pre">cursor</span></span><a class="headerlink" href="#locopy.Redshift.cursor" title="Link to this definition">¶</a></dt>
+<dd><p>DBAPI cursor instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dbapi.cursor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.CredentialsError" title="locopy.errors.CredentialsError"><strong>CredentialsError</strong></a> – Database credentials are not provided or valid</p></li>
+<li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3Error" title="locopy.errors.S3Error"><strong>S3Error</strong></a> – Error initializing AWS Session (ex: invalid profile)</p></li>
+<li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3CredentialsError" title="locopy.errors.S3CredentialsError"><strong>S3CredentialsError</strong></a> – Issue with AWS credentials</p></li>
+<li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3InitializationError" title="locopy.errors.S3InitializationError"><strong>S3InitializationError</strong></a> – Issue initializing S3 session</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Redshift.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Redshift.connect" title="Link to this definition">¶</a></dt>
+<dd><p>Create a connection to the Redshift cluster.</p>
+<p>Sets the values of the <code class="docutils literal notranslate"><span class="pre">conn</span></code> and <code class="docutils literal notranslate"><span class="pre">cursor</span></code> attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.DBError" title="locopy.errors.DBError"><strong>DBError</strong></a> – If there is a problem establishing a connection to Redshift.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Redshift.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'|'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Redshift.copy" title="Link to this definition">¶</a></dt>
+<dd><p>Execute the COPY command to load files from S3 into a Redshift table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The Redshift table name which is being loaded</p></li>
+<li><p><strong>s3path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – S3 path of the input file. eg: <code class="docutils literal notranslate"><span class="pre">s3://path/to/file.csv</span></code></p></li>
+<li><p><strong>delim</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – None for non-delimited file type. Defaults to |</p></li>
+<li><p><strong>copy_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List of strings of copy options to provide to the <code class="docutils literal notranslate"><span class="pre">COPY</span></code> command.
+Will have default options added in.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.DBError" title="locopy.errors.DBError"><strong>DBError</strong></a> – If there is a problem executing the COPY command, a connection
+    has not been initalized, or credentials are wrong.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Redshift.insert_dataframe_to_table">
+<span class="sig-name descname"><span class="pre">insert_dataframe_to_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.insert_dataframe_to_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Redshift.insert_dataframe_to_table" title="Link to this definition">¶</a></dt>
+<dd><p>Insert a Pandas dataframe to an existing table or a new table.</p>
+<p><cite>executemany</cite> in psycopg2 and pg8000 has very poor performance in terms of running speed.
+To overcome this issue, we instead format the insert query and then run <cite>execute</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe</strong> (<em>Pandas Dataframe</em>) – The pandas dataframe which needs to be inserted.</p></li>
+<li><p><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The name of the Snowflake table which is being inserted.</p></li>
+<li><p><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, </em><em>optional</em>) – The list of columns which will be uploaded.</p></li>
+<li><p><strong>create</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>default False</em>) – Boolean flag if a new table need to be created and insert to.</p></li>
+<li><p><strong>metadata</strong> (<em>dictionary</em><em>, </em><em>optional</em>) – If metadata==None, it will be generated based on data</p></li>
+<li><p><strong>batch_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>default 1000</em>) – The number of records to insert in each batch</p></li>
+<li><p><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>default False</em>) – Whether or not to print out insert query</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Redshift.load_and_copy">
+<span class="sig-name descname"><span class="pre">load_and_copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'|'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_s3_after</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">splits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.load_and_copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Redshift.load_and_copy" title="Link to this definition">¶</a></dt>
+<dd><p>Load a file to S3, then copies into Redshift.</p>
+<p>Has options to split a single file into multiple files, compress using gzip, and
+upload to an S3 bucket with folders within the bucket.</p>
+<p class="rubric">Notes</p>
+<p>If you are using folders in your S3 bucket please be aware of having
+special chars or backward slashes (<code class="docutils literal notranslate"><span class="pre">\</span></code>). These may cause the file to
+upload but fail on the <code class="docutils literal notranslate"><span class="pre">COPY</span></code> command.</p>
+<p>By default <cite>locopy</cite> will handle the splitting of files for you, in order to reduce
+complexity in uploading to s3 and generating the <cite>COPY</cite> command.</p>
+<p>It is critical to ensure that the S3 location you are using that it only contains the files
+you want to load. In the case of a “folder” it should only contain the files you want to
+load. For a bucket the file name should be unique enough as any extensions get striped out
+in favour of the file prefix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>local_file</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The local file which you wish to copy. This can be a folder for non-delimited file type like parquet</p></li>
+<li><p><strong>s3_bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</p></li>
+<li><p><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The Redshift table name which is being loaded</p></li>
+<li><p><strong>delim</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – Delimiter for Redshift <code class="docutils literal notranslate"><span class="pre">COPY</span></code> command. None for non-delimited files. Defaults to <code class="docutils literal notranslate"><span class="pre">|</span></code>.</p></li>
+<li><p><strong>copy_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, </em><em>optional</em>) – A list (str) of copy options that should be appended to the COPY
+statement.  The class will insert a default for DATEFORMAT,
+COMPUPDATE and TRUNCATECOLUMNS if they are not provided in this
+list if PARQUET is not part of the options passed in
+See <a class="reference external" href="http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-conversion.html">http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-conversion.html</a>
+for options which could be passed.</p></li>
+<li><p><strong>delete_s3_after</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Lets you specify to delete the S3 file after transfer if you want.</p></li>
+<li><p><strong>splits</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – Number of splits to perform for paralell loading into Redshift.
+Must be greater than <code class="docutils literal notranslate"><span class="pre">0</span></code>. Recommended that this number should be
+less than <code class="docutils literal notranslate"><span class="pre">100</span></code>. Defaults to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+<li><p><strong>compress</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to compress the output file with <code class="docutils literal notranslate"><span class="pre">gzip</span></code> or leave it raw.
+Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+<li><p><strong>s3_folder</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – The AWS S3 folder of the bucket which you are copying the local
+file to. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>. Please note that you must follow the
+<code class="docutils literal notranslate"><span class="pre">/</span></code> convention when using subfolders.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Redshift.unload">
+<span class="sig-name descname"><span class="pre">unload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unload_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.unload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Redshift.unload" title="Link to this definition">¶</a></dt>
+<dd><p>Execute the UNLOAD command to export a query from Redshift to S3.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – A query to be unloaded to S3.</p></li>
+<li><p><strong>s3path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – S3 path for the output files.</p></li>
+<li><p><strong>unload_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List of string unload options.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.DBError" title="locopy.errors.DBError"><strong>DBError</strong></a> – If there is a problem executing the UNLOAD command, a connection
+    has not been initalized, or credentials are wrong.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Redshift.unload_and_copy">
+<span class="sig-name descname"><span class="pre">unload_and_copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s3_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw_unload_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">export_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">','</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete_s3_after</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel_off</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unload_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.unload_and_copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Redshift.unload_and_copy" title="Link to this definition">¶</a></dt>
+<dd><p>Unload data from Redshift.</p>
+<p>With options to write to a flat file and store on S3.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – A query to be unloaded to S3. A <code class="docutils literal notranslate"><span class="pre">SELECT</span></code> query</p></li>
+<li><p><strong>s3_bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The AWS S3 bucket where the data from the query will be unloaded.</p></li>
+<li><p><strong>s3_folder</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – The AWS S3 folder of the bucket where the data from the query will
+be unloaded. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>. Please note that you must follow
+the <code class="docutils literal notranslate"><span class="pre">/</span></code> convention when using subfolders.</p></li>
+<li><p><strong>raw_unload_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – The local path where the files will be copied to. Defaults to the current working
+directory (<code class="docutils literal notranslate"><span class="pre">os.getcwd()</span></code>).</p></li>
+<li><p><strong>export_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – If a <code class="docutils literal notranslate"><span class="pre">export_path</span></code> is provided, function will concatenate and write the unloaded
+files to this path as a single file. If your file is very large you may not want to
+use this option.</p></li>
+<li><p><strong>delim</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – Delimiter for unloading and file writing. Defaults to a comma. If None, this option will be ignored</p></li>
+<li><p><strong>delete_s3_after</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Delete the files from S3 after unloading. Defaults to True.</p></li>
+<li><p><strong>parallel_off</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Unload data to S3 as a single file. Defaults to False.
+Not recommended as it will decrease speed.</p></li>
+<li><p><strong>unload_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, </em><em>optional</em>) – A list of unload options that should be appended to the UNLOAD
+statement.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.12)"><strong>Exception</strong></a> – If no files are generated from the unload.
+    If the column names from the query cannot be retrieved.
+    If there is a issue with the execution of any of the queries.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="locopy.S3">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">locopy.</span></span><span class="sig-name descname"><span class="pre">S3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kms_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.S3" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>S3 wrapper class.</p>
+<p>Utilizes the boto3 library to push files to an S3 bucket.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>profile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – The name of the AWS profile to use which is typical stored in the
+<code class="docutils literal notranslate"><span class="pre">credentials</span></code> file.  You can also set environment variable
+<code class="docutils literal notranslate"><span class="pre">AWS_DEFAULT_PROFILE</span></code> which would be used instead.</p></li>
+<li><p><strong>kms_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – The KMS key to use for encryption
+If kms_key Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the AES256 ServerSideEncryption
+will be used.</p></li>
+<li><p><strong>**kwargs</strong> – Optional keyword arguments.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.S3.profile">
+<span class="sig-name descname"><span class="pre">profile</span></span><a class="headerlink" href="#locopy.S3.profile" title="Link to this definition">¶</a></dt>
+<dd><p>String representing the AWS profile for authentication</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.S3.kms_key">
+<span class="sig-name descname"><span class="pre">kms_key</span></span><a class="headerlink" href="#locopy.S3.kms_key" title="Link to this definition">¶</a></dt>
+<dd><p>String representing the s3 kms key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.S3.session">
+<span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#locopy.S3.session" title="Link to this definition">¶</a></dt>
+<dd><p>Hold the AWS session credentials / info</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>boto3.Session</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.S3.s3">
+<span class="sig-name descname"><span class="pre">s3</span></span><a class="headerlink" href="#locopy.S3.s3" title="Link to this definition">¶</a></dt>
+<dd><p>Hold the S3 client object which is used to upload/delete files to S3</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>botocore.client.S3</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3Error" title="locopy.errors.S3Error"><strong>S3Error</strong></a> – Error initializing AWS Session (ex: invalid profile)</p></li>
+<li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3CredentialsError" title="locopy.errors.S3CredentialsError"><strong>S3CredentialsError</strong></a> – Issue with AWS credentials</p></li>
+<li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3InitializationError" title="locopy.errors.S3InitializationError"><strong>S3InitializationError</strong></a> – Issue initializing S3 session</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.S3.delete_from_s3">
+<span class="sig-name descname"><span class="pre">delete_from_s3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.delete_from_s3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.S3.delete_from_s3" title="Link to this definition">¶</a></dt>
+<dd><p>Delete a file from an S3 bucket.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The AWS S3 bucket from which you are deleting the file.</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The name of the S3 object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3DeletionError" title="locopy.errors.S3DeletionError"><strong>S3DeletionError</strong></a> – If there is a issue deleting from the S3 bucket</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.S3.delete_list_from_s3">
+<span class="sig-name descname"><span class="pre">delete_list_from_s3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s3_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.delete_list_from_s3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.S3.delete_list_from_s3" title="Link to this definition">¶</a></dt>
+<dd><p>Delete a list of files from an S3 bucket.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s3_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List of strings with the s3 paths of the files to delete. The strings should not include
+the <cite>s3://</cite> scheme.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.S3.download_from_s3">
+<span class="sig-name descname"><span class="pre">download_from_s3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.download_from_s3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.S3.download_from_s3" title="Link to this definition">¶</a></dt>
+<dd><p>Download a file from a S3 bucket.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The key to name the S3 object.</p></li>
+<li><p><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The local file which you wish to copy to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3DownloadError" title="locopy.errors.S3DownloadError"><strong>S3DownloadError</strong></a> – If there is a issue downloading to the S3 bucket</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.S3.download_list_from_s3">
+<span class="sig-name descname"><span class="pre">download_list_from_s3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s3_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.download_list_from_s3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.S3.download_list_from_s3" title="Link to this definition">¶</a></dt>
+<dd><p>Download a list of files from s3.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s3_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List of strings with the s3 paths of the files to download</p></li>
+<li><p><strong>local_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – The local path where the files will be copied to. Defualts to the current working
+directory (<code class="docutils literal notranslate"><span class="pre">os.getcwd()</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a list of strings of the local file names</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.S3.parse_s3_url">
+<span class="sig-name descname"><span class="pre">parse_s3_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s3_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.parse_s3_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.S3.parse_s3_url" title="Link to this definition">¶</a></dt>
+<dd><p>Extract the bucket and key from a s3 url.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s3_url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – s3 url. The string can include the <cite>s3://</cite> scheme (which is disgarded)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>bucket</strong> (<em>str</em>) – s3 bucket</p></li>
+<li><p><strong>key</strong> (<em>str</em>) – s3 key</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.S3.upload_list_to_s3">
+<span class="sig-name descname"><span class="pre">upload_list_to_s3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.upload_list_to_s3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.S3.upload_list_to_s3" title="Link to this definition">¶</a></dt>
+<dd><p>Upload a list of files to a S3 bucket.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>local_list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List of strings with the file paths of the files to upload</p></li>
+<li><p><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</p></li>
+<li><p><strong>folder</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – The AWS S3 folder of the bucket which you are copying the local
+files to. Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code>. Please note that you must follow the
+<code class="docutils literal notranslate"><span class="pre">/</span></code> convention when using subfolders.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Returns a list of the generated S3 bucket and keys of the files which were uploaded. The
+<code class="docutils literal notranslate"><span class="pre">S3://</span></code> part is NOT include. The output would look like the following:
+<code class="docutils literal notranslate"><span class="pre">[&quot;my-bucket/key1&quot;,</span> <span class="pre">&quot;my-bucket/key2&quot;,</span> <span class="pre">...]</span></code></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)">list</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>There is a assumption that if you are loading multiple files (via <cite>splits</cite>) it follows a
+structure such as <cite>file_name.extension.#</cite> (<cite>#</cite> splits). It allows for the <cite>COPY</cite> statement
+to use the key prefix vs specificing an exact file name. The returned list helps with this
+process downstream.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.S3.upload_to_s3">
+<span class="sig-name descname"><span class="pre">upload_to_s3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bucket</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/s3.html#S3.upload_to_s3"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.S3.upload_to_s3" title="Link to this definition">¶</a></dt>
+<dd><p>Upload a file to a S3 bucket.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The local file which you wish to copy.</p></li>
+<li><p><strong>bucket</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The AWS S3 bucket which you are copying the local file to.</p></li>
+<li><p><strong>key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The key to name the S3 object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3UploadError" title="locopy.errors.S3UploadError"><strong>S3UploadError</strong></a> – If there is a issue uploading to the S3 bucket</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="locopy.Snowflake">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">locopy.</span></span><span class="sig-name descname"><span class="pre">Snowflake</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kms_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dbapi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_yaml</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Snowflake" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="locopy.s3.html#locopy.s3.S3" title="locopy.s3.S3"><code class="xref py py-class docutils literal notranslate"><span class="pre">S3</span></code></a>, <a class="reference internal" href="locopy.database.html#locopy.database.Database" title="locopy.database.Database"><code class="xref py py-class docutils literal notranslate"><span class="pre">Database</span></code></a></p>
+<p>Locopy class which manages connections to Snowflake.  Inherits <code class="docutils literal notranslate"><span class="pre">Database</span></code>.</p>
+<p>Implements the specific <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span></code> functionality.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>profile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – The name of the AWS profile to use which is typically stored in the
+<code class="docutils literal notranslate"><span class="pre">credentials</span></code> file.  You can also set environment variable
+<code class="docutils literal notranslate"><span class="pre">AWS_DEFAULT_PROFILE</span></code> which would be used instead.</p></li>
+<li><p><strong>kms_key</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – The KMS key to use for encryption
+If kms_key Defaults to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the AES256 ServerSideEncryption
+will be used.</p></li>
+<li><p><strong>dbapi</strong> (<em>DBAPI 2 module</em><em>, </em><em>optional</em>) – A database adapter which is Python DB API 2.0 compliant (<code class="docutils literal notranslate"><span class="pre">snowflake.connector</span></code>)</p></li>
+<li><p><strong>config_yaml</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – String representing the YAML file location of the database connection keyword arguments. It
+is worth noting that this should only contain valid arguments for the database connector you
+plan on using. It will throw an exception if something is passed through which isn’t valid.</p></li>
+<li><p><strong>**kwargs</strong> – Database connection keyword arguments.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Snowflake.profile">
+<span class="sig-name descname"><span class="pre">profile</span></span><a class="headerlink" href="#locopy.Snowflake.profile" title="Link to this definition">¶</a></dt>
+<dd><p>String representing the AWS profile for authentication</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Snowflake.kms_key">
+<span class="sig-name descname"><span class="pre">kms_key</span></span><a class="headerlink" href="#locopy.Snowflake.kms_key" title="Link to this definition">¶</a></dt>
+<dd><p>String representing the s3 kms key</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Snowflake.session">
+<span class="sig-name descname"><span class="pre">session</span></span><a class="headerlink" href="#locopy.Snowflake.session" title="Link to this definition">¶</a></dt>
+<dd><p>Hold the AWS session credentials / info</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>boto3.Session</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Snowflake.s3">
+<span class="sig-name descname"><span class="pre">s3</span></span><a class="headerlink" href="#locopy.Snowflake.s3" title="Link to this definition">¶</a></dt>
+<dd><p>Hold the S3 client object which is used to upload/delete files to S3</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>botocore.client.S3</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Snowflake.dbapi">
+<span class="sig-name descname"><span class="pre">dbapi</span></span><a class="headerlink" href="#locopy.Snowflake.dbapi" title="Link to this definition">¶</a></dt>
+<dd><p>database adapter which is Python DBAPI 2.0 compliant (snowflake.connector)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DBAPI 2 module</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Snowflake.connection">
+<span class="sig-name descname"><span class="pre">connection</span></span><a class="headerlink" href="#locopy.Snowflake.connection" title="Link to this definition">¶</a></dt>
+<dd><p>Dictionary of database connection items</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Snowflake.conn">
+<span class="sig-name descname"><span class="pre">conn</span></span><a class="headerlink" href="#locopy.Snowflake.conn" title="Link to this definition">¶</a></dt>
+<dd><p>DBAPI connection instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dbapi.connection</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="locopy.Snowflake.cursor">
+<span class="sig-name descname"><span class="pre">cursor</span></span><a class="headerlink" href="#locopy.Snowflake.cursor" title="Link to this definition">¶</a></dt>
+<dd><p>DBAPI cursor instance</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dbapi.cursor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.CredentialsError" title="locopy.errors.CredentialsError"><strong>CredentialsError</strong></a> – Database credentials are not provided or valid</p></li>
+<li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3Error" title="locopy.errors.S3Error"><strong>S3Error</strong></a> – Error initializing AWS Session (ex: invalid profile)</p></li>
+<li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3CredentialsError" title="locopy.errors.S3CredentialsError"><strong>S3CredentialsError</strong></a> – Issue with AWS credentials</p></li>
+<li><p><a class="reference internal" href="locopy.errors.html#locopy.errors.S3InitializationError" title="locopy.errors.S3InitializationError"><strong>S3InitializationError</strong></a> – Issue initializing S3 session</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Snowflake.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Snowflake.connect" title="Link to this definition">¶</a></dt>
+<dd><p>Create a connection to the Snowflake cluster.</p>
+<p>Setg the values of the <code class="docutils literal notranslate"><span class="pre">conn</span></code> and <code class="docutils literal notranslate"><span class="pre">cursor</span></code> attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.DBError" title="locopy.errors.DBError"><strong>DBError</strong></a> – If there is a problem establishing a connection to Snowflake.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Snowflake.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Snowflake.copy" title="Link to this definition">¶</a></dt>
+<dd><p>Load files from a stage into a Snowflake table.</p>
+<p>Execute the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span> <span class="pre">&lt;table&gt;</span></code> command to  If <code class="docutils literal notranslate"><span class="pre">file_type</span> <span class="pre">==</span> <span class="pre">csv</span></code> and <code class="docutils literal notranslate"><span class="pre">format_options</span> <span class="pre">==</span> <span class="pre">None</span></code>, <code class="docutils literal notranslate"><span class="pre">format_options</span></code>
+will default to: <code class="docutils literal notranslate"><span class="pre">[&quot;FIELD_DELIMITER='|'&quot;,</span> <span class="pre">&quot;SKIP_HEADER=0&quot;]</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The Snowflake table name which is being loaded. Must be fully qualified:
+<cite>&lt;namespace&gt;.&lt;table_name&gt;</cite></p></li>
+<li><p><strong>stage</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Stage location of the load file. This can be a internal or external stage</p></li>
+<li><p><strong>file_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The file type. One of <code class="docutils literal notranslate"><span class="pre">csv</span></code>, <code class="docutils literal notranslate"><span class="pre">json</span></code>, or <code class="docutils literal notranslate"><span class="pre">parquet</span></code></p></li>
+<li><p><strong>format_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List of strings of format options to provide to the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span></code> command. The options
+will typically be in the format of <code class="docutils literal notranslate"><span class="pre">[&quot;a=b&quot;,</span> <span class="pre">&quot;c=d&quot;]</span></code></p></li>
+<li><p><strong>copy_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List of strings of copy options to provide to the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span></code> command.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.DBError" title="locopy.errors.DBError"><strong>DBError</strong></a> – If there is a problem executing the COPY command, or a connection
+    has not been initalized.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Snowflake.download_from_internal">
+<span class="sig-name descname"><span class="pre">download_from_internal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.download_from_internal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Snowflake.download_from_internal" title="Link to this definition">¶</a></dt>
+<dd><p>Download file(s) from a internal stage via the <code class="docutils literal notranslate"><span class="pre">GET</span></code> command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stage</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Internal stage location to load the file.</p></li>
+<li><p><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a><em>, </em><em>optional</em>) – The local directory path where files will be downloaded to. Defualts to the current
+working directory (<code class="docutils literal notranslate"><span class="pre">os.getcwd()</span></code>). Otherwise it must be the absolute path.</p></li>
+<li><p><strong>parallel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – Specifies the number of threads to use for downloading files.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Snowflake.insert_dataframe_to_table">
+<span class="sig-name descname"><span class="pre">insert_dataframe_to_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.insert_dataframe_to_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Snowflake.insert_dataframe_to_table" title="Link to this definition">¶</a></dt>
+<dd><p>Insert a Pandas dataframe to an existing table or a new table.</p>
+<p>In newer versions of the
+python snowflake connector (v2.1.2+) users can call the <code class="docutils literal notranslate"><span class="pre">write_pandas</span></code> method from the cursor
+directly, <code class="docutils literal notranslate"><span class="pre">insert_dataframe_to_table</span></code> is a custom implementation and does not use
+<code class="docutils literal notranslate"><span class="pre">write_pandas</span></code>. Instead of using <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span></code> the method builds a list of tuples to
+insert directly into the table. There are also options to create the table if it doesn’t
+exist and use your own metadata. If your data is significantly large then using
+<code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span> <span class="pre">&lt;table&gt;</span></code> is more appropriate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe</strong> (<em>Pandas Dataframe</em>) – The pandas dataframe which needs to be inserted.</p></li>
+<li><p><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The name of the Snowflake table which is being inserted.</p></li>
+<li><p><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, </em><em>optional</em>) – The list of columns which will be uploaded.</p></li>
+<li><p><strong>create</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Boolean flag if a new table need to be created and insert to.</p></li>
+<li><p><strong>metadata</strong> (<em>dictionary</em><em>, </em><em>optional</em>) – If metadata==None, it will be generated based on data</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Snowflake.to_dataframe">
+<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Snowflake.to_dataframe" title="Link to this definition">¶</a></dt>
+<dd><p>Return a dataframe of the last query results.</p>
+<p>This is just a convenience method. This
+method overrides the base classes implementation in favour for the snowflake connectors
+built-in <code class="docutils literal notranslate"><span class="pre">fetch_pandas_all</span></code> when <code class="docutils literal notranslate"><span class="pre">size==None</span></code>. If <code class="docutils literal notranslate"><span class="pre">size</span> <span class="pre">!=</span> <span class="pre">None</span></code> then we will continue
+to use the existing functionality where we iterate through the cursor and build the
+dataframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – Chunk size to fetch.  Defaults to None.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dataframe with lowercase column names.  Returns None if no fetched
+result.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pandas.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Snowflake.unload">
+<span class="sig-name descname"><span class="pre">unload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_options</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.unload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Snowflake.unload" title="Link to this definition">¶</a></dt>
+<dd><p>Export a query/table from Snowflake to a stage.</p>
+<p>Execute the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span> <span class="pre">&lt;location&gt;</span></code> command.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">file_type</span> <span class="pre">==</span> <span class="pre">csv</span></code> and <code class="docutils literal notranslate"><span class="pre">format_options</span> <span class="pre">==</span> <span class="pre">None</span></code>, <code class="docutils literal notranslate"><span class="pre">format_options</span></code>
+will default to: <code class="docutils literal notranslate"><span class="pre">[&quot;FIELD_DELIMITER='|'&quot;]</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stage</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Stage location (internal or external) where the data files are unloaded</p></li>
+<li><p><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The Snowflake table name which is being unloaded. Must be fully qualified:
+<code class="docutils literal notranslate"><span class="pre">&lt;namespace&gt;.&lt;table_name&gt;</span></code></p></li>
+<li><p><strong>file_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The file type. One of <code class="docutils literal notranslate"><span class="pre">csv</span></code>, <code class="docutils literal notranslate"><span class="pre">json</span></code>, or <code class="docutils literal notranslate"><span class="pre">parquet</span></code></p></li>
+<li><p><strong>format_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List of strings of format options to provide to the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span></code> command.</p></li>
+<li><p><strong>header</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Boolean flag if header is included in the file(s)</p></li>
+<li><p><strong>copy_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a>) – List of strings of copy options to provide to the <code class="docutils literal notranslate"><span class="pre">COPY</span> <span class="pre">INTO</span></code> command.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="locopy.errors.html#locopy.errors.DBError" title="locopy.errors.DBError"><strong>DBError</strong></a> – If there is a problem executing the UNLOAD command, or a connection
+    has not been initalized.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="locopy.Snowflake.upload_to_internal">
+<span class="sig-name descname"><span class="pre">upload_to_internal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stage</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_compress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.upload_to_internal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Snowflake.upload_to_internal" title="Link to this definition">¶</a></dt>
+<dd><p>Upload file(s) to a internal stage via the <code class="docutils literal notranslate"><span class="pre">PUT</span></code> command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>local</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The local directory path to the file to upload. Wildcard characters (<code class="docutils literal notranslate"><span class="pre">*</span></code>, <code class="docutils literal notranslate"><span class="pre">?</span></code>) are
+supported to enable uploading multiple files in a directory. Otherwise it must be the
+absolute path.</p></li>
+<li><p><strong>stage</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Internal stage location to load the file.</p></li>
+<li><p><strong>parallel</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – Specifies the number of threads to use for uploading files.</p></li>
+<li><p><strong>auto_compress</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Specifies if Snowflake uses gzip to compress files during upload.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the files are compressed (if they are not already compressed).
+if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the files are uploaded as-is.</p></li>
+<li><p><strong>overwrite</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Specifies whether Snowflake overwrites an existing file with the same name during upload.
+If <code class="docutils literal notranslate"><span class="pre">True</span></code>, existing file with the same name is overwritten.
+if <code class="docutils literal notranslate"><span class="pre">False</span></code>, existing file with the same name is not overwritten.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 </section>
 

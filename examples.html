@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Basic Examples &mdash; locopy 0.5.9 documentation</title>
+  <title>Basic Examples &mdash; locopy 0.6.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -13,9 +13,9 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b8460c5c"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=8fa8b3e9"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -35,7 +35,7 @@
             locopy
           </a>
               <div class="version">
-                0.5.9
+                0.6.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -90,9 +90,9 @@
            <div itemprop="articleBody">
              
   <section id="basic-examples">
-<h1>Basic Examples<a class="headerlink" href="#basic-examples" title="Permalink to this heading">¶</a></h1>
+<h1>Basic Examples<a class="headerlink" href="#basic-examples" title="Link to this heading">¶</a></h1>
 <section id="upload-to-s3-and-run-copy-command-with-yaml">
-<h2>Upload to S3 and run COPY command with YAML<a class="headerlink" href="#upload-to-s3-and-run-copy-command-with-yaml" title="Permalink to this heading">¶</a></h2>
+<h2>Upload to S3 and run COPY command with YAML<a class="headerlink" href="#upload-to-s3-and-run-copy-command-with-yaml" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>no compression or splitting</p></li>
 <li><p>using <code class="docutils literal notranslate"><span class="pre">~/.aws/credentials</span></code> file</p></li>
@@ -121,7 +121,7 @@
 </div>
 </section>
 <section id="upload-to-s3-and-run-copy-command-without-yaml">
-<h2>Upload to S3 and run COPY command without YAML<a class="headerlink" href="#upload-to-s3-and-run-copy-command-without-yaml" title="Permalink to this heading">¶</a></h2>
+<h2>Upload to S3 and run COPY command without YAML<a class="headerlink" href="#upload-to-s3-and-run-copy-command-without-yaml" title="Link to this heading">¶</a></h2>
 <p>Identical to the above code, but we would explicitly pass the connection details in the <code class="docutils literal notranslate"><span class="pre">Redshift</span></code>
 constructor vs. the YAML</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span>
@@ -137,7 +137,7 @@ constructor vs. the YAML</p>
 </div>
 </section>
 <section id="aws-tokens-as-environment-variables">
-<h2>AWS tokens as environment variables<a class="headerlink" href="#aws-tokens-as-environment-variables" title="Permalink to this heading">¶</a></h2>
+<h2>AWS tokens as environment variables<a class="headerlink" href="#aws-tokens-as-environment-variables" title="Link to this heading">¶</a></h2>
 <p>If you would rather provide your AWS tokens via environment variables vs. using a profile from
 <code class="docutils literal notranslate"><span class="pre">~/.aws/credentials</span></code>, you can do something as follows:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">AWS_ACCESS_KEY_ID</span><span class="o">=</span>MY_ACCESS_KEY_ID
@@ -147,7 +147,7 @@ constructor vs. the YAML</p>
 </div>
 </section>
 <section id="extra-parameters-on-the-copy-job">
-<h2>Extra parameters on the COPY job<a class="headerlink" href="#extra-parameters-on-the-copy-job" title="Permalink to this heading">¶</a></h2>
+<h2>Extra parameters on the COPY job<a class="headerlink" href="#extra-parameters-on-the-copy-job" title="Link to this heading">¶</a></h2>
 <p>As per the AWS documentation <a class="reference external" href="http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-conversion.html">here</a>,
 there may be times when you want to tweak the options used by the <code class="docutils literal notranslate"><span class="pre">COPY</span></code> job if you have some
 oddities in your data.  Locopy assigns a few options by default (<code class="docutils literal notranslate"><span class="pre">DATEFORMAT</span> <span class="pre">'auto'</span></code>,

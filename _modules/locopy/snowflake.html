@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.snowflake &mdash; locopy 0.5.9 documentation</title>
+  <title>locopy.snowflake &mdash; locopy 0.6.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
 
@@ -12,9 +12,9 @@
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=b8460c5c"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
-        <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../../_static/documentation_options.js?v=8fa8b3e9"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -32,7 +32,7 @@
             locopy
           </a>
               <div class="version">
-                0.5.9
+                0.6.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -97,18 +97,20 @@
 <span class="c1"># See the License for the specific language governing permissions and</span>
 <span class="c1"># limitations under the License.</span>
 
-<span class="sd">&quot;&quot;&quot;Snowflake Module</span>
+<span class="sd">&quot;&quot;&quot;Snowflake Module.</span>
+
 <span class="sd">Module to wrap a database adapter into a Snowflake class which can be used to connect</span>
 <span class="sd">to Snowflake, and run arbitrary code.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">PurePath</span>
 
-<span class="kn">from</span> <span class="nn">.database</span> <span class="kn">import</span> <span class="n">Database</span>
-<span class="kn">from</span> <span class="nn">.errors</span> <span class="kn">import</span> <span class="n">DBError</span><span class="p">,</span> <span class="n">S3CredentialsError</span>
-<span class="kn">from</span> <span class="nn">.logger</span> <span class="kn">import</span> <span class="n">INFO</span><span class="p">,</span> <span class="n">get_logger</span>
-<span class="kn">from</span> <span class="nn">.s3</span> <span class="kn">import</span> <span class="n">S3</span>
-<span class="kn">from</span> <span class="nn">.utility</span> <span class="kn">import</span> <span class="n">find_column_type</span>
+<span class="kn">from</span> <span class="nn">locopy.database</span> <span class="kn">import</span> <span class="n">Database</span>
+<span class="kn">from</span> <span class="nn">locopy.errors</span> <span class="kn">import</span> <span class="n">DBError</span><span class="p">,</span> <span class="n">S3CredentialsError</span>
+<span class="kn">from</span> <span class="nn">locopy.logger</span> <span class="kn">import</span> <span class="n">INFO</span><span class="p">,</span> <span class="n">get_logger</span>
+<span class="kn">from</span> <span class="nn">locopy.s3</span> <span class="kn">import</span> <span class="n">S3</span>
+<span class="kn">from</span> <span class="nn">locopy.utility</span> <span class="kn">import</span> <span class="n">find_column_type</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">INFO</span><span class="p">)</span>
 
@@ -167,9 +169,12 @@
 <span class="p">}</span>
 
 
-<div class="viewcode-block" id="combine_options"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.combine_options">[docs]</a><span class="k">def</span> <span class="nf">combine_options</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the ``copy_options`` or ``format_options`` attribute with spaces in between and as</span>
-<span class="sd">    a string. If options is ``None`` then return an empty string.</span>
+<div class="viewcode-block" id="combine_options">
+<a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.combine_options">[docs]</a>
+<span class="k">def</span> <span class="nf">combine_options</span><span class="p">(</span><span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the ``copy_options`` or ``format_options`` attribute.</span>
+
+<span class="sd">    With spaces in between and as a string. If options is ``None`` then return an empty string.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -185,9 +190,13 @@
     <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options</span><span class="p">)</span> <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="Snowflake"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake">[docs]</a><span class="k">class</span> <span class="nc">Snowflake</span><span class="p">(</span><span class="n">S3</span><span class="p">,</span> <span class="n">Database</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Locopy class which manages connections to Snowflake.  Inherits ``Database`` and implements</span>
-<span class="sd">    the specific ``COPY INTO`` functionality.</span>
+
+<div class="viewcode-block" id="Snowflake">
+<a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.Snowflake">[docs]</a>
+<span class="k">class</span> <span class="nc">Snowflake</span><span class="p">(</span><span class="n">S3</span><span class="p">,</span> <span class="n">Database</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Locopy class which manages connections to Snowflake.  Inherits ``Database``.</span>
+
+<span class="sd">    Implements the specific ``COPY INTO`` functionality.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -265,25 +274,31 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Only internal stages are available&quot;</span><span class="p">)</span>
         <span class="n">Database</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbapi</span><span class="p">,</span> <span class="n">config_yaml</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Snowflake.connect"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a connection to the Snowflake cluster by</span>
-<span class="sd">        setting the values of the ``conn`` and ``cursor`` attributes.</span>
+<div class="viewcode-block" id="Snowflake.connect">
+<a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.Snowflake.connect">[docs]</a>
+    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a connection to the Snowflake cluster.</span>
+
+<span class="sd">        Setg the values of the ``conn`` and ``cursor`` attributes.</span>
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
 <span class="sd">        DBError</span>
 <span class="sd">            If there is a problem establishing a connection to Snowflake.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Snowflake</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;warehouse&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;USE WAREHOUSE </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">[</span><span class="s2">&quot;warehouse&quot;</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;USE WAREHOUSE </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">[</span><span class="s2">&quot;warehouse&quot;</span><span class="p">]))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;database&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;USE DATABASE </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">[</span><span class="s2">&quot;database&quot;</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;USE DATABASE </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">[</span><span class="s2">&quot;database&quot;</span><span class="p">]))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;schema&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;USE SCHEMA </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">[</span><span class="s2">&quot;schema&quot;</span><span class="p">]))</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;USE SCHEMA </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">[</span><span class="s2">&quot;schema&quot;</span><span class="p">]))</span></div>
 
-<div class="viewcode-block" id="Snowflake.upload_to_internal"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.upload_to_internal">[docs]</a>    <span class="k">def</span> <span class="nf">upload_to_internal</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Snowflake.upload_to_internal">
+<a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.Snowflake.upload_to_internal">[docs]</a>
+    <span class="k">def</span> <span class="nf">upload_to_internal</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">local</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">auto_compress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -314,12 +329,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">local_uri</span> <span class="o">=</span> <span class="n">PurePath</span><span class="p">(</span><span class="n">local</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-            <span class="s2">&quot;PUT &#39;file://</span><span class="si">{0}</span><span class="s2">&#39; </span><span class="si">{1}</span><span class="s2"> PARALLEL=</span><span class="si">{2}</span><span class="s2"> AUTO_COMPRESS=</span><span class="si">{3}</span><span class="s2"> OVERWRITE=</span><span class="si">{4}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">local_uri</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">parallel</span><span class="p">,</span> <span class="n">auto_compress</span><span class="p">,</span> <span class="n">overwrite</span>
-            <span class="p">)</span>
+            <span class="sa">f</span><span class="s2">&quot;PUT &#39;file://</span><span class="si">{</span><span class="n">local_uri</span><span class="si">}</span><span class="s2">&#39; </span><span class="si">{</span><span class="n">stage</span><span class="si">}</span><span class="s2"> PARALLEL=</span><span class="si">{</span><span class="n">parallel</span><span class="si">}</span><span class="s2"> AUTO_COMPRESS=</span><span class="si">{</span><span class="n">auto_compress</span><span class="si">}</span><span class="s2"> OVERWRITE=</span><span class="si">{</span><span class="n">overwrite</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="Snowflake.download_from_internal"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.download_from_internal">[docs]</a>    <span class="k">def</span> <span class="nf">download_from_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Snowflake.download_from_internal">
+<a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.Snowflake.download_from_internal">[docs]</a>
+    <span class="k">def</span> <span class="nf">download_from_internal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">local</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Download file(s) from a internal stage via the ``GET`` command.</span>
 
@@ -338,16 +354,18 @@
         <span class="k">if</span> <span class="n">local</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">local</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
         <span class="n">local_uri</span> <span class="o">=</span> <span class="n">PurePath</span><span class="p">(</span><span class="n">local</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
-            <span class="s2">&quot;GET </span><span class="si">{0}</span><span class="s2"> &#39;file://</span><span class="si">{1}</span><span class="s2">&#39; PARALLEL=</span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">stage</span><span class="p">,</span> <span class="n">local_uri</span><span class="p">,</span> <span class="n">parallel</span><span class="p">)</span>
-        <span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GET </span><span class="si">{</span><span class="n">stage</span><span class="si">}</span><span class="s2"> &#39;file://</span><span class="si">{</span><span class="n">local_uri</span><span class="si">}</span><span class="s2">&#39; PARALLEL=</span><span class="si">{</span><span class="n">parallel</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Snowflake.copy"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Snowflake.copy">
+<a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.Snowflake.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">stage</span><span class="p">,</span> <span class="n">file_type</span><span class="o">=</span><span class="s2">&quot;csv&quot;</span><span class="p">,</span> <span class="n">format_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">copy_options</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Executes the ``COPY INTO &lt;table&gt;`` command to load CSV files from a stage into</span>
-<span class="sd">        a Snowflake table. If ``file_type == csv`` and ``format_options == None``, ``format_options``</span>
-<span class="sd">        will default to: ``[&quot;FIELD_DELIMITER=&#39;|&#39;&quot;, &quot;SKIP_HEADER=0&quot;]``</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load files from a stage into a Snowflake table.</span>
+
+<span class="sd">        Execute the ``COPY INTO &lt;table&gt;`` command to  If ``file_type == csv`` and ``format_options == None``, ``format_options``</span>
+<span class="sd">        will default to: ``[&quot;FIELD_DELIMITER=&#39;|&#39;&quot;, &quot;SKIP_HEADER=0&quot;]``.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -379,9 +397,7 @@
 
         <span class="k">if</span> <span class="n">file_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">COPY_FORMAT_OPTIONS</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Invalid file_type. Must be one of </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="nb">list</span><span class="p">(</span><span class="n">COPY_FORMAT_OPTIONS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-                <span class="p">)</span>
+                <span class="sa">f</span><span class="s2">&quot;Invalid file_type. Must be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">COPY_FORMAT_OPTIONS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">format_options</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;csv&quot;</span><span class="p">:</span>
@@ -400,9 +416,12 @@
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error running COPY on Snowflake. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">&quot;Error running COPY on Snowflake.&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">&quot;Error running COPY on Snowflake.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
 
-<div class="viewcode-block" id="Snowflake.unload"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.unload">[docs]</a>    <span class="k">def</span> <span class="nf">unload</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Snowflake.unload">
+<a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.Snowflake.unload">[docs]</a>
+    <span class="k">def</span> <span class="nf">unload</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">stage</span><span class="p">,</span>
         <span class="n">table_name</span><span class="p">,</span>
@@ -411,9 +430,12 @@
         <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">copy_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Executes the ``COPY INTO &lt;location&gt;`` command to export a query/table from</span>
-<span class="sd">        Snowflake to a stage. If ``file_type == csv`` and ``format_options == None``, ``format_options``</span>
-<span class="sd">        will default to: ``[&quot;FIELD_DELIMITER=&#39;|&#39;&quot;]``</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Export a query/table from Snowflake to a stage.</span>
+
+<span class="sd">        Execute the ``COPY INTO &lt;location&gt;`` command.</span>
+
+<span class="sd">        If ``file_type == csv`` and ``format_options == None``, ``format_options``</span>
+<span class="sd">        will default to: ``[&quot;FIELD_DELIMITER=&#39;|&#39;&quot;]``.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -447,9 +469,7 @@
 
         <span class="k">if</span> <span class="n">file_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">COPY_FORMAT_OPTIONS</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Invalid file_type. Must be one of </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="nb">list</span><span class="p">(</span><span class="n">UNLOAD_FORMAT_OPTIONS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-                <span class="p">)</span>
+                <span class="sa">f</span><span class="s2">&quot;Invalid file_type. Must be one of </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">UNLOAD_FORMAT_OPTIONS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">format_options</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">file_type</span> <span class="o">==</span> <span class="s2">&quot;csv&quot;</span><span class="p">:</span>
@@ -473,13 +493,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error running UNLOAD on Snowflake. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">&quot;Error running UNLOAD on Snowflake.&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">&quot;Error running UNLOAD on Snowflake.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
 
-<div class="viewcode-block" id="Snowflake.insert_dataframe_to_table"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.insert_dataframe_to_table">[docs]</a>    <span class="k">def</span> <span class="nf">insert_dataframe_to_table</span><span class="p">(</span>
+
+<div class="viewcode-block" id="Snowflake.insert_dataframe_to_table">
+<a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.Snowflake.insert_dataframe_to_table">[docs]</a>
+    <span class="k">def</span> <span class="nf">insert_dataframe_to_table</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Insert a Pandas dataframe to an existing table or a new table. In newer versions of the</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Insert a Pandas dataframe to an existing table or a new table.</span>
+
+<span class="sd">        In newer versions of the</span>
 <span class="sd">        python snowflake connector (v2.1.2+) users can call the ``write_pandas`` method from the cursor</span>
 <span class="sd">        directly, ``insert_dataframe_to_table`` is a custom implementation and does not use</span>
 <span class="sd">        ``write_pandas``. Instead of using ``COPY INTO`` the method builds a list of tuples to</span>
@@ -504,7 +528,6 @@
 <span class="sd">        metadata: dictionary, optional</span>
 <span class="sd">            If metadata==None, it will be generated based on data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
         <span class="k">if</span> <span class="n">columns</span><span class="p">:</span>
@@ -517,7 +540,7 @@
         <span class="c1"># create a list of tuples for insert</span>
         <span class="n">to_insert</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-            <span class="n">none_row</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="kc">None</span> <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">row</span><span class="p">])</span>
+            <span class="n">none_row</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="kc">None</span> <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">row</span><span class="p">)</span>
             <span class="n">to_insert</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">none_row</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">create</span> <span class="ow">and</span> <span class="n">metadata</span><span class="p">:</span>
@@ -540,22 +563,23 @@
                 <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
             <span class="p">)</span>
             <span class="n">column_sql</span> <span class="o">=</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
-            <span class="n">create_query</span> <span class="o">=</span> <span class="s2">&quot;CREATE TABLE </span><span class="si">{table_name}</span><span class="s2"> </span><span class="si">{create_join}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">table_name</span><span class="o">=</span><span class="n">table_name</span><span class="p">,</span> <span class="n">create_join</span><span class="o">=</span><span class="n">create_join</span>
-            <span class="p">)</span>
+            <span class="n">create_query</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;CREATE TABLE </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">create_join</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">create_query</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;New table has been created&quot;</span><span class="p">)</span>
 
-        <span class="n">insert_query</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;INSERT INTO </span><span class="si">{table_name}</span><span class="s2"> </span><span class="si">{columns}</span><span class="s2"> VALUES </span><span class="si">{values}</span><span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">table_name</span><span class="o">=</span><span class="n">table_name</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">column_sql</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">string_join</span>
-        <span class="p">)</span>
+        <span class="n">insert_query</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;INSERT INTO </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">column_sql</span><span class="si">}</span><span class="s2"> VALUES </span><span class="si">{</span><span class="n">string_join</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Inserting records...&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">insert_query</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">to_insert</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Table insertion has completed&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Snowflake.to_dataframe"><a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.snowflake.Snowflake.to_dataframe">[docs]</a>    <span class="k">def</span> <span class="nf">to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a dataframe of the last query results. This is just a convenience method. This</span>
+
+<div class="viewcode-block" id="Snowflake.to_dataframe">
+<a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.Snowflake.to_dataframe">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a dataframe of the last query results.</span>
+
+<span class="sd">        This is just a convenience method. This</span>
 <span class="sd">        method overrides the base classes implementation in favour for the snowflake connectors</span>
 <span class="sd">        built-in ``fetch_pandas_all`` when ``size==None``. If ``size != None`` then we will continue</span>
 <span class="sd">        to use the existing functionality where we iterate through the cursor and build the</span>
@@ -575,7 +599,9 @@
         <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">_query_result_format</span> <span class="o">==</span> <span class="s2">&quot;arrow&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetch_pandas_all</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Snowflake</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">(</span><span class="n">size</span><span class="p">)</span></div></div>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">(</span><span class="n">size</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>
