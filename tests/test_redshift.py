@@ -69,7 +69,7 @@ def test_constructor(mock_session, credentials, dbapi):
     r = Redshift(profile=PROFILE, dbapi=dbapi, **credentials)
     mock_session.assert_called_with(profile_name=PROFILE)
     assert r.profile == PROFILE
-    assert r.kms_key == None
+    assert r.kms_key is None
     assert r.connection["host"] == "host"
     assert r.connection["port"] == "port"
     assert r.connection["database"] == "database"
@@ -90,7 +90,7 @@ def test_constructor_yaml(mock_session, dbapi):
     r = Redshift(profile=PROFILE, dbapi=dbapi, config_yaml="some_config.yml")
     mock_session.assert_called_with(profile_name=PROFILE)
     assert r.profile == PROFILE
-    assert r.kms_key == None
+    assert r.kms_key is None
     assert r.connection["host"] == "host"
     assert r.connection["port"] == "port"
     assert r.connection["database"] == "database"
@@ -140,18 +140,18 @@ def test_copy_parquet(mock_execute, mock_session, credentials, dbapi):
         r.connect()
         r.copy("table", s3path="path", delim=None, copy_options=["PARQUET"])
         test_sql = (
-            "COPY {0} FROM '{1}' "
-            "CREDENTIALS '{2}' "
-            "{3};".format("table", "path", r._credentials_string(), "PARQUET")
+            "COPY {} FROM '{}' "
+            "CREDENTIALS '{}' "
+            "{};".format("table", "path", r._credentials_string(), "PARQUET")
         )
         assert mock_execute.called_with(test_sql, commit=True)
         mock_execute.reset_mock()
         mock_session.reset_mock()
         r.copy("table", s3path="path", delim=None)
         test_sql = (
-            "COPY {0} FROM '{1}' "
-            "CREDENTIALS '{2}' "
-            "{3};".format(
+            "COPY {} FROM '{}' "
+            "CREDENTIALS '{}' "
+            "{};".format(
                 "table", "path", r._credentials_string(), locopy.redshift.add_default_copy_options()
             )
         )
@@ -820,7 +820,7 @@ def test_unload_generated_files(mock_session, credentials, dbapi):
         r = locopy.Redshift(dbapi=dbapi, **credentials)
         r.connect()
         r._unload_generated_files()
-        assert r._unload_generated_files() == None
+        assert r._unload_generated_files() is None
 
         mock_connect.return_value.cursor.return_value.fetchall.return_value = [
             ["File1 "],
@@ -844,7 +844,7 @@ def test_get_column_names(mock_session, credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         r = locopy.Redshift(dbapi=dbapi, **credentials)
         r.connect()
-        assert r._get_column_names("query") == None
+        assert r._get_column_names("query") is None
         sql = "SELECT * FROM (query) WHERE 1 = 0"
         assert mock_connect.return_value.cursor.return_value.execute.called_with(sql, ())
 

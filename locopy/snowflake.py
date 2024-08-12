@@ -21,11 +21,11 @@ to Snowflake, and run arbitrary code.
 import os
 from pathlib import PurePath
 
-from .database import Database
-from .errors import DBError, S3CredentialsError
-from .logger import INFO, get_logger
-from .s3 import S3
-from .utility import find_column_type
+from locopy.database import Database
+from locopy.errors import DBError, S3CredentialsError
+from locopy.logger import INFO, get_logger
+from locopy.s3 import S3
+from locopy.utility import find_column_type
 
 logger = get_logger(__name__, INFO)
 
@@ -191,14 +191,14 @@ class Snowflake(S3, Database):
         DBError
             If there is a problem establishing a connection to Snowflake.
         """
-        super(Snowflake, self).connect()
+        super().connect()
 
         if self.connection.get("warehouse") is not None:
-            self.execute("USE WAREHOUSE {0}".format(self.connection["warehouse"]))
+            self.execute("USE WAREHOUSE {}".format(self.connection["warehouse"]))
         if self.connection.get("database") is not None:
-            self.execute("USE DATABASE {0}".format(self.connection["database"]))
+            self.execute("USE DATABASE {}".format(self.connection["database"]))
         if self.connection.get("schema") is not None:
-            self.execute("USE SCHEMA {0}".format(self.connection["schema"]))
+            self.execute("USE SCHEMA {}".format(self.connection["schema"]))
 
     def upload_to_internal(
         self, local, stage, parallel=4, auto_compress=True, overwrite=True
@@ -262,7 +262,7 @@ class Snowflake(S3, Database):
     ):
         """Executes the ``COPY INTO <table>`` command to load CSV files from a stage into
         a Snowflake table. If ``file_type == csv`` and ``format_options == None``, ``format_options``
-        will default to: ``["FIELD_DELIMITER='|'", "SKIP_HEADER=0"]``
+        will default to: ``["FIELD_DELIMITER='|'", "SKIP_HEADER=0"]``.
 
         Parameters
         ----------
@@ -326,7 +326,7 @@ class Snowflake(S3, Database):
     ):
         """Executes the ``COPY INTO <location>`` command to export a query/table from
         Snowflake to a stage. If ``file_type == csv`` and ``format_options == None``, ``format_options``
-        will default to: ``["FIELD_DELIMITER='|'"]``
+        will default to: ``["FIELD_DELIMITER='|'"]``.
 
         Parameters
         ----------
@@ -427,7 +427,7 @@ class Snowflake(S3, Database):
         # create a list of tuples for insert
         to_insert = []
         for row in dataframe.itertuples(index=False):
-            none_row = tuple([None if pd.isnull(val) else str(val) for val in row])
+            none_row = tuple(None if pd.isnull(val) else str(val) for val in row)
             to_insert.append(none_row)
 
         if not create and metadata:
@@ -481,4 +481,4 @@ class Snowflake(S3, Database):
         if size is None and self.cursor._query_result_format == "arrow":
             return self.cursor.fetch_pandas_all()
         else:
-            return super(Snowflake, self).to_dataframe(size)
+            return super().to_dataframe(size)

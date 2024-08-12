@@ -14,13 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Database Module
-"""
+"""Database Module."""
 import time
 
-from .errors import CredentialsError, DBError
-from .logger import INFO, get_logger
-from .utility import read_config_yaml
+from locopy.errors import CredentialsError, DBError
+from locopy.logger import INFO, get_logger
+from locopy.utility import read_config_yaml
 
 logger = get_logger(__name__, INFO)
 
@@ -168,7 +167,7 @@ class Database:
 
     def column_names(self):
         """Pull column names out of the cursor description. Depending on the
-        DBAPI, it could return column names as bytes: ``b'column_name'``
+        DBAPI, it could return column names as bytes: ``b'column_name'``.
 
         Returns
         -------
@@ -214,7 +213,7 @@ class Database:
         return pandas.DataFrame(fetched, columns=columns)
 
     def to_dict(self):
-        """Generate dictionaries of rows
+        """Generate dictionaries of rows.
 
         Yields
         ------

@@ -237,7 +237,7 @@ def test_split_file_exception():
 @mock.patch("locopy.utility.open", mock.mock_open(read_data=GOOD_CONFIG_YAML))
 def test_read_config_yaml_good():
     actual = util.read_config_yaml("filename.yml")
-    assert set(actual.keys()) == set(["host", "port", "database", "user", "password"])
+    assert set(actual.keys()) == {"host", "port", "database", "user", "password"}
     assert actual["host"] == "my.redshift.cluster.com"
     assert actual["port"] == 1234
     assert actual["database"] == "db"
@@ -247,7 +247,7 @@ def test_read_config_yaml_good():
 
 def test_read_config_yaml_io():
     actual = util.read_config_yaml(StringIO(GOOD_CONFIG_YAML))
-    assert set(actual.keys()) == set(["host", "port", "database", "user", "password"])
+    assert set(actual.keys()) == {"host", "port", "database", "user", "password"}
     assert actual["host"] == "my.redshift.cluster.com"
     assert actual["port"] == 1234
     assert actual["database"] == "db"

@@ -15,7 +15,7 @@
 # limitations under the License.
 
 """Logging Module
-Module which setsup the basic logging infrustrcuture for the application
+Module which setsup the basic logging infrustrcuture for the application.
 """
 import logging
 import sys
@@ -36,7 +36,7 @@ CRITICAL = logging.CRITICAL
 
 
 def get_logger(name=None, log_level=logging.DEBUG):
-    """Sets the basic logging features for the application
+    """Sets the basic logging features for the application.
 
     Parameters
     ----------

@@ -16,7 +16,7 @@
 
 """S3 Module
 Module to wrap the boto3 api usage and provide functionality to manage
-multipart upload to S3 buckets
+multipart upload to S3 buckets.
 """
 import os
 
@@ -24,7 +24,7 @@ from boto3 import Session
 from boto3.s3.transfer import TransferConfig
 from botocore.client import Config
 
-from .errors import (
+from locopy.errors import (
     S3CredentialsError,
     S3DeletionError,
     S3DownloadError,
@@ -32,8 +32,8 @@ from .errors import (
     S3InitializationError,
     S3UploadError,
 )
-from .logger import INFO, get_logger
-from .utility import ProgressPercentage
+from locopy.logger import INFO, get_logger
+from locopy.utility import ProgressPercentage
 
 logger = get_logger(__name__, INFO)
 
@@ -131,7 +131,7 @@ class S3:
             return temp.format(creds.access_key, creds.secret_key)
 
     def _generate_s3_path(self, bucket, key):
-        """Will return the S3 file URL in the format S3://bucket/key
+        """Will return the S3 file URL in the format S3://bucket/key.
 
         Parameters
         ----------
@@ -150,7 +150,7 @@ class S3:
 
     def _generate_unload_path(self, bucket, folder):
         """Will return the S3 file URL in the format s3://bucket/folder if a
-        valid (not None) folder is provided. Otherwise, returns s3://bucket
+        valid (not None) folder is provided. Otherwise, returns s3://bucket.
 
         Parameters
         ----------

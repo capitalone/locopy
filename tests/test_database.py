@@ -183,7 +183,6 @@ def test_disconnect_no_conn(credentials, dbapi):
 def test_execute(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         with Database(dbapi=dbapi, **credentials) as test:
-            print(test)
             test.execute("SELECT * FROM some_table")
             assert test.cursor.execute.called is True
 

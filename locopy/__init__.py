@@ -14,9 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .database import database
-from .redshift import Redshift
-from .s3 import S3
-from .snowflake import Snowflake
+from locopy.database import Database
+from locopy.redshift import Redshift
+from locopy.s3 import S3
+from locopy.snowflake import Snowflake
 
-__all__ = ["S3", "Redshift", "Snowflake", "database"]
+__all__ = ["S3", "Redshift", "Snowflake", "Database"]

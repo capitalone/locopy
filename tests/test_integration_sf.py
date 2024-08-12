@@ -279,5 +279,5 @@ def test_insert_dataframe_to_table(dbapi):
 
         assert len(expected) == len(results)
         for i, result in enumerate(results):
-            for j, item in enumerate(result):
+            for j, _item in enumerate(result):
                 assert result[j] == expected[i][j]

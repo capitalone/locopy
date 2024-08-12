@@ -15,7 +15,7 @@
 # limitations under the License.
 
 """Utility Module
-Module which utility functions for use within the application
+Module which utility functions for use within the application.
 """
 import gzip
 import os
@@ -27,14 +27,14 @@ from itertools import cycle
 
 import yaml
 
-from .errors import (
+from locopy.errors import (
     CompressionError,
     CredentialsError,
     LocopyConcatError,
     LocopyIgnoreHeaderError,
     LocopySplitError,
 )
-from .logger import INFO, get_logger
+from locopy.logger import INFO, get_logger
 
 logger = get_logger(__name__, INFO)
 
@@ -68,7 +68,7 @@ def write_file(data, delimiter, filepath, mode="w"):
 
 
 def compress_file(input_file, output_file):
-    """Compresses a file (gzip)
+    """Compresses a file (gzip).
 
     Parameters
     ----------
@@ -88,7 +88,7 @@ def compress_file(input_file, output_file):
 
 
 def compress_file_list(file_list):
-    """Compresses a list of files (gzip) and clean up the old files
+    """Compresses a list of files (gzip) and clean up the old files.
 
     Parameters
     ----------
@@ -341,7 +341,7 @@ class ProgressPercentage:
     """
     ProgressPercentage class is used by the S3Transfer upload_file callback
     Please see the following url for more information:
-    http://boto3.readthedocs.org/en/latest/reference/customizations/s3.html#ref-s3transfer-usage
+    http://boto3.readthedocs.org/en/latest/reference/customizations/s3.html#ref-s3transfer-usage.
     """
 
     def __init__(self, filename):
@@ -350,7 +350,7 @@ class ProgressPercentage:
         makes up a pipeline
         Args:
             filename (str): A name of the file which we will monitor the
-            progress of
+            progress of.
         """
         self._filename = filename
         self._size = float(os.path.getsize(filename))
@@ -364,7 +364,7 @@ class ProgressPercentage:
             self._seen_so_far += bytes_amount
             percentage = (self._seen_so_far / self._size) * 100
             sys.stdout.write(
-                "\rTransfering [{0}] {1:.2f}%".format(
+                "\rTransfering [{}] {:.2f}%".format(
                     "#" * int(percentage / 10), percentage
                 )
             )

@@ -16,78 +16,52 @@
 
 
 class LocopyError(Exception):
-    """
-    Baseclass for all Locopy errors.
-    """
+    """Baseclass for all Locopy errors."""
 
 
 class CompressionError(LocopyError):
-    """
-    Raised when there is an error compressing a file.
-    """
+    """Raised when there is an error compressing a file."""
 
 
 class LocopySplitError(LocopyError):
-    """
-    Raised when there is an error splitting a file.
-    """
+    """Raised when there is an error splitting a file."""
 
 
 class LocopyIgnoreHeaderError(LocopyError):
-    """
-    Raised when Multiple IGNOREHEADERS are found in copy options.
-    """
+    """Raised when Multiple IGNOREHEADERS are found in copy options."""
 
 
 class LocopyConcatError(LocopyError):
-    """
-    Raised when there is an error concatenating files.
-    """
+    """Raised when there is an error concatenating files."""
 
 
 class DBError(Exception):
-    """
-    Base class for all Database errors.
-    """
+    """Base class for all Database errors."""
 
 
 class CredentialsError(DBError):
-    """
-    Raised when the users credentials are not provided.
-    """
+    """Raised when the users credentials are not provided."""
 
 
 class S3Error(Exception):
-    """
-    Base class for all S3 errors.
-    """
+    """Base class for all S3 errors."""
 
 
 class S3CredentialsError(S3Error):
-    """
-    Raised when there is an error with AWS credentials.
-    """
+    """Raised when there is an error with AWS credentials."""
 
 
 class S3InitializationError(S3Error):
-    """
-    Raised when there is an error initializing S3 client.
-    """
+    """Raised when there is an error initializing S3 client."""
 
 
 class S3UploadError(S3Error):
-    """
-    Raised when there is an upload error to S3.
-    """
+    """Raised when there is an upload error to S3."""
 
 
 class S3DownloadError(S3Error):
-    """
-    Raised when there is an download error to S3.
-    """
+    """Raised when there is an download error to S3."""
 
 
 class S3DeletionError(S3Error):
-    """
-    Raised when there is an deletion error on S3.
-    """
+    """Raised when there is an deletion error on S3."""

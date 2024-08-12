@@ -62,7 +62,7 @@ CHAR_STRATEGY = st.characters()
 def test_mock_s3_session_profile_without_kms(profile, mock_session, dbapi):
     s = locopy.S3(profile=profile)
     mock_session.assert_called_with(profile_name=profile)
-    assert s.kms_key == None
+    assert s.kms_key is None
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
@@ -79,7 +79,7 @@ def test_mock_s3_session_profile_with_kms(input_kms_key, profile, mock_session, 
 def test_mock_s3_session_profile_without_any(mock_session, dbapi):
     s = locopy.S3()
     mock_session.assert_called_with(profile_name=None)
-    assert s.kms_key == None
+    assert s.kms_key is None
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
