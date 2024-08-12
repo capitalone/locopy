@@ -418,12 +418,12 @@ class Redshift(S3, Database):
         s3_download_list = self._unload_generated_files()
         if s3_download_list is None:
             logger.error("No files generated from unload")
-            raise Exception("No files generated from unload")
+            raise DBError("No files generated from unload")
 
         columns = self._get_column_names(query)
         if columns is None:
             logger.error("Unable to retrieve column names from exported data")
-            raise Exception("Unable to retrieve column names from exported data.")
+            raise DBError("Unable to retrieve column names from exported data.")
 
         # download files locally with same name
         local_list = self.download_list_from_s3(s3_download_list, raw_unload_path)
