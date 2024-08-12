@@ -19,4 +19,4 @@ from locopy.redshift import Redshift
 from locopy.s3 import S3
 from locopy.snowflake import Snowflake
 
-__all__ = ["S3", "Redshift", "Snowflake", "Database"]
+__all__ = ["S3", "Database", "Redshift", "Snowflake"]
