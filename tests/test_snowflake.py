@@ -158,84 +158,92 @@ def test_with_connect(mock_session, sf_credentials):
             sf.conn.cursor.return_value.execute.assert_any_call("USE SCHEMA schema", ())
 
         mock_connect.side_effect = Exception("Connect Exception")
-        with pytest.raises(DBError):
-            with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
-                sf.cursor
+        with (
+            pytest.raises(DBError),
+            Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
+        ):
+            sf.cursor  # noqa: B018
 
 
 @mock.patch("locopy.s3.Session")
 def test_upload_to_internal(mock_session, sf_credentials):
-    with mock.patch("snowflake.connector.connect") as mock_connect:
-        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
+    with (
+        mock.patch("snowflake.connector.connect") as mock_connect,
+        Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
+    ):
+        sf.upload_to_internal("/some/file", "@~/internal")
+        sf.conn.cursor.return_value.execute.assert_called_with(
+            "PUT 'file:///some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True OVERWRITE=True",
+            (),
+        )
+
+        sf.upload_to_internal(
+            "/some/file", "@~/internal", parallel=99, auto_compress=False
+        )
+        sf.conn.cursor.return_value.execute.assert_called_with(
+            "PUT 'file:///some/file' @~/internal PARALLEL=99 AUTO_COMPRESS=False OVERWRITE=True",
+            (),
+        )
+
+        sf.upload_to_internal("/some/file", "@~/internal", overwrite=False)
+        sf.conn.cursor.return_value.execute.assert_called_with(
+            "PUT 'file:///some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True OVERWRITE=False",
+            (),
+        )
+
+        # exception
+        sf.conn.cursor.return_value.execute.side_effect = Exception("PUT Exception")
+        with pytest.raises(DBError):
             sf.upload_to_internal("/some/file", "@~/internal")
-            sf.conn.cursor.return_value.execute.assert_called_with(
-                "PUT 'file:///some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True OVERWRITE=True",
-                (),
-            )
-
-            sf.upload_to_internal(
-                "/some/file", "@~/internal", parallel=99, auto_compress=False
-            )
-            sf.conn.cursor.return_value.execute.assert_called_with(
-                "PUT 'file:///some/file' @~/internal PARALLEL=99 AUTO_COMPRESS=False OVERWRITE=True",
-                (),
-            )
-
-            sf.upload_to_internal("/some/file", "@~/internal", overwrite=False)
-            sf.conn.cursor.return_value.execute.assert_called_with(
-                "PUT 'file:///some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True OVERWRITE=False",
-                (),
-            )
-
-            # exception
-            sf.conn.cursor.return_value.execute.side_effect = Exception("PUT Exception")
-            with pytest.raises(DBError):
-                sf.upload_to_internal("/some/file", "@~/internal")
 
 
 @mock.patch("locopy.snowflake.PurePath", new=PureWindowsPath)
 @mock.patch("locopy.s3.Session")
 def test_upload_to_internal_windows(mock_session, sf_credentials):
-    with mock.patch("snowflake.connector.connect") as mock_connect:
-        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
-
-            sf.upload_to_internal(r"C:\some\file", "@~/internal")
-            sf.conn.cursor.return_value.execute.assert_called_with(
-                "PUT 'file://C:/some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True OVERWRITE=True",
-                (),
-            )
+    with (
+        mock.patch("snowflake.connector.connect") as mock_connect,
+        Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
+    ):
+        sf.upload_to_internal(r"C:\some\file", "@~/internal")
+        sf.conn.cursor.return_value.execute.assert_called_with(
+            "PUT 'file://C:/some/file' @~/internal PARALLEL=4 AUTO_COMPRESS=True OVERWRITE=True",
+            (),
+        )
 
 
 @mock.patch("locopy.s3.Session")
 def test_download_from_internal(mock_session, sf_credentials):
-    with mock.patch("snowflake.connector.connect") as mock_connect:
-        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
+    with (
+        mock.patch("snowflake.connector.connect") as mock_connect,
+        Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
+    ):
+        sf.download_from_internal("@~/internal", "/some/file")
+        sf.conn.cursor.return_value.execute.assert_called_with(
+            "GET @~/internal 'file:///some/file' PARALLEL=10", ()
+        )
+
+        sf.download_from_internal("@~/internal", "/some/file", parallel=99)
+        sf.conn.cursor.return_value.execute.assert_called_with(
+            "GET @~/internal 'file:///some/file' PARALLEL=99", ()
+        )
+
+        # exception
+        sf.conn.cursor.return_value.execute.side_effect = Exception("GET Exception")
+        with pytest.raises(DBError):
             sf.download_from_internal("@~/internal", "/some/file")
-            sf.conn.cursor.return_value.execute.assert_called_with(
-                "GET @~/internal 'file:///some/file' PARALLEL=10", ()
-            )
-
-            sf.download_from_internal("@~/internal", "/some/file", parallel=99)
-            sf.conn.cursor.return_value.execute.assert_called_with(
-                "GET @~/internal 'file:///some/file' PARALLEL=99", ()
-            )
-
-            # exception
-            sf.conn.cursor.return_value.execute.side_effect = Exception("GET Exception")
-            with pytest.raises(DBError):
-                sf.download_from_internal("@~/internal", "/some/file")
 
 
 @mock.patch("locopy.snowflake.PurePath", new=PureWindowsPath)
 @mock.patch("locopy.s3.Session")
 def test_download_from_internal_windows(mock_session, sf_credentials):
-    with mock.patch("snowflake.connector.connect") as mock_connect:
-        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
-
-            sf.download_from_internal("@~/internal", r"C:\some\file")
-            sf.conn.cursor.return_value.execute.assert_called_with(
-                "GET @~/internal 'file://C:/some/file' PARALLEL=10", ()
-            )
+    with (
+        mock.patch("snowflake.connector.connect") as mock_connect,
+        Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
+    ):
+        sf.download_from_internal("@~/internal", r"C:\some\file")
+        sf.conn.cursor.return_value.execute.assert_called_with(
+            "GET @~/internal 'file://C:/some/file' PARALLEL=10", ()
+        )
 
 
 @pytest.mark.parametrize(
@@ -274,40 +282,40 @@ def test_download_from_internal_windows(mock_session, sf_credentials):
 def test_copy(
     mock_session, file_type, format_options, copy_options, expected, sf_credentials
 ):
-    with mock.patch("snowflake.connector.connect") as mock_connect:
-        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
-
-            sf.copy(
-                "table_name",
-                "@~/stage",
-                file_type=file_type,
-                format_options=format_options,
-                copy_options=copy_options,
-            )
-            sf.conn.cursor.return_value.execute.assert_called_with(
-                f"COPY INTO table_name FROM '@~/stage' FILE_FORMAT = {expected}",
-                (),
-            )
+    with (
+        mock.patch("snowflake.connector.connect") as mock_connect,
+        Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
+    ):
+        sf.copy(
+            "table_name",
+            "@~/stage",
+            file_type=file_type,
+            format_options=format_options,
+            copy_options=copy_options,
+        )
+        sf.conn.cursor.return_value.execute.assert_called_with(
+            f"COPY INTO table_name FROM '@~/stage' FILE_FORMAT = {expected}",
+            (),
+        )
 
 
 @mock.patch("locopy.s3.Session")
 def test_copy_exception(mock_session, sf_credentials):
-    with mock.patch("snowflake.connector.connect") as mock_connect:
-        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
+    with (
+        mock.patch("snowflake.connector.connect") as mock_connect,
+        Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
+    ):
+        with pytest.raises(ValueError):
+            sf.copy("table_name", "@~/stage", file_type="unknown")
 
-            with pytest.raises(ValueError):
-                sf.copy("table_name", "@~/stage", file_type="unknown")
+        # exception
+        sf.conn.cursor.return_value.execute.side_effect = Exception("COPY Exception")
+        with pytest.raises(DBError):
+            sf.copy("table_name", "@~/stage")
 
-            # exception
-            sf.conn.cursor.return_value.execute.side_effect = Exception(
-                "COPY Exception"
-            )
-            with pytest.raises(DBError):
-                sf.copy("table_name", "@~/stage")
-
-            sf.conn = None
-            with pytest.raises(DBError):
-                sf.copy("table_name", "@~/stage")
+        sf.conn = None
+        with pytest.raises(DBError):
+            sf.copy("table_name", "@~/stage")
 
 
 @pytest.mark.parametrize(
@@ -356,41 +364,41 @@ def test_unload(
     expected,
     sf_credentials,
 ):
-    with mock.patch("snowflake.connector.connect") as mock_connect:
-        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
-
-            sf.unload(
-                "@~/stage",
-                "table_name",
-                file_type=file_type,
-                format_options=format_options,
-                header=header,
-                copy_options=copy_options,
-            )
-            sf.conn.cursor.return_value.execute.assert_called_with(
-                f"COPY INTO @~/stage FROM table_name FILE_FORMAT = {expected}",
-                (),
-            )
+    with (
+        mock.patch("snowflake.connector.connect") as mock_connect,
+        Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
+    ):
+        sf.unload(
+            "@~/stage",
+            "table_name",
+            file_type=file_type,
+            format_options=format_options,
+            header=header,
+            copy_options=copy_options,
+        )
+        sf.conn.cursor.return_value.execute.assert_called_with(
+            f"COPY INTO @~/stage FROM table_name FILE_FORMAT = {expected}",
+            (),
+        )
 
 
 @mock.patch("locopy.s3.Session")
 def test_unload_exception(mock_session, sf_credentials):
-    with mock.patch("snowflake.connector.connect") as mock_connect:
-        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
+    with (
+        mock.patch("snowflake.connector.connect") as mock_connect,
+        Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
+    ):
+        with pytest.raises(ValueError):
+            sf.unload("table_name", "@~/stage", file_type="unknown")
 
-            with pytest.raises(ValueError):
-                sf.unload("table_name", "@~/stage", file_type="unknown")
+        # exception
+        sf.conn.cursor.return_value.execute.side_effect = Exception("UNLOAD Exception")
+        with pytest.raises(DBError):
+            sf.unload("@~/stage", "table_name")
 
-            # exception
-            sf.conn.cursor.return_value.execute.side_effect = Exception(
-                "UNLOAD Exception"
-            )
-            with pytest.raises(DBError):
-                sf.unload("@~/stage", "table_name")
-
-            sf.conn = None
-            with pytest.raises(DBError):
-                sf.unload("@~/stage", "table_name")
+        sf.conn = None
+        with pytest.raises(DBError):
+            sf.unload("@~/stage", "table_name")
 
 
 @mock.patch("locopy.s3.Session")
@@ -398,18 +406,20 @@ def test_to_pandas(mock_session, sf_credentials):
     import pandas as pd
 
     test_df = pd.read_csv(os.path.join(CURR_DIR, "data", "mock_dataframe.txt"), sep=",")
-    with mock.patch("snowflake.connector.connect") as mock_connect:
-        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
-            sf.cursor._query_result_format = "arrow"
-            sf.to_dataframe()
-            sf.conn.cursor.return_value.fetch_pandas_all.assert_called_with()
+    with (
+        mock.patch("snowflake.connector.connect") as mock_connect,
+        Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
+    ):
+        sf.cursor._query_result_format = "arrow"
+        sf.to_dataframe()
+        sf.conn.cursor.return_value.fetch_pandas_all.assert_called_with()
 
-            sf.cursor._query_result_format = "json"
-            sf.to_dataframe()
-            sf.conn.cursor.return_value.fetchall.assert_called_with()
+        sf.cursor._query_result_format = "json"
+        sf.to_dataframe()
+        sf.conn.cursor.return_value.fetchall.assert_called_with()
 
-            sf.to_dataframe(5)
-            sf.conn.cursor.return_value.fetchmany.assert_called_with(5)
+        sf.to_dataframe(5)
+        sf.conn.cursor.return_value.fetchmany.assert_called_with(5)
 
 
 @mock.patch("locopy.s3.Session")
@@ -417,61 +427,63 @@ def test_insert_dataframe_to_table(mock_session, sf_credentials):
     import pandas as pd
 
     test_df = pd.read_csv(os.path.join(CURR_DIR, "data", "mock_dataframe.txt"), sep=",")
-    with mock.patch("snowflake.connector.connect") as mock_connect:
-        with Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf:
-            sf.insert_dataframe_to_table(test_df, "database.schema.test")
-            sf.conn.cursor.return_value.executemany.assert_called_with(
-                "INSERT INTO database.schema.test (a,b,c) VALUES (%s,%s,%s)",
-                [("1", "x", "2011-01-01"), ("2", "y", "2001-04-02")],
-            )
+    with (
+        mock.patch("snowflake.connector.connect") as mock_connect,
+        Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
+    ):
+        sf.insert_dataframe_to_table(test_df, "database.schema.test")
+        sf.conn.cursor.return_value.executemany.assert_called_with(
+            "INSERT INTO database.schema.test (a,b,c) VALUES (%s,%s,%s)",
+            [("1", "x", "2011-01-01"), ("2", "y", "2001-04-02")],
+        )
 
-            sf.insert_dataframe_to_table(test_df, "database.schema.test", create=True)
-            sf.conn.cursor.return_value.execute.assert_any_call(
-                "CREATE TABLE database.schema.test (a int,b varchar,c date)", ()
-            )
-            sf.conn.cursor.return_value.executemany.assert_called_with(
-                "INSERT INTO database.schema.test (a,b,c) VALUES (%s,%s,%s)",
-                [("1", "x", "2011-01-01"), ("2", "y", "2001-04-02")],
-            )
+        sf.insert_dataframe_to_table(test_df, "database.schema.test", create=True)
+        sf.conn.cursor.return_value.execute.assert_any_call(
+            "CREATE TABLE database.schema.test (a int,b varchar,c date)", ()
+        )
+        sf.conn.cursor.return_value.executemany.assert_called_with(
+            "INSERT INTO database.schema.test (a,b,c) VALUES (%s,%s,%s)",
+            [("1", "x", "2011-01-01"), ("2", "y", "2001-04-02")],
+        )
 
-            sf.insert_dataframe_to_table(
-                test_df, "database.schema.test", columns=["a", "b"]
-            )
+        sf.insert_dataframe_to_table(
+            test_df, "database.schema.test", columns=["a", "b"]
+        )
 
-            sf.conn.cursor.return_value.executemany.assert_called_with(
-                "INSERT INTO database.schema.test (a,b) VALUES (%s,%s)",
-                [("1", "x"), ("2", "y")],
-            )
+        sf.conn.cursor.return_value.executemany.assert_called_with(
+            "INSERT INTO database.schema.test (a,b) VALUES (%s,%s)",
+            [("1", "x"), ("2", "y")],
+        )
 
-            sf.insert_dataframe_to_table(
-                test_df,
-                "database.schema.test",
-                create=True,
-                metadata=OrderedDict(
-                    [("col1", "int"), ("col2", "varchar"), ("col3", "date")]
-                ),
-            )
+        sf.insert_dataframe_to_table(
+            test_df,
+            "database.schema.test",
+            create=True,
+            metadata=OrderedDict(
+                [("col1", "int"), ("col2", "varchar"), ("col3", "date")]
+            ),
+        )
 
-            sf.conn.cursor.return_value.execute.assert_any_call(
-                "CREATE TABLE database.schema.test (col1 int,col2 varchar,col3 date)",
-                (),
-            )
-            sf.conn.cursor.return_value.executemany.assert_called_with(
-                "INSERT INTO database.schema.test (col1,col2,col3) VALUES (%s,%s,%s)",
-                [("1", "x", "2011-01-01"), ("2", "y", "2001-04-02")],
-            )
+        sf.conn.cursor.return_value.execute.assert_any_call(
+            "CREATE TABLE database.schema.test (col1 int,col2 varchar,col3 date)",
+            (),
+        )
+        sf.conn.cursor.return_value.executemany.assert_called_with(
+            "INSERT INTO database.schema.test (col1,col2,col3) VALUES (%s,%s,%s)",
+            [("1", "x", "2011-01-01"), ("2", "y", "2001-04-02")],
+        )
 
-            sf.insert_dataframe_to_table(
-                test_df,
-                "database.schema.test",
-                create=False,
-                metadata=OrderedDict(
-                    [("col1", "int"), ("col2", "varchar"), ("col3", "date")]
-                ),
-            )
+        sf.insert_dataframe_to_table(
+            test_df,
+            "database.schema.test",
+            create=False,
+            metadata=OrderedDict(
+                [("col1", "int"), ("col2", "varchar"), ("col3", "date")]
+            ),
+        )
 
-            # mock_session.warn.assert_called_with('Metadata will not be used because create is set to False.')
-            sf.conn.cursor.return_value.executemany.assert_called_with(
-                "INSERT INTO database.schema.test (a,b,c) VALUES (%s,%s,%s)",
-                [("1", "x", "2011-01-01"), ("2", "y", "2001-04-02")],
-            )
+        # mock_session.warn.assert_called_with('Metadata will not be used because create is set to False.')
+        sf.conn.cursor.return_value.executemany.assert_called_with(
+            "INSERT INTO database.schema.test (a,b,c) VALUES (%s,%s,%s)",
+            [("1", "x", "2011-01-01"), ("2", "y", "2001-04-02")],
+        )

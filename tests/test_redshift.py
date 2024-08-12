@@ -29,7 +29,7 @@ import pg8000
 import psycopg2
 import pytest
 from locopy import Redshift
-from locopy.errors import DBError
+from locopy.errors import DBError, LocopyError
 
 PROFILE = "test"
 GOOD_CONFIG_YAML = """
@@ -759,7 +759,7 @@ def test_unload_and_copy(
         mock_unload_generated_files.return_value = ["dummy_file"]
         mock_generate_unload_path.return_value = "dummy_s3_path"
         mock_get_col_names.return_value = None
-        with pytest.raises(Exception):
+        with pytest.raises(LocopyError):
             r.unload_and_copy("query", "s3_bucket", None)
 
         ##
@@ -768,7 +768,7 @@ def test_unload_and_copy(
         mock_generate_unload_path.return_value = "dummy_s3_path"
         mock_get_col_names.return_value = ["dummy_col_name"]
         mock_unload_generated_files.return_value = None
-        with pytest.raises(Exception):
+        with pytest.raises(LocopyError):
             r.unload_and_copy("query", "s3_bucket", None)
 
         ##
@@ -831,10 +831,12 @@ def test_unload_generated_files(mock_session, credentials, dbapi):
         r._unload_generated_files()
         assert r._unload_generated_files() == ["File1", "File2"]
 
-        mock_connect.return_value.cursor.return_value.execute.side_effect = Exception()
+        mock_connect.return_value.cursor.return_value.execute.side_effect = (
+            LocopyError()
+        )
         r = locopy.Redshift(dbapi=dbapi, **credentials)
         r.connect()
-        with pytest.raises(Exception):
+        with pytest.raises(LocopyError):
             r._unload_generated_files()
 
 
@@ -853,10 +855,12 @@ def test_get_column_names(mock_session, credentials, dbapi):
         r.connect()
         assert r._get_column_names("query") == ["COL1", "COL2"]
 
-        mock_connect.return_value.cursor.return_value.execute.side_effect = Exception()
+        mock_connect.return_value.cursor.return_value.execute.side_effect = (
+            LocopyError()
+        )
         r = locopy.Redshift(dbapi=dbapi, **credentials)
         r.connect()
-        with pytest.raises(Exception):
+        with pytest.raises(LocopyError):
             r._get_column_names("query")
 
 
@@ -875,13 +879,15 @@ def testunload(mock_session, credentials, dbapi):
 def testunload_no_connection(mock_session, credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         r = locopy.Redshift(dbapi=dbapi, **credentials)
-        with pytest.raises(Exception):
+        with pytest.raises(LocopyError):
             r.unload("query", "path")
 
-        mock_connect.return_value.cursor.return_value.execute.side_effect = Exception()
+        mock_connect.return_value.cursor.return_value.execute.side_effect = (
+            LocopyError()
+        )
         r = locopy.Redshift(dbapi=dbapi, **credentials)
         r.connect()
-        with pytest.raises(Exception):
+        with pytest.raises(LocopyError):
             r.unload("query", "path")
 
 

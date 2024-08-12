@@ -64,11 +64,13 @@ def cleanup(splits):
 
 
 def compare_file_contents(base_file, check_files):
-    check_files = cycle([open(x, "rb") for x in check_files])
+
+    check_files = cycle(check_files)
     with open(base_file, "rb") as base:
         for line in base:
             cfile = next(check_files)
-            compare_line = cfile.readline()
+            with open(cfile, "rb") as f:
+                compare_line = f.readline()
             if compare_line != line:
                 return False
     return True
@@ -266,7 +268,8 @@ def test_concatenate_files():
     with mock.patch("locopy.utility.os.remove") as mock_remove:
         concatenate_files(inputs, output)
         assert mock_remove.call_count == 3
-        assert [int(line.rstrip("\n")) for line in open(output)] == list(range(1, 16))
+        with open(output) as f:
+            assert [int(line.rstrip("\n")) for line in f] == list(range(1, 16))
     os.remove(output)
 
 

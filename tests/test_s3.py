@@ -121,8 +121,8 @@ def test_get_credentials(mock_cred, aws_creds):
     expected = "aws_access_key_id=access;" "aws_secret_access_key=secret"
     assert cred_string == expected
 
-    mock_cred.side_effect = Exception("Exception")
-    with pytest.raises(Exception):
+    mock_cred.side_effect = S3CredentialsError("Exception")
+    with pytest.raises(S3CredentialsError):
         locopy.S3()
 
 

@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""S3 Module
+"""S3 Module.
+
 Module to wrap the boto3 api usage and provide functionality to manage
 multipart upload to S3 buckets.
 """
@@ -39,9 +40,9 @@ logger = get_logger(__name__, INFO)
 
 
 class S3:
-    """
-    S3 wrapper class which utilizes the boto3 library to push files to an S3
-    bucket.
+    """S3 wrapper class.
+
+    Utilizes the boto3 library to push files to an S3 bucket.
 
     Parameters
     ----------
@@ -100,7 +101,7 @@ class S3:
             logger.info("Initialized AWS session.")
         except Exception as e:
             logger.error("Error initializing AWS Session, err: %s", e)
-            raise S3Error("Error initializing AWS Session.")
+            raise S3Error("Error initializing AWS Session.") from e
         credentials = self.session.get_credentials()
         if credentials is None:
             raise S3CredentialsError("Credentials could not be set.")
@@ -111,11 +112,12 @@ class S3:
             logger.info("Successfully initialized S3 client.")
         except Exception as e:
             logger.error("Error initializing S3 Client, err: %s", e)
-            raise S3InitializationError("Error initializing S3 Client.")
+            raise S3InitializationError("Error initializing S3 Client.") from e
 
     def _credentials_string(self):
-        """Returns a credentials string for the Redshift COPY or UNLOAD command,
-        containing credentials from the current session.
+        """Return a credentials string for the Redshift COPY or UNLOAD command.
+
+        Containing credentials from the current session.
 
         Returns
         -------
@@ -149,8 +151,10 @@ class S3:
         return f"s3://{bucket}/{key}"
 
     def _generate_unload_path(self, bucket, folder):
-        """Will return the S3 file URL in the format s3://bucket/folder if a
-        valid (not None) folder is provided. Otherwise, returns s3://bucket.
+        """Return the S3 file URL.
+
+        If a valid (not None) folder is provided, returnsin the format s3://bucket/folder.
+        Otherwise, returns s3://bucket.
 
         Parameters
         ----------
@@ -210,7 +214,7 @@ class S3:
             )
         except Exception as e:
             logger.error("Error uploading to S3. err: %s", e)
-            raise S3UploadError("Error uploading to S3.")
+            raise S3UploadError("Error uploading to S3.") from e
 
     def upload_list_to_s3(self, local_list, bucket, folder=None):
         """
@@ -281,7 +285,7 @@ class S3:
             self.s3.download_file(bucket, key, local, Config=config)
         except Exception as e:
             logger.error("Error downloading from S3. err: %s", e)
-            raise S3DownloadError("Error downloading from S3.")
+            raise S3DownloadError("Error downloading from S3.") from e
 
     def download_list_from_s3(self, s3_list, local_path=None):
         """
@@ -334,7 +338,7 @@ class S3:
             self.s3.delete_object(Bucket=bucket, Key=key)
         except Exception as e:
             logger.error("Error deleting from S3. err: %s", e)
-            raise S3DeletionError("Error deleting from S3.")
+            raise S3DeletionError("Error deleting from S3.") from e
 
     def delete_list_from_s3(self, s3_list):
         """
@@ -351,9 +355,7 @@ class S3:
             self.delete_from_s3(s3_bucket, s3_key)
 
     def parse_s3_url(self, s3_url):
-        """
-        Parse a string of the s3 url to extract the bucket and key.
-        scheme or not.
+        """Extract the bucket and key from a s3 url.
 
         Parameters
         ----------

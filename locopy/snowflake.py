@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Snowflake Module
+"""Snowflake Module.
+
 Module to wrap a database adapter into a Snowflake class which can be used to connect
 to Snowflake, and run arbitrary code.
 """
@@ -85,8 +86,9 @@ UNLOAD_FORMAT_OPTIONS = {
 
 
 def combine_options(options=None):
-    """Returns the ``copy_options`` or ``format_options`` attribute with spaces in between and as
-    a string. If options is ``None`` then return an empty string.
+    """Return the ``copy_options`` or ``format_options`` attribute.
+
+    With spaces in between and as a string. If options is ``None`` then return an empty string.
 
     Parameters
     ----------
@@ -103,8 +105,9 @@ def combine_options(options=None):
 
 
 class Snowflake(S3, Database):
-    """Locopy class which manages connections to Snowflake.  Inherits ``Database`` and implements
-    the specific ``COPY INTO`` functionality.
+    """Locopy class which manages connections to Snowflake.  Inherits ``Database``.
+
+    Implements the specific ``COPY INTO`` functionality.
 
     Parameters
     ----------
@@ -183,8 +186,9 @@ class Snowflake(S3, Database):
         Database.__init__(self, dbapi, config_yaml, **kwargs)
 
     def connect(self):
-        """Creates a connection to the Snowflake cluster by
-        setting the values of the ``conn`` and ``cursor`` attributes.
+        """Create a connection to the Snowflake cluster.
+
+        Setg the values of the ``conn`` and ``cursor`` attributes.
 
         Raises
         ------
@@ -260,8 +264,9 @@ class Snowflake(S3, Database):
     def copy(
         self, table_name, stage, file_type="csv", format_options=None, copy_options=None
     ):
-        """Executes the ``COPY INTO <table>`` command to load CSV files from a stage into
-        a Snowflake table. If ``file_type == csv`` and ``format_options == None``, ``format_options``
+        """Load files from a stage into a Snowflake table.
+
+        Execute the ``COPY INTO <table>`` command to  If ``file_type == csv`` and ``format_options == None``, ``format_options``
         will default to: ``["FIELD_DELIMITER='|'", "SKIP_HEADER=0"]``.
 
         Parameters
@@ -313,7 +318,7 @@ class Snowflake(S3, Database):
 
         except Exception as e:
             logger.error("Error running COPY on Snowflake. err: %s", e)
-            raise DBError("Error running COPY on Snowflake.")
+            raise DBError("Error running COPY on Snowflake.") from e
 
     def unload(
         self,
@@ -324,8 +329,11 @@ class Snowflake(S3, Database):
         header=False,
         copy_options=None,
     ):
-        """Executes the ``COPY INTO <location>`` command to export a query/table from
-        Snowflake to a stage. If ``file_type == csv`` and ``format_options == None``, ``format_options``
+        """Export a query/table from Snowflake to a stage.
+
+        Execute the ``COPY INTO <location>`` command.
+
+        If ``file_type == csv`` and ``format_options == None``, ``format_options``
         will default to: ``["FIELD_DELIMITER='|'"]``.
 
         Parameters
@@ -384,13 +392,14 @@ class Snowflake(S3, Database):
             self.execute(sql, commit=True)
         except Exception as e:
             logger.error("Error running UNLOAD on Snowflake. err: %s", e)
-            raise DBError("Error running UNLOAD on Snowflake.")
+            raise DBError("Error running UNLOAD on Snowflake.") from e
 
     def insert_dataframe_to_table(
         self, dataframe, table_name, columns=None, create=False, metadata=None
     ):
-        """
-        Insert a Pandas dataframe to an existing table or a new table. In newer versions of the
+        """Insert a Pandas dataframe to an existing table or a new table.
+
+        In newer versions of the
         python snowflake connector (v2.1.2+) users can call the ``write_pandas`` method from the cursor
         directly, ``insert_dataframe_to_table`` is a custom implementation and does not use
         ``write_pandas``. Instead of using ``COPY INTO`` the method builds a list of tuples to
@@ -461,7 +470,9 @@ class Snowflake(S3, Database):
         logger.info("Table insertion has completed")
 
     def to_dataframe(self, size=None):
-        """Return a dataframe of the last query results. This is just a convenience method. This
+        """Return a dataframe of the last query results.
+
+        This is just a convenience method. This
         method overrides the base classes implementation in favour for the snowflake connectors
         built-in ``fetch_pandas_all`` when ``size==None``. If ``size != None`` then we will continue
         to use the existing functionality where we iterate through the cursor and build the
