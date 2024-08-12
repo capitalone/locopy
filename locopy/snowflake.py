@@ -19,6 +19,7 @@
 Module to wrap a database adapter into a Snowflake class which can be used to connect
 to Snowflake, and run arbitrary code.
 """
+
 import os
 from pathlib import PurePath
 
@@ -257,9 +258,7 @@ class Snowflake(S3, Database):
         if local is None:
             local = os.getcwd()
         local_uri = PurePath(local).as_posix()
-        self.execute(
-            f"GET {stage} 'file://{local_uri}' PARALLEL={parallel}"
-        )
+        self.execute(f"GET {stage} 'file://{local_uri}' PARALLEL={parallel}")
 
     def copy(
         self, table_name, stage, file_type="csv", format_options=None, copy_options=None

@@ -19,6 +19,7 @@
 Module to wrap the boto3 api usage and provide functionality to manage
 multipart upload to S3 buckets.
 """
+
 import os
 
 from boto3 import Session
@@ -86,7 +87,6 @@ class S3:
     """
 
     def __init__(self, profile=None, kms_key=None, **kwargs):
-
         self.profile = profile
         self.kms_key = kms_key
         self.session = None
@@ -208,9 +208,15 @@ class S3:
                 extra_args["SSEKMSKeyId"] = self.kms_key
                 logger.info("Using KMS Keys for encryption")
 
-            logger.info("Uploading file to S3 bucket: %s", self._generate_s3_path(bucket, key))
+            logger.info(
+                "Uploading file to S3 bucket: %s", self._generate_s3_path(bucket, key)
+            )
             self.s3.upload_file(
-                local, bucket, key, ExtraArgs=extra_args, Callback=ProgressPercentage(local)
+                local,
+                bucket,
+                key,
+                ExtraArgs=extra_args,
+                Callback=ProgressPercentage(local),
             )
         except Exception as e:
             logger.error("Error uploading to S3. err: %s", e)
@@ -279,7 +285,8 @@ class S3:
         """
         try:
             logger.info(
-                "Downloading file from S3 bucket: %s", self._generate_s3_path(bucket, key),
+                "Downloading file from S3 bucket: %s",
+                self._generate_s3_path(bucket, key),
             )
             config = TransferConfig(max_concurrency=5)
             self.s3.download_file(bucket, key, local, Config=config)
@@ -334,7 +341,9 @@ class S3:
             If there is a issue deleting from the S3 bucket
         """
         try:
-            logger.info("Deleting file from S3 bucket: %s", self._generate_s3_path(bucket, key))
+            logger.info(
+                "Deleting file from S3 bucket: %s", self._generate_s3_path(bucket, key)
+            )
             self.s3.delete_object(Bucket=bucket, Key=key)
         except Exception as e:
             logger.error("Error deleting from S3. err: %s", e)

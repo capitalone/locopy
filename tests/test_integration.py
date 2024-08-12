@@ -60,7 +60,6 @@ def s3_bucket():
 @pytest.mark.integration
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_redshift_execute_single_rows(dbapi):
-
     expected = pd.DataFrame({"field_1": [1], "field_2": [2]})
     with locopy.Redshift(dbapi=dbapi, **CREDS_DICT) as test:
         test.execute("SELECT 1 AS field_1, 2 AS field_2 ")
@@ -72,7 +71,6 @@ def test_redshift_execute_single_rows(dbapi):
 @pytest.mark.integration
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_redshift_execute_multiple_rows(dbapi):
-
     expected = pd.DataFrame({"field_1": [1, 2], "field_2": [1, 2]})
     with locopy.Redshift(dbapi=dbapi, **CREDS_DICT) as test:
         test.execute(
@@ -89,7 +87,6 @@ def test_redshift_execute_multiple_rows(dbapi):
 @pytest.mark.integration
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_s3_upload_download_file(s3_bucket, dbapi):
-
     s3 = locopy.S3(**CREDS_DICT)
     s3.upload_to_s3(LOCAL_FILE, S3_BUCKET, "myfile.txt")
 
@@ -103,7 +100,6 @@ def test_s3_upload_download_file(s3_bucket, dbapi):
 @pytest.mark.integration
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_copy(s3_bucket, dbapi):
-
     with locopy.Redshift(dbapi=dbapi, **CREDS_DICT) as redshift:
         redshift.execute(
             "CREATE TEMPORARY TABLE locopy_integration_testing (id INTEGER, variable VARCHAR(20)) DISTKEY(variable)"
@@ -134,7 +130,6 @@ def test_copy(s3_bucket, dbapi):
 @pytest.mark.integration
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_copy_split_ignore(s3_bucket, dbapi):
-
     with locopy.Redshift(dbapi=dbapi, **CREDS_DICT) as redshift:
         redshift.execute(
             "CREATE TEMPORARY TABLE locopy_integration_testing (id INTEGER, variable VARCHAR(20)) DISTKEY(variable)"
@@ -168,7 +163,6 @@ def test_copy_split_ignore(s3_bucket, dbapi):
 @pytest.mark.integration
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_unload(s3_bucket, dbapi):
-
     with locopy.Redshift(dbapi=dbapi, **CREDS_DICT) as redshift:
         redshift.execute(
             "CREATE TEMPORARY TABLE locopy_integration_testing AS SELECT ('2017-12-31'::date + row_number() over (order by 1))::date from SVV_TABLES LIMIT 5"
@@ -230,7 +224,6 @@ def test_unload_raw_unload_path(s3_bucket, dbapi):
 @pytest.mark.integration
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_insert_dataframe_to_table(s3_bucket, dbapi):
-
     with locopy.Redshift(dbapi=dbapi, **CREDS_DICT) as redshift:
         redshift.insert_dataframe_to_table(TEST_DF, "locopy_df_test", create=True)
         redshift.execute("SELECT a, b, c FROM locopy_df_test ORDER BY a ASC")

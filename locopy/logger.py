@@ -18,13 +18,15 @@
 
 Module which sets up the basic logging infrustrcuture for the application.
 """
+
 import logging
 import sys
 
 # logger formating
 BRIEF_FORMAT = "%(levelname)s %(asctime)s - %(name)s: %(message)s"
 VERBOSE_FORMAT = (
-    "%(levelname)s|%(asctime)s|%(name)s|%(filename)s|" "%(funcName)s|%(lineno)d: %(message)s"
+    "%(levelname)s|%(asctime)s|%(name)s|%(filename)s|"
+    "%(funcName)s|%(lineno)d: %(message)s"
 )
 FORMAT_TO_USE = VERBOSE_FORMAT
 

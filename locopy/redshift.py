@@ -19,6 +19,7 @@
 Module to wrap a database adapter into a Redshift class which can be used to connect
 to Redshift, and run arbitrary code.
 """
+
 import os
 from pathlib import Path
 

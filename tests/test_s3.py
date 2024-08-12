@@ -138,7 +138,10 @@ def test_generate_s3_path(mock_session):
 def test_generate_unload_path(mock_session):
     s = locopy.S3()
     assert s._generate_unload_path("TEST", "FOLDER/") == "s3://TEST/FOLDER/"
-    assert s._generate_unload_path("TEST SPACE", "FOLDER SPACE/") == "s3://TEST SPACE/FOLDER SPACE/"
+    assert (
+        s._generate_unload_path("TEST SPACE", "FOLDER SPACE/")
+        == "s3://TEST SPACE/FOLDER SPACE/"
+    )
     assert s._generate_unload_path("TEST", "PREFIX") == "s3://TEST/PREFIX"
     assert s._generate_unload_path("TEST", None) == "s3://TEST"
 
@@ -266,7 +269,10 @@ def test_download_from_s3(mock_session, mock_config):
     s = locopy.S3()
     s.download_from_s3(S3_DEFAULT_BUCKET, LOCAL_TEST_FILE, LOCAL_TEST_FILE)
     s.s3.download_file.assert_called_with(
-        S3_DEFAULT_BUCKET, LOCAL_TEST_FILE, os.path.basename(LOCAL_TEST_FILE), Config=mock_config()
+        S3_DEFAULT_BUCKET,
+        LOCAL_TEST_FILE,
+        os.path.basename(LOCAL_TEST_FILE),
+        Config=mock_config(),
     )
 
     mock_config.side_effect = Exception()
@@ -315,7 +321,9 @@ def test_delete_list_from_s3_multiple_with_folder(mock_session, mock_delete):
         mock.call("test_bucket", "test_folder/test.2"),
     ]
     s = locopy.S3()
-    s.delete_list_from_s3(["test_bucket/test_folder/test.1", "test_bucket/test_folder/test.2"])
+    s.delete_list_from_s3(
+        ["test_bucket/test_folder/test.1", "test_bucket/test_folder/test.2"]
+    )
     mock_delete.assert_has_calls(calls)
 
 
@@ -330,7 +338,9 @@ def test_delete_list_from_s3_multiple_without_folder(mock_session, mock_delete):
 
 @mock.patch("locopy.s3.S3.delete_from_s3")
 @mock.patch("locopy.s3.Session")
-def test_delete_list_from_s3_single_with_folder_and_special_chars(mock_session, mock_delete):
+def test_delete_list_from_s3_single_with_folder_and_special_chars(
+    mock_session, mock_delete
+):
     calls = [mock.call("test_bucket", r"test_folder/#$#@$@#$dffksdojfsdf\\\\\/test.1")]
     s = locopy.S3()
     s.delete_list_from_s3([r"test_bucket/test_folder/#$#@$@#$dffksdojfsdf\\\\\/test.1"])
@@ -343,22 +353,33 @@ def test_delete_list_from_s3_exception(mock_session, mock_delete):
     s = locopy.S3()
     mock_delete.side_effect = S3UploadError("Upload Exception")
     with pytest.raises(S3UploadError):
-        s.delete_list_from_s3(["test_bucket/test_folder/test.1", "test_bucket/test_folder/test.2"])
+        s.delete_list_from_s3(
+            ["test_bucket/test_folder/test.1", "test_bucket/test_folder/test.2"]
+        )
 
 
 @mock.patch("locopy.s3.Session")
 def test_parse_s3_url(mock_session):
     s = locopy.S3()
-    assert s.parse_s3_url("s3://bucket/folder/file.txt") == ("bucket", "folder/file.txt")
+    assert s.parse_s3_url("s3://bucket/folder/file.txt") == (
+        "bucket",
+        "folder/file.txt",
+    )
     assert s.parse_s3_url("s3://bucket/folder/") == ("bucket", "folder/")
     assert s.parse_s3_url("s3://bucket") == ("bucket", "")
-    assert s.parse_s3_url(r"s3://bucket/!@#$%\\\/file.txt") == ("bucket", r"!@#$%\\\/file.txt")
+    assert s.parse_s3_url(r"s3://bucket/!@#$%\\\/file.txt") == (
+        "bucket",
+        r"!@#$%\\\/file.txt",
+    )
     assert s.parse_s3_url("s3://") == ("", "")
 
     assert s.parse_s3_url("bucket/folder/file.txt") == ("bucket", "folder/file.txt")
     assert s.parse_s3_url("bucket/folder/") == ("bucket", "folder/")
     assert s.parse_s3_url("bucket") == ("bucket", "")
-    assert s.parse_s3_url(r"bucket/!@#$%\\\/file.txt") == ("bucket", r"!@#$%\\\/file.txt")
+    assert s.parse_s3_url(r"bucket/!@#$%\\\/file.txt") == (
+        "bucket",
+        r"!@#$%\\\/file.txt",
+    )
     assert s.parse_s3_url("") == ("", "")
 
 
@@ -393,7 +414,10 @@ def test_download_list_from_s3_multiple(mock_session, mock_download):
     ]
     s = locopy.S3()
     res = s.download_list_from_s3(["s3://bucket/test.1", "s3://bucket/test.2"])
-    assert res == [os.path.join(os.getcwd(), "test.1"), os.path.join(os.getcwd(), "test.2")]
+    assert res == [
+        os.path.join(os.getcwd(), "test.1"),
+        os.path.join(os.getcwd(), "test.2"),
+    ]
     mock_download.assert_has_calls(calls)
 
 
@@ -406,8 +430,13 @@ def test_download_list_from_s3_multiple_with_localpath(mock_session, mock_downlo
         mock.call("bucket", "test.2", os.path.join(tmp_path.name, "test.2")),
     ]
     s = locopy.S3()
-    res = s.download_list_from_s3(["s3://bucket/test.1", "s3://bucket/test.2"], tmp_path.name)
-    assert res == [os.path.join(tmp_path.name, "test.1"), os.path.join(tmp_path.name, "test.2")]
+    res = s.download_list_from_s3(
+        ["s3://bucket/test.1", "s3://bucket/test.2"], tmp_path.name
+    )
+    assert res == [
+        os.path.join(tmp_path.name, "test.1"),
+        os.path.join(tmp_path.name, "test.2"),
+    ]
     mock_download.assert_has_calls(calls)
     tmp_path.cleanup()
 

@@ -49,7 +49,9 @@ def test_add_default_copy_options():
         "COMPUPDATE ON",
         "TRUNCATECOLUMNS",
     ]
-    assert locopy.redshift.add_default_copy_options(["DATEFORMAT 'other'", "NULL AS 'blah'"]) == [
+    assert locopy.redshift.add_default_copy_options(
+        ["DATEFORMAT 'other'", "NULL AS 'blah'"]
+    ) == [
         "DATEFORMAT 'other'",
         "NULL AS 'blah'",
         "COMPUPDATE ON",
@@ -58,9 +60,9 @@ def test_add_default_copy_options():
 
 
 def test_combine_copy_options():
-    assert locopy.redshift.combine_copy_options(locopy.redshift.add_default_copy_options()) == (
-        "DATEFORMAT 'auto' COMPUPDATE " "ON TRUNCATECOLUMNS"
-    )
+    assert locopy.redshift.combine_copy_options(
+        locopy.redshift.add_default_copy_options()
+    ) == ("DATEFORMAT 'auto' COMPUPDATE " "ON TRUNCATECOLUMNS")
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
@@ -139,21 +141,18 @@ def test_copy_parquet(mock_execute, mock_session, credentials, dbapi):
         r = Redshift(profile=PROFILE, dbapi=dbapi, **credentials)
         r.connect()
         r.copy("table", s3path="path", delim=None, copy_options=["PARQUET"])
-        test_sql = (
-            "COPY {} FROM '{}' "
-            "CREDENTIALS '{}' "
-            "{};".format("table", "path", r._credentials_string(), "PARQUET")
+        test_sql = "COPY {} FROM '{}' " "CREDENTIALS '{}' " "{};".format(
+            "table", "path", r._credentials_string(), "PARQUET"
         )
         assert mock_execute.called_with(test_sql, commit=True)
         mock_execute.reset_mock()
         mock_session.reset_mock()
         r.copy("table", s3path="path", delim=None)
-        test_sql = (
-            "COPY {} FROM '{}' "
-            "CREDENTIALS '{}' "
-            "{};".format(
-                "table", "path", r._credentials_string(), locopy.redshift.add_default_copy_options()
-            )
+        test_sql = "COPY {} FROM '{}' " "CREDENTIALS '{}' " "{};".format(
+            "table",
+            "path",
+            r._credentials_string(),
+            locopy.redshift.add_default_copy_options(),
         )
         assert mock_execute.called_with(test_sql, commit=True)
 
@@ -260,7 +259,10 @@ def test_load_and_copy(
         # mock_remove.assert_called_with("/path/local_file.2")
         mock_s3_upload.assert_has_calls(expected_calls_no_folder_gzip)
         mock_rs_copy.assert_called_with(
-            "table_name", "s3://s3_bucket/local_file", "|", copy_options=["SOME OPTION", "GZIP"]
+            "table_name",
+            "s3://s3_bucket/local_file",
+            "|",
+            copy_options=["SOME OPTION", "GZIP"],
         )
         assert mock_s3_delete.called_with("s3_bucket", "local_file.0.gz")
         assert mock_s3_delete.called_with("s3_bucket", "local_file.1.gz")
@@ -334,7 +336,10 @@ def test_load_and_copy(
             "/path/local_file.txt", "s3_bucket", "test/local_file.txt"
         )
         mock_rs_copy.assert_called_with(
-            "table_name", "s3://s3_bucket/test/local_file", "|", copy_options=["SOME OPTION"]
+            "table_name",
+            "s3://s3_bucket/test/local_file",
+            "|",
+            copy_options=["SOME OPTION"],
         )
         assert not mock_s3_delete.called
 
@@ -365,7 +370,10 @@ def test_load_and_copy(
         # assert not mock_remove.called
         mock_s3_upload.assert_has_calls(expected_calls_folder)
         mock_rs_copy.assert_called_with(
-            "table_name", "s3://s3_bucket/test/local_file", "|", copy_options=["SOME OPTION"]
+            "table_name",
+            "s3://s3_bucket/test/local_file",
+            "|",
+            copy_options=["SOME OPTION"],
         )
         assert mock_s3_delete.called_with("s3_bucket", "test/local_file.0")
         assert mock_s3_delete.called_with("s3_bucket", "test/local_file.1")
@@ -519,7 +527,12 @@ def test_load_and_copy_split_and_header(
             "/path/local_file.2.gz",
         ]
         r.load_and_copy(
-            "/path/local_file", "s3_bucket", "table_name", delim="|", splits=3, delete_s3_after=True
+            "/path/local_file",
+            "s3_bucket",
+            "table_name",
+            delim="|",
+            splits=3,
+            delete_s3_after=True,
         )
 
         # assert
@@ -579,7 +592,6 @@ def test_load_and_copy_split_and_header(
 @pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("locopy.s3.Session")
 def test_redshiftcopy(mock_session, credentials, dbapi):
-
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         r = locopy.Redshift(dbapi=dbapi, **credentials)
         r.connect()
@@ -625,7 +637,6 @@ def test_redshiftcopy(mock_session, credentials, dbapi):
 @mock.patch("locopy.s3.Session")
 @mock.patch("locopy.database.Database._is_connected")
 def test_redshiftcopy_exception(mock_connected, mock_session, credentials, dbapi):
-
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         r = locopy.Redshift(dbapi=dbapi, **credentials)
         mock_connected.return_value = False
@@ -697,7 +708,9 @@ def test_unload_and_copy(
         )
 
         assert mock_unload_generated_files.called
-        assert not mock_write.called, "write_file should only be called " "if export_path != False"
+        assert not mock_write.called, (
+            "write_file should only be called " "if export_path != False"
+        )
         mock_generate_unload_path.assert_called_with("s3_bucket", None)
         mock_get_col_names.assert_called_with("query")
         mock_unload.assert_called_with(
@@ -725,7 +738,9 @@ def test_unload_and_copy(
 
         # check that unload options are modified based on supplied args
         mock_unload.assert_called_with(
-            query="query", s3path="dummy_s3_path", unload_options=["DELIMITER '|'", "PARALLEL OFF"]
+            query="query",
+            s3path="dummy_s3_path",
+            unload_options=["DELIMITER '|'", "PARALLEL OFF"],
         )
         assert not mock_delete_list_from_s3.called
 
@@ -788,7 +803,9 @@ def test_unload_and_copy(
             delete_s3_after=True,
             parallel_off=False,
         )
-        mock_concat.assert_called_with(mock_download_list_from_s3.return_value, "my_output.csv")
+        mock_concat.assert_called_with(
+            mock_download_list_from_s3.return_value, "my_output.csv"
+        )
         assert mock_write.called
         assert mock_delete_list_from_s3.called_with("s3_bucket", "my_output.csv")
 
@@ -848,9 +865,14 @@ def test_get_column_names(mock_session, credentials, dbapi):
         r.connect()
         assert r._get_column_names("query") is None
         sql = "SELECT * FROM (query) WHERE 1 = 0"
-        assert mock_connect.return_value.cursor.return_value.execute.called_with(sql, ())
+        assert mock_connect.return_value.cursor.return_value.execute.called_with(
+            sql, ()
+        )
 
-        mock_connect.return_value.cursor.return_value.description = [["COL1 "], ["COL2 "]]
+        mock_connect.return_value.cursor.return_value.description = [
+            ["COL1 "],
+            ["COL2 "],
+        ]
         r = locopy.Redshift(dbapi=dbapi, **credentials)
         r.connect()
         assert r._get_column_names("query") == ["COL1", "COL2"]
@@ -925,7 +947,9 @@ def testinsert_dataframe_to_table(mock_session, credentials, dbapi):
             test_df,
             "database.schema.test",
             create=True,
-            metadata=OrderedDict([("col1", "int"), ("col2", "varchar"), ("col3", "date")]),
+            metadata=OrderedDict(
+                [("col1", "int"), ("col2", "varchar"), ("col3", "date")]
+            ),
         )
 
         mock_connect.return_value.cursor.return_value.execute.assert_any_call(
@@ -936,11 +960,15 @@ def testinsert_dataframe_to_table(mock_session, credentials, dbapi):
             (),
         )
 
-        r.insert_dataframe_to_table(test_df, "database.schema.test", create=False, batch_size=1)
+        r.insert_dataframe_to_table(
+            test_df, "database.schema.test", create=False, batch_size=1
+        )
 
         mock_connect.return_value.cursor.return_value.execute.assert_any_call(
-            "INSERT INTO database.schema.test (a,b,c) VALUES ('1', 'x', '2011-01-01')", ()
+            "INSERT INTO database.schema.test (a,b,c) VALUES ('1', 'x', '2011-01-01')",
+            (),
         )
         mock_connect.return_value.cursor.return_value.execute.assert_any_call(
-            "INSERT INTO database.schema.test (a,b,c) VALUES ('2', 'y', '2001-04-02')", ()
+            "INSERT INTO database.schema.test (a,b,c) VALUES ('2', 'y', '2001-04-02')",
+            (),
         )

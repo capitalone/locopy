@@ -15,6 +15,7 @@
 # limitations under the License.
 
 """Database Module."""
+
 import time
 
 from locopy.errors import CredentialsError, DBError
@@ -72,7 +73,9 @@ class Database:
         self.cursor = None
 
         if config_yaml and self.connection:
-            raise CredentialsError("Please provide kwargs or a YAML configuraton, not both.")
+            raise CredentialsError(
+                "Please provide kwargs or a YAML configuraton, not both."
+            )
         if config_yaml:
             self.connection = read_config_yaml(config_yaml)
 
@@ -110,7 +113,9 @@ class Database:
                 self.conn.close()
             except Exception as e:
                 logger.error("Error disconnecting from the database. err: %s", e)
-                raise DBError("There is a problem disconnecting from the database.") from e
+                raise DBError(
+                    "There is a problem disconnecting from the database."
+                ) from e
         else:
             logger.info("No connection to close")
 

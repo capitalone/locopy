@@ -59,7 +59,6 @@ def s3_bucket():
 @pytest.mark.integration
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_snowflake_execute_single_rows(dbapi):
-
     expected = pd.DataFrame({"field_1": [1], "field_2": [2]})
     with locopy.Snowflake(dbapi=dbapi, **CREDS_DICT) as test:
         test.execute("SELECT 1 AS field_1, 2 AS field_2 ")
@@ -72,11 +71,12 @@ def test_snowflake_execute_single_rows(dbapi):
 @pytest.mark.integration
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_snowflake_execute_multiple_rows(dbapi):
-
     expected = pd.DataFrame({"field_1": [1, 2], "field_2": [1, 2]})
     with locopy.Snowflake(dbapi=dbapi, **CREDS_DICT) as test:
         test.execute(
-            "SELECT 1 AS field_1, 1 AS field_2 " "UNION " "SELECT 2 AS field_1, 2 AS field_2"
+            "SELECT 1 AS field_1, 1 AS field_2 "
+            "UNION "
+            "SELECT 2 AS field_1, 2 AS field_2"
         )
         df = test.to_dataframe()
         df.columns = [c.lower() for c in df.columns]
@@ -88,7 +88,6 @@ def test_snowflake_execute_multiple_rows(dbapi):
 @pytest.mark.integration
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_upload_download_internal(dbapi):
-
     with locopy.Snowflake(dbapi=dbapi, **CREDS_DICT) as test:
         # delete if exists
         test.execute("REMOVE @~/staged/mock_file_dl.txt")
@@ -113,7 +112,6 @@ def test_upload_download_internal(dbapi):
 @pytest.mark.integration
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_copy(dbapi):
-
     with locopy.Snowflake(dbapi=dbapi, **CREDS_DICT) as test:
         test.upload_to_internal(LOCAL_FILE, "@~/staged/")
         test.execute("USE SCHEMA {}".format(CREDS_DICT["schema"]))
@@ -143,7 +141,6 @@ def test_copy(dbapi):
 @pytest.mark.integration
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_copy_json(dbapi):
-
     with locopy.Snowflake(dbapi=dbapi, **CREDS_DICT) as test:
         test.upload_to_internal(LOCAL_FILE_JSON, "@~/staged/")
         test.execute("USE SCHEMA {}".format(CREDS_DICT["schema"]))
@@ -175,7 +172,6 @@ def test_copy_json(dbapi):
 @pytest.mark.integration
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_to_dataframe(dbapi):
-
     with locopy.Snowflake(dbapi=dbapi, **CREDS_DICT) as test:
         test.upload_to_internal(LOCAL_FILE_JSON, "@~/staged/")
         test.execute("USE SCHEMA {}".format(CREDS_DICT["schema"]))
@@ -196,11 +192,17 @@ def test_to_dataframe(dbapi):
         result = test.to_dataframe()
         result.columns = [c.lower() for c in result.columns]
         expected = pd.DataFrame(
-            [('"Belmont"', '"92567"'), ('"Lexington"', '"75836"'), ('"Winchester"', '"89921"'),],
+            [
+                ('"Belmont"', '"92567"'),
+                ('"Lexington"', '"75836"'),
+                ('"Winchester"', '"89921"'),
+            ],
             columns=["variable:location:city", "variable:price"],
         )
 
-        assert (result["variable:location:city"] == expected["variable:location:city"]).all()
+        assert (
+            result["variable:location:city"] == expected["variable:location:city"]
+        ).all()
         assert (result["variable:price"] == expected["variable:price"]).all()
 
         # with size of 2
@@ -210,11 +212,16 @@ def test_to_dataframe(dbapi):
         result = test.to_dataframe(size=2)
         result.columns = [c.lower() for c in result.columns]
         expected = pd.DataFrame(
-            [('"Belmont"', '"92567"'), ('"Lexington"', '"75836"'),],
+            [
+                ('"Belmont"', '"92567"'),
+                ('"Lexington"', '"75836"'),
+            ],
             columns=["variable:location:city", "variable:price"],
         )
 
-        assert (result["variable:location:city"] == expected["variable:location:city"]).all()
+        assert (
+            result["variable:location:city"] == expected["variable:location:city"]
+        ).all()
         assert (result["variable:price"] == expected["variable:price"]).all()
 
         # with non-select query
@@ -226,7 +233,6 @@ def test_to_dataframe(dbapi):
 @pytest.mark.integration
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_insert_dataframe_to_table(dbapi):
-
     with locopy.Snowflake(dbapi=dbapi, **CREDS_DICT) as test:
         test.insert_dataframe_to_table(TEST_DF, "test", create=True)
         test.execute("SELECT a, b, c FROM test ORDER BY a ASC")
@@ -249,7 +255,15 @@ def test_insert_dataframe_to_table(dbapi):
         results = test.cursor.fetchall()
         test.execute("drop table if exists test_2")
 
-        expected = [(1, "a"), (2, "b"), (3, "c"), (4, "d"), (5, "e"), (6, "f"), (7, "g")]
+        expected = [
+            (1, "a"),
+            (2, "b"),
+            (3, "c"),
+            (4, "d"),
+            (5, "e"),
+            (6, "f"),
+            (7, "g"),
+        ]
 
         assert len(expected) == len(results)
         for i, result in enumerate(results):

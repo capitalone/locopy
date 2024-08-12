@@ -64,7 +64,6 @@ def cleanup(splits):
 
 
 def compare_file_contents(base_file, check_files):
-
     check_files = cycle(check_files)
     with open(base_file, "rb") as base:
         for line in base:
@@ -286,7 +285,6 @@ def test_concatenate_files_exception():
 
 
 def test_find_column_type():
-
     from decimal import Decimal
 
     import pandas as pd
@@ -354,18 +352,17 @@ def test_find_column_type():
 
 
 def test_find_column_type_new():
-
     import pandas as pd
 
     input_text = pd.DataFrame.from_dict(
-    {
-        "a": [1],
-        "b": [pd.Timestamp('2017-01-01T12+0')],
-        "c": [1.2],
-        "d": ["a"],
-        "e": [True]
-    }
-)
+        {
+            "a": [1],
+            "b": [pd.Timestamp("2017-01-01T12+0")],
+            "c": [1.2],
+            "d": ["a"],
+            "e": [True],
+        }
+    )
 
     input_text = input_text.astype(
         dtype={
@@ -373,7 +370,7 @@ def test_find_column_type_new():
             "b": pd.DatetimeTZDtype(tz=datetime.timezone.utc),
             "c": pd.Float64Dtype(),
             "d": pd.StringDtype(),
-            "e": pd.BooleanDtype()
+            "e": pd.BooleanDtype(),
         }
     )
 
