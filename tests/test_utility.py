@@ -64,12 +64,11 @@ def cleanup(splits):
 
 
 def compare_file_contents(base_file, check_files):
-    check_files = cycle(check_files)
+    check_files = cycle([open(x, "rb") for x in check_files])  # noqa: SIM115
     with open(base_file, "rb") as base:
         for line in base:
             cfile = next(check_files)
-            with open(cfile, "rb") as f:
-                compare_line = f.readline()
+            compare_line = cfile.readline()
             if compare_line != line:
                 return False
     return True
