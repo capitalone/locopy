@@ -198,12 +198,13 @@ class Database:
         ----------
         df_type: Literal["pandas","polars"], optional
             Output dataframe format. Defaults to pandas.
+
         size : int, optional
             Chunk size to fetch.  Defaults to None.
 
         Returns
         -------
-        pandas.DataFrame
+        pandas.DataFrame or polars.DataFrame
             Dataframe with lowercase column names.  Returns None if no fetched
             result.
         """

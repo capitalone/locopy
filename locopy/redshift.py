@@ -537,14 +537,14 @@ class Redshift(S3, Database):
         verbose=False,
     ):
         """
-        Insert a Pandas dataframe to an existing table or a new table.
+        Insert a Pandas or Polars dataframe to an existing table or a new table.
 
         `executemany` in psycopg2 and pg8000 has very poor performance in terms of running speed.
         To overcome this issue, we instead format the insert query and then run `execute`.
 
         Parameters
         ----------
-        dataframe: Pandas Dataframe
+        dataframe: pandas.DataFrame, polars.DataFrame or polars.LazyFrame
             The pandas dataframe which needs to be inserted.
 
         table_name: str
@@ -574,7 +574,7 @@ class Redshift(S3, Database):
             try:
                 dataframe = dataframe[columns]
             except TypeError:
-                dataframe = dataframe.select(columns)
+                dataframe = dataframe.select(columns)  # for polars lazyframe
 
         all_columns = columns or list(dataframe.columns)
         column_sql = "(" + ",".join(all_columns) + ")"
