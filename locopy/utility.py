@@ -267,6 +267,11 @@ def find_column_type(dataframe, warehouse_type: str):
         - float object -> float
         - datetime object -> timestamp
         - object/pd.StringDtype -> varchar
+        - pd.ArrowDtype(int64()) -> int
+        - pd.ArrowDtype(float64()) -> float
+        - pd.ArrowDtype(bool_()) -> boolean
+        - pd.ArrowDtype(string()) -> varchar
+        - pd.ArrowDtype(timestamp('ns')) -> timestamp
 
     For all other data types, the column will be mapped to varchar type.
 
@@ -283,7 +288,7 @@ def find_column_type(dataframe, warehouse_type: str):
         A dictionary of columns with their data type
     """
     import re
-
+    import pyarrow as pa
     import pandas as pd
 
     def validate_date_object(column):
@@ -324,17 +329,19 @@ def find_column_type(dataframe, warehouse_type: str):
             re.match(r"(datetime64\[ns\,\W)([a-zA-Z]+)(\])", str(data.dtype))
         ):
             column_type.append("timestamp")
-        elif str(data.dtype).lower().startswith("bool"):
+        elif isinstance(data.dtype, pd.ArrowDtype) and data.dtype.pyarrow_dtype == pa.timestamp('ns'):
+            column_type.append("timestamp")
+        elif str(data.dtype).lower().startswith("bool") or (isinstance(data.dtype, pd.ArrowDtype) and data.dtype.pyarrow_dtype == pa.bool_()):
             column_type.append("boolean")
-        elif str(data.dtype).startswith("object"):
+        elif str(data.dtype).startswith("object") or (isinstance(data.dtype, pd.ArrowDtype) and data.dtype.pyarrow_dtype == pa.string()):
             data_type = validate_float_object(data) or validate_date_object(data)
             if not data_type:
                 column_type.append("varchar")
             else:
                 column_type.append(data_type)
-        elif str(data.dtype).lower().startswith("int"):
+        elif str(data.dtype).lower().startswith("int") or (isinstance(data.dtype, pd.ArrowDtype) and data.dtype.pyarrow_dtype == pa.int64()):
             column_type.append("int")
-        elif str(data.dtype).lower().startswith("float"):
+        elif str(data.dtype).lower().startswith("float") or (isinstance(data.dtype, pd.ArrowDtype) and data.dtype.pyarrow_dtype == pa.float64()):
             column_type.append("float")
         else:
             column_type.append("varchar")
