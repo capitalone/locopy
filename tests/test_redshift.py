@@ -909,10 +909,137 @@ def testunload_no_connection(mock_session, credentials, dbapi):
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("locopy.s3.Session")
-def testinsert_dataframe_to_table(mock_session, credentials, dbapi):
+def testinsert_dataframe_to_table_pandas(mock_session, credentials, dbapi):
     import pandas as pd
 
     test_df = pd.read_csv(os.path.join(CURR_DIR, "data", "mock_dataframe.txt"), sep=",")
+    with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
+        r = locopy.Redshift(dbapi=dbapi, **credentials)
+        r.connect()
+        r.insert_dataframe_to_table(test_df, "database.schema.test")
+        mock_connect.return_value.cursor.return_value.execute.assert_called_with(
+            "INSERT INTO database.schema.test (a,b,c) VALUES ('1', 'x', '2011-01-01'), ('2', 'y', '2001-04-02')",
+            (),
+        )
+
+        r.insert_dataframe_to_table(test_df, "database.schema.test", create=True)
+        mock_connect.return_value.cursor.return_value.execute.assert_any_call(
+            "CREATE TABLE database.schema.test (a int,b varchar,c date)", ()
+        )
+        mock_connect.return_value.cursor.return_value.execute.assert_called_with(
+            "INSERT INTO database.schema.test (a,b,c) VALUES ('1', 'x', '2011-01-01'), ('2', 'y', '2001-04-02')",
+            (),
+        )
+
+        r.insert_dataframe_to_table(test_df, "database.schema.test", columns=["a", "b"])
+
+        mock_connect.return_value.cursor.return_value.execute.assert_called_with(
+            "INSERT INTO database.schema.test (a,b) VALUES ('1', 'x'), ('2', 'y')", ()
+        )
+
+        r.insert_dataframe_to_table(
+            test_df,
+            "database.schema.test",
+            create=True,
+            metadata=OrderedDict(
+                [("col1", "int"), ("col2", "varchar"), ("col3", "date")]
+            ),
+        )
+
+        mock_connect.return_value.cursor.return_value.execute.assert_any_call(
+            "CREATE TABLE database.schema.test (col1 int,col2 varchar,col3 date)", ()
+        )
+        mock_connect.return_value.cursor.return_value.execute.assert_called_with(
+            "INSERT INTO database.schema.test (col1,col2,col3) VALUES ('1', 'x', '2011-01-01'), ('2', 'y', '2001-04-02')",
+            (),
+        )
+
+        r.insert_dataframe_to_table(
+            test_df, "database.schema.test", create=False, batch_size=1
+        )
+
+        mock_connect.return_value.cursor.return_value.execute.assert_any_call(
+            "INSERT INTO database.schema.test (a,b,c) VALUES ('1', 'x', '2011-01-01')",
+            (),
+        )
+        mock_connect.return_value.cursor.return_value.execute.assert_any_call(
+            "INSERT INTO database.schema.test (a,b,c) VALUES ('2', 'y', '2001-04-02')",
+            (),
+        )
+
+
+@pytest.mark.parametrize("dbapi", DBAPIS)
+@mock.patch("locopy.s3.Session")
+def testinsert_dataframe_to_table_polars(mock_session, credentials, dbapi):
+    import polars as pl
+
+    test_df = pl.read_csv(
+        os.path.join(CURR_DIR, "data", "mock_dataframe.txt"), separator=","
+    )
+    with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
+        r = locopy.Redshift(dbapi=dbapi, **credentials)
+        r.connect()
+        r.insert_dataframe_to_table(test_df, "database.schema.test")
+        mock_connect.return_value.cursor.return_value.execute.assert_called_with(
+            "INSERT INTO database.schema.test (a,b,c) VALUES ('1', 'x', '2011-01-01'), ('2', 'y', '2001-04-02')",
+            (),
+        )
+
+        r.insert_dataframe_to_table(test_df, "database.schema.test", create=True)
+        mock_connect.return_value.cursor.return_value.execute.assert_any_call(
+            "CREATE TABLE database.schema.test (a int,b varchar,c date)", ()
+        )
+        mock_connect.return_value.cursor.return_value.execute.assert_called_with(
+            "INSERT INTO database.schema.test (a,b,c) VALUES ('1', 'x', '2011-01-01'), ('2', 'y', '2001-04-02')",
+            (),
+        )
+
+        r.insert_dataframe_to_table(test_df, "database.schema.test", columns=["a", "b"])
+
+        mock_connect.return_value.cursor.return_value.execute.assert_called_with(
+            "INSERT INTO database.schema.test (a,b) VALUES ('1', 'x'), ('2', 'y')", ()
+        )
+
+        r.insert_dataframe_to_table(
+            test_df,
+            "database.schema.test",
+            create=True,
+            metadata=OrderedDict(
+                [("col1", "int"), ("col2", "varchar"), ("col3", "date")]
+            ),
+        )
+
+        mock_connect.return_value.cursor.return_value.execute.assert_any_call(
+            "CREATE TABLE database.schema.test (col1 int,col2 varchar,col3 date)", ()
+        )
+        mock_connect.return_value.cursor.return_value.execute.assert_called_with(
+            "INSERT INTO database.schema.test (col1,col2,col3) VALUES ('1', 'x', '2011-01-01'), ('2', 'y', '2001-04-02')",
+            (),
+        )
+
+        r.insert_dataframe_to_table(
+            test_df, "database.schema.test", create=False, batch_size=1
+        )
+
+        mock_connect.return_value.cursor.return_value.execute.assert_any_call(
+            "INSERT INTO database.schema.test (a,b,c) VALUES ('1', 'x', '2011-01-01')",
+            (),
+        )
+        mock_connect.return_value.cursor.return_value.execute.assert_any_call(
+            "INSERT INTO database.schema.test (a,b,c) VALUES ('2', 'y', '2001-04-02')",
+            (),
+        )
+
+
+@pytest.mark.parametrize("dbapi", DBAPIS)
+@mock.patch("locopy.s3.Session")
+def testinsert_dataframe_to_table_polars_lazy(mock_session, credentials, dbapi):
+    import polars as pl
+
+    test_df = pl.read_csv(
+        os.path.join(CURR_DIR, "data", "mock_dataframe.txt"), separator=","
+    )
+    test_df = test_df.lazy().collect()
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         r = locopy.Redshift(dbapi=dbapi, **credentials)
         r.connect()

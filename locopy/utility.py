@@ -317,7 +317,14 @@ def find_column_type(dataframe, warehouse_type: str):
     column_type = []
     for column in dataframe.columns:
         logger.debug("Checking column: %s", column)
-        data = dataframe[column].dropna().reset_index(drop=True)
+        try:
+            data = dataframe[column].dropna().reset_index(drop=True)
+        except AttributeError:
+            data = pd.Series(dataframe[column].drop_nulls())
+        except TypeError:
+            data = pd.Series(
+                dataframe.select(column).drop_nulls().collect().to_series()
+            )
         if data.size == 0:
             column_type.append("varchar")
         elif (data.dtype in ["datetime64[ns]", "M8[ns]"]) or (

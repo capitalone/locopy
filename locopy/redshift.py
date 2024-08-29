@@ -571,7 +571,10 @@ class Redshift(S3, Database):
         import polars as pl
 
         if columns:
-            dataframe = dataframe[columns]
+            try:
+                dataframe = dataframe[columns]
+            except TypeError:
+                dataframe = dataframe.select(columns)
 
         all_columns = columns or list(dataframe.columns)
         column_sql = "(" + ",".join(all_columns) + ")"
@@ -601,11 +604,18 @@ class Redshift(S3, Database):
             logger.info("New table has been created")
 
         logger.info("Inserting records...")
-        for start in range(0, len(dataframe), batch_size):
+        try:
+            length = len(dataframe)
+        except TypeError:
+            length = dataframe.select(pl.len()).collect().item()  # for polars lazyframe
+
+        for start in range(0, length, batch_size):
             # create a list of tuples for insert
             to_insert = []
             if isinstance(dataframe, pd.DataFrame):
-                for row in dataframe[start : (start + batch_size)].itertuples(index=False):
+                for row in dataframe[start : (start + batch_size)].itertuples(
+                    index=False
+                ):
                     none_row = (
                         "("
                         + ", ".join(
@@ -621,6 +631,23 @@ class Redshift(S3, Database):
                     to_insert.append(none_row)
             elif isinstance(dataframe, pl.DataFrame):
                 for row in dataframe[start : (start + batch_size)].iter_rows():
+                    none_row = (
+                        "("
+                        + ", ".join(
+                            [
+                                "NULL"
+                                if pd.isnull(val)
+                                else "'" + str(val).replace("'", "''") + "'"
+                                for val in row
+                            ]
+                        )
+                        + ")"
+                    )
+                    to_insert.append(none_row)
+            elif isinstance(dataframe, pl.LazyFrame):
+                for row in (
+                    dataframe.slice(start, (start + batch_size)).collect().iter_rows()
+                ):
                     none_row = (
                         "("
                         + ", ".join(

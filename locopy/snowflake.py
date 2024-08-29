@@ -427,7 +427,10 @@ class Snowflake(S3, Database):
         import polars as pl
 
         if columns:
-            dataframe = dataframe[columns]
+            try:
+                dataframe = dataframe[columns]
+            except TypeError:
+                dataframe = dataframe.select(columns)
 
         all_columns = columns or list(dataframe.columns)
         column_sql = "(" + ",".join(all_columns) + ")"
@@ -443,7 +446,10 @@ class Snowflake(S3, Database):
             for row in dataframe.iter_rows():
                 none_row = tuple(None if pd.isnull(val) else str(val) for val in row)
                 to_insert.append(none_row)
-
+        elif isinstance(dataframe, pl.LazyFrame):
+            for row in dataframe.collect().iter_rows():
+                none_row = tuple(None if pd.isnull(val) else str(val) for val in row)
+                to_insert.append(none_row)
         if not create and metadata:
             logger.warning("Metadata will not be used because create is set to False.")
 
@@ -474,7 +480,7 @@ class Snowflake(S3, Database):
         self.execute(insert_query, params=to_insert, many=True)
         logger.info("Table insertion has completed")
 
-    def to_dataframe(self, df_type, size=None):
+    def to_dataframe(self, df_type="pandas", size=None):
         """Return a dataframe of the last query results.
 
         This is just a convenience method. This
@@ -497,4 +503,4 @@ class Snowflake(S3, Database):
         if size is None and self.cursor._query_result_format == "arrow":
             return self.cursor.fetch_pandas_all()
         else:
-            return super().to_dataframe(df_type=df_type,size=size)
+            return super().to_dataframe(df_type=df_type, size=size)
