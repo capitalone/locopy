@@ -396,7 +396,7 @@ class Snowflake(S3, Database):
     def insert_dataframe_to_table(
         self, dataframe, table_name, columns=None, create=False, metadata=None
     ):
-        """Insert a Pandas dataframe to an existing table or a new table.
+        """Insert a Pandas or Polars dataframe to an existing table or a new table.
 
         In newer versions of the
         python snowflake connector (v2.1.2+) users can call the ``write_pandas`` method from the cursor
@@ -408,8 +408,8 @@ class Snowflake(S3, Database):
 
         Parameters
         ----------
-        dataframe: Pandas Dataframe
-            The pandas dataframe which needs to be inserted.
+        dataframe: Pandas or Polars Dataframe
+            The pandas or polars dataframe which needs to be inserted.
 
         table_name: str
             The name of the Snowflake table which is being inserted.
@@ -424,6 +424,7 @@ class Snowflake(S3, Database):
             If metadata==None, it will be generated based on data
         """
         import pandas as pd
+        import polars as pl
 
         if columns:
             dataframe = dataframe[columns]
@@ -434,9 +435,14 @@ class Snowflake(S3, Database):
 
         # create a list of tuples for insert
         to_insert = []
-        for row in dataframe.itertuples(index=False):
-            none_row = tuple(None if pd.isnull(val) else str(val) for val in row)
-            to_insert.append(none_row)
+        if isinstance(dataframe, pd.DataFrame):
+            for row in dataframe.itertuples(index=False):
+                none_row = tuple(None if pd.isnull(val) else str(val) for val in row)
+                to_insert.append(none_row)
+        elif isinstance(dataframe, pl.DataFrame):
+            for row in dataframe.iter_rows():
+                none_row = tuple(None if pd.isnull(val) else str(val) for val in row)
+                to_insert.append(none_row)
 
         if not create and metadata:
             logger.warning("Metadata will not be used because create is set to False.")
@@ -468,7 +474,7 @@ class Snowflake(S3, Database):
         self.execute(insert_query, params=to_insert, many=True)
         logger.info("Table insertion has completed")
 
-    def to_dataframe(self, size=None):
+    def to_dataframe(self, df_type, size=None):
         """Return a dataframe of the last query results.
 
         This is just a convenience method. This
@@ -491,4 +497,4 @@ class Snowflake(S3, Database):
         if size is None and self.cursor._query_result_format == "arrow":
             return self.cursor.fetch_pandas_all()
         else:
-            return super().to_dataframe(size)
+            return super().to_dataframe(df_type=df_type,size=size)

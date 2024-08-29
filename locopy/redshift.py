@@ -568,6 +568,7 @@ class Redshift(S3, Database):
 
         """
         import pandas as pd
+        import polars as pl
 
         if columns:
             dataframe = dataframe[columns]
@@ -603,20 +604,36 @@ class Redshift(S3, Database):
         for start in range(0, len(dataframe), batch_size):
             # create a list of tuples for insert
             to_insert = []
-            for row in dataframe[start : (start + batch_size)].itertuples(index=False):
-                none_row = (
-                    "("
-                    + ", ".join(
-                        [
-                            "NULL"
-                            if pd.isnull(val)
-                            else "'" + str(val).replace("'", "''") + "'"
-                            for val in row
-                        ]
+            if isinstance(dataframe, pd.DataFrame):
+                for row in dataframe[start : (start + batch_size)].itertuples(index=False):
+                    none_row = (
+                        "("
+                        + ", ".join(
+                            [
+                                "NULL"
+                                if pd.isnull(val)
+                                else "'" + str(val).replace("'", "''") + "'"
+                                for val in row
+                            ]
+                        )
+                        + ")"
                     )
-                    + ")"
-                )
-                to_insert.append(none_row)
+                    to_insert.append(none_row)
+            elif isinstance(dataframe, pl.DataFrame):
+                for row in dataframe[start : (start + batch_size)].iter_rows():
+                    none_row = (
+                        "("
+                        + ", ".join(
+                            [
+                                "NULL"
+                                if pd.isnull(val)
+                                else "'" + str(val).replace("'", "''") + "'"
+                                for val in row
+                            ]
+                        )
+                        + ")"
+                    )
+                    to_insert.append(none_row)
             string_join = ", ".join(to_insert)
             insert_query = (
                 f"""INSERT INTO {table_name} {column_sql} VALUES {string_join}"""

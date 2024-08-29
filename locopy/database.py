@@ -188,7 +188,7 @@ class Database:
         except Exception:
             return [column[0].lower() for column in self.cursor.description]
 
-    def to_dataframe(self, size=None):
+    def to_dataframe(self, df_type="pandas", size=None):
         """Return a dataframe of the last query results.
 
         This imports Pandas in here, so that it's not needed for other use cases.  This is just a
@@ -196,6 +196,8 @@ class Database:
 
         Parameters
         ----------
+        df_type: Literal["pandas","polars"], optional
+            Output dataframe format. Defaults to pandas.
         size : int, optional
             Chunk size to fetch.  Defaults to None.
 
@@ -205,7 +207,6 @@ class Database:
             Dataframe with lowercase column names.  Returns None if no fetched
             result.
         """
-        import pandas
 
         columns = self.column_names()
 
@@ -220,7 +221,13 @@ class Database:
 
         if len(fetched) == 0:
             return None
-        return pandas.DataFrame(fetched, columns=columns)
+        
+        if df_type == "pandas":
+            import pandas
+            return pandas.DataFrame(fetched, columns=columns)
+        elif df_type == "polars":
+            import polars
+            return polars.DataFrame(fetched, schema=columns,orient="row")
 
     def to_dict(self):
         """Generate dictionaries of rows.
