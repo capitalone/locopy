@@ -207,7 +207,6 @@ class Database:
             Dataframe with lowercase column names.  Returns None if no fetched
             result.
         """
-
         columns = self.column_names()
 
         if size is None:
@@ -221,13 +220,15 @@ class Database:
 
         if len(fetched) == 0:
             return None
-        
+
         if df_type == "pandas":
             import pandas
+
             return pandas.DataFrame(fetched, columns=columns)
         elif df_type == "polars":
             import polars
-            return polars.DataFrame(fetched, schema=columns,orient="row")
+
+            return polars.DataFrame(fetched, schema=columns, orient="row")
 
     def to_dict(self):
         """Generate dictionaries of rows.

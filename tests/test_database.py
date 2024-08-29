@@ -263,6 +263,7 @@ def test_to_dataframe_none(mock_pandas, credentials, dbapi):
             assert test.to_dataframe(size=5) is None
             mock_pandas.assert_not_called()
 
+
 @pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("polars.DataFrame")
 def test_to_dataframe_all_polars(mock_polars, credentials, dbapi):
@@ -278,6 +279,7 @@ def test_to_dataframe_all_polars(mock_polars, credentials, dbapi):
 
     assert mock_connect.return_value.cursor.return_value.fetchall.called
     mock_polars.assert_called_with(test.cursor.fetchall(), schema=[], orient="row")
+
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_get_column_names(credentials, dbapi):
