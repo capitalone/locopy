@@ -28,11 +28,14 @@ from unittest import mock
 
 import hypothesis.strategies as s
 import locopy
+import polars as pl
+import pyarrow as pa
 import pytest
 import snowflake.connector
 from hypothesis import HealthCheck, given, settings
 from locopy import Snowflake
 from locopy.errors import DBError
+from polars.testing import assert_frame_equal
 
 PROFILE = "test"
 KMS = "kms_test"
@@ -426,8 +429,12 @@ def test_to_polars(mock_session, sf_credentials):
         Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
     ):
         sf.cursor._query_result_format = "arrow"
-        sf.to_dataframe(df_type="polars")
-        sf.conn.cursor.return_value.fetch_pandas_all.assert_called_with()
+        sf.conn.cursor.return_value.fetch_arrow_all.return_value = pa.table(
+            {"a": [1, 2, 3], "b": [4, 5, 6]}
+        )
+        polars_df = sf.to_dataframe(df_type="polars")
+        expected_df = pl.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+        assert_frame_equal(polars_df, expected_df)
 
         sf.cursor._query_result_format = "json"
         sf.to_dataframe(df_type="polars")

@@ -263,6 +263,7 @@ def test_to_dataframe_none(mock_pandas, credentials, dbapi):
             assert test.to_dataframe(size=5) is None
             mock_pandas.assert_not_called()
 
+
 # TODO: remove dataframe mocking
 @pytest.mark.parametrize("dbapi", DBAPIS)
 @mock.patch("polars.DataFrame")
