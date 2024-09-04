@@ -650,7 +650,10 @@ class Redshift(S3, Database):
                     to_insert.append(none_row)
             elif isinstance(dataframe, pl.LazyFrame):
                 for row in (
-                    dataframe.slice(start, (start + batch_size)).fill_nan(None).collect().iter_rows()
+                    dataframe.slice(start, (start + batch_size))
+                    .fill_nan(None)
+                    .collect()
+                    .iter_rows()
                 ):
                     none_row = (
                         "("
