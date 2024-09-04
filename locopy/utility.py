@@ -27,7 +27,6 @@ import threading
 from collections import OrderedDict
 from functools import singledispatch
 from itertools import cycle
-from typing import Union
 
 import pandas as pd
 import polars as pl
@@ -352,10 +351,7 @@ def find_column_type_pandas(dataframe: pd.DataFrame, warehouse_type: str):
 
 
 @find_column_type.register(pl.DataFrame)
-@find_column_type.register(pl.LazyFrame)
-def find_column_type_polars(
-    dataframe: Union[pl.DataFrame, pl.LazyFrame], warehouse_type: str
-):
+def find_column_type_polars(dataframe: pl.DataFrame, warehouse_type: str):
     """
     Find data type of each column from the dataframe.
 
@@ -404,7 +400,7 @@ def find_column_type_polars(
         )
 
     column_type = []
-    for column in dataframe.collect_schema().names():
+    for column in dataframe.columns:
         logger.debug("Checking column: %s", column)
         data = dataframe.lazy().select(column).drop_nulls().collect().to_series()
         if data.shape[0] == 0:
