@@ -425,6 +425,7 @@ class Snowflake(S3, Database):
         """
         import pandas as pd
         import polars as pl
+        import polars.selectors as cs
 
         if columns:
             try:
@@ -443,12 +444,15 @@ class Snowflake(S3, Database):
                 none_row = tuple(None if pd.isnull(val) else str(val) for val in row)
                 to_insert.append(none_row)
         elif isinstance(dataframe, pl.DataFrame):
+            dataframe = dataframe.with_columns(
+                dataframe.select(cs.numeric().fill_nan(None))
+            )
             for row in dataframe.iter_rows():
-                none_row = tuple(None if pd.isnull(val) else str(val) for val in row)
+                none_row = tuple(None if val is None else str(val) for val in row)
                 to_insert.append(none_row)
         elif isinstance(dataframe, pl.LazyFrame):
-            for row in dataframe.collect().iter_rows():
-                none_row = tuple(None if pd.isnull(val) else str(val) for val in row)
+            for row in dataframe.fill_nan(None).collect().iter_rows():
+                none_row = tuple(None if val is None else str(val) for val in row)
                 to_insert.append(none_row)
         if not create and metadata:
             logger.warning("Metadata will not be used because create is set to False.")
@@ -504,6 +508,11 @@ class Snowflake(S3, Database):
             result.
         """
         if size is None and self.cursor._query_result_format == "arrow":
-            return self.cursor.fetch_pandas_all()
+            if df_type == "pandas":
+                return self.cursor.fetch_pandas_all()
+            elif df_type == "polars":
+                import polars as pl
+
+                return pl.from_arrow(self.cursor.fetch_arrow_all())
         else:
             return super().to_dataframe(df_type=df_type, size=size)

@@ -587,7 +587,7 @@ def test_insert_pl_lazyframe_to_table(mock_session, sf_credentials):
     test_df = pl.read_csv(
         os.path.join(CURR_DIR, "data", "mock_dataframe.txt"), separator=","
     )
-    test_df = test_df.lazy().collect()
+    test_df = test_df.lazy()
     with (
         mock.patch("snowflake.connector.connect") as mock_connect,
         Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
