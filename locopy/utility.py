@@ -25,8 +25,6 @@ import shutil
 import sys
 import threading
 from collections import OrderedDict
-
-# https://docs.python.org/3/library/functools.html#functools.singledispatch
 from functools import singledispatch
 from itertools import cycle
 from typing import Union

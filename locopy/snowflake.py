@@ -21,6 +21,9 @@ to Snowflake, and run arbitrary code.
 """
 
 import os
+import pandas as pd
+import polars as pl
+import polars.selectors as cs
 from pathlib import PurePath
 
 from locopy.database import Database
@@ -423,9 +426,6 @@ class Snowflake(S3, Database):
         metadata: dictionary, optional
             If metadata==None, it will be generated based on data
         """
-        import pandas as pd
-        import polars as pl
-        import polars.selectors as cs
 
         if columns:
             try:
@@ -511,8 +511,6 @@ class Snowflake(S3, Database):
             if df_type == "pandas":
                 return self.cursor.fetch_pandas_all()
             elif df_type == "polars":
-                import polars as pl
-
                 return pl.from_arrow(self.cursor.fetch_arrow_all())
         else:
             return super().to_dataframe(df_type=df_type, size=size)

@@ -17,6 +17,8 @@
 """Database Module."""
 
 import time
+import pandas
+import polars
 
 from locopy.errors import CredentialsError, DBError
 from locopy.logger import INFO, get_logger
@@ -223,12 +225,8 @@ class Database:
             return None
 
         if df_type == "pandas":
-            import pandas
-
             return pandas.DataFrame(fetched, columns=columns)
         elif df_type == "polars":
-            import polars
-
             return polars.DataFrame(fetched, schema=columns, orient="row")
 
     def to_dict(self):

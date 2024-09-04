@@ -23,6 +23,10 @@ to Redshift, and run arbitrary code.
 import os
 from pathlib import Path
 
+import pandas as pd
+import polars as pl
+import polars.selectors as cs
+
 from locopy.database import Database
 from locopy.errors import DBError, S3CredentialsError
 from locopy.logger import INFO, get_logger
@@ -567,10 +571,6 @@ class Redshift(S3, Database):
 
 
         """
-        import pandas as pd
-        import polars as pl
-        import polars.selectors as cs
-
         if columns:
             try:
                 dataframe = dataframe[columns]
