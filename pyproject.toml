@@ -6,7 +6,7 @@ authors = [
   { name="Faisal Dosani", email="faisal.dosani@capitalone.com" },
 ]
 license = {text = "Apache Software License"}
-dependencies = ["boto3<=1.35.4,>=1.9.92", "PyYAML<=6.0.1,>=5.1", "pandas<=2.2.2,>=0.25.2", "numpy<=2.0.1,>=1.22.0", "polars>=1.5.0"]
+dependencies = ["boto3<=1.35.9,>=1.9.92", "PyYAML<=6.0.1,>=5.1", "pandas<=2.2.2,>=0.25.2", "numpy<=2.0.2,>=1.22.0", "polars>=1.5.0"]
 
 requires-python = ">=3.9.0"
 classifiers = [
