@@ -548,7 +548,7 @@ class Redshift(S3, Database):
 
         Parameters
         ----------
-        dataframe: pandas.DataFrame, polars.DataFrame or polars.LazyFrame
+        dataframe: pandas.DataFrame or polars.DataFrame
             The pandas dataframe which needs to be inserted.
 
         table_name: str
@@ -572,10 +572,7 @@ class Redshift(S3, Database):
 
         """
         if columns:
-            try:
-                dataframe = dataframe[columns]
-            except TypeError:
-                dataframe = dataframe.select(columns)  # for polars lazyframe
+            dataframe = dataframe[columns]
 
         all_columns = columns or list(dataframe.columns)
         column_sql = "(" + ",".join(all_columns) + ")"
@@ -605,10 +602,8 @@ class Redshift(S3, Database):
             logger.info("New table has been created")
 
         logger.info("Inserting records...")
-        try:
-            length = len(dataframe)
-        except TypeError:
-            length = dataframe.select(pl.len()).collect().item()  # for polars lazyframe
+
+        length = len(dataframe)
 
         for start in range(0, length, batch_size):
             # create a list of tuples for insert
@@ -648,26 +643,11 @@ class Redshift(S3, Database):
                         + ")"
                     )
                     to_insert.append(none_row)
-            elif isinstance(dataframe, pl.LazyFrame):
-                for row in (
-                    dataframe.slice(start, (start + batch_size))
-                    .fill_nan(None)
-                    .collect()
-                    .iter_rows()
-                ):
-                    none_row = (
-                        "("
-                        + ", ".join(
-                            [
-                                "NULL"
-                                if val is None
-                                else "'" + str(val).replace("'", "''") + "'"
-                                for val in row
-                            ]
-                        )
-                        + ")"
-                    )
-                    to_insert.append(none_row)
+            else:
+                raise TypeError(
+                    "DataFrame to insert must either be a pandas.DataFrame or polars.DataFrame."
+                )
+
             string_join = ", ".join(to_insert)
             insert_query = (
                 f"""INSERT INTO {table_name} {column_sql} VALUES {string_join}"""

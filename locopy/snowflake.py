@@ -428,10 +428,7 @@ class Snowflake(S3, Database):
             If metadata==None, it will be generated based on data
         """
         if columns:
-            try:
-                dataframe = dataframe[columns]
-            except TypeError:
-                dataframe = dataframe.select(columns)
+            dataframe = dataframe[columns]
 
         all_columns = columns or list(dataframe.columns)
         column_sql = "(" + ",".join(all_columns) + ")"
@@ -450,10 +447,11 @@ class Snowflake(S3, Database):
             for row in dataframe.iter_rows():
                 none_row = tuple(None if val is None else str(val) for val in row)
                 to_insert.append(none_row)
-        elif isinstance(dataframe, pl.LazyFrame):
-            for row in dataframe.fill_nan(None).collect().iter_rows():
-                none_row = tuple(None if val is None else str(val) for val in row)
-                to_insert.append(none_row)
+        else:
+            raise TypeError(
+                "DataFrame to insert must either be a pandas.DataFrame or polars.DataFrame."
+            )
+
         if not create and metadata:
             logger.warning("Metadata will not be used because create is set to False.")
 
