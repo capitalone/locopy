@@ -1039,7 +1039,7 @@ def testinsert_dataframe_to_table_polars_lazy(mock_session, credentials, dbapi):
     test_df = pl.read_csv(
         os.path.join(CURR_DIR, "data", "mock_dataframe.txt"), separator=","
     )
-    test_df = test_df.lazy().collect()
+    test_df = test_df.lazy()
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         r = locopy.Redshift(dbapi=dbapi, **credentials)
         r.connect()

@@ -569,6 +569,7 @@ class Redshift(S3, Database):
         """
         import pandas as pd
         import polars as pl
+        import polars.selectors as cs
 
         if columns:
             try:
@@ -630,13 +631,16 @@ class Redshift(S3, Database):
                     )
                     to_insert.append(none_row)
             elif isinstance(dataframe, pl.DataFrame):
+                dataframe = dataframe.with_columns(
+                    dataframe.select(cs.numeric().fill_nan(None))
+                )
                 for row in dataframe[start : (start + batch_size)].iter_rows():
                     none_row = (
                         "("
                         + ", ".join(
                             [
                                 "NULL"
-                                if pd.isnull(val)
+                                if val is None
                                 else "'" + str(val).replace("'", "''") + "'"
                                 for val in row
                             ]
@@ -646,14 +650,14 @@ class Redshift(S3, Database):
                     to_insert.append(none_row)
             elif isinstance(dataframe, pl.LazyFrame):
                 for row in (
-                    dataframe.slice(start, (start + batch_size)).collect().iter_rows()
+                    dataframe.slice(start, (start + batch_size)).fill_nan(None).collect().iter_rows()
                 ):
                     none_row = (
                         "("
                         + ", ".join(
                             [
                                 "NULL"
-                                if pd.isnull(val)
+                                if val is None
                                 else "'" + str(val).replace("'", "''") + "'"
                                 for val in row
                             ]
