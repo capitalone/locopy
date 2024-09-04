@@ -17,6 +17,7 @@
 """Database Module."""
 
 import time
+
 import pandas
 import polars
 

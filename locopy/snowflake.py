@@ -21,10 +21,11 @@ to Snowflake, and run arbitrary code.
 """
 
 import os
+from pathlib import PurePath
+
 import pandas as pd
 import polars as pl
 import polars.selectors as cs
-from pathlib import PurePath
 
 from locopy.database import Database
 from locopy.errors import DBError, S3CredentialsError
@@ -426,7 +427,6 @@ class Snowflake(S3, Database):
         metadata: dictionary, optional
             If metadata==None, it will be generated based on data
         """
-
         if columns:
             try:
                 dataframe = dataframe[columns]
