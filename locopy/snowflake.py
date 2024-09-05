@@ -21,7 +21,12 @@ to Snowflake, and run arbitrary code.
 """
 
 import os
+from functools import singledispatch
 from pathlib import PurePath
+
+import pandas as pd
+import polars as pl
+import polars.selectors as cs
 
 from locopy.database import Database
 from locopy.errors import DBError, S3CredentialsError
@@ -396,7 +401,7 @@ class Snowflake(S3, Database):
     def insert_dataframe_to_table(
         self, dataframe, table_name, columns=None, create=False, metadata=None
     ):
-        """Insert a Pandas dataframe to an existing table or a new table.
+        """Insert a Pandas or Polars dataframe to an existing table or a new table.
 
         In newer versions of the
         python snowflake connector (v2.1.2+) users can call the ``write_pandas`` method from the cursor
@@ -408,8 +413,8 @@ class Snowflake(S3, Database):
 
         Parameters
         ----------
-        dataframe: Pandas Dataframe
-            The pandas dataframe which needs to be inserted.
+        dataframe: Pandas or Polars Dataframe
+            The pandas or polars dataframe which needs to be inserted.
 
         table_name: str
             The name of the Snowflake table which is being inserted.
@@ -423,8 +428,6 @@ class Snowflake(S3, Database):
         metadata: dictionary, optional
             If metadata==None, it will be generated based on data
         """
-        import pandas as pd
-
         if columns:
             dataframe = dataframe[columns]
 
@@ -433,10 +436,39 @@ class Snowflake(S3, Database):
         string_join = "(" + ",".join(["%s"] * len(all_columns)) + ")"
 
         # create a list of tuples for insert
-        to_insert = []
-        for row in dataframe.itertuples(index=False):
-            none_row = tuple(None if pd.isnull(val) else str(val) for val in row)
-            to_insert.append(none_row)
+        @singledispatch
+        def get_insert_tuple(dataframe):
+            """Create a list of tuples for insert."""
+            pass
+
+        @get_insert_tuple.register(pd.DataFrame)
+        def get_insert_tuple_pandas(dataframe: pd.DataFrame):
+            """Create a list of tuples for insert when dataframe is pd.DataFrame."""
+            to_insert = []
+            for row in dataframe.itertuples(index=False):
+                none_row = tuple(None if pd.isnull(val) else str(val) for val in row)
+                to_insert.append(none_row)
+            return to_insert
+
+        @get_insert_tuple.register(pl.DataFrame)
+        def get_insert_tuple_polars(dataframe: pl.DataFrame):
+            """Create a list of tuples for insert when dataframe is pl.DataFrame."""
+            to_insert = []
+            dataframe = dataframe.with_columns(
+                dataframe.select(cs.numeric().fill_nan(None))
+            )
+            for row in dataframe.iter_rows():
+                none_row = tuple(None if val is None else str(val) for val in row)
+                to_insert.append(none_row)
+            return to_insert
+
+        # create a list of tuples for insert
+        try:
+            to_insert = get_insert_tuple(dataframe)
+        except TypeError:
+            raise TypeError(
+                "DataFrame to insert must either be a pandas.DataFrame or polars.DataFrame."
+            ) from None
 
         if not create and metadata:
             logger.warning("Metadata will not be used because create is set to False.")
@@ -468,7 +500,7 @@ class Snowflake(S3, Database):
         self.execute(insert_query, params=to_insert, many=True)
         logger.info("Table insertion has completed")
 
-    def to_dataframe(self, size=None):
+    def to_dataframe(self, df_type="pandas", size=None):
         """Return a dataframe of the last query results.
 
         This is just a convenience method. This
@@ -479,16 +511,25 @@ class Snowflake(S3, Database):
 
         Parameters
         ----------
+        df_type: Literal["pandas","polars"], optional
+            Output dataframe format. Defaults to pandas.
+
         size : int, optional
             Chunk size to fetch.  Defaults to None.
 
         Returns
         -------
-        pandas.DataFrame
+        pandas.DataFrame or polars.DataFrame
             Dataframe with lowercase column names.  Returns None if no fetched
             result.
         """
+        if df_type not in ["pandas", "polars"]:
+            raise ValueError("df_type must be ``pandas`` or ``polars``.")
+
         if size is None and self.cursor._query_result_format == "arrow":
-            return self.cursor.fetch_pandas_all()
+            if df_type == "pandas":
+                return self.cursor.fetch_pandas_all()
+            elif df_type == "polars":
+                return pl.from_arrow(self.cursor.fetch_arrow_all())
         else:
-            return super().to_dataframe(size)
+            return super().to_dataframe(df_type=df_type, size=size)
