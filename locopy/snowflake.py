@@ -21,6 +21,7 @@ to Snowflake, and run arbitrary code.
 """
 
 import os
+from functools import singledispatch
 from pathlib import PurePath
 
 import pandas as pd
@@ -435,22 +436,39 @@ class Snowflake(S3, Database):
         string_join = "(" + ",".join(["%s"] * len(all_columns)) + ")"
 
         # create a list of tuples for insert
-        to_insert = []
-        if isinstance(dataframe, pd.DataFrame):
+        @singledispatch
+        def get_insert_tuple(dataframe):
+            """Create a list of tuples for insert."""
+            pass
+
+        @get_insert_tuple.register(pd.DataFrame)
+        def get_insert_tuple_pandas(dataframe: pd.DataFrame):
+            """Create a list of tuples for insert when dataframe is pd.DataFrame."""
+            to_insert = []
             for row in dataframe.itertuples(index=False):
                 none_row = tuple(None if pd.isnull(val) else str(val) for val in row)
                 to_insert.append(none_row)
-        elif isinstance(dataframe, pl.DataFrame):
+            return to_insert
+
+        @get_insert_tuple.register(pl.DataFrame)
+        def get_insert_tuple_polars(dataframe: pl.DataFrame):
+            """Create a list of tuples for insert when dataframe is pl.DataFrame."""
+            to_insert = []
             dataframe = dataframe.with_columns(
                 dataframe.select(cs.numeric().fill_nan(None))
             )
             for row in dataframe.iter_rows():
                 none_row = tuple(None if val is None else str(val) for val in row)
                 to_insert.append(none_row)
-        else:
+            return to_insert
+
+        # create a list of tuples for insert
+        try:
+            to_insert = get_insert_tuple(dataframe)
+        except TypeError:
             raise TypeError(
                 "DataFrame to insert must either be a pandas.DataFrame or polars.DataFrame."
-            )
+            ) from None
 
         if not create and metadata:
             logger.warning("Metadata will not be used because create is set to False.")

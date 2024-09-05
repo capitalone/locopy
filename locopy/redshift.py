@@ -21,6 +21,7 @@ to Redshift, and run arbitrary code.
 """
 
 import os
+from functools import singledispatch
 from pathlib import Path
 
 import pandas as pd
@@ -601,53 +602,67 @@ class Redshift(S3, Database):
             self.execute(create_query)
             logger.info("New table has been created")
 
-        logger.info("Inserting records...")
-        for start in range(0, len(dataframe), batch_size):
-            # create a list of tuples for insert
-            to_insert = []
-            if isinstance(dataframe, pd.DataFrame):
-                for row in dataframe[start : (start + batch_size)].itertuples(
-                    index=False
-                ):
-                    none_row = (
-                        "("
-                        + ", ".join(
-                            [
-                                "NULL"
-                                if pd.isnull(val)
-                                else "'" + str(val).replace("'", "''") + "'"
-                                for val in row
-                            ]
-                        )
-                        + ")"
-                    )
-                    to_insert.append(none_row)
-            elif isinstance(dataframe, pl.DataFrame):
-                dataframe = dataframe.with_columns(
-                    dataframe.select(cs.numeric().fill_nan(None))
-                )
-                for row in dataframe[start : (start + batch_size)].iter_rows():
-                    none_row = (
-                        "("
-                        + ", ".join(
-                            [
-                                "NULL"
-                                if val is None
-                                else "'" + str(val).replace("'", "''") + "'"
-                                for val in row
-                            ]
-                        )
-                        + ")"
-                    )
-                    to_insert.append(none_row)
-            else:
-                raise TypeError(
-                    "DataFrame to insert must either be a pandas.DataFrame or polars.DataFrame."
-                )
+        # create a list of tuples for insert
+        @singledispatch
+        def get_insert_tuple(dataframe, start, batch_size):
+            """Create a list of tuples for insert."""
+            pass
 
-            string_join = ", ".join(to_insert)
-            insert_query = (
-                f"""INSERT INTO {table_name} {column_sql} VALUES {string_join}"""
+        @get_insert_tuple.register(pd.DataFrame)
+        def get_insert_tuple_pandas(dataframe: pd.DataFrame, start, batch_size):
+            """Create a list of tuples for insert when dataframe is pd.DataFrame."""
+            to_insert = []
+            for row in dataframe[start : (start + batch_size)].itertuples(index=False):
+                none_row = (
+                    "("
+                    + ", ".join(
+                        [
+                            "NULL"
+                            if pd.isnull(val)
+                            else "'" + str(val).replace("'", "''") + "'"
+                            for val in row
+                        ]
+                    )
+                    + ")"
+                )
+                to_insert.append(none_row)
+            return to_insert
+
+        @get_insert_tuple.register(pl.DataFrame)
+        def get_insert_tuple_polars(dataframe: pl.DataFrame, start, batch_size):
+            """Create a list of tuples for insert when dataframe is pl.DataFrame."""
+            to_insert = []
+            dataframe = dataframe.with_columns(
+                dataframe.select(cs.numeric().fill_nan(None))
             )
-            self.execute(insert_query, verbose=verbose)
+            for row in dataframe[start : (start + batch_size)].iter_rows():
+                none_row = (
+                    "("
+                    + ", ".join(
+                        [
+                            "NULL"
+                            if val is None
+                            else "'" + str(val).replace("'", "''") + "'"
+                            for val in row
+                        ]
+                    )
+                    + ")"
+                )
+                to_insert.append(none_row)
+            return to_insert
+
+        logger.info("Inserting records...")
+        try:
+            for start in range(0, len(dataframe), batch_size):
+                to_insert = get_insert_tuple(dataframe, start, batch_size)
+                string_join = ", ".join(to_insert)
+                insert_query = (
+                    f"""INSERT INTO {table_name} {column_sql} VALUES {string_join}"""
+                )
+                self.execute(insert_query, verbose=verbose)
+        except TypeError:
+            raise TypeError(
+                "DataFrame to insert must either be a pandas.DataFrame or polars.DataFrame."
+            ) from None
+
         logger.info("Table insertion has completed")
