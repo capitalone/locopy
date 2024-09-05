@@ -108,8 +108,11 @@
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">singledispatch</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">cycle</span>
 
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">polars</span> <span class="k">as</span> <span class="nn">pl</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 
 <span class="kn">from</span> <span class="nn">locopy.errors</span> <span class="kn">import</span> <span class="p">(</span>
@@ -356,7 +359,17 @@
 <span class="c1"># make it more granular, eg. include length</span>
 <div class="viewcode-block" id="find_column_type">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.find_column_type">[docs]</a>
+<span class="nd">@singledispatch</span>
 <span class="k">def</span> <span class="nf">find_column_type</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">warehouse_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Find data type of each column from the dataframe.&quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="find_column_type_pandas">
+<a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.find_column_type_pandas">[docs]</a>
+<span class="nd">@find_column_type</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">find_column_type_pandas</span><span class="p">(</span><span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">warehouse_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find data type of each column from the dataframe.</span>
 
@@ -386,8 +399,6 @@
 <span class="sd">        A dictionary of columns with their data type</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">re</span>
-
-    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
     <span class="k">def</span> <span class="nf">validate_date_object</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
@@ -441,6 +452,82 @@
             <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;varchar&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Parsing column </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">column_type</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span> <span class="n">column_type</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="find_column_type_polars">
+<a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.find_column_type_polars">[docs]</a>
+<span class="nd">@find_column_type</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">find_column_type_polars</span><span class="p">(</span><span class="n">dataframe</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">warehouse_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find data type of each column from the dataframe.</span>
+
+<span class="sd">    Following is the list of polars data types that the function checks and their mapping in sql:</span>
+
+<span class="sd">        - Boolean -&gt; boolean</span>
+<span class="sd">        - Date/Datetime/Duration/Time -&gt; timestamp</span>
+<span class="sd">        - int -&gt; int</span>
+<span class="sd">        - float/decimal -&gt; float</span>
+<span class="sd">        - float object -&gt; float</span>
+<span class="sd">        - datetime object -&gt; timestamp</span>
+<span class="sd">        - others -&gt; varchar</span>
+
+<span class="sd">    For all other data types, the column will be mapped to varchar type.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dataframe : Pandas dataframe</span>
+
+<span class="sd">    warehouse_type: str</span>
+<span class="sd">        Required to properly determine format of uploaded data, either &quot;snowflake&quot; or &quot;redshift&quot;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict</span>
+<span class="sd">        A dictionary of columns with their data type</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">validate_date_object</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">column</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">()</span>
+            <span class="k">return</span> <span class="s2">&quot;date&quot;</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">validate_float_object</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">column</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">UInt32</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;float&quot;</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">warehouse_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;snowflake&quot;</span><span class="p">,</span> <span class="s2">&quot;redshift&quot;</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s1">&#39;warehouse_type argument must be either &quot;snowflake&quot; or &quot;redshift&quot;&#39;</span>
+        <span class="p">)</span>
+
+    <span class="n">column_type</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Checking column: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">column</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">lazy</span><span class="p">()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">column</span><span class="p">)</span><span class="o">.</span><span class="n">drop_nulls</span><span class="p">()</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span><span class="o">.</span><span class="n">to_series</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;varchar&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">is_temporal</span><span class="p">():</span>
+            <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;timestamp&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">):</span>
+            <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;boolean&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">is_integer</span><span class="p">():</span>
+            <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">is_numeric</span><span class="p">():</span>  <span class="c1"># cast all non-integer numeric as float</span>
+            <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data_type</span> <span class="o">=</span> <span class="n">validate_float_object</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">or</span> <span class="n">validate_date_object</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">data_type</span><span class="p">:</span>
+                <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;varchar&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Parsing column </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">column_type</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span> <span class="n">column_type</span><span class="p">))</span></div>
 

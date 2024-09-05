@@ -215,6 +215,8 @@
 <li class="toctree-l2"><a class="reference internal" href="locopy.utility.html#locopy.utility.compress_file_list"><code class="docutils literal notranslate"><span class="pre">compress_file_list()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="locopy.utility.html#locopy.utility.concatenate_files"><code class="docutils literal notranslate"><span class="pre">concatenate_files()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="locopy.utility.html#locopy.utility.find_column_type"><code class="docutils literal notranslate"><span class="pre">find_column_type()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.utility.html#locopy.utility.find_column_type_pandas"><code class="docutils literal notranslate"><span class="pre">find_column_type_pandas()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="locopy.utility.html#locopy.utility.find_column_type_polars"><code class="docutils literal notranslate"><span class="pre">find_column_type_polars()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="locopy.utility.html#locopy.utility.get_ignoreheader_number"><code class="docutils literal notranslate"><span class="pre">get_ignoreheader_number()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="locopy.utility.html#locopy.utility.read_config_yaml"><code class="docutils literal notranslate"><span class="pre">read_config_yaml()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="locopy.utility.html#locopy.utility.split_file"><code class="docutils literal notranslate"><span class="pre">split_file()</span></code></a></li>
@@ -362,20 +364,21 @@ on the database adapter you are using</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="locopy.Database.to_dataframe">
-<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Database.to_dataframe" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pandas'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/database.html#Database.to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Database.to_dataframe" title="Link to this definition">¶</a></dt>
 <dd><p>Return a dataframe of the last query results.</p>
-<p>This imports Pandas in here, so that it’s not needed for other use cases.  This is just a
-convenience method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – Chunk size to fetch.  Defaults to None.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_type</strong> (<em>Literal</em><em>[</em><em>&quot;pandas&quot;</em><em>,</em><em>&quot;polars&quot;</em><em>]</em><em>, </em><em>optional</em>) – Output dataframe format. Defaults to pandas.</p></li>
+<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – Chunk size to fetch.  Defaults to None.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Dataframe with lowercase column names.  Returns None if no fetched
 result.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pandas.DataFrame</p>
+<dd class="field-odd"><p>pandas.DataFrame or polars.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>
@@ -553,13 +556,13 @@ Will have default options added in.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="locopy.Redshift.insert_dataframe_to_table">
 <span class="sig-name descname"><span class="pre">insert_dataframe_to_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/redshift.html#Redshift.insert_dataframe_to_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Redshift.insert_dataframe_to_table" title="Link to this definition">¶</a></dt>
-<dd><p>Insert a Pandas dataframe to an existing table or a new table.</p>
+<dd><p>Insert a Pandas or Polars dataframe to an existing table or a new table.</p>
 <p><cite>executemany</cite> in psycopg2 and pg8000 has very poor performance in terms of running speed.
 To overcome this issue, we instead format the insert query and then run <cite>execute</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataframe</strong> (<em>Pandas Dataframe</em>) – The pandas dataframe which needs to be inserted.</p></li>
+<li><p><strong>dataframe</strong> (<em>pandas.DataFrame</em><em> or </em><em>polars.DataFrame</em>) – The pandas dataframe which needs to be inserted.</p></li>
 <li><p><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The name of the Snowflake table which is being inserted.</p></li>
 <li><p><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, </em><em>optional</em>) – The list of columns which will be uploaded.</p></li>
 <li><p><strong>create</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>default False</em>) – Boolean flag if a new table need to be created and insert to.</p></li>
@@ -1054,7 +1057,7 @@ working directory (<code class="docutils literal notranslate"><span class="pre">
 <dl class="py method">
 <dt class="sig sig-object py" id="locopy.Snowflake.insert_dataframe_to_table">
 <span class="sig-name descname"><span class="pre">insert_dataframe_to_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">table_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metadata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.insert_dataframe_to_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Snowflake.insert_dataframe_to_table" title="Link to this definition">¶</a></dt>
-<dd><p>Insert a Pandas dataframe to an existing table or a new table.</p>
+<dd><p>Insert a Pandas or Polars dataframe to an existing table or a new table.</p>
 <p>In newer versions of the
 python snowflake connector (v2.1.2+) users can call the <code class="docutils literal notranslate"><span class="pre">write_pandas</span></code> method from the cursor
 directly, <code class="docutils literal notranslate"><span class="pre">insert_dataframe_to_table</span></code> is a custom implementation and does not use
@@ -1065,7 +1068,7 @@ exist and use your own metadata. If your data is significantly large then using
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dataframe</strong> (<em>Pandas Dataframe</em>) – The pandas dataframe which needs to be inserted.</p></li>
+<li><p><strong>dataframe</strong> (<em>Pandas</em><em> or </em><em>Polars Dataframe</em>) – The pandas or polars dataframe which needs to be inserted.</p></li>
 <li><p><strong>table_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – The name of the Snowflake table which is being inserted.</p></li>
 <li><p><strong>columns</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.12)"><em>list</em></a><em>, </em><em>optional</em>) – The list of columns which will be uploaded.</p></li>
 <li><p><strong>create</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><em>bool</em></a><em>, </em><em>optional</em>) – Boolean flag if a new table need to be created and insert to.</p></li>
@@ -1077,7 +1080,7 @@ exist and use your own metadata. If your data is significantly large then using
 
 <dl class="py method">
 <dt class="sig sig-object py" id="locopy.Snowflake.to_dataframe">
-<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Snowflake.to_dataframe" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pandas'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/snowflake.html#Snowflake.to_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.Snowflake.to_dataframe" title="Link to this definition">¶</a></dt>
 <dd><p>Return a dataframe of the last query results.</p>
 <p>This is just a convenience method. This
 method overrides the base classes implementation in favour for the snowflake connectors
@@ -1086,14 +1089,17 @@ to use the existing functionality where we iterate through the cursor and build 
 dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – Chunk size to fetch.  Defaults to None.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>df_type</strong> (<em>Literal</em><em>[</em><em>&quot;pandas&quot;</em><em>,</em><em>&quot;polars&quot;</em><em>]</em><em>, </em><em>optional</em>) – Output dataframe format. Defaults to pandas.</p></li>
+<li><p><strong>size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.12)"><em>int</em></a><em>, </em><em>optional</em>) – Chunk size to fetch.  Defaults to None.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Dataframe with lowercase column names.  Returns None if no fetched
 result.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pandas.DataFrame</p>
+<dd class="field-odd"><p>pandas.DataFrame or polars.DataFrame</p>
 </dd>
 </dl>
 </dd></dl>

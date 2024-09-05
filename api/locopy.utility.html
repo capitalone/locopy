@@ -166,6 +166,16 @@ gz appended)</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="locopy.utility.find_column_type">
 <span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">find_column_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warehouse_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#find_column_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.find_column_type" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">find_column_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warehouse_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span></dt>
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">find_column_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warehouse_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Find data type of each column from the dataframe.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="locopy.utility.find_column_type_pandas">
+<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">find_column_type_pandas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warehouse_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#find_column_type_pandas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.find_column_type_pandas" title="Link to this definition">¶</a></dt>
 <dd><p>Find data type of each column from the dataframe.</p>
 <p>Following is the list of pandas data types that the function checks and their mapping in sql:</p>
 <blockquote>
@@ -178,6 +188,39 @@ gz appended)</p>
 <li><p>float object -&gt; float</p></li>
 <li><p>datetime object -&gt; timestamp</p></li>
 <li><p>object/pd.StringDtype -&gt; varchar</p></li>
+</ul>
+</div></blockquote>
+<p>For all other data types, the column will be mapped to varchar type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataframe</strong> (<em>Pandas dataframe</em>)</p></li>
+<li><p><strong>warehouse_type</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><em>str</em></a>) – Required to properly determine format of uploaded data, either “snowflake” or “redshift”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary of columns with their data type</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.12)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="locopy.utility.find_column_type_polars">
+<span class="sig-prename descclassname"><span class="pre">locopy.utility.</span></span><span class="sig-name descname"><span class="pre">find_column_type_polars</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warehouse_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/locopy/utility.html#find_column_type_polars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#locopy.utility.find_column_type_polars" title="Link to this definition">¶</a></dt>
+<dd><p>Find data type of each column from the dataframe.</p>
+<p>Following is the list of polars data types that the function checks and their mapping in sql:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Boolean -&gt; boolean</p></li>
+<li><p>Date/Datetime/Duration/Time -&gt; timestamp</p></li>
+<li><p>int -&gt; int</p></li>
+<li><p>float/decimal -&gt; float</p></li>
+<li><p>float object -&gt; float</p></li>
+<li><p>datetime object -&gt; timestamp</p></li>
+<li><p>others -&gt; varchar</p></li>
 </ul>
 </div></blockquote>
 <p>For all other data types, the column will be mapped to varchar type.</p>

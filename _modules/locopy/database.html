@@ -101,6 +101,9 @@
 
 <span class="kn">import</span> <span class="nn">time</span>
 
+<span class="kn">import</span> <span class="nn">pandas</span>
+<span class="kn">import</span> <span class="nn">polars</span>
+
 <span class="kn">from</span> <span class="nn">locopy.errors</span> <span class="kn">import</span> <span class="n">CredentialsError</span><span class="p">,</span> <span class="n">DBError</span>
 <span class="kn">from</span> <span class="nn">locopy.logger</span> <span class="kn">import</span> <span class="n">INFO</span><span class="p">,</span> <span class="n">get_logger</span>
 <span class="kn">from</span> <span class="nn">locopy.utility</span> <span class="kn">import</span> <span class="n">read_config_yaml</span>
@@ -287,25 +290,25 @@
 
 <div class="viewcode-block" id="Database.to_dataframe">
 <a class="viewcode-back" href="../../api/locopy.database.html#locopy.Database.to_dataframe">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_type</span><span class="o">=</span><span class="s2">&quot;pandas&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a dataframe of the last query results.</span>
-
-<span class="sd">        This imports Pandas in here, so that it&#39;s not needed for other use cases.  This is just a</span>
-<span class="sd">        convenience method.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
+<span class="sd">        df_type: Literal[&quot;pandas&quot;,&quot;polars&quot;], optional</span>
+<span class="sd">            Output dataframe format. Defaults to pandas.</span>
+
 <span class="sd">        size : int, optional</span>
 <span class="sd">            Chunk size to fetch.  Defaults to None.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        pandas.DataFrame</span>
+<span class="sd">        pandas.DataFrame or polars.DataFrame</span>
 <span class="sd">            Dataframe with lowercase column names.  Returns None if no fetched</span>
 <span class="sd">            result.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">pandas</span>
-
+        <span class="k">if</span> <span class="n">df_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pandas&quot;</span><span class="p">,</span> <span class="s2">&quot;polars&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;df_type must be ``pandas`` or ``polars``.&quot;</span><span class="p">)</span>
         <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">column_names</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -319,7 +322,11 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fetched</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">fetched</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span></div>
+
+        <span class="k">if</span> <span class="n">df_type</span> <span class="o">==</span> <span class="s2">&quot;pandas&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">fetched</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">df_type</span> <span class="o">==</span> <span class="s2">&quot;polars&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">polars</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">fetched</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">columns</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;row&quot;</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Database.to_dict">

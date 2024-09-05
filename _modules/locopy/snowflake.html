@@ -104,7 +104,12 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">singledispatch</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">PurePath</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">polars</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">polars.selectors</span> <span class="k">as</span> <span class="nn">cs</span>
 
 <span class="kn">from</span> <span class="nn">locopy.database</span> <span class="kn">import</span> <span class="n">Database</span>
 <span class="kn">from</span> <span class="nn">locopy.errors</span> <span class="kn">import</span> <span class="n">DBError</span><span class="p">,</span> <span class="n">S3CredentialsError</span>
@@ -501,7 +506,7 @@
     <span class="k">def</span> <span class="nf">insert_dataframe_to_table</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Insert a Pandas dataframe to an existing table or a new table.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Insert a Pandas or Polars dataframe to an existing table or a new table.</span>
 
 <span class="sd">        In newer versions of the</span>
 <span class="sd">        python snowflake connector (v2.1.2+) users can call the ``write_pandas`` method from the cursor</span>
@@ -513,8 +518,8 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        dataframe: Pandas Dataframe</span>
-<span class="sd">            The pandas dataframe which needs to be inserted.</span>
+<span class="sd">        dataframe: Pandas or Polars Dataframe</span>
+<span class="sd">            The pandas or polars dataframe which needs to be inserted.</span>
 
 <span class="sd">        table_name: str</span>
 <span class="sd">            The name of the Snowflake table which is being inserted.</span>
@@ -528,8 +533,6 @@
 <span class="sd">        metadata: dictionary, optional</span>
 <span class="sd">            If metadata==None, it will be generated based on data</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-
         <span class="k">if</span> <span class="n">columns</span><span class="p">:</span>
             <span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span>
 
@@ -538,10 +541,39 @@
         <span class="n">string_join</span> <span class="o">=</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_columns</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
 
         <span class="c1"># create a list of tuples for insert</span>
-        <span class="n">to_insert</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-            <span class="n">none_row</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="kc">None</span> <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">row</span><span class="p">)</span>
-            <span class="n">to_insert</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">none_row</span><span class="p">)</span>
+        <span class="nd">@singledispatch</span>
+        <span class="k">def</span> <span class="nf">get_insert_tuple</span><span class="p">(</span><span class="n">dataframe</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Create a list of tuples for insert.&quot;&quot;&quot;</span>
+            <span class="k">pass</span>
+
+        <span class="nd">@get_insert_tuple</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">get_insert_tuple_pandas</span><span class="p">(</span><span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Create a list of tuples for insert when dataframe is pd.DataFrame.&quot;&quot;&quot;</span>
+            <span class="n">to_insert</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                <span class="n">none_row</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="kc">None</span> <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">row</span><span class="p">)</span>
+                <span class="n">to_insert</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">none_row</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">to_insert</span>
+
+        <span class="nd">@get_insert_tuple</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">get_insert_tuple_polars</span><span class="p">(</span><span class="n">dataframe</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Create a list of tuples for insert when dataframe is pl.DataFrame.&quot;&quot;&quot;</span>
+            <span class="n">to_insert</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
+                <span class="n">dataframe</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">numeric</span><span class="p">()</span><span class="o">.</span><span class="n">fill_nan</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">iter_rows</span><span class="p">():</span>
+                <span class="n">none_row</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="kc">None</span> <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">row</span><span class="p">)</span>
+                <span class="n">to_insert</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">none_row</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">to_insert</span>
+
+        <span class="c1"># create a list of tuples for insert</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">to_insert</span> <span class="o">=</span> <span class="n">get_insert_tuple</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;DataFrame to insert must either be a pandas.DataFrame or polars.DataFrame.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">create</span> <span class="ow">and</span> <span class="n">metadata</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Metadata will not be used because create is set to False.&quot;</span><span class="p">)</span>
@@ -576,7 +608,7 @@
 
 <div class="viewcode-block" id="Snowflake.to_dataframe">
 <a class="viewcode-back" href="../../api/locopy.snowflake.html#locopy.Snowflake.to_dataframe">[docs]</a>
-    <span class="k">def</span> <span class="nf">to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">to_dataframe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">df_type</span><span class="o">=</span><span class="s2">&quot;pandas&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a dataframe of the last query results.</span>
 
 <span class="sd">        This is just a convenience method. This</span>
@@ -587,19 +619,28 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
+<span class="sd">        df_type: Literal[&quot;pandas&quot;,&quot;polars&quot;], optional</span>
+<span class="sd">            Output dataframe format. Defaults to pandas.</span>
+
 <span class="sd">        size : int, optional</span>
 <span class="sd">            Chunk size to fetch.  Defaults to None.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        pandas.DataFrame</span>
+<span class="sd">        pandas.DataFrame or polars.DataFrame</span>
 <span class="sd">            Dataframe with lowercase column names.  Returns None if no fetched</span>
 <span class="sd">            result.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">df_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pandas&quot;</span><span class="p">,</span> <span class="s2">&quot;polars&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;df_type must be ``pandas`` or ``polars``.&quot;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">_query_result_format</span> <span class="o">==</span> <span class="s2">&quot;arrow&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetch_pandas_all</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">df_type</span> <span class="o">==</span> <span class="s2">&quot;pandas&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetch_pandas_all</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">df_type</span> <span class="o">==</span> <span class="s2">&quot;polars&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pl</span><span class="o">.</span><span class="n">from_arrow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetch_arrow_all</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">(</span><span class="n">size</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_dataframe</span><span class="p">(</span><span class="n">df_type</span><span class="o">=</span><span class="n">df_type</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span></div>
 </div>
 
 </pre></div>
