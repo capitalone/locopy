@@ -602,10 +602,7 @@ class Redshift(S3, Database):
             logger.info("New table has been created")
 
         logger.info("Inserting records...")
-
-        length = len(dataframe)
-
-        for start in range(0, length, batch_size):
+        for start in range(0, len(dataframe), batch_size):
             # create a list of tuples for insert
             to_insert = []
             if isinstance(dataframe, pd.DataFrame):
