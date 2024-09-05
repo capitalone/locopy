@@ -25,8 +25,11 @@ import shutil
 import sys
 import threading
 from collections import OrderedDict
+from functools import singledispatch
 from itertools import cycle
 
+import pandas as pd
+import polars as pl
 import yaml
 
 from locopy.errors import (
@@ -253,7 +256,14 @@ def read_config_yaml(config_yaml):
 
 
 # make it more granular, eg. include length
+@singledispatch
 def find_column_type(dataframe, warehouse_type: str):
+    """Find data type of each column from the dataframe."""
+    pass
+
+
+@find_column_type.register(pd.DataFrame)
+def find_column_type_pandas(dataframe: pd.DataFrame, warehouse_type: str):
     """
     Find data type of each column from the dataframe.
 
@@ -283,8 +293,6 @@ def find_column_type(dataframe, warehouse_type: str):
         A dictionary of columns with their data type
     """
     import re
-
-    import pandas as pd
 
     def validate_date_object(column):
         try:
@@ -338,6 +346,79 @@ def find_column_type(dataframe, warehouse_type: str):
             column_type.append("float")
         else:
             column_type.append("varchar")
+        logger.info("Parsing column %s to %s", column, column_type[-1])
+    return OrderedDict(zip(list(dataframe.columns), column_type))
+
+
+@find_column_type.register(pl.DataFrame)
+def find_column_type_polars(dataframe: pl.DataFrame, warehouse_type: str):
+    """
+    Find data type of each column from the dataframe.
+
+    Following is the list of polars data types that the function checks and their mapping in sql:
+
+        - Boolean -> boolean
+        - Date/Datetime/Duration/Time -> timestamp
+        - int -> int
+        - float/decimal -> float
+        - float object -> float
+        - datetime object -> timestamp
+        - others -> varchar
+
+    For all other data types, the column will be mapped to varchar type.
+
+    Parameters
+    ----------
+    dataframe : Pandas dataframe
+
+    warehouse_type: str
+        Required to properly determine format of uploaded data, either "snowflake" or "redshift".
+
+    Returns
+    -------
+    dict
+        A dictionary of columns with their data type
+    """
+
+    def validate_date_object(column):
+        try:
+            column.str.to_datetime()
+            return "date"
+        except Exception:
+            return None
+
+    def validate_float_object(column):
+        try:
+            column.cast(pl.UInt32)
+            return "float"
+        except Exception:
+            return None
+
+    if warehouse_type.lower() not in ["snowflake", "redshift"]:
+        raise ValueError(
+            'warehouse_type argument must be either "snowflake" or "redshift"'
+        )
+
+    column_type = []
+    for column in dataframe.columns:
+        logger.debug("Checking column: %s", column)
+        data = dataframe.lazy().select(column).drop_nulls().collect().to_series()
+        if data.shape[0] == 0:
+            column_type.append("varchar")
+        elif data.dtype.is_temporal():
+            column_type.append("timestamp")
+        elif str(data.dtype).lower().startswith("bool"):
+            column_type.append("boolean")
+        elif data.dtype.is_integer():
+            column_type.append("int")
+        elif data.dtype.is_numeric():  # cast all non-integer numeric as float
+            column_type.append("float")
+        else:
+            data_type = validate_float_object(data) or validate_date_object(data)
+            if not data_type:
+                column_type.append("varchar")
+            else:
+                column_type.append(data_type)
         logger.info("Parsing column %s to %s", column, column_type[-1])
     return OrderedDict(zip(list(dataframe.columns), column_type))
 

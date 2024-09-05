@@ -28,11 +28,14 @@ from unittest import mock
 
 import hypothesis.strategies as s
 import locopy
+import polars as pl
+import pyarrow as pa
 import pytest
 import snowflake.connector
 from hypothesis import HealthCheck, given, settings
 from locopy import Snowflake
 from locopy.errors import DBError
+from polars.testing import assert_frame_equal
 
 PROFILE = "test"
 KMS = "kms_test"
@@ -403,9 +406,6 @@ def test_unload_exception(mock_session, sf_credentials):
 
 @mock.patch("locopy.s3.Session")
 def test_to_pandas(mock_session, sf_credentials):
-    import pandas as pd
-
-    test_df = pd.read_csv(os.path.join(CURR_DIR, "data", "mock_dataframe.txt"), sep=",")
     with (
         mock.patch("snowflake.connector.connect") as mock_connect,
         Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
@@ -418,15 +418,120 @@ def test_to_pandas(mock_session, sf_credentials):
         sf.to_dataframe()
         sf.conn.cursor.return_value.fetchall.assert_called_with()
 
-        sf.to_dataframe(5)
+        sf.to_dataframe(size=5)
         sf.conn.cursor.return_value.fetchmany.assert_called_with(5)
 
 
 @mock.patch("locopy.s3.Session")
-def test_insert_dataframe_to_table(mock_session, sf_credentials):
+def test_to_polars(mock_session, sf_credentials):
+    with (
+        mock.patch("snowflake.connector.connect") as mock_connect,
+        Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
+    ):
+        sf.cursor._query_result_format = "arrow"
+        sf.conn.cursor.return_value.fetch_arrow_all.return_value = pa.table(
+            {"a": [1, 2, 3], "b": [4, 5, 6]}
+        )
+        polars_df = sf.to_dataframe(df_type="polars")
+        expected_df = pl.DataFrame({"a": [1, 2, 3], "b": [4, 5, 6]})
+        assert_frame_equal(polars_df, expected_df)
+
+        sf.cursor._query_result_format = "json"
+        sf.to_dataframe(df_type="polars")
+        sf.conn.cursor.return_value.fetchall.assert_called_with()
+
+        sf.to_dataframe(df_type="polars", size=5)
+        sf.conn.cursor.return_value.fetchmany.assert_called_with(5)
+
+
+@mock.patch("locopy.s3.Session")
+def test_to_dataframe_error(mock_session, sf_credentials):
+    with (
+        mock.patch("snowflake.connector.connect") as mock_connect,
+        Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
+    ):
+        sf.cursor._query_result_format = "arrow"
+        sf.conn.cursor.return_value.fetch_arrow_all.return_value = pa.table(
+            {"a": [1, 2, 3], "b": [4, 5, 6]}
+        )
+        with pytest.raises(ValueError):
+            polars_df = sf.to_dataframe(df_type="invalid")
+
+
+@mock.patch("locopy.s3.Session")
+def test_insert_pd_dataframe_to_table(mock_session, sf_credentials):
     import pandas as pd
 
     test_df = pd.read_csv(os.path.join(CURR_DIR, "data", "mock_dataframe.txt"), sep=",")
+    with (
+        mock.patch("snowflake.connector.connect") as mock_connect,
+        Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
+    ):
+        sf.insert_dataframe_to_table(test_df, "database.schema.test")
+        sf.conn.cursor.return_value.executemany.assert_called_with(
+            "INSERT INTO database.schema.test (a,b,c) VALUES (%s,%s,%s)",
+            [("1", "x", "2011-01-01"), ("2", "y", "2001-04-02")],
+        )
+
+        sf.insert_dataframe_to_table(test_df, "database.schema.test", create=True)
+        sf.conn.cursor.return_value.execute.assert_any_call(
+            "CREATE TABLE database.schema.test (a int,b varchar,c date)", ()
+        )
+        sf.conn.cursor.return_value.executemany.assert_called_with(
+            "INSERT INTO database.schema.test (a,b,c) VALUES (%s,%s,%s)",
+            [("1", "x", "2011-01-01"), ("2", "y", "2001-04-02")],
+        )
+
+        sf.insert_dataframe_to_table(
+            test_df, "database.schema.test", columns=["a", "b"]
+        )
+
+        sf.conn.cursor.return_value.executemany.assert_called_with(
+            "INSERT INTO database.schema.test (a,b) VALUES (%s,%s)",
+            [("1", "x"), ("2", "y")],
+        )
+
+        sf.insert_dataframe_to_table(
+            test_df,
+            "database.schema.test",
+            create=True,
+            metadata=OrderedDict(
+                [("col1", "int"), ("col2", "varchar"), ("col3", "date")]
+            ),
+        )
+
+        sf.conn.cursor.return_value.execute.assert_any_call(
+            "CREATE TABLE database.schema.test (col1 int,col2 varchar,col3 date)",
+            (),
+        )
+        sf.conn.cursor.return_value.executemany.assert_called_with(
+            "INSERT INTO database.schema.test (col1,col2,col3) VALUES (%s,%s,%s)",
+            [("1", "x", "2011-01-01"), ("2", "y", "2001-04-02")],
+        )
+
+        sf.insert_dataframe_to_table(
+            test_df,
+            "database.schema.test",
+            create=False,
+            metadata=OrderedDict(
+                [("col1", "int"), ("col2", "varchar"), ("col3", "date")]
+            ),
+        )
+
+        # mock_session.warn.assert_called_with('Metadata will not be used because create is set to False.')
+        sf.conn.cursor.return_value.executemany.assert_called_with(
+            "INSERT INTO database.schema.test (a,b,c) VALUES (%s,%s,%s)",
+            [("1", "x", "2011-01-01"), ("2", "y", "2001-04-02")],
+        )
+
+
+@mock.patch("locopy.s3.Session")
+def test_insert_pl_dataframe_to_table(mock_session, sf_credentials):
+    import polars as pl
+
+    test_df = pl.read_csv(
+        os.path.join(CURR_DIR, "data", "mock_dataframe.txt"), separator=","
+    )
     with (
         mock.patch("snowflake.connector.connect") as mock_connect,
         Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,

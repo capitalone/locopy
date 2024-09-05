@@ -264,6 +264,38 @@ def test_to_dataframe_none(mock_pandas, credentials, dbapi):
             mock_pandas.assert_not_called()
 
 
+# TODO: remove dataframe mocking
+@pytest.mark.parametrize("dbapi", DBAPIS)
+@mock.patch("polars.DataFrame")
+def test_to_dataframe_all_polars(mock_polars, credentials, dbapi):
+    with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
+        mock_connect.return_value.cursor.return_value.fetchall.return_value = [
+            (1, 2),
+            (2, 3),
+            (3, 4),
+        ]
+        with Database(dbapi=dbapi, **credentials) as test:
+            test.execute("SELECT 'hello world' AS fld")
+            df = test.to_dataframe(df_type="polars")
+
+    assert mock_connect.return_value.cursor.return_value.fetchall.called
+    mock_polars.assert_called_with(test.cursor.fetchall(), schema=[], orient="row")
+
+
+@pytest.mark.parametrize("dbapi", DBAPIS)
+def test_to_dataframe_error(credentials, dbapi):
+    with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
+        mock_connect.return_value.cursor.return_value.fetchall.return_value = [
+            (1, 2),
+            (2, 3),
+            (3, 4),
+        ]
+        with Database(dbapi=dbapi, **credentials) as test:
+            test.execute("SELECT 'hello world' AS fld")
+            with pytest.raises(ValueError):
+                test.to_dataframe(df_type="invalid")
+
+
 @pytest.mark.parametrize("dbapi", DBAPIS)
 def test_get_column_names(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:

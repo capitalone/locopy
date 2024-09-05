@@ -18,6 +18,9 @@
 
 import time
 
+import pandas
+import polars
+
 from locopy.errors import CredentialsError, DBError
 from locopy.logger import INFO, get_logger
 from locopy.utility import read_config_yaml
@@ -188,25 +191,25 @@ class Database:
         except Exception:
             return [column[0].lower() for column in self.cursor.description]
 
-    def to_dataframe(self, size=None):
+    def to_dataframe(self, df_type="pandas", size=None):
         """Return a dataframe of the last query results.
-
-        This imports Pandas in here, so that it's not needed for other use cases.  This is just a
-        convenience method.
 
         Parameters
         ----------
+        df_type: Literal["pandas","polars"], optional
+            Output dataframe format. Defaults to pandas.
+
         size : int, optional
             Chunk size to fetch.  Defaults to None.
 
         Returns
         -------
-        pandas.DataFrame
+        pandas.DataFrame or polars.DataFrame
             Dataframe with lowercase column names.  Returns None if no fetched
             result.
         """
-        import pandas
-
+        if df_type not in ["pandas", "polars"]:
+            raise ValueError("df_type must be ``pandas`` or ``polars``.")
         columns = self.column_names()
 
         if size is None:
@@ -220,7 +223,11 @@ class Database:
 
         if len(fetched) == 0:
             return None
-        return pandas.DataFrame(fetched, columns=columns)
+
+        if df_type == "pandas":
+            return pandas.DataFrame(fetched, columns=columns)
+        elif df_type == "polars":
+            return polars.DataFrame(fetched, schema=columns, orient="row")
 
     def to_dict(self):
         """Generate dictionaries of rows.
