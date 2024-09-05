@@ -283,6 +283,20 @@ def test_to_dataframe_all_polars(mock_polars, credentials, dbapi):
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
+def test_to_dataframe_error(credentials, dbapi):
+    with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
+        mock_connect.return_value.cursor.return_value.fetchall.return_value = [
+            (1, 2),
+            (2, 3),
+            (3, 4),
+        ]
+        with Database(dbapi=dbapi, **credentials) as test:
+            test.execute("SELECT 'hello world' AS fld")
+            with pytest.raises(ValueError):
+                test.to_dataframe(df_type="invalid")
+
+
+@pytest.mark.parametrize("dbapi", DBAPIS)
 def test_get_column_names(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         mock_connect.return_value.cursor.return_value.description = [["COL1"], ["COL2"]]

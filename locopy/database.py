@@ -194,9 +194,6 @@ class Database:
     def to_dataframe(self, df_type="pandas", size=None):
         """Return a dataframe of the last query results.
 
-        This imports Pandas in here, so that it's not needed for other use cases.  This is just a
-        convenience method.
-
         Parameters
         ----------
         df_type: Literal["pandas","polars"], optional
@@ -211,6 +208,8 @@ class Database:
             Dataframe with lowercase column names.  Returns None if no fetched
             result.
         """
+        if df_type not in ["pandas", "polars"]:
+            raise ValueError("df_type must be ``pandas`` or ``polars``.")
         columns = self.column_names()
 
         if size is None:

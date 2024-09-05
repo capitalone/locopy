@@ -445,6 +445,20 @@ def test_to_polars(mock_session, sf_credentials):
 
 
 @mock.patch("locopy.s3.Session")
+def test_to_dataframe_error(mock_session, sf_credentials):
+    with (
+        mock.patch("snowflake.connector.connect") as mock_connect,
+        Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
+    ):
+        sf.cursor._query_result_format = "arrow"
+        sf.conn.cursor.return_value.fetch_arrow_all.return_value = pa.table(
+            {"a": [1, 2, 3], "b": [4, 5, 6]}
+        )
+        with pytest.raises(ValueError):
+            polars_df = sf.to_dataframe(df_type="invalid")
+
+
+@mock.patch("locopy.s3.Session")
 def test_insert_pd_dataframe_to_table(mock_session, sf_credentials):
     import pandas as pd
 

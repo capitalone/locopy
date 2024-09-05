@@ -523,6 +523,9 @@ class Snowflake(S3, Database):
             Dataframe with lowercase column names.  Returns None if no fetched
             result.
         """
+        if df_type not in ["pandas", "polars"]:
+            raise ValueError("df_type must be ``pandas`` or ``polars``.")
+
         if size is None and self.cursor._query_result_format == "arrow":
             if df_type == "pandas":
                 return self.cursor.fetch_pandas_all()
