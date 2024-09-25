@@ -225,7 +225,7 @@ class Database:
             return None
 
         if df_type == "pandas":
-            return pandas.DataFrame(fetched, columns=columns)
+            return pandas.DataFrame(fetched, columns=columns or None)
         elif df_type == "polars":
             return polars.DataFrame(fetched, schema=columns, orient="row")
 
