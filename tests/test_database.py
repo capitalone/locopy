@@ -23,7 +23,10 @@
 import sqlite3
 from unittest import mock
 
+import pandas as pd
 import pg8000
+import polars as pl
+import polars.testing as pltest
 import psycopg2
 import pytest
 import snowflake.connector
@@ -220,37 +223,47 @@ def test_execute_sql_exception(credentials, dbapi):
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
-@mock.patch("pandas.DataFrame")
-def test_to_dataframe_all(mock_pandas, credentials, dbapi):
+def test_to_dataframe_all_pandas(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         mock_connect.return_value.cursor.return_value.fetchall.return_value = [
             (1, 2),
             (2, 3),
             (3,),
         ]
+        expected_df = pd.DataFrame(
+            [
+                (1, 2),
+                (2, 3),
+                (3,),
+            ]
+        )
         with Database(dbapi=dbapi, **credentials) as test:
             test.execute("SELECT 'hello world' AS fld")
-            df = test.to_dataframe()
-
+            df = test.to_dataframe(df_type="pandas")
+        pd.testing.assert_frame_equal(df, expected_df)
     assert mock_connect.return_value.cursor.return_value.fetchall.called
-    mock_pandas.assert_called_with(test.cursor.fetchall(), columns=[])
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
-@mock.patch("pandas.DataFrame")
-def test_to_dataframe_custom_size(mock_pandas, credentials, dbapi):
+def test_to_dataframe_custom_size(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         mock_connect.return_value.cursor.return_value.fetchmany.return_value = [
             (1, 2),
             (2, 3),
             (3,),
         ]
+        expected_df = pd.DataFrame(
+            [
+                (1, 2),
+                (2, 3),
+                (3,),
+            ]
+        )
         with Database(dbapi=dbapi, **credentials) as test:
             test.execute("SELECT 'hello world' AS fld")
             df = test.to_dataframe(size=5)
-
+        pd.testing.assert_frame_equal(df, expected_df)
     mock_connect.return_value.cursor.return_value.fetchmany.assert_called_with(5)
-    mock_pandas.assert_called_with(test.cursor.fetchmany(), columns=[])
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
@@ -264,22 +277,21 @@ def test_to_dataframe_none(mock_pandas, credentials, dbapi):
             mock_pandas.assert_not_called()
 
 
-# TODO: remove dataframe mocking
 @pytest.mark.parametrize("dbapi", DBAPIS)
-@mock.patch("polars.DataFrame")
-def test_to_dataframe_all_polars(mock_polars, credentials, dbapi):
+def test_to_dataframe_all_polars(credentials, dbapi):
     with mock.patch(dbapi.__name__ + ".connect") as mock_connect:
         mock_connect.return_value.cursor.return_value.fetchall.return_value = [
             (1, 2),
             (2, 3),
             (3, 4),
         ]
+        expected_df = pl.DataFrame([[1, 2, 3], [2, 3, 4]])
         with Database(dbapi=dbapi, **credentials) as test:
             test.execute("SELECT 'hello world' AS fld")
             df = test.to_dataframe(df_type="polars")
+        pltest.assert_frame_equal(df, expected_df)
 
     assert mock_connect.return_value.cursor.return_value.fetchall.called
-    mock_polars.assert_called_with(test.cursor.fetchall(), schema=[], orient="row")
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
