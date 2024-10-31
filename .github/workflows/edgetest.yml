@@ -3,11 +3,6 @@
 
 name: Run edgetest
 on:
-  pull_request:
-    types:
-      - opened
-      - edited
-      - synchronize
   schedule:
     - cron: '35 17 * * 5'
   workflow_dispatch:
