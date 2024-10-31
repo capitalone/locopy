@@ -23,9 +23,8 @@ jobs:
           cp tests/data/.locopyrc ~/.locopyrc
           cp tests/data/.locopy-sfrc ~/.locopy-sfrc
       - id: run-edgetest
-        uses: edgetest-dev/run-edgetest-action@v1.4
+        uses: edgetest-dev/run-edgetest-action@v1.5
         with:
           edgetest-flags: '-c pyproject.toml --export'
           base-branch: 'develop'
           skip-pr: 'false'
-          python-version: '3.10'
