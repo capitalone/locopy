@@ -5,10 +5,14 @@ name: Run edgetest
 on:
   schedule:
     - cron: '35 17 * * 5'
+  workflow_dispatch:
 jobs:
   edgetest:
     runs-on: ubuntu-latest
     name: running edgetest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -19,7 +23,7 @@ jobs:
           cp tests/data/.locopyrc ~/.locopyrc
           cp tests/data/.locopy-sfrc ~/.locopy-sfrc
       - id: run-edgetest
-        uses: fdosani/run-edgetest-action@v1.3
+        uses: edgetest-dev/run-edgetest-action@v1.5
         with:
           edgetest-flags: '-c pyproject.toml --export'
           base-branch: 'develop'
