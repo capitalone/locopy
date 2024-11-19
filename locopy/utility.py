@@ -330,7 +330,7 @@ def find_column_type_pandas(dataframe: pd.DataFrame, warehouse_type: str):
         elif pa.types.is_string(pa_dtype):
             return "varchar"
         else:
-            return None
+            return "varchar"
 
     if warehouse_type.lower() not in ["snowflake", "redshift"]:
         raise ValueError(
@@ -345,13 +345,7 @@ def find_column_type_pandas(dataframe: pd.DataFrame, warehouse_type: str):
             column_type.append("varchar")
         elif isinstance(data.dtype, pd.ArrowDtype):
             datatype = check_column_type_pyarrow(data.dtype.pyarrow_dtype)
-            if datatype:
-                column_type.append(datatype)
-            else:
-                raise ValueError(
-                    "%s is not currently supported in locopy. Please raise a github issue.",
-                    column,
-                )
+            column_type.append(datatype)
         else:
             if (data.dtype in ["datetime64[ns]", "M8[ns]"]) or (
                 re.match(r"(datetime64\[ns\,\W)([a-zA-Z]+)(\])", str(data.dtype))
