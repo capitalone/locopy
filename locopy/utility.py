@@ -30,6 +30,7 @@ from itertools import cycle
 
 import pandas as pd
 import polars as pl
+import pyarrow as pa
 import yaml
 
 from locopy.errors import (
@@ -317,6 +318,20 @@ def find_column_type_pandas(dataframe: pd.DataFrame, warehouse_type: str):
         except (ValueError, TypeError):
             return None
 
+    def check_column_type_pyarrow(pa_dtype):
+        if pa.types.is_temporal(pa_dtype):
+            return "timestamp"
+        elif pa.types.is_boolean(pa_dtype):
+            return "boolean"
+        elif pa.types.is_integer(pa_dtype):
+            return "int"
+        elif pa.types.is_floating(pa_dtype):
+            return "float"
+        elif pa.types.is_string(pa_dtype):
+            return "varchar"
+        else:
+            return None
+
     if warehouse_type.lower() not in ["snowflake", "redshift"]:
         raise ValueError(
             'warehouse_type argument must be either "snowflake" or "redshift"'
@@ -328,24 +343,34 @@ def find_column_type_pandas(dataframe: pd.DataFrame, warehouse_type: str):
         data = dataframe[column].dropna().reset_index(drop=True)
         if data.size == 0:
             column_type.append("varchar")
-        elif (data.dtype in ["datetime64[ns]", "M8[ns]"]) or (
-            re.match(r"(datetime64\[ns\,\W)([a-zA-Z]+)(\])", str(data.dtype))
-        ):
-            column_type.append("timestamp")
-        elif str(data.dtype).lower().startswith("bool"):
-            column_type.append("boolean")
-        elif str(data.dtype).startswith("object"):
-            data_type = validate_float_object(data) or validate_date_object(data)
-            if not data_type:
-                column_type.append("varchar")
+        elif isinstance(data.dtype, pd.ArrowDtype):
+            datatype = check_column_type_pyarrow(data.dtype.pyarrow_dtype)
+            if datatype:
+                column_type.append(datatype)
             else:
-                column_type.append(data_type)
-        elif str(data.dtype).lower().startswith("int"):
-            column_type.append("int")
-        elif str(data.dtype).lower().startswith("float"):
-            column_type.append("float")
+                raise ValueError(
+                    "%s is not currently supported in locopy. Please raise a github issue.",
+                    column,
+                )
         else:
-            column_type.append("varchar")
+            if (data.dtype in ["datetime64[ns]", "M8[ns]"]) or (
+                re.match(r"(datetime64\[ns\,\W)([a-zA-Z]+)(\])", str(data.dtype))
+            ):
+                column_type.append("timestamp")
+            elif str(data.dtype).lower().startswith("bool"):
+                column_type.append("boolean")
+            elif str(data.dtype).startswith("object"):
+                data_type = validate_float_object(data) or validate_date_object(data)
+                if not data_type:
+                    column_type.append("varchar")
+                else:
+                    column_type.append(data_type)
+            elif str(data.dtype).lower().startswith("int"):
+                column_type.append("int")
+            elif str(data.dtype).lower().startswith("float"):
+                column_type.append("float")
+            else:
+                column_type.append("varchar")
         logger.info("Parsing column %s to %s", column, column_type[-1])
     return OrderedDict(zip(list(dataframe.columns), column_type))
 
