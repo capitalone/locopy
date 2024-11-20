@@ -409,7 +409,7 @@ def test_find_column_type_pyarrow():
     input_text = input_text.astype(
         dtype={
             "a": "int64[pyarrow]",
-            "b": "timestamp[ns, tz=UTC][pyarrow]",
+            "b": pd.ArrowDtype(pa.timestamp("ns", tz="UTC")),
             "c": "float64[pyarrow]",
             "d": pd.ArrowDtype(pa.string()),
             "e": "bool[pyarrow]",
