@@ -5,12 +5,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.utility &mdash; locopy 0.6.2 documentation</title>
+  <title>locopy.utility &mdash; locopy 0.6.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
-      <script src="../../_static/documentation_options.js?v=1c28bd9a"></script>
+      <script src="../../_static/documentation_options.js?v=b8503983"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -108,6 +108,7 @@
 
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">polars</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 
 <span class="kn">from</span> <span class="nn">locopy.errors</span> <span class="kn">import</span> <span class="p">(</span>
@@ -418,6 +419,20 @@
         <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">None</span>
 
+    <span class="k">def</span> <span class="nf">check_column_type_pyarrow</span><span class="p">(</span><span class="n">pa_dtype</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">pa</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_temporal</span><span class="p">(</span><span class="n">pa_dtype</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;timestamp&quot;</span>
+        <span class="k">elif</span> <span class="n">pa</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_boolean</span><span class="p">(</span><span class="n">pa_dtype</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;boolean&quot;</span>
+        <span class="k">elif</span> <span class="n">pa</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_integer</span><span class="p">(</span><span class="n">pa_dtype</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;int&quot;</span>
+        <span class="k">elif</span> <span class="n">pa</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_floating</span><span class="p">(</span><span class="n">pa_dtype</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;float&quot;</span>
+        <span class="k">elif</span> <span class="n">pa</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_string</span><span class="p">(</span><span class="n">pa_dtype</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s2">&quot;varchar&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;varchar&quot;</span>
+
     <span class="k">if</span> <span class="n">warehouse_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;snowflake&quot;</span><span class="p">,</span> <span class="s2">&quot;redshift&quot;</span><span class="p">]:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s1">&#39;warehouse_type argument must be either &quot;snowflake&quot; or &quot;redshift&quot;&#39;</span>
@@ -429,24 +444,28 @@
         <span class="n">data</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">column</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;varchar&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;datetime64[ns]&quot;</span><span class="p">,</span> <span class="s2">&quot;M8[ns]&quot;</span><span class="p">])</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(datetime64\[ns\,\W)([a-zA-Z]+)(\])&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
-        <span class="p">):</span>
-            <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;timestamp&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">):</span>
-            <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;boolean&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">):</span>
-            <span class="n">data_type</span> <span class="o">=</span> <span class="n">validate_float_object</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">or</span> <span class="n">validate_date_object</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">data_type</span><span class="p">:</span>
-                <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;varchar&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">):</span>
-            <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">):</span>
-            <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">ArrowDtype</span><span class="p">):</span>
+            <span class="n">datatype</span> <span class="o">=</span> <span class="n">check_column_type_pyarrow</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">pyarrow_dtype</span><span class="p">)</span>
+            <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datatype</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;varchar&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;datetime64[ns]&quot;</span><span class="p">,</span> <span class="s2">&quot;M8[ns]&quot;</span><span class="p">])</span> <span class="ow">or</span> <span class="p">(</span>
+                <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(datetime64\[ns\,\W)([a-zA-Z]+)(\])&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+            <span class="p">):</span>
+                <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;timestamp&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">):</span>
+                <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;boolean&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">):</span>
+                <span class="n">data_type</span> <span class="o">=</span> <span class="n">validate_float_object</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">or</span> <span class="n">validate_date_object</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">data_type</span><span class="p">:</span>
+                    <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;varchar&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_type</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">):</span>
+                <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;int&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">):</span>
+                <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;varchar&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Parsing column </span><span class="si">%s</span><span class="s2"> to </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">column</span><span class="p">,</span> <span class="n">column_type</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span> <span class="n">column_type</span><span class="p">))</span></div>
 
