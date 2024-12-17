@@ -29,6 +29,7 @@ from pathlib import Path
 from unittest import mock
 
 import locopy.utility as util
+import pyarrow as pa
 import pytest
 from locopy.errors import (
     CompressionError,
@@ -388,7 +389,48 @@ def test_find_column_type_new():
         "d": "varchar",
         "e": "boolean",
     }
+    assert find_column_type(input_text, "snowflake") == output_text_snowflake
+    assert find_column_type(input_text, "redshift") == output_text_redshift
 
+
+def test_find_column_type_pyarrow():
+    import pandas as pd
+
+    input_text = pd.DataFrame.from_dict(
+        {
+            "a": [1],
+            "b": [pd.Timestamp("2017-01-01T12+0")],
+            "c": [1.2],
+            "d": ["a"],
+            "e": [True],
+        }
+    )
+
+    input_text = input_text.astype(
+        dtype={
+            "a": "int64[pyarrow]",
+            "b": pd.ArrowDtype(pa.timestamp("ns", tz="UTC")),
+            "c": "float64[pyarrow]",
+            "d": pd.ArrowDtype(pa.string()),
+            "e": "bool[pyarrow]",
+        }
+    )
+
+    output_text_snowflake = {
+        "a": "int",
+        "b": "timestamp",
+        "c": "float",
+        "d": "varchar",
+        "e": "boolean",
+    }
+
+    output_text_redshift = {
+        "a": "int",
+        "b": "timestamp",
+        "c": "float",
+        "d": "varchar",
+        "e": "boolean",
+    }
     assert find_column_type(input_text, "snowflake") == output_text_snowflake
     assert find_column_type(input_text, "redshift") == output_text_redshift
 
