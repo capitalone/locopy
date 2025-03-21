@@ -424,6 +424,8 @@ def find_column_type_polars(dataframe: pl.DataFrame, warehouse_type: str):
         data = dataframe.lazy().select(column).drop_nulls().collect().to_series()
         if data.shape[0] == 0:
             column_type.append("varchar")
+        elif isinstance(data.dtype, pl.datatypes.Date):
+            column_type.append("date")
         elif data.dtype.is_temporal():
             column_type.append("timestamp")
         elif str(data.dtype).lower().startswith("bool"):
