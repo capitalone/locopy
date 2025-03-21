@@ -377,11 +377,12 @@ def find_column_type_polars(dataframe: pl.DataFrame, warehouse_type: str):
     Following is the list of polars data types that the function checks and their mapping in sql:
 
         - Boolean -> boolean
-        - Date/Datetime/Duration/Time -> timestamp
+        - Date -> date
+        - Datetime/Duration/Timestamp -> timestamp
+        - Time -> time
         - int -> int
         - float/decimal -> float
         - float object -> float
-        - datetime object -> timestamp
         - others -> varchar
 
     For all other data types, the column will be mapped to varchar type.
@@ -401,8 +402,18 @@ def find_column_type_polars(dataframe: pl.DataFrame, warehouse_type: str):
 
     def validate_date_object(column):
         try:
-            column.str.to_datetime()
+            column.str.to_date()  # start with date, bc datetime is a superset eg. "2011-04-02" can be converted into both datetime and date, and we want it to be date by default.
             return "date"
+        except Exception:
+            pass
+        try:
+            column.str.to_time()
+            return "time"
+        except Exception:
+            pass
+        try:
+            column.str.to_datetime()
+            return "timestamp"
         except Exception:
             return None
 
@@ -424,10 +435,15 @@ def find_column_type_polars(dataframe: pl.DataFrame, warehouse_type: str):
         data = dataframe.lazy().select(column).drop_nulls().collect().to_series()
         if data.shape[0] == 0:
             column_type.append("varchar")
-        elif isinstance(data.dtype, pl.datatypes.Date):
-            column_type.append("date")
         elif data.dtype.is_temporal():
-            column_type.append("timestamp")
+            if isinstance(
+                data.dtype, pl.datatypes.Date
+            ):  # convert to date if it is Date
+                column_type.append("date")
+            elif data.dtype is pl.datatypes.Time:  # only time eg. 12:15:00
+                column_type.append("time")
+            else:  # all other temporal dtype eg. timestamp/datetime
+                column_type.append("timestamp")
         elif str(data.dtype).lower().startswith("bool"):
             column_type.append("boolean")
         elif data.dtype.is_integer():

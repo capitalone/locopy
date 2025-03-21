@@ -29,6 +29,7 @@ from pathlib import Path
 from unittest import mock
 
 import locopy.utility as util
+import polars as pl
 import pyarrow as pa
 import pytest
 from locopy.errors import (
@@ -430,6 +431,83 @@ def test_find_column_type_pyarrow():
         "c": "float",
         "d": "varchar",
         "e": "boolean",
+    }
+    assert find_column_type(input_text, "snowflake") == output_text_snowflake
+    assert find_column_type(input_text, "redshift") == output_text_redshift
+
+
+def test_find_column_type_polars():
+    input_text = pl.DataFrame(
+        {
+            "a": [1],
+            "b": ["2022-03-02 23:59:59"],
+            "c": [1.2],
+            "d": ["a"],
+            "e": [True],
+            "f": ["2011-01-01"],
+            "g": [
+                "10-DEC-2022"
+            ],  # remains as string, otherwise polars will convert it to `2022-12-10`
+            "h": ["11:35:49"],
+            "i": [30],
+            "j": [2025],
+        }
+    )
+
+    input_text = input_text.with_columns(
+        [
+            pl.date(
+                pl.col("j"),
+                pl.col("a"),
+                pl.col("i"),  # create date of 2025-01-30
+            ).alias("k"),
+            pl.datetime(
+                pl.col("j"),
+                pl.col("a"),
+                pl.col("i"),
+                pl.col("a"),
+                pl.col("i"),
+                time_zone="Australia/Sydney",
+                # create datetime of 2025-01-30 01:30pm Australia time
+            ).alias("l"),
+            pl.time(
+                12,
+                35,
+                15,  # create 12:35:15pm
+            ).alias("m"),
+        ]
+    )
+
+    output_text_snowflake = {
+        "a": "int",
+        "b": "timestamp",
+        "c": "float",
+        "d": "varchar",
+        "e": "boolean",
+        "f": "date",
+        "g": "varchar",
+        "h": "time",
+        "i": "int",
+        "j": "int",
+        "k": "date",
+        "l": "timestamp",
+        "m": "time",
+    }
+
+    output_text_redshift = {
+        "a": "int",
+        "b": "timestamp",
+        "c": "float",
+        "d": "varchar",
+        "e": "boolean",
+        "f": "date",
+        "g": "varchar",
+        "h": "time",
+        "i": "int",
+        "j": "int",
+        "k": "date",
+        "l": "timestamp",
+        "m": "time",
     }
     assert find_column_type(input_text, "snowflake") == output_text_snowflake
     assert find_column_type(input_text, "redshift") == output_text_redshift
