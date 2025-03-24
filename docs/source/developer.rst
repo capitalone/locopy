@@ -73,7 +73,8 @@ Snowflake
 
 .. code-block:: yaml
 
-    account: my.snowflake.cluster.com
+    account: prod
+    host: mycluster.url.com
     warehouse: warehouse
     database: db
     schema: schema
