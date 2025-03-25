@@ -6,12 +6,12 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Common Recipes &mdash; locopy 0.6.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+  <title>Common Recipes &mdash; locopy 0.6.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
-      <script src="_static/documentation_options.js?v=b8503983"></script>
+      <script src="_static/documentation_options.js?v=73d9a94e"></script>
       <script src="_static/doctools.js?v=9a2dae69"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -101,8 +101,8 @@ this process on a regular basis it might make sense to use a <code class="docuti
 store (in a secure place) most of the details. You will also need valid AWS
 tokens in order to access the appropriate AWS resources (S3 bucket).</p>
 <p>Assuming you have your <code class="docutils literal notranslate"><span class="pre">YAML</span></code> file setup, the following will occur:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
-<span class="kn">import</span> <span class="nn">locopy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pg8000</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">locopy</span>
 
 <span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;example.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
     <span class="n">redshift</span><span class="o">.</span><span class="n">load_and_copy</span><span class="p">(</span>
@@ -125,8 +125,8 @@ tokens in order to access the appropriate AWS resources (S3 bucket).</p>
 <h2>I’d like to split my file into <em>n</em> files<a class="headerlink" href="#i-d-like-to-split-my-file-into-n-files" title="Link to this heading">¶</a></h2>
 <p>You can tweak the above code to include the <code class="docutils literal notranslate"><span class="pre">splits</span></code> option which takes an
 integer</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
-<span class="kn">import</span> <span class="nn">locopy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pg8000</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">locopy</span>
 
 <span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;example.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
     <span class="n">redshift</span><span class="o">.</span><span class="n">load_and_copy</span><span class="p">(</span>
@@ -146,8 +146,8 @@ Redshift cluster.</p>
 <h2>I don’t want to compress my files<a class="headerlink" href="#i-don-t-want-to-compress-my-files" title="Link to this heading">¶</a></h2>
 <p>By default compression is always on. If you’d like to turn if off you can set
 <code class="docutils literal notranslate"><span class="pre">compress=False</span></code></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
-<span class="kn">import</span> <span class="nn">locopy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pg8000</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">locopy</span>
 
 <span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;example.yaml&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
     <span class="n">redshift</span><span class="o">.</span><span class="n">load_and_copy</span><span class="p">(</span>
@@ -167,8 +167,8 @@ performance of the <code class="docutils literal notranslate"><span class="pre">
 <h2>I want to export some data from Redshift to a local CSV<a class="headerlink" href="#i-want-to-export-some-data-from-redshift-to-a-local-csv" title="Link to this heading">¶</a></h2>
 <p>Data can be exported from Redshift to a CSV by supplying an <code class="docutils literal notranslate"><span class="pre">export_path</span></code>
 to <code class="docutils literal notranslate"><span class="pre">locopy.Redshift.unload_and_copy()</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
-<span class="kn">import</span> <span class="nn">locopy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pg8000</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">locopy</span>
 
 <span class="n">my_profile</span> <span class="o">=</span> <span class="s2">&quot;some_profile_with_valid_tokens&quot;</span>
 <span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
@@ -210,8 +210,8 @@ omitting the last <code class="docutils literal notranslate"><span class="pre">/
 <p>To simply export data to S3 and do nothing else, omit the <code class="docutils literal notranslate"><span class="pre">export_path</span></code> option
 so that the file is not downloaded, and set <code class="docutils literal notranslate"><span class="pre">delete_s3_after=False</span></code> to prevent
 the S3 files from being automatically deleted after the run.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pg8000</span>
-<span class="kn">import</span> <span class="nn">locopy</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pg8000</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">locopy</span>
 
 <span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span><span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;config.yml&quot;</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="n">my_profile</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
     <span class="n">redshift</span><span class="o">.</span><span class="n">unload_and_copy</span><span class="p">(</span>

@@ -5,12 +5,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.utility &mdash; locopy 0.6.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+  <title>locopy.utility &mdash; locopy 0.6.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
-      <script src="../../_static/documentation_options.js?v=b8503983"></script>
+      <script src="../../_static/documentation_options.js?v=73d9a94e"></script>
       <script src="../../_static/doctools.js?v=9a2dae69"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -97,35 +97,35 @@
 <span class="sd">Module which utility functions for use within the application.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">gzip</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">threading</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">singledispatch</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">cycle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">gzip</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">singledispatch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cycle</span>
 
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">import</span> <span class="nn">polars</span> <span class="k">as</span> <span class="nn">pl</span>
-<span class="kn">import</span> <span class="nn">pyarrow</span> <span class="k">as</span> <span class="nn">pa</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">polars</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyarrow</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pa</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 
-<span class="kn">from</span> <span class="nn">locopy.errors</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">locopy.errors</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">CompressionError</span><span class="p">,</span>
     <span class="n">CredentialsError</span><span class="p">,</span>
     <span class="n">LocopyConcatError</span><span class="p">,</span>
     <span class="n">LocopyIgnoreHeaderError</span><span class="p">,</span>
     <span class="n">LocopySplitError</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">locopy.logger</span> <span class="kn">import</span> <span class="n">INFO</span><span class="p">,</span> <span class="n">get_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">locopy.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">INFO</span><span class="p">,</span> <span class="n">get_logger</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">get_logger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">INFO</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="write_file">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.write_file">[docs]</a>
-<span class="k">def</span> <span class="nf">write_file</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_file</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write data to a file.</span>
 
 <span class="sd">    Parameters</span>
@@ -156,7 +156,7 @@
 
 <div class="viewcode-block" id="compress_file">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.compress_file">[docs]</a>
-<span class="k">def</span> <span class="nf">compress_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compress_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compresses a file (gzip).</span>
 
 <span class="sd">    Parameters</span>
@@ -172,13 +172,13 @@
             <span class="n">shutil</span><span class="o">.</span><span class="n">copyfileobj</span><span class="p">(</span><span class="n">f_in</span><span class="p">,</span> <span class="n">f_out</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error compressing the file. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">CompressionError</span><span class="p">(</span><span class="s2">&quot;Error compressing the file.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
+        <span class="k">raise</span> <span class="n">CompressionError</span><span class="p">(</span><span class="s2">&quot;Error compressing the file.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span></div>
 
 
 
 <div class="viewcode-block" id="compress_file_list">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.compress_file_list">[docs]</a>
-<span class="k">def</span> <span class="nf">compress_file_list</span><span class="p">(</span><span class="n">file_list</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compress_file_list</span><span class="p">(</span><span class="n">file_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compresses a list of files (gzip) and clean up the old files.</span>
 
 <span class="sd">    Parameters</span>
@@ -203,7 +203,7 @@
 
 <div class="viewcode-block" id="split_file">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.split_file">[docs]</a>
-<span class="k">def</span> <span class="nf">split_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ignore_header</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">split_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ignore_header</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Split a file into equal files by lines.</span>
 
 <span class="sd">    For example: ``myinputfile.txt`` will be split into ``myoutputfile.txt.01``</span>
@@ -267,13 +267,13 @@
             <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">pool</span><span class="p">:</span>
                 <span class="n">files</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">files</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">LocopySplitError</span><span class="p">(</span><span class="s2">&quot;Error splitting the file.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
+        <span class="k">raise</span> <span class="n">LocopySplitError</span><span class="p">(</span><span class="s2">&quot;Error splitting the file.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span></div>
 
 
 
 <div class="viewcode-block" id="concatenate_files">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.concatenate_files">[docs]</a>
-<span class="k">def</span> <span class="nf">concatenate_files</span><span class="p">(</span><span class="n">input_list</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">concatenate_files</span><span class="p">(</span><span class="n">input_list</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Concatenate a list of files into one file.</span>
 
 <span class="sd">    Parameters</span>
@@ -304,13 +304,13 @@
                     <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error concateneating files. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">LocopyConcatError</span><span class="p">(</span><span class="s2">&quot;Error concateneating files.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
+        <span class="k">raise</span> <span class="n">LocopyConcatError</span><span class="p">(</span><span class="s2">&quot;Error concateneating files.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span></div>
 
 
 
 <div class="viewcode-block" id="read_config_yaml">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.read_config_yaml">[docs]</a>
-<span class="k">def</span> <span class="nf">read_config_yaml</span><span class="p">(</span><span class="n">config_yaml</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_config_yaml</span><span class="p">(</span><span class="n">config_yaml</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a configuration YAML file.</span>
 
 <span class="sd">    Populate the database connection attributes, and validate required ones.</span>
@@ -347,7 +347,7 @@
             <span class="n">locopy_yaml</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">config_yaml</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error reading yaml. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="n">CredentialsError</span><span class="p">(</span><span class="s2">&quot;Error reading yaml.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+        <span class="k">raise</span> <span class="n">CredentialsError</span><span class="p">(</span><span class="s2">&quot;Error reading yaml.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
     <span class="k">return</span> <span class="n">locopy_yaml</span></div>
 
 
@@ -356,7 +356,7 @@
 <div class="viewcode-block" id="find_column_type">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.find_column_type">[docs]</a>
 <span class="nd">@singledispatch</span>
-<span class="k">def</span> <span class="nf">find_column_type</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">warehouse_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_column_type</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">warehouse_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Find data type of each column from the dataframe.&quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -365,7 +365,7 @@
 <div class="viewcode-block" id="find_column_type_pandas">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.find_column_type_pandas">[docs]</a>
 <span class="nd">@find_column_type</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">find_column_type_pandas</span><span class="p">(</span><span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">warehouse_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_column_type_pandas</span><span class="p">(</span><span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">warehouse_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find data type of each column from the dataframe.</span>
 
@@ -394,9 +394,9 @@
 <span class="sd">    dict</span>
 <span class="sd">        A dictionary of columns with their data type</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">import</span> <span class="nn">re</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
 
-    <span class="k">def</span> <span class="nf">validate_date_object</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_date_object</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
             <span class="n">sample_data</span> <span class="o">=</span> <span class="n">column</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -412,14 +412,14 @@
         <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">validate_float_object</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_float_object</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">column</span><span class="p">)</span>
             <span class="k">return</span> <span class="s2">&quot;float&quot;</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">check_column_type_pyarrow</span><span class="p">(</span><span class="n">pa_dtype</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">check_column_type_pyarrow</span><span class="p">(</span><span class="n">pa_dtype</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">pa</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_temporal</span><span class="p">(</span><span class="n">pa_dtype</span><span class="p">):</span>
             <span class="k">return</span> <span class="s2">&quot;timestamp&quot;</span>
         <span class="k">elif</span> <span class="n">pa</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_boolean</span><span class="p">(</span><span class="n">pa_dtype</span><span class="p">):</span>
@@ -474,18 +474,19 @@
 <div class="viewcode-block" id="find_column_type_polars">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.find_column_type_polars">[docs]</a>
 <span class="nd">@find_column_type</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">find_column_type_polars</span><span class="p">(</span><span class="n">dataframe</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">warehouse_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">find_column_type_polars</span><span class="p">(</span><span class="n">dataframe</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">warehouse_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find data type of each column from the dataframe.</span>
 
 <span class="sd">    Following is the list of polars data types that the function checks and their mapping in sql:</span>
 
 <span class="sd">        - Boolean -&gt; boolean</span>
-<span class="sd">        - Date/Datetime/Duration/Time -&gt; timestamp</span>
+<span class="sd">        - Date -&gt; date</span>
+<span class="sd">        - Datetime/Duration/Timestamp -&gt; timestamp</span>
+<span class="sd">        - Time -&gt; time</span>
 <span class="sd">        - int -&gt; int</span>
 <span class="sd">        - float/decimal -&gt; float</span>
 <span class="sd">        - float object -&gt; float</span>
-<span class="sd">        - datetime object -&gt; timestamp</span>
 <span class="sd">        - others -&gt; varchar</span>
 
 <span class="sd">    For all other data types, the column will be mapped to varchar type.</span>
@@ -503,14 +504,24 @@
 <span class="sd">        A dictionary of columns with their data type</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">validate_date_object</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_date_object</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">column</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">to_date</span><span class="p">()</span>  <span class="c1"># start with date, bc datetime is a superset eg. &quot;2011-04-02&quot; can be converted into both datetime and date, and we want it to be date by default.</span>
+            <span class="k">return</span> <span class="s2">&quot;date&quot;</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">column</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">to_time</span><span class="p">()</span>
+            <span class="k">return</span> <span class="s2">&quot;time&quot;</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">column</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">()</span>
-            <span class="k">return</span> <span class="s2">&quot;date&quot;</span>
+            <span class="k">return</span> <span class="s2">&quot;timestamp&quot;</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">validate_float_object</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_float_object</span><span class="p">(</span><span class="n">column</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">column</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">UInt32</span><span class="p">)</span>
             <span class="k">return</span> <span class="s2">&quot;float&quot;</span>
@@ -529,7 +540,14 @@
         <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;varchar&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">is_temporal</span><span class="p">():</span>
-            <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;timestamp&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">pl</span><span class="o">.</span><span class="n">datatypes</span><span class="o">.</span><span class="n">Date</span>
+            <span class="p">):</span>  <span class="c1"># convert to date if it is Date</span>
+                <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="n">pl</span><span class="o">.</span><span class="n">datatypes</span><span class="o">.</span><span class="n">Time</span><span class="p">:</span>  <span class="c1"># only time eg. 12:15:00</span>
+                <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># all other temporal dtype eg. timestamp/datetime</span>
+                <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;timestamp&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">):</span>
             <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;boolean&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">is_integer</span><span class="p">():</span>
@@ -549,14 +567,14 @@
 
 <div class="viewcode-block" id="ProgressPercentage">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.ProgressPercentage">[docs]</a>
-<span class="k">class</span> <span class="nc">ProgressPercentage</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ProgressPercentage</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;ProgressPercentage class is used by the S3Transfer upload_file callback.</span>
 
 <span class="sd">    Please see the following url for more information:</span>
 <span class="sd">    http://boto3.readthedocs.org/en/latest/reference/customizations/s3.html#ref-s3transfer-usage.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initiate the ProgressPercentage class.</span>
 
 <span class="sd">        Using the base information which makes up a pipeline</span>
@@ -571,7 +589,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_seen_so_far</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bytes_amount</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bytes_amount</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Call as a function.</span>
 
 <span class="sd">        To simplify we&#39;ll assume this is hooked up to a single filename.</span>
@@ -590,7 +608,7 @@
 
 <div class="viewcode-block" id="get_ignoreheader_number">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.get_ignoreheader_number">[docs]</a>
-<span class="k">def</span> <span class="nf">get_ignoreheader_number</span><span class="p">(</span><span class="n">options</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_ignoreheader_number</span><span class="p">(</span><span class="n">options</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the ``number_rows`` from ``IGNOREHEADER [ AS ] number_rows``.</span>
 
 <span class="sd">    This doesn&#39;t validate that the ``AS`` is valid.</span>
