@@ -38,6 +38,7 @@ S3_BUCKET = "locopy-integration-testing"
 CURR_DIR = os.path.dirname(os.path.abspath(__file__))
 LOCAL_FILE = os.path.join(CURR_DIR, "data", "mock_file.txt")
 LOCAL_FILE_JSON = os.path.join(CURR_DIR, "data", "mock_file.json")
+LOCAL_FILE_PARQUET = os.path.join(CURR_DIR, "data", "mock_dataframe.parquet")
 LOCAL_FILE_DL = os.path.join(CURR_DIR, "data", "mock_file_dl.txt")
 TEST_DF = pd.read_csv(os.path.join(CURR_DIR, "data", "mock_dataframe.txt"), sep=",")
 TEST_DF_2 = pd.read_csv(os.path.join(CURR_DIR, "data", "mock_dataframe_2.txt"), sep=",")
@@ -162,6 +163,42 @@ def test_copy_json(dbapi):
             ('"Belmont"', '"92567"'),
             ('"Lexington"', '"75836"'),
             ('"Winchester"', '"89921"'),
+        ]
+
+        for i, result in enumerate(results):
+            assert result[0] == expected[i][0]
+            assert result[1] == expected[i][1]
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("dbapi", DBAPIS)
+def test_copy_file_format_name(dbapi):
+    with locopy.Snowflake(dbapi=dbapi, **CREDS_DICT) as test:
+        test.upload_to_internal(LOCAL_FILE_PARQUET, "@~/staged/")
+        test.execute("USE SCHEMA {}".format(CREDS_DICT["schema"]))
+        test.execute("CREATE OR REPLACE TEMPORARY TABLE temp_table (raw_data VARIANT)")
+
+        test.execute(
+            "CREATE OR REPLACE TABLE actual_table (a int, b varchar,c timestamp)"
+        )
+        test.execute(
+            f'CREATE OR REPLACE FILE FORMAT {CREDS_DICT["database"]}.{CREDS_DICT["schema"]}.my_parquet_format TYPE = PARQUET USE_LOGICAL_TYPE = TRUE;'
+        )
+        test.copy(
+            "temp_table",
+            "@~/staged/mock_dataframe.parquet",
+            file_format_name=f'{CREDS_DICT["database"]}.{CREDS_DICT["schema"]}.my_parquet_format',
+        )
+        test.execute(
+            "INSERT INTO actual_table (SELECT $1:a,$1:b,$1:c FROM temp_table);"
+        )
+        test.execute("SELECT a, b, c FROM actual_table ORDER BY a ASC")
+        results = test.cursor.fetchall()
+        test.execute("DROP TABLE temp_table")
+
+        expected = [
+            (1, "x", pd.to_datetime("2011-01-01").date()),
+            (2, "y", pd.to_datetime("2001-04-02").date()),
         ]
 
         for i, result in enumerate(results):

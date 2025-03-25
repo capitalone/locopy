@@ -282,7 +282,7 @@ def test_download_from_internal_windows(mock_session, sf_credentials):
     ],
 )
 @mock.patch("locopy.s3.Session")
-def test_copy(
+def test_copy_file_type(
     mock_session, file_type, format_options, copy_options, expected, sf_credentials
 ):
     with (
@@ -294,6 +294,49 @@ def test_copy(
             "@~/stage",
             file_type=file_type,
             format_options=format_options,
+            copy_options=copy_options,
+        )
+        sf.conn.cursor.return_value.execute.assert_called_with(
+            f"COPY INTO table_name FROM '@~/stage' FILE_FORMAT = {expected}",
+            (),
+        )
+
+
+@pytest.mark.parametrize(
+    "file_format_name, copy_options, expected",
+    [
+        ("my_csv_format", None, "(FORMAT_NAME='my_csv_format') "),
+        (
+            "my_csv_format",
+            ["c=3", "d=4"],
+            "(FORMAT_NAME='my_csv_format') c=3 d=4",
+        ),
+        ("my_parquet_format", None, "(FORMAT_NAME='my_parquet_format') "),
+        (
+            "my_parquet_format",
+            ["c=3", "d=4"],
+            "(FORMAT_NAME='my_parquet_format') c=3 d=4",
+        ),
+        ("my_json_format", None, "(FORMAT_NAME='my_json_format') "),
+        (
+            "my_json_format",
+            ["c=3", "d=4"],
+            "(FORMAT_NAME='my_json_format') c=3 d=4",
+        ),
+    ],
+)
+@mock.patch("locopy.s3.Session")
+def test_copy_file_format_name(
+    mock_session, file_format_name, copy_options, expected, sf_credentials
+):
+    with (
+        mock.patch("snowflake.connector.connect") as mock_connect,
+        Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
+    ):
+        sf.copy(
+            "table_name",
+            "@~/stage",
+            file_format_name=file_format_name,
             copy_options=copy_options,
         )
         sf.conn.cursor.return_value.execute.assert_called_with(
@@ -358,7 +401,7 @@ def test_copy_exception(mock_session, sf_credentials):
     ],
 )
 @mock.patch("locopy.s3.Session")
-def test_unload(
+def test_unload_file_type(
     mock_session,
     file_type,
     format_options,
@@ -376,6 +419,63 @@ def test_unload(
             "table_name",
             file_type=file_type,
             format_options=format_options,
+            header=header,
+            copy_options=copy_options,
+        )
+        sf.conn.cursor.return_value.execute.assert_called_with(
+            f"COPY INTO @~/stage FROM table_name FILE_FORMAT = {expected}",
+            (),
+        )
+
+
+@pytest.mark.parametrize(
+    "file_format_name, header, copy_options, expected",
+    [
+        ("my_csv_format", False, None, "(FORMAT_NAME='my_csv_format') HEADER=False "),
+        (
+            "my_csv_format",
+            True,
+            ["c=3", "d=4"],
+            "(FORMAT_NAME='my_csv_format') HEADER=True c=3 d=4",
+        ),
+        (
+            "my_parquet_format",
+            False,
+            None,
+            "(FORMAT_NAME='my_parquet_format') HEADER=False ",
+        ),
+        (
+            "my_parquet_format",
+            False,
+            ["c=3", "d=4"],
+            "(FORMAT_NAME='my_parquet_format') HEADER=False c=3 d=4",
+        ),
+        ("my_json_format", False, None, "(FORMAT_NAME='my_json_format') HEADER=False "),
+        (
+            "my_json_format",
+            False,
+            ["c=3", "d=4"],
+            "(FORMAT_NAME='my_json_format') HEADER=False c=3 d=4",
+        ),
+    ],
+)
+@mock.patch("locopy.s3.Session")
+def test_unload_file_format_name(
+    mock_session,
+    file_format_name,
+    header,
+    copy_options,
+    expected,
+    sf_credentials,
+):
+    with (
+        mock.patch("snowflake.connector.connect") as mock_connect,
+        Snowflake(profile=PROFILE, dbapi=DBAPIS, **sf_credentials) as sf,
+    ):
+        sf.unload(
+            "@~/stage",
+            "table_name",
+            file_format_name=file_format_name,
             header=header,
             copy_options=copy_options,
         )

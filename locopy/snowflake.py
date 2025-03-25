@@ -266,7 +266,13 @@ class Snowflake(S3, Database):
         self.execute(f"GET {stage} 'file://{local_uri}' PARALLEL={parallel}")
 
     def copy(
-        self, table_name, stage, file_type="csv", format_options=None, copy_options=None
+        self,
+        table_name,
+        stage,
+        file_type="csv",
+        format_options=None,
+        copy_options=None,
+        file_format_name="",
     ):
         """Load files from a stage into a Snowflake table.
 
@@ -292,6 +298,10 @@ class Snowflake(S3, Database):
         copy_options : list
             List of strings of copy options to provide to the ``COPY INTO`` command.
 
+        file_format_name : str
+            The user specified file format name, overrides ``file_type`` and ``format_options`` if specified.
+            https://docs.snowflake.com/en/sql-reference/sql/create-file-format
+
         Raises
         ------
         DBError
@@ -311,13 +321,15 @@ class Snowflake(S3, Database):
 
         format_options_text = combine_options(format_options)
         copy_options_text = combine_options(copy_options)
-        base_copy_string = (
-            "COPY INTO {0} FROM '{1}' " "FILE_FORMAT = (TYPE='{2}' {3}) {4}"
-        )
-        try:
-            sql = base_copy_string.format(
-                table_name, stage, file_type, format_options_text, copy_options_text
+        if file_format_name != "":
+            logger.info(
+                "``file_format_name`` is not empty, overrides ``file_type`` and ``format_options``"
             )
+            sql = f"COPY INTO {table_name} FROM '{stage}' FILE_FORMAT = (FORMAT_NAME='{file_format_name}') {copy_options_text}"
+        else:
+            sql = f"COPY INTO {table_name} FROM '{stage}' FILE_FORMAT = (TYPE='{file_type}' {format_options_text}) {copy_options_text}"
+
+        try:
             self.execute(sql, commit=True)
 
         except Exception as e:
@@ -332,6 +344,7 @@ class Snowflake(S3, Database):
         format_options=None,
         header=False,
         copy_options=None,
+        file_format_name="",
     ):
         """Export a query/table from Snowflake to a stage.
 
@@ -361,6 +374,10 @@ class Snowflake(S3, Database):
         copy_options : list
             List of strings of copy options to provide to the ``COPY INTO`` command.
 
+        file_format_name : str
+            The user specified file format name, overrides ``file_type`` and ``format_options`` if specified.
+            https://docs.snowflake.com/en/sql-reference/sql/create-file-format
+
         Raises
         ------
         DBError
@@ -380,19 +397,13 @@ class Snowflake(S3, Database):
 
         format_options_text = combine_options(format_options)
         copy_options_text = combine_options(copy_options)
-        base_unload_string = (
-            "COPY INTO {0} FROM {1} " "FILE_FORMAT = (TYPE='{2}' {3}) HEADER={4} {5}"
-        )
+
+        if file_format_name != "":
+            sql = f"COPY INTO {stage} FROM {table_name} FILE_FORMAT = (FORMAT_NAME='{file_format_name}') HEADER={header} {copy_options_text}"
+        else:
+            sql = f"COPY INTO {stage} FROM {table_name} FILE_FORMAT = (TYPE='{file_type}' {format_options_text}) HEADER={header} {copy_options_text}"
 
         try:
-            sql = base_unload_string.format(
-                stage,
-                table_name,
-                file_type,
-                format_options_text,
-                header,
-                copy_options_text,
-            )
             self.execute(sql, commit=True)
         except Exception as e:
             logger.error("Error running UNLOAD on Snowflake. err: %s", e)
