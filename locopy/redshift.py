@@ -28,7 +28,7 @@ import pandas as pd
 import polars as pl
 import polars.selectors as cs
 
-from locopy.database import Database
+from locopy.postgres_base import PostgresBase
 from locopy.errors import DBError, S3CredentialsError
 from locopy.logger import INFO, get_logger
 from locopy.s3 import S3
@@ -90,10 +90,10 @@ def combine_copy_options(copy_options):
     return " ".join(copy_options)
 
 
-class Redshift(S3, Database):
+class Redshift(S3, PostgresBase):
     """Locopy class which manages connections to Redshift.
 
-    Inherits ``Database`` and implements the specific ``COPY`` and ``UNLOAD`` functionality.
+    Inherits ``PostgresBase`` and implements the specific ``COPY`` and ``UNLOAD`` functionality.
 
     If any of host, port, dbname, user and password are not provided, a config_yaml file must be
     provided with those parameters in it. Please note ssl is always enforced when connecting.
@@ -172,7 +172,7 @@ class Redshift(S3, Database):
             logger.warning(
                 "S3 credentials were not found. S3 functionality is disabled"
             )
-        Database.__init__(self, dbapi, config_yaml, **kwargs)
+        PostgresBase.__init__(self, dbapi, config_yaml, **kwargs)
 
     def connect(self):
         """Create a connection to the Redshift cluster.
@@ -244,107 +244,112 @@ class Redshift(S3, Database):
         compress=True,
         s3_folder=None,
     ):
-        r"""Load a file to S3, then copies into Redshift.
+        """Load a file to S3, then copies into Redshift.
 
         Has options to split a single file into multiple files, compress using gzip, and
         upload to an S3 bucket with folders within the bucket.
 
-        Notes
-        -----
-        If you are using folders in your S3 bucket please be aware of having
-        special chars or backward slashes (``\``). These may cause the file to
-        upload but fail on the ``COPY`` command.
-
-        By default `locopy` will handle the splitting of files for you, in order to reduce
-        complexity in uploading to s3 and generating the `COPY` command.
-
-        It is critical to ensure that the S3 location you are using that it only contains the files
-        you want to load. In the case of a "folder" it should only contain the files you want to
-        load. For a bucket the file name should be unique enough as any extensions get striped out
-        in favour of the file prefix.
-
         Parameters
         ----------
         local_file : str
-            The local file which you wish to copy. This can be a folder for non-delimited file type like parquet
+            Path to the file that is to be loaded.
 
         s3_bucket : str
-            The AWS S3 bucket which you are copying the local file to.
+            Target S3 bucket to upload to.
 
         table_name : str
-            The Redshift table name which is being loaded
+            The Redshift table name which is being loaded.
 
         delim : str, optional
-            Delimiter for Redshift ``COPY`` command. None for non-delimited files. Defaults to ``|``.
+            Delimiter to be used in the ``COPY`` command. Defaults to |.
 
         copy_options : list, optional
-            A list (str) of copy options that should be appended to the COPY
-            statement.  The class will insert a default for DATEFORMAT,
-            COMPUPDATE and TRUNCATECOLUMNS if they are not provided in this
-            list if PARQUET is not part of the options passed in
-            See http://docs.aws.amazon.com/redshift/latest/dg/copy-parameters-data-conversion.html
-            for options which could be passed.
+            List of strings of copy options to provide to the ``COPY`` command.
+            Will have default options added in.
 
         delete_s3_after : bool, optional
-            Lets you specify to delete the S3 file after transfer if you want.
+            Whether to delete the files from S3 after upload.
 
         splits : int, optional
-            Number of splits to perform for paralell loading into Redshift.
-            Must be greater than ``0``. Recommended that this number should be
-            less than ``100``. Defaults to ``1``.
+            Number of splits to perform for parallel loading into Redshift.
 
         compress : bool, optional
-            Whether to compress the output file with ``gzip`` or leave it raw.
-            Defaults to ``True``
+            Whether to compress the file before uploading to S3.
 
         s3_folder : str, optional
-            The AWS S3 folder of the bucket which you are copying the local
-            file to. Defaults to ``None``. Please note that you must follow the
-            ``/`` convention when using subfolders.
+            Folder to upload to within the S3 bucket.
+
+        Raises
+        ------
+        DBError
+            If there is a problem executing the COPY command, a connection
+            has not been initalized, or credentials are wrong.
         """
-        if copy_options is None:
-            copy_options = []
-
-        # generate the actual splitting of the files
-        # We need to check if IGNOREHEADER is set as this can cause issues.
-        ignore_header = get_ignoreheader_number(copy_options)
-        p = Path(local_file)
-        if p.is_dir():
-            upload_list = [str(x) for x in p.glob("**/*") if x.is_file()]
+        # split the file
+        if splits > 1:
+            split_files = split_file(local_file, splits)
         else:
-            upload_list = split_file(
-                local_file, local_file, splits=splits, ignore_header=ignore_header
-            )
+            split_files = [local_file]
 
-        if splits > 1 and ignore_header > 0:
-            # remove the IGNOREHEADER from copy_options
-            logger.info("Removing the IGNOREHEADER option as split is enabled")
-            copy_options = [
-                i for i in copy_options if not i.startswith("IGNOREHEADER ")
-            ]
-
+        # compress if specified
         if compress:
-            copy_options.append("GZIP")
-            upload_list = compress_file_list(upload_list)
+            split_files = compress_file_list(split_files)
 
-        # copy files to S3
-        s3_upload_list = self.upload_list_to_s3(upload_list, s3_bucket, s3_folder)
-        if p.is_dir():
-            if s3_folder:
-                bucket = Path(s3_bucket)
-                folder = Path(s3_folder)
-                tmp_load_path = str(bucket / folder)
-            else:
-                tmp_load_path = s3_bucket
-        else:
-            tmp_load_path = s3_upload_list[0].split(os.extsep)[0]
+        # upload files to S3
+        s3_paths = []
+        for file in split_files:
+            s3_path = self.upload_to_s3(file, s3_bucket, s3_folder)
+            s3_paths.append(s3_path)
 
-        # execute Redshift COPY
-        self.copy(table_name, "s3://" + tmp_load_path, delim, copy_options=copy_options)
+        # copy into redshift
+        self.copy(table_name, s3_paths[0], delim, copy_options)
 
-        # delete file from S3 (if set to do so)
+        # delete from S3 if specified
         if delete_s3_after:
-            self.delete_list_from_s3(s3_upload_list)
+            for s3_path in s3_paths:
+                self.delete_from_s3(s3_path)
+
+    def unload(self, query, s3path, unload_options=None):
+        """Execute the UNLOAD command to export data from Redshift to S3.
+
+        Parameters
+        ----------
+        query : str
+            The query to be unloaded.
+
+        s3path : str
+            S3 path to write the unloaded files to.
+
+        unload_options : list, optional
+            List of strings of unload options to provide to the ``UNLOAD`` command.
+
+        Raises
+        ------
+        DBError
+            If there is a problem executing the UNLOAD command, a connection
+            has not been initalized, or credentials are wrong.
+        """
+        if not self._is_connected():
+            raise DBError("No Redshift connection object is present.")
+
+        if unload_options is None:
+            unload_options = []
+
+        unload_options_text = " ".join(unload_options)
+        base_unload_string = (
+            "UNLOAD ('{0}') TO '{1}' "
+            "CREDENTIALS '{2}' "
+            "{3};"
+        )
+        try:
+            sql = base_unload_string.format(
+                query, s3path, self._credentials_string(), unload_options_text
+            )
+            self.execute(sql, commit=True)
+
+        except Exception as e:
+            logger.error("Error running UNLOAD on Redshift. err: %s", e)
+            raise DBError("Error running UNLOAD on Redshift.") from e
 
     def unload_and_copy(
         self,
@@ -358,101 +363,42 @@ class Redshift(S3, Database):
         parallel_off=False,
         unload_options=None,
     ):
-        """Unload data from Redshift.
-
-        With options to write to a flat file and store on S3.
+        """Unload data from Redshift into S3, with options to save locally.
 
         Parameters
         ----------
         query : str
-            A query to be unloaded to S3. A ``SELECT`` query
+            The query to be unloaded.
 
         s3_bucket : str
-            The AWS S3 bucket where the data from the query will be unloaded.
+            S3 bucket to upload to.
 
         s3_folder : str, optional
-            The AWS S3 folder of the bucket where the data from the query will
-            be unloaded. Defaults to ``None``. Please note that you must follow
-            the ``/`` convention when using subfolders.
+            Folder to upload to within the S3 bucket.
 
         raw_unload_path : str, optional
-            The local path where the files will be copied to. Defaults to the current working
-            directory (``os.getcwd()``).
+            Path to save the raw unloaded files to.
 
-        export_path : str, optional
-            If a ``export_path`` is provided, function will concatenate and write the unloaded
-            files to this path as a single file. If your file is very large you may not want to
-            use this option.
+        export_path : str or bool, optional
+            Path to save the concatenated data to. If True, uses the
+            raw_unload_path as the export path.
 
         delim : str, optional
-            Delimiter for unloading and file writing. Defaults to a comma. If None, this option will be ignored
+            Delimiter to be used in the ``UNLOAD`` command. Defaults to ,.
 
         delete_s3_after : bool, optional
-            Delete the files from S3 after unloading. Defaults to True.
+            Whether to delete the files from S3 after download.
 
         parallel_off : bool, optional
-            Unload data to S3 as a single file. Defaults to False.
-            Not recommended as it will decrease speed.
+            Whether to disable parallel unloading.
 
         unload_options : list, optional
-            A list of unload options that should be appended to the UNLOAD
-            statement.
+            List of strings of unload options to provide to the ``UNLOAD`` command.
 
-        Raises
-        ------
-        Exception
-            If no files are generated from the unload.
-            If the column names from the query cannot be retrieved.
-            If there is a issue with the execution of any of the queries.
-        """
-        # data = []
-        s3path = self._generate_unload_path(s3_bucket, s3_folder)
-
-        # configure unload options
-        if unload_options is None:
-            unload_options = []
-        if delim:
-            unload_options.append(f"DELIMITER '{delim}'")
-        if parallel_off:
-            unload_options.append("PARALLEL OFF")
-
-        # run unload
-        self.unload(query=query, s3path=s3path, unload_options=unload_options)
-
-        # parse unloaded files
-        s3_download_list = self._unload_generated_files()
-        if s3_download_list is None:
-            logger.error("No files generated from unload")
-            raise DBError("No files generated from unload")
-
-        columns = self._get_column_names(query)
-        if columns is None:
-            logger.error("Unable to retrieve column names from exported data")
-            raise DBError("Unable to retrieve column names from exported data.")
-
-        # download files locally with same name
-        local_list = self.download_list_from_s3(s3_download_list, raw_unload_path)
-        if export_path:
-            write_file([columns], delim, export_path)  # column
-            concatenate_files(local_list, export_path)  # data
-
-        # delete unloaded files from s3
-        if delete_s3_after:
-            self.delete_list_from_s3(s3_download_list)
-
-    def unload(self, query, s3path, unload_options=None):
-        """Execute the UNLOAD command to export a query from Redshift to S3.
-
-        Parameters
-        ----------
-        query : str
-            A query to be unloaded to S3.
-
-        s3path : str
-            S3 path for the output files.
-
-        unload_options : list
-            List of string unload options.
+        Returns
+        -------
+        list
+            List of files that were downloaded from S3.
 
         Raises
         ------
@@ -460,76 +406,51 @@ class Redshift(S3, Database):
             If there is a problem executing the UNLOAD command, a connection
             has not been initalized, or credentials are wrong.
         """
-        if not self._is_connected():
-            raise DBError("No Redshift connection object is present")
+        if unload_options is None:
+            unload_options = []
 
-        unload_options = unload_options or []
-        unload_options_text = " ".join(unload_options)
-        base_unload_string = (
-            "UNLOAD ('{0}')\n" "TO '{1}'\n" "CREDENTIALS '{2}'\n" "{3};"
-        )
+        # add default options
+        if parallel_off:
+            unload_options.append("PARALLEL OFF")
+        unload_options.extend([
+            "HEADER",
+            "ADDQUOTES",
+            f"DELIMITER '{delim}'",
+            "ESCAPE",
+            "GZIP"
+        ])
 
-        try:
-            sql = base_unload_string.format(
-                query.replace("'", r"\'"),
-                s3path,
-                self._credentials_string(),
-                unload_options_text,
-            )
-            self.execute(sql, commit=True)
-        except Exception as e:
-            logger.error("Error running UNLOAD on redshift. err: %s", e)
-            raise DBError("Error running UNLOAD on redshift.") from e
+        # generate s3 path
+        s3_path = f"s3://{s3_bucket}"
+        if s3_folder:
+            s3_path = f"{s3_path}/{s3_folder}"
+        s3_path = f"{s3_path}/unload_"
 
-    def _get_column_names(self, query):
-        """Get a list of column names from the supplied query.
+        # unload to S3
+        self.unload(query, s3_path, unload_options)
 
-        Parameters
-        ----------
-        query : str
-            A query (or table name) to be unloaded to S3.
+        # download files if requested
+        downloaded_files = []
+        if raw_unload_path or export_path:
+            # list files in S3
+            s3_files = self.list_bucket(s3_bucket, s3_folder)
+            
+            # download each file
+            for s3_file in s3_files:
+                local_path = write_file(raw_unload_path, s3_file)
+                downloaded_files.append(local_path)
 
-        Returns
-        -------
-        list
-            List of column names. Returns None if no columns were retrieved.
-        """
-        try:
-            logger.info("Retrieving column names")
-            sql = f"SELECT * FROM ({query}) WHERE 1 = 0"
-            self.execute(sql)
-            results = list(self.cursor.description)
-            if len(results) > 0:
-                return [result[0].strip() for result in results]
-            else:
-                return None
-        except Exception:
-            logger.error("Error retrieving column names")
-            raise
+            # concatenate if requested
+            if export_path:
+                if export_path is True:
+                    export_path = raw_unload_path
+                concatenate_files(downloaded_files, export_path)
 
-    def _unload_generated_files(self):
-        """Get a list of files generated by the unload process.
+        # delete from S3 if requested
+        if delete_s3_after:
+            self.delete_from_s3(s3_path)
 
-        Returns
-        -------
-        list
-            List of S3 file names
-        """
-        sql = (
-            "SELECT path FROM stl_unload_log "
-            "WHERE query = pg_last_query_id() ORDER BY path"
-        )
-        try:
-            logger.info("Getting list of unloaded files")
-            self.execute(sql)
-            results = self.cursor.fetchall()
-            if len(results) > 0:
-                return [result[0].strip() for result in results]
-            else:
-                return None
-        except Exception:
-            logger.error("Error retrieving unloads generated files")
-            raise
+        return downloaded_files
 
     def insert_dataframe_to_table(
         self,

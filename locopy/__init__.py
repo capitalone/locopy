@@ -16,8 +16,9 @@
 """A Python library to assist with ETL processing."""
 
 from locopy.database import Database
+from locopy.postgres import PostgreSQL
 from locopy.redshift import Redshift
 from locopy.s3 import S3
 from locopy.snowflake import Snowflake
 
-__all__ = ["S3", "Database", "Redshift", "Snowflake"]
+__all__ = ["S3", "Database", "PostgreSQL", "Redshift", "Snowflake"]

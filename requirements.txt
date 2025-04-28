@@ -36,3 +36,5 @@ tzdata==2025.2
     # via pandas
 urllib3==2.4.0
     # via botocore
+pg8000
+psycopg2
