@@ -221,7 +221,7 @@ class Redshift(S3, Database):
         if delim:
             copy_options = [f"DELIMITER '{delim}'", *copy_options]
         copy_options_text = combine_copy_options(copy_options)
-        base_copy_string = "COPY {0} FROM '{1}' " "CREDENTIALS '{2}' " "{3};"
+        base_copy_string = "COPY {0} FROM '{1}' CREDENTIALS '{2}' {3};"
         try:
             sql = base_copy_string.format(
                 table_name, s3path, self._credentials_string(), copy_options_text
@@ -465,9 +465,7 @@ class Redshift(S3, Database):
 
         unload_options = unload_options or []
         unload_options_text = " ".join(unload_options)
-        base_unload_string = (
-            "UNLOAD ('{0}')\n" "TO '{1}'\n" "CREDENTIALS '{2}'\n" "{3};"
-        )
+        base_unload_string = "UNLOAD ('{0}')\nTO '{1}'\nCREDENTIALS '{2}'\n{3};"
 
         try:
             sql = base_unload_string.format(

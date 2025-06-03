@@ -75,9 +75,7 @@ def test_snowflake_execute_multiple_rows(dbapi):
     expected = pd.DataFrame({"field_1": [1, 2], "field_2": [1, 2]})
     with locopy.Snowflake(dbapi=dbapi, **CREDS_DICT) as test:
         test.execute(
-            "SELECT 1 AS field_1, 1 AS field_2 "
-            "UNION "
-            "SELECT 2 AS field_1, 2 AS field_2"
+            "SELECT 1 AS field_1, 1 AS field_2 UNION SELECT 2 AS field_1, 2 AS field_2"
         )
         df = test.to_dataframe()
         df.columns = [c.lower() for c in df.columns]
@@ -182,12 +180,12 @@ def test_copy_file_format_name(dbapi):
             "CREATE OR REPLACE TABLE actual_table (a int, b varchar,c timestamp)"
         )
         test.execute(
-            f'CREATE OR REPLACE FILE FORMAT {CREDS_DICT["database"]}.{CREDS_DICT["schema"]}.my_parquet_format TYPE = PARQUET USE_LOGICAL_TYPE = TRUE;'
+            f"CREATE OR REPLACE FILE FORMAT {CREDS_DICT['database']}.{CREDS_DICT['schema']}.my_parquet_format TYPE = PARQUET USE_LOGICAL_TYPE = TRUE;"
         )
         test.copy(
             "temp_table",
             "@~/staged/mock_dataframe.parquet",
-            file_format_name=f'{CREDS_DICT["database"]}.{CREDS_DICT["schema"]}.my_parquet_format',
+            file_format_name=f"{CREDS_DICT['database']}.{CREDS_DICT['schema']}.my_parquet_format",
         )
         test.execute(
             "INSERT INTO actual_table (SELECT $1:a,$1:b,$1:c FROM temp_table);"

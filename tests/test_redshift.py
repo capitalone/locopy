@@ -62,7 +62,7 @@ def test_add_default_copy_options():
 def test_combine_copy_options():
     assert locopy.redshift.combine_copy_options(
         locopy.redshift.add_default_copy_options()
-    ) == ("DATEFORMAT 'auto' COMPUPDATE " "ON TRUNCATECOLUMNS")
+    ) == ("DATEFORMAT 'auto' COMPUPDATE ON TRUNCATECOLUMNS")
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
@@ -141,14 +141,14 @@ def test_copy_parquet(mock_execute, mock_session, credentials, dbapi):
         r = Redshift(profile=PROFILE, dbapi=dbapi, **credentials)
         r.connect()
         r.copy("table", s3path="path", delim=None, copy_options=["PARQUET"])
-        test_sql = "COPY {} FROM '{}' " "CREDENTIALS '{}' " "{};".format(
+        test_sql = "COPY {} FROM '{}' CREDENTIALS '{}' {};".format(
             "table", "path", r._credentials_string(), "PARQUET"
         )
         assert mock_execute.called_with(test_sql, commit=True)
         mock_execute.reset_mock()
         mock_session.reset_mock()
         r.copy("table", s3path="path", delim=None)
-        test_sql = "COPY {} FROM '{}' " "CREDENTIALS '{}' " "{};".format(
+        test_sql = "COPY {} FROM '{}' CREDENTIALS '{}' {};".format(
             "table",
             "path",
             r._credentials_string(),
@@ -709,7 +709,7 @@ def test_unload_and_copy(
 
         assert mock_unload_generated_files.called
         assert not mock_write.called, (
-            "write_file should only be called " "if export_path != False"
+            "write_file should only be called if export_path != False"
         )
         mock_generate_unload_path.assert_called_with("s3_bucket", None)
         mock_get_col_names.assert_called_with("query")
