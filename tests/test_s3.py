@@ -112,13 +112,13 @@ def test_get_credentials(mock_cred, aws_creds):
     s = locopy.S3()
     mock_cred.return_value = aws_creds
     cred_string = s._credentials_string()
-    expected = "aws_access_key_id=access;" "aws_secret_access_key=secret;" "token=token"
+    expected = "aws_access_key_id=access;aws_secret_access_key=secret;token=token"
     assert cred_string == expected
 
     aws_creds.token = None
     mock_cred.return_value = aws_creds
     cred_string = s._credentials_string()
-    expected = "aws_access_key_id=access;" "aws_secret_access_key=secret"
+    expected = "aws_access_key_id=access;aws_secret_access_key=secret"
     assert cred_string == expected
 
     mock_cred.side_effect = S3CredentialsError("Exception")
