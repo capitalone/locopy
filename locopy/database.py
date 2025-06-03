@@ -17,6 +17,7 @@
 """Database Module."""
 
 import time
+from typing import Dict, Generator, List, Optional, Union
 
 import pandas
 import polars
@@ -69,7 +70,12 @@ class Database:
         Database credentials are not provided, valid, or both kwargs and a YAML config was provided.
     """
 
-    def __init__(self, dbapi, config_yaml=None, **kwargs):
+    def __init__(
+        self,
+        dbapi: object,
+        config_yaml: Optional[str] = None,
+        **kwargs: Union[str, int],
+    ) -> None:
         self.dbapi = dbapi
         self.connection = kwargs or {}
         self.conn = None
@@ -82,7 +88,7 @@ class Database:
         if config_yaml:
             self.connection = read_config_yaml(config_yaml)
 
-    def connect(self):
+    def connect(self) -> None:
         """Create a connection to a database.
 
         Sets the values of the ``conn`` and ``cursor`` attributes.
@@ -99,7 +105,7 @@ class Database:
             logger.error("Error connecting to the database. err: %s", e)
             raise DBError("Error connecting to the database.") from e
 
-    def disconnect(self):
+    def disconnect(self) -> None:
         """Terminate the connection.
 
         Closes the values of the ``conn`` and ``cursor`` attributes.
@@ -122,7 +128,14 @@ class Database:
         else:
             logger.info("No connection to close")
 
-    def execute(self, sql, commit=True, params=(), many=False, verbose=True):
+    def execute(
+        self,
+        sql: str,
+        commit: bool = True,
+        params: tuple = (),
+        many: bool = False,
+        verbose: bool = True,
+    ) -> None:
         """Execute some sql against the connection.
 
         Parameters
@@ -176,7 +189,7 @@ class Database:
         else:
             raise DBError("Cannot execute SQL on a closed connection.")
 
-    def column_names(self):
+    def column_names(self) -> List[str]:
         """Pull column names out of the cursor description.
 
         Depending on the DBAPI, it could return column names as bytes: ``b'column_name'``.
@@ -191,7 +204,9 @@ class Database:
         except Exception:
             return [column[0].lower() for column in self.cursor.description]
 
-    def to_dataframe(self, df_type="pandas", size=None):
+    def to_dataframe(
+        self, df_type: str = "pandas", size: Optional[int] = None
+    ) -> Optional[Union[pandas.DataFrame, polars.DataFrame]]:
         """Return a dataframe of the last query results.
 
         Parameters
@@ -229,7 +244,7 @@ class Database:
         elif df_type == "polars":
             return polars.DataFrame(fetched, schema=columns, orient="row")
 
-    def to_dict(self):
+    def to_dict(self) -> Generator[Dict[str, Union[str, int, float]], None, None]:
         """Generate dictionaries of rows.
 
         Yields
@@ -241,7 +256,7 @@ class Database:
         for row in self.cursor:
             yield dict(zip(columns, row))
 
-    def _is_connected(self):
+    def _is_connected(self) -> bool:
         """Check the connection and cursor class arrtributes are initalized.
 
         Returns

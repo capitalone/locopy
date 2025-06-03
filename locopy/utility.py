@@ -27,6 +27,7 @@ import threading
 from collections import OrderedDict
 from functools import singledispatch
 from itertools import cycle
+from typing import Dict, List, Union
 
 import pandas as pd
 import polars as pl
@@ -45,7 +46,12 @@ from locopy.logger import INFO, get_logger
 logger = get_logger(__name__, INFO)
 
 
-def write_file(data, delimiter, filepath, mode="w"):
+def write_file(
+    data: List[List[Union[str, int, float]]],
+    delimiter: str,
+    filepath: str,
+    mode: str = "w",
+) -> None:
     """Write data to a file.
 
     Parameters
@@ -73,7 +79,7 @@ def write_file(data, delimiter, filepath, mode="w"):
         logger.error("Unable to write file to %s due to err: %s", filepath, e)
 
 
-def compress_file(input_file, output_file):
+def compress_file(input_file: str, output_file: str) -> None:
     """Compresses a file (gzip).
 
     Parameters
@@ -92,7 +98,7 @@ def compress_file(input_file, output_file):
         raise CompressionError("Error compressing the file.") from e
 
 
-def compress_file_list(file_list):
+def compress_file_list(file_list: List[str]) -> List[str]:
     """Compresses a list of files (gzip) and clean up the old files.
 
     Parameters
@@ -114,7 +120,9 @@ def compress_file_list(file_list):
     return file_list
 
 
-def split_file(input_file, output_file, splits=1, ignore_header=0):
+def split_file(
+    input_file: str, output_file: str, splits: int = 1, ignore_header: int = 0
+) -> List[str]:
     """Split a file into equal files by lines.
 
     For example: ``myinputfile.txt`` will be split into ``myoutputfile.txt.01``
@@ -181,7 +189,9 @@ def split_file(input_file, output_file, splits=1, ignore_header=0):
         raise LocopySplitError("Error splitting the file.") from e
 
 
-def concatenate_files(input_list, output_file, remove=True):
+def concatenate_files(
+    input_list: List[str], output_file: str, remove: bool = True
+) -> None:
     """Concatenate a list of files into one file.
 
     Parameters
@@ -215,7 +225,7 @@ def concatenate_files(input_list, output_file, remove=True):
         raise LocopyConcatError("Error concateneating files.") from e
 
 
-def read_config_yaml(config_yaml):
+def read_config_yaml(config_yaml: Union[str, object]) -> Dict[str, Union[str, int]]:
     """Read a configuration YAML file.
 
     Populate the database connection attributes, and validate required ones.
@@ -498,7 +508,7 @@ class ProgressPercentage:
             sys.stdout.flush()
 
 
-def get_ignoreheader_number(options):
+def get_ignoreheader_number(options: List[str]) -> int:
     """Return the ``number_rows`` from ``IGNOREHEADER [ AS ] number_rows``.
 
     This doesn't validate that the ``AS`` is valid.
