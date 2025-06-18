@@ -74,9 +74,7 @@ def test_redshift_execute_multiple_rows(dbapi):
     expected = pd.DataFrame({"field_1": [1, 2], "field_2": [1, 2]})
     with locopy.Redshift(dbapi=dbapi, **CREDS_DICT) as test:
         test.execute(
-            "SELECT 1 AS field_1, 1 AS field_2 "
-            "UNION "
-            "SELECT 2 AS field_1, 2 AS field_2"
+            "SELECT 1 AS field_1, 1 AS field_2 UNION SELECT 2 AS field_1, 2 AS field_2"
         )
         df = test.to_dataframe()
 
