@@ -62,7 +62,7 @@ def test_add_default_copy_options():
 def test_combine_copy_options():
     assert locopy.redshift.combine_copy_options(
         locopy.redshift.add_default_copy_options()
-    ) == ("DATEFORMAT 'auto' COMPUPDATE " "ON TRUNCATECOLUMNS")
+    ) == ("DATEFORMAT 'auto' COMPUPDATE ON TRUNCATECOLUMNS")
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
@@ -141,20 +141,20 @@ def test_copy_parquet(mock_execute, mock_session, credentials, dbapi):
         r = Redshift(profile=PROFILE, dbapi=dbapi, **credentials)
         r.connect()
         r.copy("table", s3path="path", delim=None, copy_options=["PARQUET"])
-        test_sql = "COPY {} FROM '{}' " "CREDENTIALS '{}' " "{};".format(
+        test_sql = "COPY {} FROM '{}' CREDENTIALS '{}' {};".format(
             "table", "path", r._credentials_string(), "PARQUET"
         )
-        assert mock_execute.called_with(test_sql, commit=True)
+        mock_execute.assert_called_with(test_sql, commit=True)
         mock_execute.reset_mock()
         mock_session.reset_mock()
         r.copy("table", s3path="path", delim=None)
-        test_sql = "COPY {} FROM '{}' " "CREDENTIALS '{}' " "{};".format(
+        test_sql = "COPY {} FROM '{}' CREDENTIALS '{}' {};".format(
             "table",
             "path",
             r._credentials_string(),
-            locopy.redshift.add_default_copy_options(),
+            " ".join(locopy.redshift.add_default_copy_options()),
         )
-        assert mock_execute.called_with(test_sql, commit=True)
+        mock_execute.assert_called_with(test_sql, commit=True)
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
@@ -264,9 +264,12 @@ def test_load_and_copy(
             "|",
             copy_options=["SOME OPTION", "GZIP"],
         )
-        assert mock_s3_delete.called_with("s3_bucket", "local_file.0.gz")
-        assert mock_s3_delete.called_with("s3_bucket", "local_file.1.gz")
-        assert mock_s3_delete.called_with("s3_bucket", "local_file.2.gz")
+        calls = [
+            mock.call("s3_bucket", "local_file.0.gz"),
+            mock.call("s3_bucket", "local_file.1.gz"),
+            mock.call("s3_bucket", "local_file.2.gz"),
+        ]
+        mock_s3_delete.assert_has_calls(calls)
 
         reset_mocks()
         mock_split_file.return_value = ["/path/local_file"]
@@ -375,10 +378,13 @@ def test_load_and_copy(
             "|",
             copy_options=["SOME OPTION"],
         )
-        assert mock_s3_delete.called_with("s3_bucket", "test/local_file.0")
-        assert mock_s3_delete.called_with("s3_bucket", "test/local_file.1")
-        assert mock_s3_delete.called_with("s3_bucket", "test/local_file.2")
 
+        calls = [
+            mock.call("s3_bucket", "test/local_file.0"),
+            mock.call("s3_bucket", "test/local_file.1"),
+            mock.call("s3_bucket", "test/local_file.2"),
+        ]
+        mock_s3_delete.assert_has_calls(calls)
         # with a s3_folder included , splits, and gzip
         reset_mocks()
         mock_split_file.return_value = [
@@ -546,9 +552,12 @@ def test_load_and_copy_split_and_header(
         mock_rs_copy.assert_called_with(
             "table_name", "s3://s3_bucket/local_file", "|", copy_options=["GZIP"]
         )
-        assert mock_s3_delete.called_with("s3_bucket", "local_file.0.gz")
-        assert mock_s3_delete.called_with("s3_bucket", "local_file.1.gz")
-        assert mock_s3_delete.called_with("s3_bucket", "local_file.2.gz")
+        calls = [
+            mock.call("s3_bucket", "local_file.0.gz"),
+            mock.call("s3_bucket", "local_file.1.gz"),
+            mock.call("s3_bucket", "local_file.2.gz"),
+        ]
+        mock_s3_delete.assert_has_calls(calls)
 
         # split and ignore
         reset_mocks()
@@ -584,9 +593,12 @@ def test_load_and_copy_split_and_header(
         mock_rs_copy.assert_called_with(
             "table_name", "s3://s3_bucket/local_file", "|", copy_options=["GZIP"]
         )
-        assert mock_s3_delete.called_with("s3_bucket", "local_file.0.gz")
-        assert mock_s3_delete.called_with("s3_bucket", "local_file.1.gz")
-        assert mock_s3_delete.called_with("s3_bucket", "local_file.2.gz")
+        calls = [
+            mock.call("s3_bucket", "local_file.0.gz"),
+            mock.call("s3_bucket", "local_file.1.gz"),
+            mock.call("s3_bucket", "local_file.2.gz"),
+        ]
+        mock_s3_delete.assert_has_calls(calls)
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
@@ -669,7 +681,7 @@ def test_unload_and_copy(
     mock_unload_generated_files,
     mock_get_col_names,
     mock_download_list_from_s3,
-    mock_write,
+    mock_write_file,
     mock_delete_list_from_s3,
     mock_concat,
     credentials,
@@ -679,8 +691,9 @@ def test_unload_and_copy(
         mock_session.reset_mock()
         mock_generate_unload_path.reset_mock()
         mock_unload_generated_files.reset_mock()
+        mock_unload.reset_mock()
         mock_get_col_names.reset_mock()
-        mock_write.reset_mock()
+        mock_write_file.reset_mock()
         mock_download_list_from_s3.reset_mock()
         mock_delete_list_from_s3.reset_mock()
         mock_concat.reset_mock()
@@ -708,8 +721,8 @@ def test_unload_and_copy(
         )
 
         assert mock_unload_generated_files.called
-        assert not mock_write.called, (
-            "write_file should only be called " "if export_path != False"
+        assert not mock_write_file.called, (
+            "write_file should only be called if export_path != False"
         )
         mock_generate_unload_path.assert_called_with("s3_bucket", None)
         mock_get_col_names.assert_called_with("query")
@@ -806,8 +819,8 @@ def test_unload_and_copy(
         mock_concat.assert_called_with(
             mock_download_list_from_s3.return_value, "my_output.csv"
         )
-        assert mock_write.called
-        assert mock_delete_list_from_s3.called_with("s3_bucket", "my_output.csv")
+        assert mock_write_file.called
+        mock_delete_list_from_s3.assert_called_with(["/dummy_file"])
 
         ##
         # Test 6: raw_unload_path check
@@ -863,7 +876,7 @@ def test_get_column_names(mock_session, credentials, dbapi):
         r.connect()
         assert r._get_column_names("query") is None
         sql = "SELECT * FROM (query) WHERE 1 = 0"
-        assert mock_connect.return_value.cursor.return_value.execute.called_with(
+        mock_connect.return_value.cursor.return_value.execute.assert_called_with(
             sql, ()
         )
 

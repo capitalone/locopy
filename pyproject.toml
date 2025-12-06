@@ -6,7 +6,7 @@ authors = [
   { name="Faisal Dosani", email="faisal.dosani@capitalone.com" },
 ]
 license = {text = "Apache Software License"}
-dependencies = ["boto3<=1.38.26,>=1.9.92", "PyYAML<=6.0.2,>=5.1", "pandas<=2.2.3,>=1.5.0", "numpy<=2.2.6,>=1.22.0", "polars>=0.20.0", "pyarrow>=10.0.1"]
+dependencies = ["boto3<=1.40.0,>=1.9.92", "PyYAML<=6.0.2,>=5.1", "pandas<=2.3.1,>=1.5.0", "numpy<=2.2.6,>=1.22.0", "polars>=0.20.0", "pyarrow>=10.0.1"]
 
 requires-python = ">=3.9.0"
 classifiers = [
@@ -19,6 +19,7 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 
 dynamic = ["version"]
@@ -40,7 +41,7 @@ pg8000 = ["pg8000>=1.13.1"]
 snowflake = ["snowflake-connector-python[pandas]>=2.1.2"]
 docs = ["sphinx", "sphinx_rtd_theme"]
 tests = ["hypothesis", "pytest", "pytest-cov"]
-qa = ["pre-commit", "ruff==0.5.7"]
+qa = ["pre-commit", "ruff==0.11.12"]
 build = ["build", "twine", "wheel"]
 edgetest = ["edgetest", "edgetest-conda"]
 dev = ["locopy[tests]", "locopy[docs]", "locopy[qa]", "locopy[build]"]
@@ -117,4 +118,9 @@ upgrade = [
 	"PyYAML",
 	"pandas",
 	"numpy",
+]
+
+[tool.pytest.ini_options]
+markers = [
+    "integration",
 ]
