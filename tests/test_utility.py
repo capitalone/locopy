@@ -491,7 +491,7 @@ def test_find_column_type_polars():
         "j": "int",
         "k": "date",
         "l": "timestamp",
-        "m": "time",
+        "m": "timestamp",
     }
 
     output_text_redshift = {
@@ -507,7 +507,7 @@ def test_find_column_type_polars():
         "j": "int",
         "k": "date",
         "l": "timestamp",
-        "m": "time",
+        "m": "timestamp",
     }
     assert find_column_type(input_text, "snowflake") == output_text_snowflake
     assert find_column_type(input_text, "redshift") == output_text_redshift
