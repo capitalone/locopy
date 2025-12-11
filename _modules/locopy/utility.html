@@ -5,13 +5,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.utility &mdash; locopy 0.6.5 documentation</title>
+  <title>locopy.utility &mdash; locopy 0.6.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
-      <script src="../../_static/documentation_options.js?v=d7a12d57"></script>
-      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/documentation_options.js?v=e059a73d"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -105,6 +105,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">singledispatch</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cycle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">polars</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
@@ -125,7 +126,12 @@
 
 <div class="viewcode-block" id="write_file">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.write_file">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">write_file</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">delimiter</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_file</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]],</span>
+    <span class="n">delimiter</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Write data to a file.</span>
 
 <span class="sd">    Parameters</span>
@@ -156,7 +162,7 @@
 
 <div class="viewcode-block" id="compress_file">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.compress_file">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compress_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compress_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compresses a file (gzip).</span>
 
 <span class="sd">    Parameters</span>
@@ -178,7 +184,7 @@
 
 <div class="viewcode-block" id="compress_file_list">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.compress_file_list">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compress_file_list</span><span class="p">(</span><span class="n">file_list</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compress_file_list</span><span class="p">(</span><span class="n">file_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Compresses a list of files (gzip) and clean up the old files.</span>
 
 <span class="sd">    Parameters</span>
@@ -203,7 +209,9 @@
 
 <div class="viewcode-block" id="split_file">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.split_file">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">split_file</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ignore_header</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">split_file</span><span class="p">(</span>
+    <span class="n">input_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">splits</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ignore_header</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Split a file into equal files by lines.</span>
 
 <span class="sd">    For example: ``myinputfile.txt`` will be split into ``myoutputfile.txt.01``</span>
@@ -273,7 +281,9 @@
 
 <div class="viewcode-block" id="concatenate_files">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.concatenate_files">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">concatenate_files</span><span class="p">(</span><span class="n">input_list</span><span class="p">,</span> <span class="n">output_file</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">concatenate_files</span><span class="p">(</span>
+    <span class="n">input_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">output_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">remove</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Concatenate a list of files into one file.</span>
 
 <span class="sd">    Parameters</span>
@@ -310,7 +320,7 @@
 
 <div class="viewcode-block" id="read_config_yaml">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.read_config_yaml">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">read_config_yaml</span><span class="p">(</span><span class="n">config_yaml</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_config_yaml</span><span class="p">(</span><span class="n">config_yaml</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">object</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Read a configuration YAML file.</span>
 
 <span class="sd">    Populate the database connection attributes, and validate required ones.</span>
@@ -608,7 +618,7 @@
 
 <div class="viewcode-block" id="get_ignoreheader_number">
 <a class="viewcode-back" href="../../api/locopy.utility.html#locopy.utility.get_ignoreheader_number">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_ignoreheader_number</span><span class="p">(</span><span class="n">options</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_ignoreheader_number</span><span class="p">(</span><span class="n">options</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the ``number_rows`` from ``IGNOREHEADER [ AS ] number_rows``.</span>
 
 <span class="sd">    This doesn&#39;t validate that the ``AS`` is valid.</span>

@@ -5,13 +5,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.redshift &mdash; locopy 0.6.5 documentation</title>
+  <title>locopy.redshift &mdash; locopy 0.6.6 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
-      <script src="../../_static/documentation_options.js?v=d7a12d57"></script>
-      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/documentation_options.js?v=e059a73d"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -312,7 +312,7 @@
         <span class="k">if</span> <span class="n">delim</span><span class="p">:</span>
             <span class="n">copy_options</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;DELIMITER &#39;</span><span class="si">{</span><span class="n">delim</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">copy_options</span><span class="p">]</span>
         <span class="n">copy_options_text</span> <span class="o">=</span> <span class="n">combine_copy_options</span><span class="p">(</span><span class="n">copy_options</span><span class="p">)</span>
-        <span class="n">base_copy_string</span> <span class="o">=</span> <span class="s2">&quot;COPY </span><span class="si">{0}</span><span class="s2"> FROM &#39;</span><span class="si">{1}</span><span class="s2">&#39; &quot;</span> <span class="s2">&quot;CREDENTIALS &#39;</span><span class="si">{2}</span><span class="s2">&#39; &quot;</span> <span class="s2">&quot;</span><span class="si">{3}</span><span class="s2">;&quot;</span>
+        <span class="n">base_copy_string</span> <span class="o">=</span> <span class="s2">&quot;COPY </span><span class="si">{0}</span><span class="s2"> FROM &#39;</span><span class="si">{1}</span><span class="s2">&#39; CREDENTIALS &#39;</span><span class="si">{2}</span><span class="s2">&#39; </span><span class="si">{3}</span><span class="s2">;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">sql</span> <span class="o">=</span> <span class="n">base_copy_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">table_name</span><span class="p">,</span> <span class="n">s3path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_credentials_string</span><span class="p">(),</span> <span class="n">copy_options_text</span>
@@ -565,9 +565,7 @@
 
         <span class="n">unload_options</span> <span class="o">=</span> <span class="n">unload_options</span> <span class="ow">or</span> <span class="p">[]</span>
         <span class="n">unload_options_text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">unload_options</span><span class="p">)</span>
-        <span class="n">base_unload_string</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;UNLOAD (&#39;</span><span class="si">{0}</span><span class="s2">&#39;)</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="s2">&quot;TO &#39;</span><span class="si">{1}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="s2">&quot;CREDENTIALS &#39;</span><span class="si">{2}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="s2">&quot;</span><span class="si">{3}</span><span class="s2">;&quot;</span>
-        <span class="p">)</span>
+        <span class="n">base_unload_string</span> <span class="o">=</span> <span class="s2">&quot;UNLOAD (&#39;</span><span class="si">{0}</span><span class="s2">&#39;)</span><span class="se">\n</span><span class="s2">TO &#39;</span><span class="si">{1}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">CREDENTIALS &#39;</span><span class="si">{2}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="si">{3}</span><span class="s2">;&quot;</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">sql</span> <span class="o">=</span> <span class="n">base_unload_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>

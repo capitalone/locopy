@@ -3,5 +3,5 @@ locopy.database module
 
 .. automodule:: locopy.database
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

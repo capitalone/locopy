@@ -3,5 +3,5 @@ locopy.logger module
 
 .. automodule:: locopy.logger
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
