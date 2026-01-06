@@ -20,5 +20,5 @@ Module contents
 
 .. automodule:: locopy
    :members:
-   :show-inheritance:
    :undoc-members:
+   :show-inheritance:

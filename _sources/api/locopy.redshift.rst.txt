@@ -3,5 +3,5 @@ locopy.redshift module
 
 .. automodule:: locopy.redshift
    :members:
-   :show-inheritance:
    :undoc-members:
+   :show-inheritance:

@@ -3,5 +3,5 @@ locopy.s3 module
 
 .. automodule:: locopy.s3
    :members:
-   :show-inheritance:
    :undoc-members:
+   :show-inheritance:

@@ -3,5 +3,5 @@ locopy.snowflake module
 
 .. automodule:: locopy.snowflake
    :members:
-   :show-inheritance:
    :undoc-members:
+   :show-inheritance:

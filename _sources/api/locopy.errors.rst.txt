@@ -3,5 +3,5 @@ locopy.errors module
 
 .. automodule:: locopy.errors
    :members:
-   :show-inheritance:
    :undoc-members:
+   :show-inheritance:
