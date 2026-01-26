@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: develop
+          ref: main
       - name: Copy files for locopy
         id: copy-files
         run: |
@@ -26,6 +26,6 @@ jobs:
         uses: edgetest-dev/run-edgetest-action@v1.6
         with:
           edgetest-flags: '-c pyproject.toml --export'
-          base-branch: 'develop'
+          base-branch: 'main'
           skip-pr: 'false'
           add-paths: 'pyproject.toml, requirements.txt'
