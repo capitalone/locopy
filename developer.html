@@ -6,12 +6,12 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Developer Instructions &mdash; locopy 0.6.7 documentation</title>
+  <title>Developer Instructions &mdash; locopy 0.6.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
   
-      <script src="_static/documentation_options.js?v=44212324"></script>
+      <script src="_static/documentation_options.js?v=ac3b80e6"></script>
       <script src="_static/doctools.js?v=9a2dae69"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -96,7 +96,7 @@
 <p>We use the excellent <a class="reference external" href="https://pre-commit.com/">pre-commit</a> to run several hooks on all changes before commits.
 <code class="docutils literal notranslate"><span class="pre">pre-commit</span></code> is included in the <code class="docutils literal notranslate"><span class="pre">dev</span></code> extra installs. You’ll have to run <code class="docutils literal notranslate"><span class="pre">pre-commit</span> <span class="pre">install</span></code> once per environment
 before committing changes.</p>
-<p>The reason behind running black, isort, and others as a pre-commit hook is to let a machine make style decisions, based
+<p>The reason behind running ruff and others as a pre-commit hook is to let a machine make style decisions, based
 on the collective wisdom of the Python community.</p>
 </section>
 <section id="generating-documentation">
@@ -187,19 +187,20 @@ core<span class="w">           </span>True<span class="w">             </span>Py
 </section>
 <section id="release-guide">
 <h2>Release Guide<a class="headerlink" href="#release-guide" title="Link to this heading">¶</a></h2>
-<p>For <code class="docutils literal notranslate"><span class="pre">locopy</span></code> we use a simple workflow branching style and follow
-<a class="reference external" href="https://semver.org/">Semantic Versioning</a> for each release.</p>
-<p><code class="docutils literal notranslate"><span class="pre">develop</span></code> is the default branch where most people will work with day to day. All features must be squash merged into
-this branch. The reason we squash merge is to prevent the develop branch from being polluted with endless commit messages
-when people are developing. Squashing collapses all the commits into one single new commit. It will also make it much easier to
-back out changes if something breaks.</p>
-<p><code class="docutils literal notranslate"><span class="pre">main</span></code> is where official releases will go. Each release on <code class="docutils literal notranslate"><span class="pre">main</span></code> should be tagged properly to denote a “version”
-that will have the corresponding artifact on pypi for users to <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code>.</p>
-<p><code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> is where official documentation will go. After each release you should build the docs and push the HTML to
-the pages branch. When first setting up the repo you want to make sure your gh-pages is a orphaned branch since it is
+<p>Starting in 2026 we’ve modified our git workflow.</p>
+<p><code class="docutils literal notranslate"><span class="pre">main</span></code> will be the core branch where all features will get merged into and
+production ready code will also exist. When a release is ready to be made releases/tags will be use
+to point to the commit where the release should be made from.</p>
+<p>In the past we had used <code class="docutils literal notranslate"><span class="pre">dev</span></code>, in conjunction with <code class="docutils literal notranslate"><span class="pre">main</span></code>, but there were some issues
+with diverging branches and new rulesets which make the <code class="docutils literal notranslate"><span class="pre">main</span></code> only branching strategy
+easier to manage.</p>
+<p>Each release on <code class="docutils literal notranslate"><span class="pre">main</span></code> should be tagged properly to denote a “version” that will have the
+corresponding artifact on PyPI for users to <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> is where official documentation will go. After each release you should
+build the docs and push the HTML to the pages branch. When first setting up the
+repo you want to make sure your gh-pages is a orphaned branch since it is
 disconnected and independent from the code: <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">--orphan</span> <span class="pre">gh-pages</span></code>.</p>
-<p>The repo has a <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> in the root folder which has helper commands such as <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">sphinx</span></code>, and
-<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">ghpages</span></code> to help streamline building and pushing docs once they are setup right.</p>
+<p>To build the documentation, run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">sphinx</span></code>. To push, run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">ghpages</span></code>.</p>
 </section>
 <section id="generating-distribution-archives-pypi">
 <h2>Generating distribution archives (PyPI)<a class="headerlink" href="#generating-distribution-archives-pypi" title="Link to this heading">¶</a></h2>
