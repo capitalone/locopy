@@ -10,7 +10,7 @@ We use the excellent `pre-commit <https://pre-commit.com/>`_ to run several hook
 ``pre-commit`` is included in the ``dev`` extra installs. You'll have to run ``pre-commit install`` once per environment
 before committing changes.
 
-The reason behind running black, isort, and others as a pre-commit hook is to let a machine make style decisions, based
+The reason behind running ruff and others as a pre-commit hook is to let a machine make style decisions, based
 on the collective wisdom of the Python community.
 
 Generating Documentation
@@ -125,23 +125,26 @@ This should return output like the following and also update our ``dependencies`
 Release Guide
 -------------
 
-For ``locopy`` we use a simple workflow branching style and follow
-`Semantic Versioning <https://semver.org/>`_ for each release.
+Starting in 2026 we've modified our git workflow.
 
-``develop`` is the default branch where most people will work with day to day. All features must be squash merged into
-this branch. The reason we squash merge is to prevent the develop branch from being polluted with endless commit messages
-when people are developing. Squashing collapses all the commits into one single new commit. It will also make it much easier to
-back out changes if something breaks.
+``main`` will be the core branch where all features will get merged into and
+production ready code will also exist. When a release is ready to be made releases/tags will be use
+to point to the commit where the release should be made from.
 
-``main`` is where official releases will go. Each release on ``main`` should be tagged properly to denote a "version"
-that will have the corresponding artifact on pypi for users to ``pip install``.
+In the past we had used ``dev``, in conjunction with ``main``, but there were some issues
+with diverging branches and new rulesets which make the ``main`` only branching strategy
+easier to manage.
 
-``gh-pages`` is where official documentation will go. After each release you should build the docs and push the HTML to
-the pages branch. When first setting up the repo you want to make sure your gh-pages is a orphaned branch since it is
+Each release on ``main`` should be tagged properly to denote a "version" that will have the
+corresponding artifact on PyPI for users to ``pip install``.
+
+
+``gh-pages`` is where official documentation will go. After each release you should
+build the docs and push the HTML to the pages branch. When first setting up the
+repo you want to make sure your gh-pages is a orphaned branch since it is
 disconnected and independent from the code: ``git checkout --orphan gh-pages``.
 
-The repo has a ``Makefile`` in the root folder which has helper commands such as ``make sphinx``, and
-``make ghpages`` to help streamline building and pushing docs once they are setup right.
+To build the documentation, run ``make sphinx``. To push, run ``make ghpages``.
 
 
 
