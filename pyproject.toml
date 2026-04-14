@@ -2,125 +2,110 @@
 name = "locopy"
 description = "Loading/Unloading to Amazon Redshift using Python"
 readme = "README.rst"
+license = { text = "Apache Software License" }
 authors = [
-  { name="Faisal Dosani", email="faisal.dosani@capitalone.com" },
+  { name = "Faisal Dosani", email = "faisal.dosani@capitalone.com" },
 ]
-license = {text = "Apache Software License"}
-dependencies = ["boto3<=1.42.87,>=1.9.92", "PyYAML<=6.0.2,>=5.1", "pandas<=2.3.3,>=1.5.0", "numpy<=2.2.6,>=1.22.0", "polars>=0.20.0", "pyarrow>=10.0.1"]
-
-requires-python = ">=3.9.0"
+requires-python = ">=3.10.0"
 classifiers = [
-    "Intended Audience :: Developers",
-    "Natural Language :: English",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
+  "Intended Audience :: Developers",
+  "Natural Language :: English",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
 ]
-
-dynamic = ["version"]
-
-[project.urls]
-Homepage = "https://github.com/capitalone/locopy"
-Documentation = "https://capitalone.github.io/locopy/"
+dynamic = [ "version" ]
+dependencies = [
+  "boto3<=1.42.88,>=1.9.92",
+  "numpy<=2.4.4,>=1.22",
+  "pandas<=3.0.2,>=1.5",
+  "polars>=0.20",
+  "pyarrow>=10.0.1",
+  "pyyaml<=6.0.2,>=5.1",
+]
+optional-dependencies.build = [ "build", "twine", "wheel" ]
+optional-dependencies.dev = [ "locopy[build]", "locopy[docs]", "locopy[qa]", "locopy[tests]" ]
+optional-dependencies.docs = [ "sphinx", "sphinx-rtd-theme" ]
+optional-dependencies.edgetest = [ "edgetest", "edgetest-conda" ]
+optional-dependencies.pg8000 = [ "pg8000>=1.13.1" ]
+optional-dependencies.psycopg2 = [ "psycopg2-binary>=2.7.7" ]
+optional-dependencies.qa = [ "pre-commit", "ruff==0.11.12" ]
+optional-dependencies.snowflake = [ "snowflake-connector-python[pandas]>=2.1.2" ]
+optional-dependencies.tests = [ "hypothesis", "pytest", "pytest-cov" ]
+urls.Documentation = "https://capitalone.github.io/locopy/"
+urls.Homepage = "https://github.com/capitalone/locopy"
 
 [tool.setuptools]
-packages = ["locopy"]
+packages = [ "locopy" ]
 zip-safe = false
-
-[tool.setuptools.dynamic]
-version = {attr = "locopy._version.__version__"}
-
-[project.optional-dependencies]
-psycopg2 = ["psycopg2-binary>=2.7.7"]
-pg8000 = ["pg8000>=1.13.1"]
-snowflake = ["snowflake-connector-python[pandas]>=2.1.2"]
-docs = ["sphinx", "sphinx_rtd_theme"]
-tests = ["hypothesis", "pytest", "pytest-cov"]
-qa = ["pre-commit", "ruff==0.11.12"]
-build = ["build", "twine", "wheel"]
-edgetest = ["edgetest", "edgetest-conda"]
-dev = ["locopy[tests]", "locopy[docs]", "locopy[qa]", "locopy[build]"]
+dynamic.version = { attr = "locopy._version.__version__" }
 
 # Linters, formatters and type checkers
 [tool.ruff]
-extend-include = ["*.ipynb"]
-target-version = "py39"
-src = ["src"]
-
-
-[tool.ruff.lint]
-preview = true
-select = [
-    "E", # pycodestyle errors
-    "W", # pycodestyle warnings
-    "F", # pyflakes
-    "D", # pydocstyle
-    "I", # isort
-    "UP", # pyupgrade
-    "B", # flake8-bugbear
-    # "A", # flake8-builtins
-    "C4", # flake8-comprehensions
-    #"C901", # mccabe complexity
-    # "G", # flake8-logging-format
-    "T20", # flake8-print
-    "TID252", # flake8-tidy-imports ban relative imports
-    # "ARG", # flake8-unused-arguments
-    "SIM", # flake8-simplify
-    "NPY", # numpy rules
-    "LOG", # flake8-logging
-    "RUF", # Ruff errors
+target-version = "py312"
+src = [ "src" ]
+extend-include = [ "*.ipynb" ]
+lint.select = [
+  "B",      # flake8-bugbear
+  # "A", # flake8-builtins
+  "C4",     # flake8-comprehensions
+  "D",      # pydocstyle
+  "E",      # pycodestyle errors
+  "F",      # pyflakes
+  "I",      # isort
+  "LOG",    # flake8-logging
+  "NPY",    # numpy rules
+  "RUF",    # Ruff errors
+  # "ARG", # flake8-unused-arguments
+  "SIM",    # flake8-simplify
+  # "C901", # mccabe complexity
+  # "G", # flake8-logging-format
+  "T20",    # flake8-print
+  "TID252", # flake8-tidy-imports ban relative imports
+  "UP",     # pyupgrade
+  "W",      # pycodestyle warnings
 ]
-
-
-ignore = [
-    "E111",  # Check indentation level. Using formatter instead.
-    "E114",  # Check indentation level. Using formatter instead.
-    "E117",  # Check indentation level. Using formatter instead.
-    "E203",  # Check whitespace. Using formatter instead.
-    "E501",  # Line too long. Using formatter instead.
-    "D206",  # Docstring indentation. Using formatter instead.
-    "D300",  # Use triple single quotes. Using formatter instead.
-    "SIM108",  # Use ternary operator instead of if-else blocks.
-    "SIM105", # Use `contextlib.suppress(FileNotFoundError)` instead of `try`-`except`-`pass`
-    "UP035", # `typing.x` is deprecated, use `x` instead
-    "UP006", # `typing.x` is deprecated, use `x` instead
+lint.ignore = [
+  "D206",   # Docstring indentation. Using formatter instead.
+  "D300",   # Use triple single quotes. Using formatter instead.
+  "E111",   # Check indentation level. Using formatter instead.
+  "E114",   # Check indentation level. Using formatter instead.
+  "E117",   # Check indentation level. Using formatter instead.
+  "E203",   # Check whitespace. Using formatter instead.
+  "E501",   # Line too long. Using formatter instead.
+  "SIM105", # Use `contextlib.suppress(FileNotFoundError)` instead of `try`-`except`-`pass`
+  "SIM108", # Use ternary operator instead of if-else blocks.
+  "UP006",  # `typing.x` is deprecated, use `x` instead
+  "UP035",  # `typing.x` is deprecated, use `x` instead
 ]
+lint.per-file-ignores."**/{tests,docs}/*" = [ "ARG", "D", "E402", "F841" ]
+lint.per-file-ignores."__init__.py" = [ "E402" ]
+lint.flake8-tidy-imports.ban-relative-imports = "all"
+lint.pydocstyle.convention = "numpy"
+lint.preview = true
 
-
-[tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["E402"]
-"**/{tests,docs}/*" = ["E402", "D", "F841", "ARG"]
-
-
-[tool.ruff.lint.flake8-tidy-imports]
-ban-relative-imports = "all"
-
-
-[tool.ruff.lint.pydocstyle]
-convention = "numpy"
+[tool.pytest]
+ini_options.markers = [
+  "integration",
+]
 
 [edgetest.envs.core]
-python_version = "3.10"
+python_version = "3.12"
 extras = [
-	"tests",
-	"psycopg2",
-	"pg8000",
-	"snowflake",
+  "tests",
+  "psycopg2",
+  "pg8000",
+  "snowflake",
 ]
 command = "pytest tests -m 'not integration'"
 upgrade = [
-	"boto3",
-	"PyYAML",
-	"pandas",
-	"numpy",
-]
-
-[tool.pytest.ini_options]
-markers = [
-    "integration",
+  "boto3",
+  "PyYAML",
+  "pandas",
+  "numpy",
 ]
