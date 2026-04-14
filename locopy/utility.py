@@ -27,7 +27,7 @@ import threading
 from collections import OrderedDict
 from functools import singledispatch
 from itertools import cycle
-from typing import Dict, List, Union
+from typing import Dict, List
 
 import pandas as pd
 import polars as pl
@@ -47,7 +47,7 @@ logger = get_logger(__name__, INFO)
 
 
 def write_file(
-    data: List[List[Union[str, int, float]]],
+    data: List[List[str | int | float]],
     delimiter: str,
     filepath: str,
     mode: str = "w",
@@ -225,7 +225,7 @@ def concatenate_files(
         raise LocopyConcatError("Error concateneating files.") from e
 
 
-def read_config_yaml(config_yaml: Union[str, object]) -> Dict[str, Union[str, int]]:
+def read_config_yaml(config_yaml: str | object) -> Dict[str, str | int]:
     """Read a configuration YAML file.
 
     Populate the database connection attributes, and validate required ones.
@@ -361,7 +361,9 @@ def find_column_type_pandas(dataframe: pd.DataFrame, warehouse_type: str):
                 column_type.append("timestamp")
             elif str(data.dtype).lower().startswith("bool"):
                 column_type.append("boolean")
-            elif str(data.dtype).startswith("object") or isinstance(data.dtype, pd.StringDtype):
+            elif str(data.dtype).startswith("object") or isinstance(
+                data.dtype, pd.StringDtype
+            ):
                 data_type = validate_float_object(data) or validate_date_object(data)
                 if not data_type:
                     column_type.append("varchar")
@@ -374,7 +376,7 @@ def find_column_type_pandas(dataframe: pd.DataFrame, warehouse_type: str):
             else:
                 column_type.append("varchar")
         logger.info("Parsing column %s to %s", column, column_type[-1])
-    return OrderedDict(zip(list(dataframe.columns), column_type))
+    return OrderedDict(zip(list(dataframe.columns), column_type, strict=False))
 
 
 @find_column_type.register(pl.DataFrame)
@@ -465,7 +467,7 @@ def find_column_type_polars(dataframe: pl.DataFrame, warehouse_type: str):
             else:
                 column_type.append(data_type)
         logger.info("Parsing column %s to %s", column, column_type[-1])
-    return OrderedDict(zip(list(dataframe.columns), column_type))
+    return OrderedDict(zip(list(dataframe.columns), column_type, strict=False))
 
 
 class ProgressPercentage:

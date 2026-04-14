@@ -17,7 +17,7 @@
 """Database Module."""
 
 import time
-from typing import Dict, Generator, List, Optional, Union
+from typing import Dict, Generator, List
 
 import pandas
 import polars
@@ -73,8 +73,8 @@ class Database:
     def __init__(
         self,
         dbapi: object,
-        config_yaml: Optional[str] = None,
-        **kwargs: Union[str, int],
+        config_yaml: str | None = None,
+        **kwargs: str | int,
     ) -> None:
         self.dbapi = dbapi
         self.connection = kwargs or {}
@@ -205,8 +205,8 @@ class Database:
             return [column[0].lower() for column in self.cursor.description]
 
     def to_dataframe(
-        self, df_type: str = "pandas", size: Optional[int] = None
-    ) -> Optional[Union[pandas.DataFrame, polars.DataFrame]]:
+        self, df_type: str = "pandas", size: int | None = None
+    ) -> pandas.DataFrame | polars.DataFrame | None:
         """Return a dataframe of the last query results.
 
         Parameters
@@ -244,7 +244,7 @@ class Database:
         elif df_type == "polars":
             return polars.DataFrame(fetched, schema=columns, orient="row")
 
-    def to_dict(self) -> Generator[Dict[str, Union[str, int, float]], None, None]:
+    def to_dict(self) -> Generator[Dict[str, str | int | float], None, None]:
         """Generate dictionaries of rows.
 
         Yields
@@ -254,7 +254,7 @@ class Database:
         """
         columns = self.column_names()
         for row in self.cursor:
-            yield dict(zip(columns, row))
+            yield dict(zip(columns, row, strict=False))
 
     def _is_connected(self) -> bool:
         """Check the connection and cursor class arrtributes are initalized.
