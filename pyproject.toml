@@ -8,7 +8,7 @@ authors = [
 license = {text = "Apache Software License"}
 dependencies = ["boto3<=1.42.95,>=1.9.92", "PyYAML<=6.0.2,>=5.1", "pandas<=2.3.3,>=1.5.0", "numpy<=2.2.6,>=1.22.0", "polars>=0.20.0", "pyarrow>=10.0.1"]
 
-requires-python = ">=3.9.0"
+requires-python = ">=3.10.0"
 classifiers = [
     "Intended Audience :: Developers",
     "Natural Language :: English",
@@ -16,10 +16,10 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 
 dynamic = ["version"]
@@ -49,7 +49,7 @@ dev = ["locopy[tests]", "locopy[docs]", "locopy[qa]", "locopy[build]"]
 # Linters, formatters and type checkers
 [tool.ruff]
 extend-include = ["*.ipynb"]
-target-version = "py39"
+target-version = "py310"
 src = ["src"]
 
 
