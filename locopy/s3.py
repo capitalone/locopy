@@ -21,7 +21,7 @@ multipart upload to S3 buckets.
 """
 
 import os
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 
 from boto3 import Session
 from boto3.s3.transfer import TransferConfig
@@ -88,7 +88,7 @@ class S3:
     """
 
     def __init__(
-        self, profile: Optional[str] = None, kms_key: Optional[str] = None, **kwargs
+        self, profile: str | None = None, kms_key: str | None = None, **kwargs
     ) -> None:
         self.profile = profile
         self.kms_key = kms_key
@@ -153,7 +153,7 @@ class S3:
         """
         return f"s3://{bucket}/{key}"
 
-    def _generate_unload_path(self, bucket: str, folder: Optional[str]) -> str:
+    def _generate_unload_path(self, bucket: str, folder: str | None) -> str:
         """Return the S3 file URL.
 
         If a valid (not None) folder is provided, returns in the format s3://bucket/folder.
@@ -226,7 +226,7 @@ class S3:
             raise S3UploadError("Error uploading to S3.") from e
 
     def upload_list_to_s3(
-        self, local_list: List[str], bucket: str, folder: Optional[str] = None
+        self, local_list: List[str], bucket: str, folder: str | None = None
     ) -> List[str]:
         """
         Upload a list of files to a S3 bucket.
@@ -300,7 +300,7 @@ class S3:
             raise S3DownloadError("Error downloading from S3.") from e
 
     def download_list_from_s3(
-        self, s3_list: List[str], local_path: Optional[str] = None
+        self, s3_list: List[str], local_path: str | None = None
     ) -> List[str]:
         """
         Download a list of files from s3.

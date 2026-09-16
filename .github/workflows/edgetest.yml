@@ -14,7 +14,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           ref: main
       - name: Copy files for locopy
@@ -23,7 +23,7 @@ jobs:
           cp tests/data/.locopyrc ~/.locopyrc
           cp tests/data/.locopy-sfrc ~/.locopy-sfrc
       - id: run-edgetest
-        uses: edgetest-dev/run-edgetest-action@v1.6
+        uses: edgetest-dev/run-edgetest-action@8ceeac94abe951d6b51305454bc6d0ff2096e2ec  # v1.7
         with:
           edgetest-flags: '-c pyproject.toml --export'
           base-branch: 'main'
