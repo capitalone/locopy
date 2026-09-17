@@ -99,5 +99,8 @@ pip-wheel-metadata/
 # pycharm
 .idea/
 
+# vscode
+.vscode/
+
 #edgetest
 .edgetest/
