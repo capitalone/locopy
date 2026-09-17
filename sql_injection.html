@@ -6,13 +6,13 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SQL Injection &mdash; locopy 0.6.8 documentation</title>
+  <title>SQL Injection &mdash; locopy 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
   
-      <script src="_static/documentation_options.js?v=ac3b80e6"></script>
-      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/documentation_options.js?v=fe7df9b0"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -82,7 +82,7 @@
 <h1>SQL Injection<a class="headerlink" href="#sql-injection" title="Link to this heading">¶</a></h1>
 <p>SQL Injection is important topic when dealing when database interactions. The best practices involve
 passing parameters into the query as such.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sql</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM table WHERE id=(</span><span class="si">%s</span><span class="s2">);&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sql</span> <span class="o">=</span> <span class="s2">"SELECT * FROM table WHERE id=(</span><span class="si">%s</span><span class="s2">);"</span>
 <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">)</span>
 <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 </pre></div>

@@ -5,13 +5,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.redshift &mdash; locopy 0.6.8 documentation</title>
+  <title>locopy.redshift &mdash; locopy 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
 
   
-      <script src="../../_static/documentation_options.js?v=ac3b80e6"></script>
-      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/documentation_options.js?v=fe7df9b0"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -80,23 +80,23 @@
 <span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
 <span class="c1"># Copyright 2018 Capital One Services, LLC</span>
 <span class="c1">#</span>
-<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the "License");</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
 <span class="c1"># You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
-<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># distributed under the License is distributed on an "AS IS" BASIS,</span>
 <span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
 <span class="c1"># See the License for the specific language governing permissions and</span>
 <span class="c1"># limitations under the License.</span>
 
-<span class="sd">&quot;&quot;&quot;Redshift Module.</span>
+<span class="sd">"""Redshift Module.</span>
 
 <span class="sd">Module to wrap a database adapter into a Redshift class which can be used to connect</span>
 <span class="sd">to Redshift, and run arbitrary code.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">singledispatch</span>
@@ -125,7 +125,7 @@
 <div class="viewcode-block" id="add_default_copy_options">
 <a class="viewcode-back" href="../../api/locopy.redshift.html#locopy.add_default_copy_options">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">add_default_copy_options</span><span class="p">(</span><span class="n">copy_options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add in default options for the ``COPY`` job.</span>
+<span class="w">    </span><span class="sd">"""Add in default options for the ``COPY`` job.</span>
 
 <span class="sd">    Unless those specific options have been provided in the request.</span>
 
@@ -139,10 +139,10 @@
 <span class="sd">    list</span>
 <span class="sd">        list of strings with the default options appended. If ``copy_options``</span>
 <span class="sd">        if not provided it will just return the default options.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="k">if</span> <span class="n">copy_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">copy_options</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">default_options</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;DATEFORMAT &#39;auto&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;COMPUPDATE ON&quot;</span><span class="p">,</span> <span class="s2">&quot;TRUNCATECOLUMNS&quot;</span><span class="p">)</span>
+    <span class="n">default_options</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"DATEFORMAT 'auto'"</span><span class="p">,</span> <span class="s2">"COMPUPDATE ON"</span><span class="p">,</span> <span class="s2">"TRUNCATECOLUMNS"</span><span class="p">)</span>
     <span class="n">first_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">opt</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">copy_options</span><span class="p">]</span>
 
     <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="n">default_options</span><span class="p">:</span>
@@ -155,7 +155,7 @@
 <div class="viewcode-block" id="combine_copy_options">
 <a class="viewcode-back" href="../../api/locopy.redshift.html#locopy.combine_copy_options">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">combine_copy_options</span><span class="p">(</span><span class="n">copy_options</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the ``copy_options`` attribute with spaces in between.</span>
+<span class="w">    </span><span class="sd">"""Return the ``copy_options`` attribute with spaces in between.</span>
 
 <span class="sd">    Converts to a string.</span>
 
@@ -169,15 +169,15 @@
 <span class="sd">    -------</span>
 <span class="sd">    str:</span>
 <span class="sd">        ``copy_options`` attribute with spaces in between</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">copy_options</span><span class="p">)</span></div>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">copy_options</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="Redshift">
 <a class="viewcode-back" href="../../api/locopy.redshift.html#locopy.Redshift">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Redshift</span><span class="p">(</span><span class="n">S3</span><span class="p">,</span> <span class="n">Database</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Locopy class which manages connections to Redshift.</span>
+<span class="w">    </span><span class="sd">"""Locopy class which manages connections to Redshift.</span>
 
 <span class="sd">    Inherits ``Database`` and implements the specific ``COPY`` and ``UNLOAD`` functionality.</span>
 
@@ -203,7 +203,7 @@
 <span class="sd">    config_yaml : str, optional</span>
 <span class="sd">        String representing the YAML file location of the database connection keyword arguments. It</span>
 <span class="sd">        is worth noting that this should only contain valid arguments for the database connector you</span>
-<span class="sd">        plan on using. It will throw an exception if something is passed through which isn&#39;t valid.</span>
+<span class="sd">        plan on using. It will throw an exception if something is passed through which isn't valid.</span>
 
 <span class="sd">    **kwargs</span>
 <span class="sd">        Database connection keyword arguments.</span>
@@ -247,7 +247,7 @@
 
 <span class="sd">    S3InitializationError</span>
 <span class="sd">        Issue initializing S3 session</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kms_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dbapi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config_yaml</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
@@ -256,14 +256,14 @@
             <span class="n">S3</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile</span><span class="p">,</span> <span class="n">kms_key</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">S3CredentialsError</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
-                <span class="s2">&quot;S3 credentials were not found. S3 functionality is disabled&quot;</span>
+                <span class="s2">"S3 credentials were not found. S3 functionality is disabled"</span>
             <span class="p">)</span>
         <span class="n">Database</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbapi</span><span class="p">,</span> <span class="n">config_yaml</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Redshift.connect">
 <a class="viewcode-back" href="../../api/locopy.redshift.html#locopy.Redshift.connect">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a connection to the Redshift cluster.</span>
+<span class="w">        </span><span class="sd">"""Create a connection to the Redshift cluster.</span>
 
 <span class="sd">        Sets the values of the ``conn`` and ``cursor`` attributes.</span>
 
@@ -271,18 +271,18 @@
 <span class="sd">        ------</span>
 <span class="sd">        DBError</span>
 <span class="sd">            If there is a problem establishing a connection to Redshift.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbapi</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;psycopg2&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">[</span><span class="s2">&quot;sslmode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;require&quot;</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbapi</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;pg8000&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">[</span><span class="s2">&quot;ssl_context&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbapi</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"psycopg2"</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">[</span><span class="s2">"sslmode"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"require"</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbapi</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"pg8000"</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">[</span><span class="s2">"ssl_context"</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Redshift.copy">
 <a class="viewcode-back" href="../../api/locopy.redshift.html#locopy.Redshift.copy">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">s3path</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="n">copy_options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the COPY command to load files from S3 into a Redshift table.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="n">s3path</span><span class="p">,</span> <span class="n">delim</span><span class="o">=</span><span class="s2">"|"</span><span class="p">,</span> <span class="n">copy_options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Execute the COPY command to load files from S3 into a Redshift table.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -304,15 +304,15 @@
 <span class="sd">        DBError</span>
 <span class="sd">            If there is a problem executing the COPY command, a connection</span>
 <span class="sd">            has not been initalized, or credentials are wrong.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_connected</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">&quot;No Redshift connection object is present.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">copy_options</span> <span class="ow">and</span> <span class="s2">&quot;PARQUET&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">copy_options</span><span class="p">)</span> <span class="ow">or</span> <span class="n">copy_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">"No Redshift connection object is present."</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">copy_options</span> <span class="ow">and</span> <span class="s2">"PARQUET"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">copy_options</span><span class="p">)</span> <span class="ow">or</span> <span class="n">copy_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">copy_options</span> <span class="o">=</span> <span class="n">add_default_copy_options</span><span class="p">(</span><span class="n">copy_options</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">delim</span><span class="p">:</span>
-            <span class="n">copy_options</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;DELIMITER &#39;</span><span class="si">{</span><span class="n">delim</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">copy_options</span><span class="p">]</span>
+            <span class="n">copy_options</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"DELIMITER '</span><span class="si">{</span><span class="n">delim</span><span class="si">}</span><span class="s2">'"</span><span class="p">,</span> <span class="o">*</span><span class="n">copy_options</span><span class="p">]</span>
         <span class="n">copy_options_text</span> <span class="o">=</span> <span class="n">combine_copy_options</span><span class="p">(</span><span class="n">copy_options</span><span class="p">)</span>
-        <span class="n">base_copy_string</span> <span class="o">=</span> <span class="s2">&quot;COPY </span><span class="si">{0}</span><span class="s2"> FROM &#39;</span><span class="si">{1}</span><span class="s2">&#39; CREDENTIALS &#39;</span><span class="si">{2}</span><span class="s2">&#39; </span><span class="si">{3}</span><span class="s2">;&quot;</span>
+        <span class="n">base_copy_string</span> <span class="o">=</span> <span class="s2">"COPY </span><span class="si">{0}</span><span class="s2"> FROM '</span><span class="si">{1}</span><span class="s2">' CREDENTIALS '</span><span class="si">{2}</span><span class="s2">' </span><span class="si">{3}</span><span class="s2">;"</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">sql</span> <span class="o">=</span> <span class="n">base_copy_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">table_name</span><span class="p">,</span> <span class="n">s3path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_credentials_string</span><span class="p">(),</span> <span class="n">copy_options_text</span>
@@ -320,8 +320,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error running COPY on Redshift. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">&quot;Error running COPY on Redshift.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span></div>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Error running COPY on Redshift. err: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">"Error running COPY on Redshift."</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span></div>
 
 
 <div class="viewcode-block" id="Redshift.load_and_copy">
@@ -331,14 +331,14 @@
         <span class="n">local_file</span><span class="p">,</span>
         <span class="n">s3_bucket</span><span class="p">,</span>
         <span class="n">table_name</span><span class="p">,</span>
-        <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;|&quot;</span><span class="p">,</span>
+        <span class="n">delim</span><span class="o">=</span><span class="s2">"|"</span><span class="p">,</span>
         <span class="n">copy_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">delete_s3_after</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">splits</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">compress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">s3_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sa">r</span><span class="sd">&quot;&quot;&quot;Load a file to S3, then copies into Redshift.</span>
+<span class="w">        </span><span class="sa">r</span><span class="sd">"""Load a file to S3, then copies into Redshift.</span>
 
 <span class="sd">        Has options to split a single file into multiple files, compress using gzip, and</span>
 <span class="sd">        upload to an S3 bucket with folders within the bucket.</span>
@@ -353,7 +353,7 @@
 <span class="sd">        complexity in uploading to s3 and generating the `COPY` command.</span>
 
 <span class="sd">        It is critical to ensure that the S3 location you are using that it only contains the files</span>
-<span class="sd">        you want to load. In the case of a &quot;folder&quot; it should only contain the files you want to</span>
+<span class="sd">        you want to load. In the case of a "folder" it should only contain the files you want to</span>
 <span class="sd">        load. For a bucket the file name should be unique enough as any extensions get striped out</span>
 <span class="sd">        in favour of the file prefix.</span>
 
@@ -395,7 +395,7 @@
 <span class="sd">            The AWS S3 folder of the bucket which you are copying the local</span>
 <span class="sd">            file to. Defaults to ``None``. Please note that you must follow the</span>
 <span class="sd">            ``/`` convention when using subfolders.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">copy_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">copy_options</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -404,7 +404,7 @@
         <span class="n">ignore_header</span> <span class="o">=</span> <span class="n">get_ignoreheader_number</span><span class="p">(</span><span class="n">copy_options</span><span class="p">)</span>
         <span class="n">p</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">local_file</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-            <span class="n">upload_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;**/*&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">is_file</span><span class="p">()]</span>
+            <span class="n">upload_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">"**/*"</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">is_file</span><span class="p">()]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">upload_list</span> <span class="o">=</span> <span class="n">split_file</span><span class="p">(</span>
                 <span class="n">local_file</span><span class="p">,</span> <span class="n">local_file</span><span class="p">,</span> <span class="n">splits</span><span class="o">=</span><span class="n">splits</span><span class="p">,</span> <span class="n">ignore_header</span><span class="o">=</span><span class="n">ignore_header</span>
@@ -412,13 +412,13 @@
 
         <span class="k">if</span> <span class="n">splits</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">ignore_header</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="c1"># remove the IGNOREHEADER from copy_options</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Removing the IGNOREHEADER option as split is enabled&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Removing the IGNOREHEADER option as split is enabled"</span><span class="p">)</span>
             <span class="n">copy_options</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">copy_options</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;IGNOREHEADER &quot;</span><span class="p">)</span>
+                <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">copy_options</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"IGNOREHEADER "</span><span class="p">)</span>
             <span class="p">]</span>
 
         <span class="k">if</span> <span class="n">compress</span><span class="p">:</span>
-            <span class="n">copy_options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;GZIP&quot;</span><span class="p">)</span>
+            <span class="n">copy_options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"GZIP"</span><span class="p">)</span>
             <span class="n">upload_list</span> <span class="o">=</span> <span class="n">compress_file_list</span><span class="p">(</span><span class="n">upload_list</span><span class="p">)</span>
 
         <span class="c1"># copy files to S3</span>
@@ -434,7 +434,7 @@
             <span class="n">tmp_load_path</span> <span class="o">=</span> <span class="n">s3_upload_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">extsep</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c1"># execute Redshift COPY</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="s2">&quot;s3://&quot;</span> <span class="o">+</span> <span class="n">tmp_load_path</span><span class="p">,</span> <span class="n">delim</span><span class="p">,</span> <span class="n">copy_options</span><span class="o">=</span><span class="n">copy_options</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">table_name</span><span class="p">,</span> <span class="s2">"s3://"</span> <span class="o">+</span> <span class="n">tmp_load_path</span><span class="p">,</span> <span class="n">delim</span><span class="p">,</span> <span class="n">copy_options</span><span class="o">=</span><span class="n">copy_options</span><span class="p">)</span>
 
         <span class="c1"># delete file from S3 (if set to do so)</span>
         <span class="k">if</span> <span class="n">delete_s3_after</span><span class="p">:</span>
@@ -450,12 +450,12 @@
         <span class="n">s3_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">raw_unload_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">export_path</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
+        <span class="n">delim</span><span class="o">=</span><span class="s2">","</span><span class="p">,</span>
         <span class="n">delete_s3_after</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">parallel_off</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">unload_options</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unload data from Redshift.</span>
+<span class="w">        </span><span class="sd">"""Unload data from Redshift.</span>
 
 <span class="sd">        With options to write to a flat file and store on S3.</span>
 
@@ -501,7 +501,7 @@
 <span class="sd">            If no files are generated from the unload.</span>
 <span class="sd">            If the column names from the query cannot be retrieved.</span>
 <span class="sd">            If there is a issue with the execution of any of the queries.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="c1"># data = []</span>
         <span class="n">s3path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generate_unload_path</span><span class="p">(</span><span class="n">s3_bucket</span><span class="p">,</span> <span class="n">s3_folder</span><span class="p">)</span>
 
@@ -509,9 +509,9 @@
         <span class="k">if</span> <span class="n">unload_options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">unload_options</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">delim</span><span class="p">:</span>
-            <span class="n">unload_options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DELIMITER &#39;</span><span class="si">{</span><span class="n">delim</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
+            <span class="n">unload_options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DELIMITER '</span><span class="si">{</span><span class="n">delim</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">parallel_off</span><span class="p">:</span>
-            <span class="n">unload_options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;PARALLEL OFF&quot;</span><span class="p">)</span>
+            <span class="n">unload_options</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"PARALLEL OFF"</span><span class="p">)</span>
 
         <span class="c1"># run unload</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unload</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">s3path</span><span class="o">=</span><span class="n">s3path</span><span class="p">,</span> <span class="n">unload_options</span><span class="o">=</span><span class="n">unload_options</span><span class="p">)</span>
@@ -519,13 +519,13 @@
         <span class="c1"># parse unloaded files</span>
         <span class="n">s3_download_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unload_generated_files</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">s3_download_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;No files generated from unload&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">&quot;No files generated from unload&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"No files generated from unload"</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">"No files generated from unload"</span><span class="p">)</span>
 
         <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_column_names</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">columns</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Unable to retrieve column names from exported data&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">&quot;Unable to retrieve column names from exported data.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Unable to retrieve column names from exported data"</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">"Unable to retrieve column names from exported data."</span><span class="p">)</span>
 
         <span class="c1"># download files locally with same name</span>
         <span class="n">local_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">download_list_from_s3</span><span class="p">(</span><span class="n">s3_download_list</span><span class="p">,</span> <span class="n">raw_unload_path</span><span class="p">)</span>
@@ -541,7 +541,7 @@
 <div class="viewcode-block" id="Redshift.unload">
 <a class="viewcode-back" href="../../api/locopy.redshift.html#locopy.Redshift.unload">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">unload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">s3path</span><span class="p">,</span> <span class="n">unload_options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the UNLOAD command to export a query from Redshift to S3.</span>
+<span class="w">        </span><span class="sd">"""Execute the UNLOAD command to export a query from Redshift to S3.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -559,29 +559,29 @@
 <span class="sd">        DBError</span>
 <span class="sd">            If there is a problem executing the UNLOAD command, a connection</span>
 <span class="sd">            has not been initalized, or credentials are wrong.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_connected</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">&quot;No Redshift connection object is present&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">"No Redshift connection object is present"</span><span class="p">)</span>
 
         <span class="n">unload_options</span> <span class="o">=</span> <span class="n">unload_options</span> <span class="ow">or</span> <span class="p">[]</span>
-        <span class="n">unload_options_text</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">unload_options</span><span class="p">)</span>
-        <span class="n">base_unload_string</span> <span class="o">=</span> <span class="s2">&quot;UNLOAD (&#39;</span><span class="si">{0}</span><span class="s2">&#39;)</span><span class="se">\n</span><span class="s2">TO &#39;</span><span class="si">{1}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">CREDENTIALS &#39;</span><span class="si">{2}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="si">{3}</span><span class="s2">;&quot;</span>
+        <span class="n">unload_options_text</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">unload_options</span><span class="p">)</span>
+        <span class="n">base_unload_string</span> <span class="o">=</span> <span class="s2">"UNLOAD ('</span><span class="si">{0}</span><span class="s2">')</span><span class="se">\n</span><span class="s2">TO '</span><span class="si">{1}</span><span class="s2">'</span><span class="se">\n</span><span class="s2">CREDENTIALS '</span><span class="si">{2}</span><span class="s2">'</span><span class="se">\n</span><span class="si">{3}</span><span class="s2">;"</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">sql</span> <span class="o">=</span> <span class="n">base_unload_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\&#39;&quot;</span><span class="p">),</span>
+                <span class="n">query</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="sa">r</span><span class="s2">"\'"</span><span class="p">),</span>
                 <span class="n">s3path</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_credentials_string</span><span class="p">(),</span>
                 <span class="n">unload_options_text</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="n">commit</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error running UNLOAD on redshift. err: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">&quot;Error running UNLOAD on redshift.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span></div>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Error running UNLOAD on redshift. err: </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">DBError</span><span class="p">(</span><span class="s2">"Error running UNLOAD on redshift."</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_column_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a list of column names from the supplied query.</span>
+<span class="w">        </span><span class="sd">"""Get a list of column names from the supplied query.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -592,10 +592,10 @@
 <span class="sd">        -------</span>
 <span class="sd">        list</span>
 <span class="sd">            List of column names. Returns None if no columns were retrieved.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Retrieving column names&quot;</span><span class="p">)</span>
-            <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;SELECT * FROM (</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">) WHERE 1 = 0&quot;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Retrieving column names"</span><span class="p">)</span>
+            <span class="n">sql</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"SELECT * FROM (</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">) WHERE 1 = 0"</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -603,23 +603,23 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">None</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error retrieving column names&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Error retrieving column names"</span><span class="p">)</span>
             <span class="k">raise</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_unload_generated_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get a list of files generated by the unload process.</span>
+<span class="w">        </span><span class="sd">"""Get a list of files generated by the unload process.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        list</span>
 <span class="sd">            List of S3 file names</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">sql</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;SELECT path FROM stl_unload_log &quot;</span>
-            <span class="s2">&quot;WHERE query = pg_last_query_id() ORDER BY path&quot;</span>
+            <span class="s2">"SELECT path FROM stl_unload_log "</span>
+            <span class="s2">"WHERE query = pg_last_query_id() ORDER BY path"</span>
         <span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Getting list of unloaded files&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Getting list of unloaded files"</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -627,7 +627,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">None</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Error retrieving unloads generated files&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">"Error retrieving unloads generated files"</span><span class="p">)</span>
             <span class="k">raise</span>
 
 <div class="viewcode-block" id="Redshift.insert_dataframe_to_table">
@@ -642,7 +642,7 @@
         <span class="n">batch_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
         <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Insert a Pandas or Polars dataframe to an existing table or a new table.</span>
 
 <span class="sd">        `executemany` in psycopg2 and pg8000 has very poor performance in terms of running speed.</span>
@@ -672,101 +672,101 @@
 <span class="sd">            Whether or not to print out insert query</span>
 
 
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">if</span> <span class="n">columns</span><span class="p">:</span>
             <span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span>
 
         <span class="n">all_columns</span> <span class="o">=</span> <span class="n">columns</span> <span class="ow">or</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataframe</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-        <span class="n">column_sql</span> <span class="o">=</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">all_columns</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+        <span class="n">column_sql</span> <span class="o">=</span> <span class="s2">"("</span> <span class="o">+</span> <span class="s2">","</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">all_columns</span><span class="p">)</span> <span class="o">+</span> <span class="s2">")"</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">create</span> <span class="ow">and</span> <span class="n">metadata</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Metadata will not be used because create is set to False.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"Metadata will not be used because create is set to False."</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">create</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">metadata</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Metadata is missing. Generating metadata ...&quot;</span><span class="p">)</span>
-                <span class="n">metadata</span> <span class="o">=</span> <span class="n">find_column_type</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="s2">&quot;redshift&quot;</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Metadata is complete. Creating new table ...&quot;</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Metadata is missing. Generating metadata ..."</span><span class="p">)</span>
+                <span class="n">metadata</span> <span class="o">=</span> <span class="n">find_column_type</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="s2">"redshift"</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Metadata is complete. Creating new table ..."</span><span class="p">)</span>
 
             <span class="n">create_join</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="s2">&quot;(&quot;</span>
-                <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="s2">"("</span>
+                <span class="o">+</span> <span class="s2">","</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                     <span class="p">[</span>
-                        <span class="nb">list</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="n">i</span><span class="p">]</span>
+                        <span class="nb">list</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" "</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="n">i</span><span class="p">]</span>
                         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">metadata</span><span class="p">))</span>
                     <span class="p">]</span>
                 <span class="p">)</span>
-                <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+                <span class="o">+</span> <span class="s2">")"</span>
             <span class="p">)</span>
-            <span class="n">column_sql</span> <span class="o">=</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
-            <span class="n">create_query</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;CREATE TABLE </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">create_join</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">column_sql</span> <span class="o">=</span> <span class="s2">"("</span> <span class="o">+</span> <span class="s2">","</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">metadata</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="o">+</span> <span class="s2">")"</span>
+            <span class="n">create_query</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"CREATE TABLE </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">create_join</span><span class="si">}</span><span class="s2">"</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">create_query</span><span class="p">)</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;New table has been created&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"New table has been created"</span><span class="p">)</span>
 
         <span class="c1"># create a list of tuples for insert</span>
         <span class="nd">@singledispatch</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">get_insert_tuple</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Create a list of tuples for insert.&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">"""Create a list of tuples for insert."""</span>
             <span class="k">pass</span>
 
         <span class="nd">@get_insert_tuple</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">get_insert_tuple_pandas</span><span class="p">(</span><span class="n">dataframe</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Create a list of tuples for insert when dataframe is pd.DataFrame.&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">"""Create a list of tuples for insert when dataframe is pd.DataFrame."""</span>
             <span class="n">to_insert</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">start</span> <span class="p">:</span> <span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">)]</span><span class="o">.</span><span class="n">itertuples</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
                 <span class="n">none_row</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="s2">&quot;(&quot;</span>
-                    <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="s2">"("</span>
+                    <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                         <span class="p">[</span>
-                            <span class="s2">&quot;NULL&quot;</span>
+                            <span class="s2">"NULL"</span>
                             <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-                            <span class="k">else</span> <span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;&#39;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
+                            <span class="k">else</span> <span class="s2">"'"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">"''"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"'"</span>
                             <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">row</span>
                         <span class="p">]</span>
                     <span class="p">)</span>
-                    <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+                    <span class="o">+</span> <span class="s2">")"</span>
                 <span class="p">)</span>
                 <span class="n">to_insert</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">none_row</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">to_insert</span>
 
         <span class="nd">@get_insert_tuple</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">get_insert_tuple_polars</span><span class="p">(</span><span class="n">dataframe</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;Create a list of tuples for insert when dataframe is pl.DataFrame.&quot;&quot;&quot;</span>
+<span class="w">            </span><span class="sd">"""Create a list of tuples for insert when dataframe is pl.DataFrame."""</span>
             <span class="n">to_insert</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">dataframe</span> <span class="o">=</span> <span class="n">dataframe</span><span class="o">.</span><span class="n">with_columns</span><span class="p">(</span>
                 <span class="n">dataframe</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">numeric</span><span class="p">()</span><span class="o">.</span><span class="n">fill_nan</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
             <span class="p">)</span>
             <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">dataframe</span><span class="p">[</span><span class="n">start</span> <span class="p">:</span> <span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">batch_size</span><span class="p">)]</span><span class="o">.</span><span class="n">iter_rows</span><span class="p">():</span>
                 <span class="n">none_row</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="s2">&quot;(&quot;</span>
-                    <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="s2">"("</span>
+                    <span class="o">+</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                         <span class="p">[</span>
-                            <span class="s2">&quot;NULL&quot;</span>
+                            <span class="s2">"NULL"</span>
                             <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span>
-                            <span class="k">else</span> <span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;&#39;&#39;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span>
+                            <span class="k">else</span> <span class="s2">"'"</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"'"</span><span class="p">,</span> <span class="s2">"''"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">"'"</span>
                             <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">row</span>
                         <span class="p">]</span>
                     <span class="p">)</span>
-                    <span class="o">+</span> <span class="s2">&quot;)&quot;</span>
+                    <span class="o">+</span> <span class="s2">")"</span>
                 <span class="p">)</span>
                 <span class="n">to_insert</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">none_row</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">to_insert</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Inserting records...&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Inserting records..."</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataframe</span><span class="p">),</span> <span class="n">batch_size</span><span class="p">):</span>
                 <span class="n">to_insert</span> <span class="o">=</span> <span class="n">get_insert_tuple</span><span class="p">(</span><span class="n">dataframe</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">)</span>
-                <span class="n">string_join</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">to_insert</span><span class="p">)</span>
+                <span class="n">string_join</span> <span class="o">=</span> <span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">to_insert</span><span class="p">)</span>
                 <span class="n">insert_query</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;&quot;&quot;INSERT INTO </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">column_sql</span><span class="si">}</span><span class="s2"> VALUES </span><span class="si">{</span><span class="n">string_join</span><span class="si">}</span><span class="s2">&quot;&quot;&quot;</span>
+                    <span class="sa">f</span><span class="s2">"""INSERT INTO </span><span class="si">{</span><span class="n">table_name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">column_sql</span><span class="si">}</span><span class="s2"> VALUES </span><span class="si">{</span><span class="n">string_join</span><span class="si">}</span><span class="s2">"""</span>
                 <span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">insert_query</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;DataFrame to insert must either be a pandas.DataFrame or polars.DataFrame.&quot;</span>
+                <span class="s2">"DataFrame to insert must either be a pandas.DataFrame or polars.DataFrame."</span>
             <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Table insertion has completed&quot;</span><span class="p">)</span></div>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"Table insertion has completed"</span><span class="p">)</span></div>
 </div>
 
 </pre></div>

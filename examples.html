@@ -6,13 +6,13 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Basic Examples &mdash; locopy 0.6.8 documentation</title>
+  <title>Basic Examples &mdash; locopy 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
   
-      <script src="_static/documentation_options.js?v=ac3b80e6"></script>
-      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/documentation_options.js?v=fe7df9b0"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -95,21 +95,21 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pg8000</span> <span class="c1"># can also be psycopg2</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">locopy</span>
 
-<span class="n">create_sql</span> <span class="o">=</span> <span class="s2">&quot;CREATE TABLE schema.table (variable VARCHAR(20)) DISTKEY(variable)&quot;</span>
+<span class="n">create_sql</span> <span class="o">=</span> <span class="s2">"CREATE TABLE schema.table (variable VARCHAR(20)) DISTKEY(variable)"</span>
 
 <span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span>
     <span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span>
-    <span class="n">config_yaml</span><span class="o">=</span><span class="s2">&quot;example.yaml&quot;</span><span class="p">,</span>
-    <span class="n">profile</span><span class="o">=</span><span class="s2">&quot;aws_profile&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
+    <span class="n">config_yaml</span><span class="o">=</span><span class="s2">"example.yaml"</span><span class="p">,</span>
+    <span class="n">profile</span><span class="o">=</span><span class="s2">"aws_profile"</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
 
     <span class="n">redshift</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">create_sql</span><span class="p">)</span>
     <span class="n">redshift</span><span class="o">.</span><span class="n">load_and_copy</span><span class="p">(</span>
-        <span class="n">local_file</span><span class="o">=</span><span class="s2">&quot;example_data.csv&quot;</span><span class="p">,</span>
-        <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;my_s3_bucket&quot;</span><span class="p">,</span>
-        <span class="n">table_name</span><span class="o">=</span><span class="s2">&quot;schema.table&quot;</span><span class="p">,</span>
-        <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
+        <span class="n">local_file</span><span class="o">=</span><span class="s2">"example_data.csv"</span><span class="p">,</span>
+        <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">"my_s3_bucket"</span><span class="p">,</span>
+        <span class="n">table_name</span><span class="o">=</span><span class="s2">"schema.table"</span><span class="p">,</span>
+        <span class="n">delim</span><span class="o">=</span><span class="s2">","</span><span class="p">,</span>
         <span class="n">compress</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">redshift</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT * FROM schema.table&quot;</span><span class="p">)</span>
+    <span class="n">redshift</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">"SELECT * FROM schema.table"</span><span class="p">)</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">redshift</span><span class="o">.</span><span class="n">cursor</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 </pre></div>
@@ -121,12 +121,12 @@
 constructor vs. the YAML</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">locopy</span><span class="o">.</span><span class="n">Redshift</span><span class="p">(</span>
     <span class="n">dbapi</span><span class="o">=</span><span class="n">pg8000</span><span class="p">,</span>
-    <span class="n">host</span><span class="o">=</span><span class="s2">&quot;my.redshift.cluster.com&quot;</span><span class="p">,</span>
+    <span class="n">host</span><span class="o">=</span><span class="s2">"my.redshift.cluster.com"</span><span class="p">,</span>
     <span class="n">port</span><span class="o">=</span><span class="mi">5439</span><span class="p">,</span>
-    <span class="n">database</span><span class="o">=</span><span class="s2">&quot;db&quot;</span><span class="p">,</span>
-    <span class="n">user</span><span class="o">=</span><span class="s2">&quot;userid&quot;</span><span class="p">,</span>
-    <span class="n">password</span><span class="o">=</span><span class="s2">&quot;password&quot;</span><span class="p">,</span>
-    <span class="n">profile</span><span class="o">=</span><span class="s2">&quot;aws_profile&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
+    <span class="n">database</span><span class="o">=</span><span class="s2">"db"</span><span class="p">,</span>
+    <span class="n">user</span><span class="o">=</span><span class="s2">"userid"</span><span class="p">,</span>
+    <span class="n">password</span><span class="o">=</span><span class="s2">"password"</span><span class="p">,</span>
+    <span class="n">profile</span><span class="o">=</span><span class="s2">"aws_profile"</span><span class="p">)</span> <span class="k">as</span> <span class="n">redshift</span><span class="p">:</span>
     <span class="o">...</span>
 </pre></div>
 </div>
@@ -148,11 +148,11 @@ there may be times when you want to tweak the options used by the <code class="d
 oddities in your data.  Locopy assigns a few options by default (<code class="docutils literal notranslate"><span class="pre">DATEFORMAT</span> <span class="pre">'auto'</span></code>,
 <code class="docutils literal notranslate"><span class="pre">COMPUPDATE</span> <span class="pre">ON</span></code>, and <code class="docutils literal notranslate"><span class="pre">TRUNCATECOLUMNS</span></code>). If you want to specify other options, or override these
 three, you can pass in a list of strings which will tweak your load:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">redshift</span><span class="o">.</span><span class="n">load_and_copy</span><span class="p">(</span><span class="n">local_file</span><span class="o">=</span><span class="s2">&quot;example_data.csv&quot;</span><span class="p">,</span>
-            <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">&quot;my_s3_bucket&quot;</span><span class="p">,</span>
-            <span class="n">table_name</span><span class="o">=</span><span class="s2">&quot;schema.table&quot;</span><span class="p">,</span>
-            <span class="n">delim</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
-            <span class="n">copy_options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;NULL AS &#39;NULL&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;ESCAPE&quot;</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">redshift</span><span class="o">.</span><span class="n">load_and_copy</span><span class="p">(</span><span class="n">local_file</span><span class="o">=</span><span class="s2">"example_data.csv"</span><span class="p">,</span>
+            <span class="n">s3_bucket</span><span class="o">=</span><span class="s2">"my_s3_bucket"</span><span class="p">,</span>
+            <span class="n">table_name</span><span class="o">=</span><span class="s2">"schema.table"</span><span class="p">,</span>
+            <span class="n">delim</span><span class="o">=</span><span class="s2">","</span><span class="p">,</span>
+            <span class="n">copy_options</span><span class="o">=</span><span class="p">[</span><span class="s2">"NULL AS 'NULL'"</span><span class="p">,</span> <span class="s2">"ESCAPE"</span><span class="p">])</span>
 </pre></div>
 </div>
 </section>

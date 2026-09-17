@@ -5,13 +5,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.errors &mdash; locopy 0.6.8 documentation</title>
+  <title>locopy.errors &mdash; locopy 0.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
 
   
-      <script src="../../_static/documentation_options.js?v=ac3b80e6"></script>
-      <script src="../../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../../_static/documentation_options.js?v=fe7df9b0"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -80,108 +80,108 @@
 <span class="c1"># SPDX-License-Identifier: Apache-2.0</span>
 <span class="c1"># Copyright 2018 Capital One Services, LLC</span>
 <span class="c1">#</span>
-<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the "License");</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
 <span class="c1"># You may obtain a copy of the License at</span>
 <span class="c1">#</span>
 <span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
 <span class="c1">#</span>
 <span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
-<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># distributed under the License is distributed on an "AS IS" BASIS,</span>
 <span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
 <span class="c1"># See the License for the specific language governing permissions and</span>
 <span class="c1"># limitations under the License.</span>
-<span class="sd">&quot;&quot;&quot;Custom errors for locopy.&quot;&quot;&quot;</span>
+<span class="sd">"""Custom errors for locopy."""</span>
 
 
 <div class="viewcode-block" id="LocopyError">
 <a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.LocopyError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LocopyError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Baseclass for all Locopy errors.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Baseclass for all Locopy errors."""</span></div>
 
 
 
 <div class="viewcode-block" id="CompressionError">
 <a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.CompressionError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CompressionError</span><span class="p">(</span><span class="n">LocopyError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when there is an error compressing a file.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Raised when there is an error compressing a file."""</span></div>
 
 
 
 <div class="viewcode-block" id="LocopySplitError">
 <a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.LocopySplitError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LocopySplitError</span><span class="p">(</span><span class="n">LocopyError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when there is an error splitting a file.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Raised when there is an error splitting a file."""</span></div>
 
 
 
 <div class="viewcode-block" id="LocopyIgnoreHeaderError">
 <a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.LocopyIgnoreHeaderError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LocopyIgnoreHeaderError</span><span class="p">(</span><span class="n">LocopyError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when Multiple IGNOREHEADERS are found in copy options.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Raised when Multiple IGNOREHEADERS are found in copy options."""</span></div>
 
 
 
 <div class="viewcode-block" id="LocopyConcatError">
 <a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.LocopyConcatError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">LocopyConcatError</span><span class="p">(</span><span class="n">LocopyError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when there is an error concatenating files.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Raised when there is an error concatenating files."""</span></div>
 
 
 
 <div class="viewcode-block" id="DBError">
 <a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.DBError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">DBError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all Database errors.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Base class for all Database errors."""</span></div>
 
 
 
 <div class="viewcode-block" id="CredentialsError">
 <a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.CredentialsError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">CredentialsError</span><span class="p">(</span><span class="n">DBError</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when the users credentials are not provided.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Raised when the users credentials are not provided."""</span></div>
 
 
 
 <div class="viewcode-block" id="S3Error">
 <a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.S3Error">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">S3Error</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for all S3 errors.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Base class for all S3 errors."""</span></div>
 
 
 
 <div class="viewcode-block" id="S3CredentialsError">
 <a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.S3CredentialsError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">S3CredentialsError</span><span class="p">(</span><span class="n">S3Error</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when there is an error with AWS credentials.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Raised when there is an error with AWS credentials."""</span></div>
 
 
 
 <div class="viewcode-block" id="S3InitializationError">
 <a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.S3InitializationError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">S3InitializationError</span><span class="p">(</span><span class="n">S3Error</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when there is an error initializing S3 client.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Raised when there is an error initializing S3 client."""</span></div>
 
 
 
 <div class="viewcode-block" id="S3UploadError">
 <a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.S3UploadError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">S3UploadError</span><span class="p">(</span><span class="n">S3Error</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when there is an upload error to S3.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Raised when there is an upload error to S3."""</span></div>
 
 
 
 <div class="viewcode-block" id="S3DownloadError">
 <a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.S3DownloadError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">S3DownloadError</span><span class="p">(</span><span class="n">S3Error</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when there is an download error to S3.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Raised when there is an download error to S3."""</span></div>
 
 
 
 <div class="viewcode-block" id="S3DeletionError">
 <a class="viewcode-back" href="../../api/locopy.errors.html#locopy.errors.S3DeletionError">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">S3DeletionError</span><span class="p">(</span><span class="n">S3Error</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Raised when there is an deletion error on S3.&quot;&quot;&quot;</span></div>
+<span class="w">    </span><span class="sd">"""Raised when there is an deletion error on S3."""</span></div>
 
 </pre></div>
 
