@@ -7,6 +7,9 @@ not_integration:
 integration:
 	pytest --verbose --cov=locopy -m 'integration'
 
+tox:
+	tox
+
 sphinx:
 	cd docs && \
 	make -f Makefile clean && \
