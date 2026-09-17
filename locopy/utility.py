@@ -363,7 +363,7 @@ def find_column_type_pandas(dataframe: pd.DataFrame, warehouse_type: str):
                 column_type.append("timestamp")
             elif str(data.dtype).lower().startswith("bool"):
                 column_type.append("boolean")
-            elif str(data.dtype).startswith("object"):
+            elif pd.api.types.is_string_dtype(data.dtype):
                 data_type = validate_float_object(data) or validate_date_object(data)
                 if not data_type:
                     column_type.append("varchar")
