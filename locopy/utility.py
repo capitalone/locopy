@@ -357,9 +357,7 @@ def find_column_type_pandas(dataframe: pd.DataFrame, warehouse_type: str):
             datatype = check_column_type_pyarrow(data.dtype.pyarrow_dtype)
             column_type.append(datatype)
         else:
-            if (data.dtype in ["datetime64[ns]", "M8[ns]"]) or (
-                re.match(r"(datetime64\[ns\,\W)([a-zA-Z]+)(\])", str(data.dtype))
-            ):
+            if pd.api.types.is_datetime64_any_dtype(data.dtype):
                 column_type.append("timestamp")
             elif str(data.dtype).lower().startswith("bool"):
                 column_type.append("boolean")
