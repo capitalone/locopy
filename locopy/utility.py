@@ -281,13 +281,13 @@ def find_column_type_pandas(dataframe: pd.DataFrame, warehouse_type: str):
     Following is the list of pandas data types that the function checks and their mapping in sql:
 
         - bool/pd.BooleanDtype -> boolean
-        - datetime64[ns, <tz>] -> timestamp
-        - M8[ns] -> timestamp
+        - datetime64 (any resolution, with or without a timezone) -> timestamp
         - int/pd.Int64Dtype -> int
         - float/pd.Float64Dtype -> float
-        - float object -> float
-        - datetime object -> timestamp
-        - object/pd.StringDtype -> varchar
+        - object/pd.StringDtype of numbers -> float
+        - object/pd.StringDtype of dates -> date
+        - object/pd.StringDtype of datetimes -> timestamp
+        - object/pd.StringDtype (other) -> varchar
 
     For all other data types, the column will be mapped to varchar type.
 
@@ -357,13 +357,11 @@ def find_column_type_pandas(dataframe: pd.DataFrame, warehouse_type: str):
             datatype = check_column_type_pyarrow(data.dtype.pyarrow_dtype)
             column_type.append(datatype)
         else:
-            if (data.dtype in ["datetime64[ns]", "M8[ns]"]) or (
-                re.match(r"(datetime64\[ns\,\W)([a-zA-Z]+)(\])", str(data.dtype))
-            ):
+            if pd.api.types.is_datetime64_any_dtype(data.dtype):
                 column_type.append("timestamp")
             elif str(data.dtype).lower().startswith("bool"):
                 column_type.append("boolean")
-            elif str(data.dtype).startswith("object"):
+            elif pd.api.types.is_string_dtype(data.dtype):
                 data_type = validate_float_object(data) or validate_date_object(data)
                 if not data_type:
                     column_type.append("varchar")
