@@ -1,7 +1,18 @@
-.. image:: https://github.com/capitalone/locopy/workflows/Python%20package/badge.svg
-    :target: https://github.com/capitalone/locopy/actions
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-    :target: https://github.com/ambv/black
+.. image:: https://img.shields.io/pypi/pyversions/locopy
+    :target: https://pypi.org/project/locopy/
+    :alt: PyPI - Python Version
+.. image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
+    :target: https://github.com/astral-sh/ruff
+    :alt: Ruff
+.. image:: https://badge.fury.io/py/locopy.svg
+    :target: https://badge.fury.io/py/locopy
+    :alt: PyPI version
+.. image:: https://anaconda.org/conda-forge/locopy/badges/version.svg
+    :target: https://anaconda.org/conda-forge/locopy
+    :alt: conda-forge version
+.. image:: https://img.shields.io/pypi/dm/locopy
+    :target: https://pypistats.org/packages/locopy
+    :alt: PyPI - Downloads
 
 locopy: Data Load and Copy using Python
 ========================================
