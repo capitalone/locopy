@@ -16,13 +16,13 @@
 
 """Logging Module.
 
-Module which sets up the basic logging infrustrcuture for the application.
+Module which sets up the basic logging infrastructure for the application.
 """
 
 import logging
 import sys
 
-# logger formating
+# logger formatting
 BRIEF_FORMAT = "%(levelname)s %(asctime)s - %(name)s: %(message)s"
 VERBOSE_FORMAT = (
     "%(levelname)s|%(asctime)s|%(name)s|%(filename)s|"
@@ -51,7 +51,7 @@ def get_logger(name=None, log_level=logging.DEBUG):
     Returns
     -------
     logging.Logger
-        Returns a Logger obejct which is set with the passed in paramters.
+        Returns a Logger object which is set with the passed in parameters.
         Please see the following for more details:
         https://docs.python.org/2/library/logging.html
     """

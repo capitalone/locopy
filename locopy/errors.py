@@ -61,8 +61,8 @@ class S3UploadError(S3Error):
 
 
 class S3DownloadError(S3Error):
-    """Raised when there is an download error to S3."""
+    """Raised when there is a download error to S3."""
 
 
 class S3DeletionError(S3Error):
-    """Raised when there is an deletion error on S3."""
+    """Raised when there is a deletion error on S3."""
