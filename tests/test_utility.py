@@ -394,6 +394,56 @@ def test_find_column_type_new():
     assert find_column_type(input_text, "redshift") == output_text_redshift
 
 
+def test_find_column_type_string_dtype():
+    # native string dtype must be sniffed like object dtype: numbers to
+    # float, date/datetime strings to date/timestamp, plain text to varchar
+    import pandas as pd
+
+    input_text = pd.DataFrame.from_dict(
+        {
+            "a": ["1", "2.5"],
+            "b": ["2011-01-01", "2019-04-23"],
+            "c": ["2011-01-01 10:00:00", "2019-04-23 11:15:00"],
+            "d": ["x", "y"],
+        }
+    ).astype("string")
+
+    output_text = {
+        "a": "float",
+        "b": "date",
+        "c": "timestamp",
+        "d": "varchar",
+    }
+
+    assert find_column_type(input_text, "snowflake") == output_text
+    assert find_column_type(input_text, "redshift") == output_text
+
+
+def test_find_column_type_datetime_tz_and_resolution():
+    # timezone names containing "/" and numeric utc offsets, plus
+    # non-nanosecond datetime64 resolutions, must map to timestamp
+    import pandas as pd
+
+    stamps = pd.to_datetime(pd.Series(["2011-01-01", "2019-04-23"]))
+
+    input_text = pd.DataFrame(
+        {
+            "a": stamps.dt.tz_localize("Europe/Paris"),
+            "b": stamps.dt.tz_localize("+05:30"),
+            "c": stamps.astype("datetime64[s]"),
+        }
+    )
+
+    output_text = {
+        "a": "timestamp",
+        "b": "timestamp",
+        "c": "timestamp",
+    }
+
+    assert find_column_type(input_text, "snowflake") == output_text
+    assert find_column_type(input_text, "redshift") == output_text
+
+
 def test_find_column_type_pyarrow():
     import pandas as pd
 
