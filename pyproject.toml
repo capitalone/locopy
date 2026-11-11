@@ -119,6 +119,8 @@ upgrade = [
 	"PyYAML",
 	"pandas",
 	"numpy",
+	"pyarrow",
+	"polars",
 ]
 
 [tool.pytest.ini_options]
