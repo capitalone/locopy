@@ -368,7 +368,7 @@ def test_find_column_type_new():
     input_text = input_text.astype(
         dtype={
             "a": pd.Int64Dtype(),
-            "b": pd.DatetimeTZDtype(tz=datetime.timezone.utc),
+            "b": pd.DatetimeTZDtype(tz=datetime.UTC),
             "c": pd.Float64Dtype(),
             "d": pd.StringDtype(),
             "e": pd.BooleanDtype(),
