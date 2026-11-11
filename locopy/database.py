@@ -16,6 +16,7 @@
 
 """Database Module."""
 
+import re
 import time
 from typing import Dict, Generator, List
 
@@ -27,6 +28,18 @@ from locopy.logger import INFO, get_logger
 from locopy.utility import read_config_yaml
 
 logger = get_logger(__name__, INFO)
+
+_CREDENTIAL_PATTERNS = [
+    re.compile(r"(aws_secret_access_key=)[^;\'\"\s]+", re.IGNORECASE),
+    re.compile(r"(token=)[^;\'\"\s]+", re.IGNORECASE),
+]
+
+
+def _redact_credentials(sql):
+    redacted = sql
+    for pattern in _CREDENTIAL_PATTERNS:
+        redacted = pattern.sub(r"\1***", redacted)
+    return redacted
 
 
 class Database:
@@ -168,7 +181,7 @@ class Database:
         if self._is_connected():
             start_time = time.time()
             if verbose:
-                logger.info("Running SQL: %s", sql)
+                logger.info("Running SQL: %s", _redact_credentials(sql))
             try:
                 if many:
                     self.cursor.executemany(sql, params)

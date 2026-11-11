@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import logging
 import sqlite3
 from unittest import mock
 
@@ -199,6 +200,24 @@ def test_execute(credentials, dbapi):
     ):
         test.execute("SELECT * FROM some_table")
         assert test.cursor.execute.called is True
+
+
+@pytest.mark.parametrize("dbapi", DBAPIS)
+def test_execute_redacts_credentials_in_log(credentials, dbapi, caplog):
+    sql = (
+        "COPY tbl FROM 's3://bucket/file.csv' CREDENTIALS "
+        "'aws_access_key_id=AKIAIOSFODNN7EXAMPLE;"
+        "aws_secret_access_key=wJalrXUtnFEMI;token=SESSIONTOKEN' CSV;"
+    )
+    with (
+        mock.patch(dbapi.__name__ + ".connect"),
+        Database(dbapi=dbapi, **credentials) as test,
+        caplog.at_level(logging.INFO, logger="locopy.database"),
+    ):
+        test.execute(sql)
+    assert "wJalrXUtnFEMI" not in caplog.text
+    assert "SESSIONTOKEN" not in caplog.text
+    assert test.cursor.execute.call_args[0][0] == sql
 
 
 @pytest.mark.parametrize("dbapi", DBAPIS)
