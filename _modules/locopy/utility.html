@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>locopy.utility &mdash; locopy 0.7.0 documentation</title>
+  <title>locopy.utility &mdash; locopy 0.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
 
   
-      <script src="../../_static/documentation_options.js?v=fe7df9b0"></script>
-      <script src="../../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/documentation_options.js?v=486e5634"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -382,13 +382,13 @@
 <span class="sd">    Following is the list of pandas data types that the function checks and their mapping in sql:</span>
 
 <span class="sd">        - bool/pd.BooleanDtype -&gt; boolean</span>
-<span class="sd">        - datetime64[ns, &lt;tz&gt;] -&gt; timestamp</span>
-<span class="sd">        - M8[ns] -&gt; timestamp</span>
+<span class="sd">        - datetime64 (any resolution, with or without a timezone) -&gt; timestamp</span>
 <span class="sd">        - int/pd.Int64Dtype -&gt; int</span>
 <span class="sd">        - float/pd.Float64Dtype -&gt; float</span>
-<span class="sd">        - float object -&gt; float</span>
-<span class="sd">        - datetime object -&gt; timestamp</span>
-<span class="sd">        - object/pd.StringDtype -&gt; varchar</span>
+<span class="sd">        - object/pd.StringDtype of numbers -&gt; float</span>
+<span class="sd">        - object/pd.StringDtype of dates -&gt; date</span>
+<span class="sd">        - object/pd.StringDtype of datetimes -&gt; timestamp</span>
+<span class="sd">        - object/pd.StringDtype (other) -&gt; varchar</span>
 
 <span class="sd">    For all other data types, the column will be mapped to varchar type.</span>
 
@@ -458,13 +458,11 @@
             <span class="n">datatype</span> <span class="o">=</span> <span class="n">check_column_type_pyarrow</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">pyarrow_dtype</span><span class="p">)</span>
             <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">datatype</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"datetime64[ns]"</span><span class="p">,</span> <span class="s2">"M8[ns]"</span><span class="p">])</span> <span class="ow">or</span> <span class="p">(</span>
-                <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">"(datetime64\[ns\,\W)([a-zA-Z]+)(\])"</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
-            <span class="p">):</span>
+            <span class="k">if</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_datetime64_any_dtype</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">):</span>
                 <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"timestamp"</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"bool"</span><span class="p">):</span>
                 <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"boolean"</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"object"</span><span class="p">):</span>
+            <span class="k">elif</span> <span class="n">pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">is_string_dtype</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">):</span>
                 <span class="n">data_type</span> <span class="o">=</span> <span class="n">validate_float_object</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">or</span> <span class="n">validate_date_object</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">data_type</span><span class="p">:</span>
                     <span class="n">column_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"varchar"</span><span class="p">)</span>
