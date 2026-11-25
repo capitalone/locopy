@@ -104,3 +104,6 @@ pip-wheel-metadata/
 
 #edgetest
 .edgetest/
+
+#AI tools
+.bob
