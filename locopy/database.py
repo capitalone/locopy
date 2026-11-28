@@ -18,7 +18,9 @@
 
 import re
 import time
-from typing import Dict, Generator, List
+from collections.abc import Iterator, Sequence
+from types import TracebackType
+from typing import Any, Literal, Self
 
 import pandas
 import polars
@@ -35,7 +37,7 @@ _CREDENTIAL_PATTERNS = [
 ]
 
 
-def _redact_credentials(sql):
+def _redact_credentials(sql: str) -> str:
     redacted = sql
     for pattern in _CREDENTIAL_PATTERNS:
         redacted = pattern.sub(r"\1***", redacted)
@@ -51,7 +53,7 @@ class Database:
 
     Parameters
     ----------
-    dbapi : DBAPI 2 module, optional
+    dbapi : DBAPI 2 module
         A database adapter which is Python DB API 2.0 compliant
         (``psycopg2``, ``pg8000``, etc.)
 
@@ -85,14 +87,14 @@ class Database:
 
     def __init__(
         self,
-        dbapi: object,
+        dbapi: Any,
         config_yaml: str | None = None,
-        **kwargs: str | int,
+        **kwargs,
     ) -> None:
         self.dbapi = dbapi
         self.connection = kwargs or {}
-        self.conn = None
-        self.cursor = None
+        self.conn: Any = None
+        self.cursor: Any = None
 
         if config_yaml and self.connection:
             raise CredentialsError(
@@ -145,7 +147,7 @@ class Database:
         self,
         sql: str,
         commit: bool = True,
-        params: tuple = (),
+        params: Sequence[Any] = (),
         many: bool = False,
         verbose: bool = True,
     ) -> None:
@@ -160,7 +162,7 @@ class Database:
         commit : Boolean, default True
             Whether to "commit" the commands to the cluster immediately or not.
 
-        params : iterable of parameters
+        params : sequence of parameters
             Parameters to submit with the query. The exact syntax will depend
             on the database adapter you are using
 
@@ -202,7 +204,7 @@ class Database:
         else:
             raise DBError("Cannot execute SQL on a closed connection.")
 
-    def column_names(self) -> List[str]:
+    def column_names(self) -> list[str]:
         """Pull column names out of the cursor description.
 
         Depending on the DBAPI, it could return column names as bytes: ``b'column_name'``.
@@ -218,7 +220,7 @@ class Database:
             return [column[0].lower() for column in self.cursor.description]
 
     def to_dataframe(
-        self, df_type: str = "pandas", size: int | None = None
+        self, df_type: Literal["pandas", "polars"] = "pandas", size: int | None = None
     ) -> pandas.DataFrame | polars.DataFrame | None:
         """Return a dataframe of the last query results.
 
@@ -257,7 +259,7 @@ class Database:
         elif df_type == "polars":
             return polars.DataFrame(fetched, schema=columns, orient="row")
 
-    def to_dict(self) -> Generator[Dict[str, str | int | float], None, None]:
+    def to_dict(self) -> Iterator[dict[str, Any]]:
         """Generate dictionaries of rows.
 
         Yields
@@ -282,14 +284,19 @@ class Database:
         except Exception:
             return False
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
         """Open the connection."""
         logger.info("Connecting...")
         self.connect()
         logger.info("Connection established.")
         return self
 
-    def __exit__(self, exc_type, exc, exc_tb):
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
         """Close the connection."""
         logger.info("Closing connection...")
         self.disconnect()
