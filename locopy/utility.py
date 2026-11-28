@@ -25,9 +25,10 @@ import shutil
 import sys
 import threading
 from collections import OrderedDict
+from collections.abc import Sequence
 from functools import singledispatch
 from itertools import cycle
-from typing import Dict, List
+from typing import IO
 
 import pandas as pd
 import polars as pl
@@ -47,7 +48,7 @@ logger = get_logger(__name__, INFO)
 
 
 def write_file(
-    data: List[List[str | int | float]],
+    data: Sequence[Sequence[str | int | float]],
     delimiter: str,
     filepath: str,
     mode: str = "w",
@@ -56,8 +57,8 @@ def write_file(
 
     Parameters
     ----------
-    data : list
-        List of lists
+    data : sequence of sequences
+        Sequence of rows, where each row is a sequence of values
 
     delimiter : str
         Delimiter by which columns will be separated
@@ -98,7 +99,7 @@ def compress_file(input_file: str, output_file: str) -> None:
         raise CompressionError("Error compressing the file.") from e
 
 
-def compress_file_list(file_list: List[str]) -> List[str]:
+def compress_file_list(file_list: list[str]) -> list[str]:
     """Compresses a list of files (gzip) and clean up the old files.
 
     Parameters
@@ -121,8 +122,11 @@ def compress_file_list(file_list: List[str]) -> List[str]:
 
 
 def split_file(
-    input_file: str, output_file: str, splits: int = 1, ignore_header: int = 0
-) -> List[str]:
+    input_file: str,
+    output_file: str,
+    splits: int = 1,
+    ignore_header: int = 0,
+) -> list[str]:
     """Split a file into equal files by lines.
 
     For example: ``myinputfile.txt`` will be split into ``myoutputfile.txt.01``
@@ -190,7 +194,7 @@ def split_file(
 
 
 def concatenate_files(
-    input_list: List[str], output_file: str, remove: bool = True
+    input_list: list[str], output_file: str, remove: bool = True
 ) -> None:
     """Concatenate a list of files into one file.
 
@@ -225,7 +229,7 @@ def concatenate_files(
         raise LocopyConcatError("Error concateneating files.") from e
 
 
-def read_config_yaml(config_yaml: str | object) -> Dict[str, str | int]:
+def read_config_yaml(config_yaml: str | IO[str] | IO[bytes]) -> dict[str, str | int]:
     """Read a configuration YAML file.
 
     Populate the database connection attributes, and validate required ones.
@@ -268,13 +272,17 @@ def read_config_yaml(config_yaml: str | object) -> Dict[str, str | int]:
 
 # make it more granular, eg. include length
 @singledispatch
-def find_column_type(dataframe, warehouse_type: str):
+def find_column_type(  # type: ignore[empty-body]
+    dataframe: pd.DataFrame | pl.DataFrame, warehouse_type: str
+) -> OrderedDict[str, str]:
     """Find data type of each column from the dataframe."""
     pass
 
 
 @find_column_type.register(pd.DataFrame)
-def find_column_type_pandas(dataframe: pd.DataFrame, warehouse_type: str):
+def find_column_type_pandas(
+    dataframe: pd.DataFrame, warehouse_type: str
+) -> OrderedDict[str, str]:
     """
     Find data type of each column from the dataframe.
 
@@ -300,8 +308,8 @@ def find_column_type_pandas(dataframe: pd.DataFrame, warehouse_type: str):
 
     Returns
     -------
-    dict
-        A dictionary of columns with their data type
+    collections.OrderedDict
+        An ordered dictionary of columns with their data type
     """
     import re
 
@@ -378,7 +386,9 @@ def find_column_type_pandas(dataframe: pd.DataFrame, warehouse_type: str):
 
 
 @find_column_type.register(pl.DataFrame)
-def find_column_type_polars(dataframe: pl.DataFrame, warehouse_type: str):
+def find_column_type_polars(
+    dataframe: pl.DataFrame, warehouse_type: str
+) -> OrderedDict[str, str]:
     """
     Find data type of each column from the dataframe.
 
@@ -397,15 +407,15 @@ def find_column_type_polars(dataframe: pl.DataFrame, warehouse_type: str):
 
     Parameters
     ----------
-    dataframe : Pandas dataframe
+    dataframe : Polars dataframe
 
     warehouse_type: str
         Required to properly determine format of uploaded data, either "snowflake" or "redshift".
 
     Returns
     -------
-    dict
-        A dictionary of columns with their data type
+    collections.OrderedDict
+        An ordered dictionary of columns with their data type
     """
 
     def validate_date_object(column):
@@ -475,7 +485,7 @@ class ProgressPercentage:
     http://boto3.readthedocs.org/en/latest/reference/customizations/s3.html#ref-s3transfer-usage.
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename: str) -> None:
         """Initiate the ProgressPercentage class.
 
         Using the base information which makes up a pipeline
@@ -490,7 +500,7 @@ class ProgressPercentage:
         self._seen_so_far = 0
         self._lock = threading.Lock()
 
-    def __call__(self, bytes_amount):
+    def __call__(self, bytes_amount: int) -> None:
         """Call as a function.
 
         To simplify we'll assume this is hooked up to a single filename.
@@ -506,7 +516,7 @@ class ProgressPercentage:
             sys.stdout.flush()
 
 
-def get_ignoreheader_number(options: List[str]) -> int:
+def get_ignoreheader_number(options: list[str]) -> int:
     """Return the ``number_rows`` from ``IGNOREHEADER [ AS ] number_rows``.
 
     This doesn't validate that the ``AS`` is valid.
