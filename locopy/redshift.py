@@ -23,6 +23,7 @@ to Redshift, and run arbitrary code.
 import os
 from functools import singledispatch
 from pathlib import Path
+from typing import Any, Literal
 
 import pandas as pd
 import polars as pl
@@ -44,7 +45,7 @@ from locopy.utility import (
 logger = get_logger(__name__, INFO)
 
 
-def add_default_copy_options(copy_options=None):
+def add_default_copy_options(copy_options: list[str] | None = None) -> list[str]:
     """Add in default options for the ``COPY`` job.
 
     Unless those specific options have been provided in the request.
@@ -71,7 +72,7 @@ def add_default_copy_options(copy_options=None):
     return copy_options
 
 
-def combine_copy_options(copy_options):
+def combine_copy_options(copy_options: list[str]) -> str:
     """Return the ``copy_options`` attribute with spaces in between.
 
     Converts to a string.
@@ -164,8 +165,13 @@ class Redshift(S3, Database):
     """
 
     def __init__(
-        self, profile=None, kms_key=None, dbapi=None, config_yaml=None, **kwargs
-    ):
+        self,
+        profile: str | None = None,
+        kms_key: str | None = None,
+        dbapi: Any = None,
+        config_yaml: str | None = None,
+        **kwargs,
+    ) -> None:
         try:
             S3.__init__(self, profile, kms_key)
         except S3CredentialsError:
@@ -174,7 +180,7 @@ class Redshift(S3, Database):
             )
         Database.__init__(self, dbapi, config_yaml, **kwargs)
 
-    def connect(self):
+    def connect(self) -> None:
         """Create a connection to the Redshift cluster.
 
         Sets the values of the ``conn`` and ``cursor`` attributes.
@@ -190,7 +196,13 @@ class Redshift(S3, Database):
             self.connection["ssl_context"] = True
         super().connect()
 
-    def copy(self, table_name, s3path, delim="|", copy_options=None):
+    def copy(
+        self,
+        table_name: str,
+        s3path: str,
+        delim: str | None = "|",
+        copy_options: list[str] | None = None,
+    ) -> None:
         """Execute the COPY command to load files from S3 into a Redshift table.
 
         Parameters
@@ -204,7 +216,7 @@ class Redshift(S3, Database):
         delim : str, optional
            None for non-delimited file type. Defaults to |
 
-        copy_options : list
+        copy_options : list, optional
             List of strings of copy options to provide to the ``COPY`` command.
             Will have default options added in.
 
@@ -234,16 +246,16 @@ class Redshift(S3, Database):
 
     def load_and_copy(
         self,
-        local_file,
-        s3_bucket,
-        table_name,
-        delim="|",
-        copy_options=None,
-        delete_s3_after=False,
-        splits=1,
-        compress=True,
-        s3_folder=None,
-    ):
+        local_file: str,
+        s3_bucket: str,
+        table_name: str,
+        delim: str | None = "|",
+        copy_options: list[str] | None = None,
+        delete_s3_after: bool = False,
+        splits: int = 1,
+        compress: bool = True,
+        s3_folder: str | None = None,
+    ) -> None:
         r"""Load a file to S3, then copies into Redshift.
 
         Has options to split a single file into multiple files, compress using gzip, and
@@ -348,16 +360,16 @@ class Redshift(S3, Database):
 
     def unload_and_copy(
         self,
-        query,
-        s3_bucket,
-        s3_folder=None,
-        raw_unload_path=None,
-        export_path=False,
-        delim=",",
-        delete_s3_after=True,
-        parallel_off=False,
-        unload_options=None,
-    ):
+        query: str,
+        s3_bucket: str,
+        s3_folder: str | None = None,
+        raw_unload_path: str | None = None,
+        export_path: str | Literal[False] = False,
+        delim: str | None = ",",
+        delete_s3_after: bool = True,
+        parallel_off: bool = False,
+        unload_options: list[str] | None = None,
+    ) -> None:
         """Unload data from Redshift.
 
         With options to write to a flat file and store on S3.
@@ -382,7 +394,7 @@ class Redshift(S3, Database):
         export_path : str, optional
             If a ``export_path`` is provided, function will concatenate and write the unloaded
             files to this path as a single file. If your file is very large you may not want to
-            use this option.
+            use this option. Defaults to ``False`` (no combined file is written).
 
         delim : str, optional
             Delimiter for unloading and file writing. Defaults to a comma. If None, this option will be ignored
@@ -440,7 +452,9 @@ class Redshift(S3, Database):
         if delete_s3_after:
             self.delete_list_from_s3(s3_download_list)
 
-    def unload(self, query, s3path, unload_options=None):
+    def unload(
+        self, query: str, s3path: str, unload_options: list[str] | None = None
+    ) -> None:
         """Execute the UNLOAD command to export a query from Redshift to S3.
 
         Parameters
@@ -451,7 +465,7 @@ class Redshift(S3, Database):
         s3path : str
             S3 path for the output files.
 
-        unload_options : list
+        unload_options : list, optional
             List of string unload options.
 
         Raises
@@ -479,7 +493,7 @@ class Redshift(S3, Database):
             logger.error("Error running UNLOAD on redshift. err: %s", e)
             raise DBError("Error running UNLOAD on redshift.") from e
 
-    def _get_column_names(self, query):
+    def _get_column_names(self, query: str) -> list[str] | None:
         """Get a list of column names from the supplied query.
 
         Parameters
@@ -505,7 +519,7 @@ class Redshift(S3, Database):
             logger.error("Error retrieving column names")
             raise
 
-    def _unload_generated_files(self):
+    def _unload_generated_files(self) -> list[str] | None:
         """Get a list of files generated by the unload process.
 
         Returns
@@ -531,14 +545,14 @@ class Redshift(S3, Database):
 
     def insert_dataframe_to_table(
         self,
-        dataframe,
-        table_name,
-        columns=None,
-        create=False,
-        metadata=None,
-        batch_size=1000,
-        verbose=False,
-    ):
+        dataframe: pd.DataFrame | pl.DataFrame,
+        table_name: str,
+        columns: list[str] | None = None,
+        create: bool = False,
+        metadata: dict[str, str] | None = None,
+        batch_size: int = 1000,
+        verbose: bool = False,
+    ) -> None:
         """
         Insert a Pandas or Polars dataframe to an existing table or a new table.
 
@@ -602,12 +616,16 @@ class Redshift(S3, Database):
 
         # create a list of tuples for insert
         @singledispatch
-        def get_insert_tuple(dataframe, start, batch_size):
+        def get_insert_tuple(  # type: ignore[empty-body]
+            dataframe: pd.DataFrame | pl.DataFrame, start: int, batch_size: int
+        ) -> list[str]:
             """Create a list of tuples for insert."""
             pass
 
         @get_insert_tuple.register(pd.DataFrame)
-        def get_insert_tuple_pandas(dataframe: pd.DataFrame, start, batch_size):
+        def get_insert_tuple_pandas(
+            dataframe: pd.DataFrame, start: int, batch_size: int
+        ) -> list[str]:
             """Create a list of tuples for insert when dataframe is pd.DataFrame."""
             to_insert = []
             for row in dataframe[start : (start + batch_size)].itertuples(index=False):
@@ -627,7 +645,9 @@ class Redshift(S3, Database):
             return to_insert
 
         @get_insert_tuple.register(pl.DataFrame)
-        def get_insert_tuple_polars(dataframe: pl.DataFrame, start, batch_size):
+        def get_insert_tuple_polars(
+            dataframe: pl.DataFrame, start: int, batch_size: int
+        ) -> list[str]:
             """Create a list of tuples for insert when dataframe is pl.DataFrame."""
             to_insert = []
             dataframe = dataframe.with_columns(
