@@ -18,7 +18,7 @@
 
 import re
 import time
-from collections.abc import Iterator, Sequence
+from collections.abc import Iterator, Mapping, Sequence
 from types import TracebackType
 from typing import Any, Literal, Self
 
@@ -147,7 +147,7 @@ class Database:
         self,
         sql: str,
         commit: bool = True,
-        params: Sequence[Any] = (),
+        params: Sequence[Any] | Mapping[str, Any] = (),
         many: bool = False,
         verbose: bool = True,
     ) -> None:
@@ -162,7 +162,7 @@ class Database:
         commit : Boolean, default True
             Whether to "commit" the commands to the cluster immediately or not.
 
-        params : sequence of parameters
+        params : sequence or mapping of parameters
             Parameters to submit with the query. The exact syntax will depend
             on the database adapter you are using
 

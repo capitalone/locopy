@@ -28,7 +28,7 @@ from collections import OrderedDict
 from collections.abc import Sequence
 from functools import singledispatch
 from itertools import cycle
-from typing import IO
+from typing import IO, Any
 
 import pandas as pd
 import polars as pl
@@ -229,7 +229,7 @@ def concatenate_files(
         raise LocopyConcatError("Error concateneating files.") from e
 
 
-def read_config_yaml(config_yaml: str | IO[str] | IO[bytes]) -> dict[str, str | int]:
+def read_config_yaml(config_yaml: str | IO[str] | IO[bytes]) -> dict[str, Any]:
     """Read a configuration YAML file.
 
     Populate the database connection attributes, and validate required ones.
