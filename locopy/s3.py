@@ -21,7 +21,7 @@ multipart upload to S3 buckets.
 """
 
 import os
-from typing import List, Tuple
+from typing import Any
 
 from boto3 import Session
 from boto3.s3.transfer import TransferConfig
@@ -92,8 +92,8 @@ class S3:
     ) -> None:
         self.profile = profile
         self.kms_key = kms_key
-        self.session = None
-        self.s3 = None
+        self.session: Any = None
+        self.s3: Any = None
 
         self._set_session()
         self._set_client()
@@ -226,8 +226,8 @@ class S3:
             raise S3UploadError("Error uploading to S3.") from e
 
     def upload_list_to_s3(
-        self, local_list: List[str], bucket: str, folder: str | None = None
-    ) -> List[str]:
+        self, local_list: list[str], bucket: str, folder: str | None = None
+    ) -> list[str]:
         """
         Upload a list of files to a S3 bucket.
 
@@ -300,8 +300,8 @@ class S3:
             raise S3DownloadError("Error downloading from S3.") from e
 
     def download_list_from_s3(
-        self, s3_list: List[str], local_path: str | None = None
-    ) -> List[str]:
+        self, s3_list: list[str], local_path: str | None = None
+    ) -> list[str]:
         """
         Download a list of files from s3.
 
@@ -356,7 +356,7 @@ class S3:
             logger.error("Error deleting from S3. err: %s", e)
             raise S3DeletionError("Error deleting from S3.") from e
 
-    def delete_list_from_s3(self, s3_list: List[str]) -> None:
+    def delete_list_from_s3(self, s3_list: list[str]) -> None:
         """
         Delete a list of files from an S3 bucket.
 
@@ -370,7 +370,7 @@ class S3:
             s3_bucket, s3_key = self.parse_s3_url(file)
             self.delete_from_s3(s3_bucket, s3_key)
 
-    def parse_s3_url(self, s3_url: str) -> Tuple[str, str]:
+    def parse_s3_url(self, s3_url: str) -> tuple[str, str]:
         """Extract the bucket and key from a s3 url.
 
         Parameters
