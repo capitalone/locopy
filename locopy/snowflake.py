@@ -23,6 +23,7 @@ to Snowflake, and run arbitrary code.
 import os
 from functools import singledispatch
 from pathlib import PurePath
+from typing import Any, Literal
 
 import pandas as pd
 import polars as pl
@@ -91,7 +92,7 @@ UNLOAD_FORMAT_OPTIONS = {
 }
 
 
-def combine_options(options=None):
+def combine_options(options: list[str] | None = None) -> str:
     """Return the ``copy_options`` or ``format_options`` attribute.
 
     With spaces in between and as a string. If options is ``None`` then return an empty string.
@@ -180,8 +181,13 @@ class Snowflake(S3, Database):
     """
 
     def __init__(
-        self, profile=None, kms_key=None, dbapi=None, config_yaml=None, **kwargs
-    ):
+        self,
+        profile: str | None = None,
+        kms_key: str | None = None,
+        dbapi: Any = None,
+        config_yaml: str | None = None,
+        **kwargs,
+    ) -> None:
         try:
             S3.__init__(self, profile, kms_key)
         except S3CredentialsError:
@@ -191,7 +197,7 @@ class Snowflake(S3, Database):
             logger.warning("Only internal stages are available")
         Database.__init__(self, dbapi, config_yaml, **kwargs)
 
-    def connect(self):
+    def connect(self) -> None:
         """Create a connection to the Snowflake cluster.
 
         Setg the values of the ``conn`` and ``cursor`` attributes.
@@ -211,8 +217,13 @@ class Snowflake(S3, Database):
             self.execute("USE SCHEMA {}".format(self.connection["schema"]))
 
     def upload_to_internal(
-        self, local, stage, parallel=4, auto_compress=True, overwrite=True
-    ):
+        self,
+        local: str,
+        stage: str,
+        parallel: int = 4,
+        auto_compress: bool = True,
+        overwrite: bool = True,
+    ) -> None:
         """
         Upload file(s) to a internal stage via the ``PUT`` command.
 
@@ -244,7 +255,9 @@ class Snowflake(S3, Database):
             f"PUT 'file://{local_uri}' {stage} PARALLEL={parallel} AUTO_COMPRESS={auto_compress} OVERWRITE={overwrite}"
         )
 
-    def download_from_internal(self, stage, local=None, parallel=10):
+    def download_from_internal(
+        self, stage: str, local: str | None = None, parallel: int = 10
+    ) -> None:
         """
         Download file(s) from a internal stage via the ``GET`` command.
 
@@ -267,13 +280,13 @@ class Snowflake(S3, Database):
 
     def copy(
         self,
-        table_name,
-        stage,
-        file_type="csv",
-        format_options=None,
-        copy_options=None,
-        file_format_name="",
-    ):
+        table_name: str,
+        stage: str,
+        file_type: str = "csv",
+        format_options: list[str] | None = None,
+        copy_options: list[str] | None = None,
+        file_format_name: str = "",
+    ) -> None:
         """Load files from a stage into a Snowflake table.
 
         Execute the ``COPY INTO <table>`` command to  If ``file_type == csv`` and ``format_options == None``, ``format_options``
@@ -291,11 +304,11 @@ class Snowflake(S3, Database):
         file_type : str
             The file type. One of ``csv``, ``json``, or ``parquet``
 
-        format_options : list
+        format_options : list, optional
             List of strings of format options to provide to the ``COPY INTO`` command. The options
             will typically be in the format of ``["a=b", "c=d"]``
 
-        copy_options : list
+        copy_options : list, optional
             List of strings of copy options to provide to the ``COPY INTO`` command.
 
         file_format_name : str
@@ -338,14 +351,14 @@ class Snowflake(S3, Database):
 
     def unload(
         self,
-        stage,
-        table_name,
-        file_type="csv",
-        format_options=None,
-        header=False,
-        copy_options=None,
-        file_format_name="",
-    ):
+        stage: str,
+        table_name: str,
+        file_type: str = "csv",
+        format_options: list[str] | None = None,
+        header: bool = False,
+        copy_options: list[str] | None = None,
+        file_format_name: str = "",
+    ) -> None:
         """Export a query/table from Snowflake to a stage.
 
         Execute the ``COPY INTO <location>`` command.
@@ -365,13 +378,13 @@ class Snowflake(S3, Database):
         file_type : str
             The file type. One of ``csv``, ``json``, or ``parquet``
 
-        format_options : list
+        format_options : list, optional
             List of strings of format options to provide to the ``COPY INTO`` command.
 
         header : bool, optional
             Boolean flag if header is included in the file(s)
 
-        copy_options : list
+        copy_options : list, optional
             List of strings of copy options to provide to the ``COPY INTO`` command.
 
         file_format_name : str
@@ -410,8 +423,13 @@ class Snowflake(S3, Database):
             raise DBError("Error running UNLOAD on Snowflake.") from e
 
     def insert_dataframe_to_table(
-        self, dataframe, table_name, columns=None, create=False, metadata=None
-    ):
+        self,
+        dataframe: pd.DataFrame | pl.DataFrame,
+        table_name: str,
+        columns: list[str] | None = None,
+        create: bool = False,
+        metadata: dict[str, str] | None = None,
+    ) -> None:
         """Insert a Pandas or Polars dataframe to an existing table or a new table.
 
         In newer versions of the
@@ -448,12 +466,16 @@ class Snowflake(S3, Database):
 
         # create a list of tuples for insert
         @singledispatch
-        def get_insert_tuple(dataframe):
+        def get_insert_tuple(  # type: ignore[empty-body]
+            dataframe: pd.DataFrame | pl.DataFrame,
+        ) -> list[tuple[str | None, ...]]:
             """Create a list of tuples for insert."""
             pass
 
         @get_insert_tuple.register(pd.DataFrame)
-        def get_insert_tuple_pandas(dataframe: pd.DataFrame):
+        def get_insert_tuple_pandas(
+            dataframe: pd.DataFrame,
+        ) -> list[tuple[str | None, ...]]:
             """Create a list of tuples for insert when dataframe is pd.DataFrame."""
             to_insert = []
             for row in dataframe.itertuples(index=False):
@@ -462,7 +484,9 @@ class Snowflake(S3, Database):
             return to_insert
 
         @get_insert_tuple.register(pl.DataFrame)
-        def get_insert_tuple_polars(dataframe: pl.DataFrame):
+        def get_insert_tuple_polars(
+            dataframe: pl.DataFrame,
+        ) -> list[tuple[str | None, ...]]:
             """Create a list of tuples for insert when dataframe is pl.DataFrame."""
             to_insert = []
             dataframe = dataframe.with_columns(
@@ -511,7 +535,9 @@ class Snowflake(S3, Database):
         self.execute(insert_query, params=to_insert, many=True)
         logger.info("Table insertion has completed")
 
-    def to_dataframe(self, df_type="pandas", size=None):
+    def to_dataframe(
+        self, df_type: Literal["pandas", "polars"] = "pandas", size: int | None = None
+    ) -> pd.DataFrame | pl.DataFrame | None:
         """Return a dataframe of the last query results.
 
         This is just a convenience method. This
