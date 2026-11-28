@@ -38,7 +38,9 @@ ERROR = logging.ERROR
 CRITICAL = logging.CRITICAL
 
 
-def get_logger(name=None, log_level=logging.DEBUG):
+def get_logger(
+    name: str | None = None, log_level: int = logging.DEBUG
+) -> logging.Logger:
     """Set the basic logging features for the application.
 
     Parameters
